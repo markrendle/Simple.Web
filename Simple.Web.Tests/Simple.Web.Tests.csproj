@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</ProjectGuid>
+    <ProjectGuid>{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Web</RootNamespace>
-    <AssemblyName>Simple.Web</AssemblyName>
+    <RootNamespace>Simple.Web.Tests</RootNamespace>
+    <AssemblyName>Simple.Web.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,20 +33,28 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EndpointFactory.cs" />
-    <Compile Include="GetEndpoint.cs" />
-    <Compile Include="IReusable.cs" />
-    <Compile Include="RoutingTable.cs" />
-    <Compile Include="SimpleWebHttpHandler.cs" />
+    <Compile Include="EndpointFactoryTests.cs" />
+    <Compile Include="RoutingTableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
+      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
+      <Name>Simple.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

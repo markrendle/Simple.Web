@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web", "Simple.Web\Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{71E6E108-5645-45D1-B128-E6225253924D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Tests", "Simple.Web.Tests\Simple.Web.Tests.csproj", "{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,8 +23,15 @@ Global
 		{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA} = {71E6E108-5645-45D1-B128-E6225253924D}
 	EndGlobalSection
 EndGlobal

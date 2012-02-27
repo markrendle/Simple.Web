@@ -60,6 +60,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HelloEndpoint.cs" />
     <Compile Include="IndexEndpoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
