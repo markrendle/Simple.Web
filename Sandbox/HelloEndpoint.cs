@@ -10,7 +10,7 @@ namespace Sandbox
         }
 
         public string Name { get; set; }
-        private string _tag;
+        private string _tag = "h1";
         public string Tag
         {
             get { return _tag; }
