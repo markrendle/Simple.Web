@@ -7,7 +7,7 @@ namespace Simple.Web
 {
     public abstract class GetEndpoint
     {
-        public abstract string UriTemplate { get; }
+        protected internal abstract string UriTemplate { get; }
         protected internal abstract object Run();
     }
 }

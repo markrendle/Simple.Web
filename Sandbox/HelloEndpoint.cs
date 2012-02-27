@@ -4,17 +4,21 @@ namespace Sandbox
 
     public class HelloEndpoint : GetEndpoint
     {
-        public override string UriTemplate
+        protected override string UriTemplate
         {
             get { return "/hello/{Name}"; }
         }
 
         public string Name { get; set; }
-        public string Tag { get; set; }
+        private string _tag;
+        public string Tag
+        {
+            get { return _tag; }
+            set { _tag = string.IsNullOrWhiteSpace(value) ? "h1" : value; }
+        }
 
         protected override object Run()
         {
-            if (string.IsNullOrWhiteSpace(Tag)) Tag = "h1";
             return string.Format("<{1}>Hello, {0}</{1}>", Name, Tag);
         }
     }

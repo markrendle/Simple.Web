@@ -44,6 +44,8 @@
     <Compile Include="EndpointFactory.cs" />
     <Compile Include="GetEndpoint.cs" />
     <Compile Include="IReusable.cs" />
+    <Compile Include="PostEndpoint.cs" />
+    <Compile Include="PropertySetterBuilder.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="SimpleWebHttpHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

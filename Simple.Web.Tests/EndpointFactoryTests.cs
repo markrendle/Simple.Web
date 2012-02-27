@@ -23,7 +23,7 @@ namespace Simple.Web.Tests
 
     class StaticEndpoint : GetEndpoint
     {
-        public override string UriTemplate
+        protected internal override string UriTemplate
         {
             get { return "/"; }
         }
@@ -36,7 +36,7 @@ namespace Simple.Web.Tests
 
     class DynamicEndpoint : GetEndpoint
     {
-        public override string UriTemplate
+        protected internal override string UriTemplate
         {
             get { return "/Tests/{Id}"; }
         }

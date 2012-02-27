@@ -9,7 +9,7 @@ namespace Sandbox
 
     public class IndexEndpoint : GetEndpoint
     {
-        public override string UriTemplate
+        protected override string UriTemplate
         {
             get { return "/"; }
         }
