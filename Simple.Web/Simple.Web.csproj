@@ -42,13 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointFactory.cs" />
-    <Compile Include="Endpoint.cs" />
+    <Compile Include="FormDeserializer.cs" />
+    <Compile Include="IEndpoint.cs" />
+    <Compile Include="GetEndpoint.cs" />
     <Compile Include="GetHandler.cs" />
+    <Compile Include="IInputDeserializer.cs" />
     <Compile Include="InputStreamReader.cs" />
+    <Compile Include="IOutputWriter.cs" />
     <Compile Include="IReusable.cs" />
+    <Compile Include="OutputStreamWriter.cs" />
+    <Compile Include="PostEndpoint.cs" />
     <Compile Include="PostHandler.cs" />
     <Compile Include="PropertySetterBuilder.cs" />
     <Compile Include="RoutingTable.cs" />
+    <Compile Include="RoutingTableBuilder.cs" />
     <Compile Include="SimpleWebHttpHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,6 +2,7 @@ namespace Simple.Web
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Web;
 
@@ -12,13 +13,32 @@ namespace Simple.Web
 
         internal static void HandleRequest(HttpContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+            if (context.Request == null) throw new InvalidOperationException("Request cannot be null");
+
             Type endpointType;
             var variables = GetPostEndpointType(context, out endpointType);
             var endpoint = EndpointFactory.Instance.PostEndpoint(endpointType, variables, context.Request);
             if (endpoint != null)
             {
-                var output = endpoint.Run().ToString();
-                context.Response.Write(output);
+                object output;
+                try
+                {
+                    output = endpoint.Run();
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.Message);
+                    context.Response.StatusCode = 500;
+                    context.Response.Status = "Internal server error";
+                    context.Response.Close();
+                    return;
+                }
+
+                var outputWriter = OutputStreamWriter.GetWriter(context.Request.AcceptTypes, endpoint);
+                context.Response.ContentType = outputWriter.ContentType;
+                outputWriter.Write(context.Response.OutputStream, output);
+
                 context.Response.Flush();
                 context.Response.Close();
             }
@@ -46,47 +66,10 @@ namespace Simple.Web
                 {
                     if (_postRoutingTable == null)
                     {
-                        var routingTable = new RoutingTable();
-                        PopulateRoutingTableWithPostEndpoints(routingTable);
-
-                        _postRoutingTable = routingTable;
+                        _postRoutingTable = new RoutingTableBuilder(typeof(PostEndpoint<,>)).BuildRoutingTable();
                     }
                 }
             }
-        }
-
-        
-        
-        private static void PopulateRoutingTableWithPostEndpoints(RoutingTable routingTable)
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
-            {
-                var postEndpointTypes = assembly.GetExportedTypes().Where(TypeIsPostEndpoint).ToList();
-
-                foreach (var exportedType in postEndpointTypes)
-                {
-                    var instance = Activator.CreateInstance(exportedType) as IEndpoint;
-                    if (instance != null)
-                    {
-                        routingTable.Add(instance.UriTemplate, exportedType);
-                    }
-                }
-            }
-        }
-
-        private static bool TypeIsPostEndpoint(Type type)
-        {
-            if (type.IsAbstract || !typeof(IEndpoint).IsAssignableFrom(type)) return false;
-
-            var baseType = type.BaseType;
-            while (baseType != null)
-            {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(PostEndpoint<,>))
-                    return true;
-                baseType = baseType.BaseType;
-            }
-
-            return false;
         }
     }
 }

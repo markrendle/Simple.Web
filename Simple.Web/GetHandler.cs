@@ -8,12 +8,13 @@ namespace Simple.Web
     class GetHandler
     {
         private static readonly object RoutingTableLock = new object();
-        private static volatile RoutingTable _getRoutingTable;
+        private static volatile bool _routingTableInitialized;
+        private static RoutingTable _getRoutingTable;
 
         internal static void HandleRequest(HttpContext context)
         {
             Type endpointType;
-            var variables = GetGetEndpointType(context, out endpointType);
+            var variables = GetEndpointType(context, out endpointType);
             if (endpointType != null)
             {
                 var endpoint = EndpointFactory.Instance.GetEndpoint(endpointType, variables);
@@ -27,7 +28,7 @@ namespace Simple.Web
             }
         }
 
-        private static IDictionary<string, string> GetGetEndpointType(HttpContext context, out Type endpointType)
+        private static IDictionary<string, string> GetEndpointType(HttpContext context, out Type endpointType)
         {
             BuildGetRoutingTable();
 
@@ -43,34 +44,14 @@ namespace Simple.Web
 
         private static void BuildGetRoutingTable()
         {
-            if (_getRoutingTable == null)
+            if (!_routingTableInitialized)
             {
                 lock (RoutingTableLock)
                 {
-                    if (_getRoutingTable == null)
+                    if (!_routingTableInitialized)
                     {
-                        var routingTable = new RoutingTable();
-                        PopulateRoutingTableWithGetEndpoints(routingTable);
-
-                        _getRoutingTable = routingTable;
-                    }
-                }
-            }
-        }
-
-        private static void PopulateRoutingTableWithGetEndpoints(RoutingTable routingTable)
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (
-                    var exportedType in
-                        assembly.GetExportedTypes().Where(
-                            type => typeof(IEndpoint).IsAssignableFrom(type) && !type.IsAbstract))
-                {
-                    var instance = Activator.CreateInstance(exportedType) as IEndpoint;
-                    if (instance != null)
-                    {
-                        routingTable.Add(instance.UriTemplate, exportedType);
+                        _getRoutingTable = new RoutingTableBuilder(typeof(GetEndpoint<>)).BuildRoutingTable();
+                        _routingTableInitialized = true;
                     }
                 }
             }
