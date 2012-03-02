@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointFactory.cs" />
-    <Compile Include="GetEndpoint.cs" />
+    <Compile Include="Endpoint.cs" />
     <Compile Include="GetHandler.cs" />
+    <Compile Include="InputStreamReader.cs" />
     <Compile Include="IReusable.cs" />
-    <Compile Include="PostEndpoint.cs" />
     <Compile Include="PostHandler.cs" />
     <Compile Include="PropertySetterBuilder.cs" />
     <Compile Include="RoutingTable.cs" />

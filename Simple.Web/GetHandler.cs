@@ -65,9 +65,9 @@ namespace Simple.Web
                 foreach (
                     var exportedType in
                         assembly.GetExportedTypes().Where(
-                            type => typeof(GetEndpoint).IsAssignableFrom(type) && !type.IsAbstract))
+                            type => typeof(IEndpoint).IsAssignableFrom(type) && !type.IsAbstract))
                 {
-                    var instance = Activator.CreateInstance(exportedType) as GetEndpoint;
+                    var instance = Activator.CreateInstance(exportedType) as IEndpoint;
                     if (instance != null)
                     {
                         routingTable.Add(instance.UriTemplate, exportedType);

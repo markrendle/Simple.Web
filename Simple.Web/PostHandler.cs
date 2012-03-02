@@ -14,7 +14,7 @@ namespace Simple.Web
         {
             Type endpointType;
             var variables = GetPostEndpointType(context, out endpointType);
-            var endpoint = EndpointFactory.Instance.PostEndpoint(endpointType, variables);
+            var endpoint = EndpointFactory.Instance.PostEndpoint(endpointType, variables, context.Request);
             if (endpoint != null)
             {
                 var output = endpoint.Run().ToString();
@@ -61,18 +61,32 @@ namespace Simple.Web
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
             {
-                foreach (
-                    var exportedType in
-                        assembly.GetExportedTypes().Where(
-                            type => typeof (PostEndpoint).IsAssignableFrom(type) && !type.IsAbstract))
+                var postEndpointTypes = assembly.GetExportedTypes().Where(TypeIsPostEndpoint).ToList();
+
+                foreach (var exportedType in postEndpointTypes)
                 {
-                    var instance = Activator.CreateInstance(exportedType) as PostEndpoint;
+                    var instance = Activator.CreateInstance(exportedType) as IEndpoint;
                     if (instance != null)
                     {
                         routingTable.Add(instance.UriTemplate, exportedType);
                     }
                 }
             }
+        }
+
+        private static bool TypeIsPostEndpoint(Type type)
+        {
+            if (type.IsAbstract || !typeof(IEndpoint).IsAssignableFrom(type)) return false;
+
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(PostEndpoint<,>))
+                    return true;
+                baseType = baseType.BaseType;
+            }
+
+            return false;
         }
     }
 }

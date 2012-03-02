@@ -7,14 +7,14 @@ namespace Sandbox
 {
     using Simple.Web;
 
-    public class IndexEndpoint : GetEndpoint
+    public class IndexEndpoint : GetEndpoint<string>
     {
-        protected override string UriTemplate
+        public override string UriTemplate
         {
             get { return "/"; }
         }
 
-        protected override object Run()
+        protected override string Get()
         {
             return "Simple.Web has entered the building.";
         }

@@ -2,9 +2,9 @@ namespace Sandbox
 {
     using Simple.Web;
 
-    public class HelloEndpoint : GetEndpoint
+    public class HelloEndpoint : GetEndpoint<string>
     {
-        protected override string UriTemplate
+        public override string UriTemplate
         {
             get { return "/hello/{Name}"; }
         }
@@ -17,7 +17,7 @@ namespace Sandbox
             set { _tag = string.IsNullOrWhiteSpace(value) ? "h1" : value; }
         }
 
-        protected override object Run()
+        protected override string Get()
         {
             return string.Format("<{1}>Hello, {0}</{1}>", Name, Tag);
         }

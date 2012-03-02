@@ -7,29 +7,16 @@ namespace Sandbox
 {
     using Simple.Web;
 
-    public class FormEndpoint : GetEndpoint
+    public class FormEndpoint : GetEndpoint<string>
     {
-        protected override string UriTemplate
+        public override string UriTemplate
         {
             get { return "/form"; }
         }
 
-        protected override object Run()
+        protected override string Get()
         {
             return @"<html><body><form action=""/submit"" method=""POST""><input type=""text"" name=""Text"" /><input type=""submit"" /></form></body></html>";
-        }
-    }
-
-    public class SubmitEndpoint : PostEndpoint<Form>
-    {
-        protected override string UriTemplate
-        {
-            get { return "/submit"; }
-        }
-
-        protected override object Run()
-        {
-            return "Posted!";
         }
     }
 

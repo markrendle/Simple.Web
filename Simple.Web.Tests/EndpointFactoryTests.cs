@@ -21,29 +21,29 @@ namespace Simple.Web.Tests
         }
     }
 
-    class StaticEndpoint : GetEndpoint
+    class StaticEndpoint : IEndpoint
     {
-        protected internal override string UriTemplate
+        public string UriTemplate
         {
             get { return "/"; }
         }
 
-        protected internal override object Run()
+        public object Run()
         {
             throw new System.NotImplementedException();
         }
     }
 
-    class DynamicEndpoint : GetEndpoint
+    class DynamicEndpoint : IEndpoint
     {
-        protected internal override string UriTemplate
+        public string UriTemplate
         {
             get { return "/Tests/{Id}"; }
         }
 
         public int Id { get; set; }
 
-        protected internal override object Run()
+        public object Run()
         {
             throw new System.NotImplementedException();
         }
