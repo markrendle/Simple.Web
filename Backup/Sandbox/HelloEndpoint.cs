@@ -2,9 +2,13 @@ namespace Sandbox
 {
     using Simple.Web;
 
-    [UriTemplate("/hello/{Name}")]
     public class HelloEndpoint : GetEndpoint<string>
     {
+        public override string UriTemplate
+        {
+            get { return "/hello/{Name}"; }
+        }
+
         public string Name { get; set; }
         private string _tag = "h1";
         public string Tag

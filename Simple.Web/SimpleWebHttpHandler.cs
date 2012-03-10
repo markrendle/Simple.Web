@@ -11,10 +11,6 @@
     /// </summary>
     public class SimpleWebHttpHandler : IHttpHandler
     {
-        public SimpleWebHttpHandler()
-        {
-            Debug.WriteLine("new SimpleWebHttpHandler()");
-        }
         public void ProcessRequest(HttpContext context)
         {
             switch (context.Request.HttpMethod)

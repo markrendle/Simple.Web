@@ -27,10 +27,9 @@
 
                 foreach (var exportedType in postEndpointTypes)
                 {
-                    var instance = Activator.CreateInstance(exportedType) as IEndpoint;
-                    if (instance != null)
+                    foreach (var uriTemplateAttribute in Attribute.GetCustomAttributes(exportedType, typeof(UriTemplateAttribute)).Cast<UriTemplateAttribute>())
                     {
-                        routingTable.Add(instance.UriTemplate, exportedType);
+                        routingTable.Add(uriTemplateAttribute.Template, exportedType);
                     }
                 }
             }

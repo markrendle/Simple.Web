@@ -7,9 +7,13 @@ namespace Sandbox
 {
     using Simple.Web;
 
-    [UriTemplate("/")]
     public class IndexEndpoint : GetEndpoint<string>
     {
+        public override string UriTemplate
+        {
+            get { return "/"; }
+        }
+
         protected override string Get()
         {
             return "Simple.Web has entered the building.";

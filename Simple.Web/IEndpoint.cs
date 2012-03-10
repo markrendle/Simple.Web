@@ -7,7 +7,6 @@ namespace Simple.Web
 {
     public interface IEndpoint
     {
-        string UriTemplate { get; }
         object Run();
     }
 }

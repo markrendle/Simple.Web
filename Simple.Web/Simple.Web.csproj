@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="EndpointFactory.cs" />
     <Compile Include="FormDeserializer.cs" />
     <Compile Include="IEndpoint.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="RoutingTableBuilder.cs" />
     <Compile Include="SimpleWebHttpHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UriTemplateAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
