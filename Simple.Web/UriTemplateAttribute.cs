@@ -22,8 +22,7 @@ namespace Simple.Web
 
         internal static IEnumerable<UriTemplateAttribute> Get(Type type)
         {
-            return
-                Attribute.GetCustomAttributes(type, typeof (UriTemplateAttribute))
+            return GetCustomAttributes(type, typeof (UriTemplateAttribute))
                 .Cast<UriTemplateAttribute>();
         }
     }

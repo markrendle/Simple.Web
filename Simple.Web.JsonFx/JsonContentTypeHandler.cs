@@ -8,12 +8,12 @@ namespace Simple.Web.JsonFx
     using System.IO;
     using global::JsonFx.Json;
 
-    [ContentTypes("application/json")]
+    [ContentTypes(ContentType.Json)]
     public class JsonContentTypeHandler : IContentTypeHandler
     {
-        public object Read(StreamReader streamReader)
+        public object Read(StreamReader streamReader, Type inputType)
         {
-            return new JsonReader().Read(streamReader);
+            return new JsonReader().Read(streamReader, inputType);
         }
 
         public void Write(object obj, StreamWriter streamWriter)

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-
-namespace Simple.Web
+﻿namespace Simple.Web
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Collections.Concurrent;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -27,53 +23,30 @@ namespace Simple.Web
 
         public IEndpoint GetEndpoint(Type type, IDictionary<string,string> variables)
         {
-            var builder = _getBuilders.GetOrAdd(type, BuildGetBuilder);
+            var builder = _getBuilders.GetOrAdd(type, BuildEndpointBuilder);
             return builder(variables);
         }
 
-        public IEndpoint PostEndpoint(Type endpointType, IDictionary<string, string> variables, HttpRequest request)
+        public IEndpoint GetEndpoint(EndpointInfo endpointInfo)
         {
-            var modelType = GetModelType(endpointType);
-            var model = CreateModel(modelType, request);
-            var builder = _postBuilders.GetOrAdd(endpointType, BuildPostBuilder);
-            var endpoint = builder(variables);
-            endpointType.GetProperty("Model").SetValue(endpoint, model, null);
-            return endpoint;
-        }
+            Func<IDictionary<string, string>, IEndpoint> builder;
 
-        private object CreateModel(Type modelType, HttpRequest request)
-        {
-            if (request.InputStream.Length == 0) return null;
-            return InputStreamReader.GetDeserializer(request.ContentType).Deserialize(request.InputStream,
-                                                                                           modelType);
-        }
-
-        private static Type GetModelType(Type postEndpointType)
-        {
-            var baseType = postEndpointType.BaseType;
-            while (baseType != null)
+            if (endpointInfo.HttpMethod == "GET")
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(PostEndpoint<,>))
-                {
-                    return baseType.GetGenericArguments()[0];
-                }
-                baseType = baseType.BaseType;
+                builder = _getBuilders.GetOrAdd(endpointInfo.EndpointType, BuildEndpointBuilder);
             }
-            throw new InvalidOperationException("Type does not derive from PostEndpoint<TRequest,TResponse>");
+            else if (endpointInfo.HttpMethod == "POST")
+            {
+                builder = _postBuilders.GetOrAdd(endpointInfo.EndpointType, BuildEndpointBuilder);
+            }
+            else
+            {
+                throw new HttpException(405, "Method not allowed.");
+            }
+            return builder(endpointInfo.Variables);
         }
 
-        private Func<IDictionary<string, string>, IEndpoint> BuildPostBuilder(Type type)
-        {
-            var instance = Expression.Variable(type);
-            var construct = Expression.Assign(instance, Expression.New(type));
-            var variables = Expression.Parameter(typeof (IDictionary<string, string>));
-
-            var block = MakePropertySetterBlock(type, variables, instance, construct);
-
-            return Expression.Lambda<Func<IDictionary<string, string>, IEndpoint>>(block, variables).Compile();
-        }
-
-        internal Func<IDictionary<string,string>, IEndpoint> BuildGetBuilder(Type type)
+        internal Func<IDictionary<string,string>, IEndpoint> BuildEndpointBuilder(Type type)
         {
             var instance = Expression.Variable(type);
             var construct = Expression.Assign(instance, Expression.New(type));

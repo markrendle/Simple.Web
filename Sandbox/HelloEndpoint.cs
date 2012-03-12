@@ -3,7 +3,7 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/hello/{Name}")]
-    public class HelloEndpoint : GetEndpoint<string>
+    public class HelloEndpoint : GetEndpoint<RawHtml>
     {
         public string Name { get; set; }
         private string _tag = "h1";
@@ -13,9 +13,10 @@ namespace Sandbox
             set { _tag = string.IsNullOrWhiteSpace(value) ? "h1" : value; }
         }
 
-        protected override string Get()
+        protected override Status Get()
         {
-            return string.Format("<{1}>Hello, {0}</{1}>", Name, Tag);
+            Output = Raw.Html(string.Format("<{1}>Hello, {0}</{1}>", Name, Tag));
+            return Status.OK;
         }
     }
 }

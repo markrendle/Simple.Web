@@ -1,53 +1,62 @@
 ﻿namespace Simple.Web
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     internal class RoutingTableBuilder
     {
-        private readonly Type _endpointType;
+        private readonly Type _endpointBaseType;
 
-        public RoutingTableBuilder(Type endpointType)
+        public RoutingTableBuilder(Type endpointBaseType)
         {
-            _endpointType = endpointType;
+            _endpointBaseType = endpointBaseType;
         }
 
         public RoutingTable BuildRoutingTable()
         {
             var routingTable = new RoutingTable();
-            PopulateRoutingTableWithPostEndpoints(routingTable);
+            PopulateRoutingTableWithEndpoints(routingTable);
             return routingTable;
         }
 
-        private void PopulateRoutingTableWithPostEndpoints(RoutingTable routingTable)
+        private void PopulateRoutingTableWithEndpoints(RoutingTable routingTable)
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
-            {
-                var postEndpointTypes = assembly.GetExportedTypes().Where(TypeIsPostEndpoint).ToList();
+            PopulateRoutingTableWithEndpoints(routingTable, ExportedTypeHelper.FromCurrentAppDomain(TypeIsEndpoint));
+        }
 
-                foreach (var exportedType in postEndpointTypes)
+        private void PopulateRoutingTableWithEndpoints(RoutingTable routingTable, IEnumerable<Type> endpointTypes)
+        {
+            foreach (var exportedType in endpointTypes)
+            {
+                foreach (var uriTemplateAttribute in UriTemplateAttribute.Get(exportedType))
                 {
-                    foreach (var uriTemplateAttribute in Attribute.GetCustomAttributes(exportedType, typeof(UriTemplateAttribute)).Cast<UriTemplateAttribute>())
-                    {
-                        routingTable.Add(uriTemplateAttribute.Template, exportedType);
-                    }
+                    var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes);
+                    routingTable.Add(uriTemplateAttribute.Template, new EndpointTypeInfo(exportedType, respondsToTypes));
                 }
             }
         }
 
-        private bool TypeIsPostEndpoint(Type type)
+        private bool TypeIsEndpoint(Type type)
         {
-            if (type.IsAbstract || !typeof(IEndpoint).IsAssignableFrom(type)) return false;
+            if (type.IsAbstract || type.IsInterface || !typeof(IEndpoint).IsAssignableFrom(type)) return false;
 
             var baseType = type.BaseType;
             while (baseType != null)
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == _endpointType)
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == _endpointBaseType)
                     return true;
                 baseType = baseType.BaseType;
             }
 
             return false;
-        }     
+        }
+
+        public RoutingTable BuildRoutingTable(IEnumerable<Type> endpointTypes)
+        {
+            var routingTable = new RoutingTable();
+            PopulateRoutingTableWithEndpoints(routingTable, endpointTypes);
+            return routingTable;
+        }
     }
 }

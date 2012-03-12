@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</ProjectGuid>
+    <ProjectGuid>{A226D857-22FD-4C10-8596-EB7821C59255}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Web</RootNamespace>
-    <AssemblyName>Simple.Web</AssemblyName>
+    <RootNamespace>Simple.Web.Razor</RootNamespace>
+    <AssemblyName>Simple.Web.Razor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,35 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentTypeHandlerEx.cs" />
-    <Compile Include="ContentTypeHandlerTable.cs" />
-    <Compile Include="ContentTypesAttribute.cs" />
-    <Compile Include="EndpointFactory.cs" />
-    <Compile Include="EndpointInfo.cs" />
-    <Compile Include="EndpointTypeInfo.cs" />
-    <Compile Include="FormDeserializer.cs" />
-    <Compile Include="HandlerBase.cs" />
-    <Compile Include="IContentTypeHandler.cs" />
-    <Compile Include="IContext.cs" />
-    <Compile Include="IEndpoint.cs" />
-    <Compile Include="GetEndpoint.cs" />
-    <Compile Include="GetHandler.cs" />
-    <Compile Include="IRequest.cs" />
-    <Compile Include="IResponse.cs" />
-    <Compile Include="IReusable.cs" />
-    <Compile Include="PostEndpoint.cs" />
-    <Compile Include="PostHandler.cs" />
-    <Compile Include="PropertySetterBuilder.cs" />
-    <Compile Include="Raw.cs" />
-    <Compile Include="RawHtml.cs" />
-    <Compile Include="RequestWrapper.cs" />
-    <Compile Include="RespondsToAttribute.cs" />
-    <Compile Include="RoutingTable.cs" />
-    <Compile Include="RoutingTableBuilder.cs" />
-    <Compile Include="SimpleWebHttpHandler.cs" />
+    <Compile Include="AssemblyEx.cs" />
+    <Compile Include="RazorHtmlContentTypeHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnsupportedMediaTypeException.cs" />
-    <Compile Include="UriTemplateAttribute.cs" />
+    <Compile Include="SimpleTemplateBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

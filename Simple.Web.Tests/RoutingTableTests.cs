@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Tests
+﻿namespace Simple.Web.Tests
 {
+    using System.Collections.Generic;
     using Xunit;
 
     public class RoutingTableTests
@@ -84,8 +80,8 @@ namespace Simple.Web.Tests
         {
             var target = new RoutingTable();
             var expected = typeof(RoutingTableTests);
-            target.Add("/tests/{Id}/bar", expected);
             target.Add("/tests/{Year}/{Month}", typeof(int));
+            target.Add("/tests/{Id}/bar", expected);
             IDictionary<string, string> variables;
             var actual = target.Get("/tests/1/bar", out variables);
             Assert.Equal(expected, actual);

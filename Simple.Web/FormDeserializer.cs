@@ -4,26 +4,28 @@ namespace Simple.Web
     using System.IO;
     using System.Linq;
 
-    class FormDeserializer : IInputDeserializer
+    [ContentTypes("application/x-www-form-urlencoded")]
+    class FormDeserializer : IContentTypeHandler
     {
-        public object Deserialize(Stream stream, Type type)
+        public object Read(StreamReader streamReader, Type inputType)
         {
-            string text;
-            using (var reader = new StreamReader(stream))
-            {
-                text = reader.ReadToEnd();
-            }
+            string text = streamReader.ReadToEnd();
             var pairs = text.Split('\n').Select(s => Tuple.Create<string, string>(s.Split('=')[0], s.Split('=')[1]));
-            var obj = Activator.CreateInstance(type);
+            var obj = Activator.CreateInstance(inputType);
             foreach (var pair in pairs)
             {
-                var property = type.GetProperty(pair.Item1);
+                var property = inputType.GetProperty(pair.Item1);
                 if (property != null)
                 {
                     property.SetValue(obj, Convert.ChangeType(pair.Item2, property.PropertyType), null);
                 }
             }
             return obj;
+        }
+
+        public void Write(object obj, StreamWriter streamWriter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

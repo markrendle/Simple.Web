@@ -43,8 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationTests.cs" />
     <Compile Include="EndpointFactoryTests.cs" />
+    <Compile Include="GetHandlerTests.cs" />
     <Compile Include="RoutingTableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

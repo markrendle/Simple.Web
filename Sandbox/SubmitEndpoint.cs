@@ -3,11 +3,12 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/submit")]
-    public class SubmitEndpoint : PostEndpoint<Form,string>
+    public class SubmitEndpoint : PostEndpoint<Form,RawHtml>
     {
-        protected override string Get()
+        protected override Status Get()
         {
-            return string.Format("Posted value: {0}!", Model.Text);
+            Output = Raw.Html(string.Format("Posted value: {0}!", Input.Text));
+            return Status.OK;
         }
     }
 }

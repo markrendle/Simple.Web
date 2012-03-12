@@ -7,13 +7,8 @@ namespace Simple.Web
 
     internal class ContentTypeHandlerTable
     {
-        private static readonly Dictionary<string, Func<IContentTypeHandler>> ContentTypeHandlerFunctions;
-        private static readonly ICollection AsCollection;
-
-        static ContentTypeHandlerTable()
-        {
-            AsCollection = ContentTypeHandlerFunctions = new Dictionary<string, Func<IContentTypeHandler>>();
-        }
+        private static readonly Dictionary<string, Func<IContentTypeHandler>> ContentTypeHandlerFunctions =
+            new Dictionary<string, Func<IContentTypeHandler>>();
 
         public IContentTypeHandler GetContentTypeHandler(string contentType)
         {
@@ -28,14 +23,17 @@ namespace Simple.Web
             throw new UnsupportedMediaTypeException(contentType);
         }
 
-        public IContentTypeHandler GetContentTypeHandler(string[] contentTypes)
+        public IContentTypeHandler GetContentTypeHandler(IList<string> contentTypes)
         {
             EnsureTableIsPopulated();
 
-            Func<IContentTypeHandler> func = null;
-            if (contentTypes.Any(ct => ContentTypeHandlerFunctions.TryGetValue(ct, out func)))
+            for (int i = 0; i < contentTypes.Count; i++)
             {
-                return func();
+                Func<IContentTypeHandler> func;
+                if (ContentTypeHandlerFunctions.TryGetValue(contentTypes[i], out func))
+                {
+                    return func();
+                }
             }
 
             throw new UnsupportedMediaTypeException(contentTypes);
@@ -43,9 +41,9 @@ namespace Simple.Web
 
         private static void EnsureTableIsPopulated()
         {
-            if ((!AsCollection.IsSynchronized) || ContentTypeHandlerFunctions.Count == 0)
+            if (ContentTypeHandlerFunctions.Count == 0)
             {
-                lock (AsCollection.SyncRoot)
+                lock (((ICollection) ContentTypeHandlerFunctions).SyncRoot)
                 {
                     if (ContentTypeHandlerFunctions.Count == 0)
                     {
@@ -57,15 +55,22 @@ namespace Simple.Web
 
         private static void PopulateContentTypeHandlerFunctions()
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
+            foreach (var exportedType in ExportedTypeHelper.FromCurrentAppDomain(TypeIsContentTypeHandler))
             {
-                var postEndpointTypes = assembly.GetExportedTypes().Where(TypeIsContentTypeHandler).ToList();
-
-                foreach (var exportedType in postEndpointTypes)
-                {
-                    AddContentTypeHandler(exportedType);
-                }
+                AddContentTypeHandler(exportedType);
             }
+
+            AddContentTypeHandler(typeof(FormDeserializer));
+        }
+
+        internal static void SetContentTypeHandlers(params Type[] types)
+        {
+            foreach (var type in types)
+            {
+                AddContentTypeHandler(type);
+            }
+
+            AddContentTypeHandler(typeof(FormDeserializer));
         }
 
         private static void AddContentTypeHandler(Type exportedType)
@@ -84,6 +89,18 @@ namespace Simple.Web
         private static bool TypeIsContentTypeHandler(Type type)
         {
             return (!type.IsAbstract) && typeof (IContentTypeHandler).IsAssignableFrom(type);
+        }
+    }
+
+    static class ExportedTypeHelper
+    {
+        public static IEnumerable<Type> FromCurrentAppDomain(Func<Type,bool> predicate)
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => !a.IsDynamic)
+                .Select(assembly =>
+                    assembly.GetExportedTypes().Where(predicate).ToList())
+                .SelectMany(exportedTypes => exportedTypes);
         }
     }
 }

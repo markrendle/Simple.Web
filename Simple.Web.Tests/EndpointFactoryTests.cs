@@ -23,29 +23,30 @@ namespace Simple.Web.Tests
 
     class StaticEndpoint : IEndpoint
     {
-        public string UriTemplate
-        {
-            get { return "/"; }
-        }
-
-        public object Run()
+        public Status Run()
         {
             throw new System.NotImplementedException();
+        }
+
+        public object Output
+        {
+            get { throw new System.NotImplementedException(); }
         }
     }
 
+    [UriTemplate("/Tests/{Id}")]
     class DynamicEndpoint : IEndpoint
     {
-        public string UriTemplate
-        {
-            get { return "/Tests/{Id}"; }
-        }
-
         public int Id { get; set; }
 
-        public object Run()
+        public Status Run()
         {
             throw new System.NotImplementedException();
+        }
+
+        public object Output
+        {
+            get { throw new System.NotImplementedException(); }
         }
     }
 }
