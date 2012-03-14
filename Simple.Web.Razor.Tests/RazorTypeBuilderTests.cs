@@ -9,7 +9,7 @@ namespace Simple.Web.Razor.Tests
     using System.IO;
     using Xunit;
 
-    public class RazorHtmlContentTypeHandlerTests
+    public class RazorTypeBuilderTests
     {
         private const string TemplateText = @"@model Simple.Web.Razor.Tests.TestModel
 <!DOCTYPE html><html><body>@Model.Text</body></html>";
@@ -20,7 +20,7 @@ namespace Simple.Web.Razor.Tests
             Type type;
             using (var reader = new StringReader(TemplateText))
             {
-                type = new RazorHtmlContentTypeHandler().CreateType(reader, typeof (TestModel));
+                type = new RazorTypeBuilder().CreateType(reader, typeof (TestModel));
             }
             Assert.NotNull(type);
         }
@@ -31,12 +31,32 @@ namespace Simple.Web.Razor.Tests
             Type type;
             using (var reader = new StringReader(TemplateText))
             {
-                type = new RazorHtmlContentTypeHandler().CreateType(reader);
+                type = new RazorTypeBuilder().CreateType(reader);
             }
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
             Assert.Equal(typeof(TestModel), genericArguments[0]);
+        }
+
+        [Fact]
+        public void GetsComplexModelTypeFromRazorMarkup()
+        {
+            const string templateText = @"@model IEnumerable<Simple.Web.Razor.Tests.TestModel>
+<!DOCTYPE html><html><body>@foreach (var m in @Model)
+{
+<p>@m.Text</p>
+}
+</body></html>";
+            Type type;
+            using (var reader = new StringReader(templateText))
+            {
+                type = new RazorTypeBuilder().CreateType(reader);
+            }
+            Assert.NotNull(type);
+            var genericArguments = type.BaseType.GetGenericArguments();
+            Assert.Equal(1, genericArguments.Length);
+            Assert.Equal(typeof(IEnumerable<TestModel>), genericArguments[0]);
         }
 
         [Fact]
@@ -46,7 +66,7 @@ namespace Simple.Web.Razor.Tests
             Type type;
             using (var reader = new StringReader(TemplateText))
             {
-                type = new RazorHtmlContentTypeHandler().CreateType(reader, typeof (TestModel));
+                type = new RazorTypeBuilder().CreateType(reader);
             }
 
             var instance = (SimpleTemplateBase)Activator.CreateInstance(type);

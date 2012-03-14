@@ -42,9 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyEx.cs" />
-    <Compile Include="RazorHtmlContentTypeHandler.cs" />
+    <Compile Include="RazorTypeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RazorViews.cs" />
     <Compile Include="SimpleTemplateBase.cs" />
+    <Compile Include="TypeNameTranslator.cs" />
+    <Compile Include="TypeResolver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
