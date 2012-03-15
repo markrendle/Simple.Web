@@ -11,7 +11,8 @@ namespace Simple.Web.Razor.Tests
 
     public class RazorTypeBuilderTests
     {
-        private const string TemplateText = @"@model Simple.Web.Razor.Tests.TestModel
+        private const string TemplateText =
+            @"@model Simple.Web.Razor.Tests.TestModel
 <!DOCTYPE html><html><body>@Model.Text</body></html>";
 
         [Fact]
@@ -36,13 +37,14 @@ namespace Simple.Web.Razor.Tests
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
-            Assert.Equal(typeof(TestModel), genericArguments[0]);
+            Assert.Equal(typeof (TestModel), genericArguments[0]);
         }
 
         [Fact]
         public void GetsComplexModelTypeFromRazorMarkup()
         {
-            const string templateText = @"@model IEnumerable<Simple.Web.Razor.Tests.TestModel>
+            const string templateText =
+                @"@model IEnumerable<Simple.Web.Razor.Tests.TestModel>
 <!DOCTYPE html><html><body>@foreach (var m in @Model)
 {
 <p>@m.Text</p>
@@ -56,25 +58,7 @@ namespace Simple.Web.Razor.Tests
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
-            Assert.Equal(typeof(IEnumerable<TestModel>), genericArguments[0]);
-        }
-
-        [Fact]
-        public void Renders()
-        {
-            const string expected = @"<!DOCTYPE html><html><body>Test Text</body></html>";
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
-
-            var instance = (SimpleTemplateBase)Activator.CreateInstance(type);
-            instance.SetModel(new TestModel {Text = "Test Text"});
-            var writer = new StringWriter();
-            instance.Writer = writer;
-            instance.Execute();
-            Assert.Equal(expected, writer.ToString().Trim());
+            Assert.Equal(typeof (IEnumerable<TestModel>), genericArguments[0]);
         }
     }
 

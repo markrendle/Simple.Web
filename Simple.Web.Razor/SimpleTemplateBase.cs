@@ -1,9 +1,12 @@
 namespace Simple.Web.Razor
 {
+    using System.Dynamic;
     using System.IO;
 
     public abstract class SimpleTemplateBase
     {
+        private dynamic _var = new ExpandoObject();
+
         public TextWriter Writer { get; set; }
         public abstract void Execute();
 
@@ -20,6 +23,12 @@ namespace Simple.Web.Razor
         public virtual void SetModel(object model)
         {
             
+        }
+
+        internal protected dynamic Var
+        {
+            get { return _var; }
+            set { _var = value; }
         }
     }
 

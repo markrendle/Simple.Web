@@ -16,9 +16,9 @@ namespace Simple.Web.JsonFx
             return new JsonReader().Read(streamReader, inputType);
         }
 
-        public void Write(object obj, StreamWriter streamWriter)
+        public void Write(IEndpoint endpoint, TextWriter textWriter)
         {
-            new JsonWriter().Write(obj, streamWriter);
+            new JsonWriter().Write(endpoint.Output, textWriter);
         }
     }
 }

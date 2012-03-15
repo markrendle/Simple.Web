@@ -43,7 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MockEndpoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RazorHtmlContentTypeHandlerTests.cs" />
     <Compile Include="RazorTypeBuilderTests.cs" />
     <Compile Include="RazorViewsTests.cs" />
     <Compile Include="TypeNameTranslatorTests.cs" />
@@ -52,6 +54,10 @@
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
+      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
+      <Name>Simple.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

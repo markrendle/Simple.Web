@@ -23,7 +23,7 @@ namespace Simple.Web
             return obj;
         }
 
-        public void Write(object obj, StreamWriter streamWriter)
+        public void Write(IEndpoint endpoint, TextWriter textWriter)
         {
             throw new NotImplementedException();
         }

@@ -111,10 +111,10 @@
                                  {
                                      Assembly.GetExecutingAssembly().GetPath(),
                                      Assembly.GetCallingAssembly().GetPath(),
+                                     typeof (Enumerable).Assembly.GetPath(),
+                                     typeof (Uri).Assembly.GetPath(),
+                                     typeof (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.GetPath()
                                  };
-
-            assemblies.Add(typeof(Enumerable).Assembly.GetPath());
-            assemblies.Add(typeof(Uri).Assembly.GetPath());
 
             assemblies.AddRange(TypeResolver.KnownGoodAssemblies.Select(knownGoodAssembly => knownGoodAssembly.GetPath()));
 

@@ -11,6 +11,11 @@ namespace Simple.Web
         object Output { get; }
     }
 
+    public interface IEndpointWithViewData
+    {
+        dynamic ViewData { get; }
+    }
+
     public interface IInputEndpoint : IEndpoint
     {
         object Input { get; set; }

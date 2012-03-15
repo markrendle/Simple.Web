@@ -94,7 +94,7 @@ namespace Simple.Web
                         throw new UnsupportedMediaTypeException(context.Request.AcceptTypes);
                     }
                     context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                    contentTypeHandler.Write(endpoint.Output, writer);
+                    contentTypeHandler.Write(endpoint, writer);
                 }
             }
         }
