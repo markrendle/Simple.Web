@@ -1,6 +1,8 @@
 namespace Simple.Web
 {
-    public abstract class GetEndpoint<TResponse> : IEndpoint
+    using System;
+
+    public abstract class GetEndpoint<TResponse> : IOutputEndpoint<TResponse>
     {
         public Status Run()
         {
@@ -14,7 +16,12 @@ namespace Simple.Web
 
         public TResponse Output { get; protected set; }
 
-        object IEndpoint.Output
+        public Type OutputType
+        {
+            get { return typeof (TResponse); }
+        }
+
+        object IOutputEndpoint.Output
         {
             get { return Output; }
         }

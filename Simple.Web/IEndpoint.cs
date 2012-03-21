@@ -8,18 +8,28 @@ namespace Simple.Web
     public interface IEndpoint
     {
         Status Run();
-        object Output { get; }
-    }
-
-    public interface IEndpointWithViewData
-    {
-        dynamic ViewData { get; }
     }
 
     public interface IInputEndpoint : IEndpoint
     {
-        object Input { get; set; }
+        object Input { set; }
         Type InputType { get; }
+    }
+
+    public interface IOutputEndpoint : IEndpoint
+    {
+        object Output { get; }
+        Type OutputType { get; }
+    }
+
+    public interface IInputEndpoint<in TInput> : IInputEndpoint
+    {
+        new TInput Input { set; }
+    }
+
+    public interface IOutputEndpoint<out TOutput> : IOutputEndpoint
+    {
+        new TOutput Output { get; }
     }
 
     public struct Status : IEquatable<Status>

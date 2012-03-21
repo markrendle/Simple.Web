@@ -75,7 +75,7 @@ namespace Simple.Web
             return true;
         }
 
-        private void WriteResponse(IContext context, IEndpoint endpoint)
+        private void WriteResponse(IContext context, IOutputEndpoint endpoint)
         {
             using (var writer = new StreamWriter(context.Response.OutputStream))
             {
@@ -130,7 +130,7 @@ namespace Simple.Web
                 return;
             }
 
-            WriteResponse(context, endpoint);
+            WriteResponse(context, (IOutputEndpoint)endpoint);
 
             context.Response.Flush();
             context.Response.Close();

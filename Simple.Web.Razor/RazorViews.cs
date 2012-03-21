@@ -5,6 +5,7 @@ namespace Simple.Web.Razor
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
 
     internal class RazorViews
     {
@@ -14,6 +15,8 @@ namespace Simple.Web.Razor
         private static readonly Dictionary<Type, Type> ViewTypeCache = new Dictionary<Type, Type>();
         private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>(); 
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
+        private static readonly string AppRoot =
+            Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetPath()));
 
         public static void Initialize()
         {
@@ -22,12 +25,15 @@ namespace Simple.Web.Razor
             AmbiguousModelTypes.Clear();
 
             const string directory = "Views";
-            if (!Directory.Exists(directory))
+
+            var viewsDirectory = Path.Combine(AppRoot, directory);
+
+            if (!Directory.Exists(viewsDirectory))
             {
                 return;
             }
 
-            FindViews(directory);
+            FindViews(viewsDirectory);
         }
 
         private static void FindViews(string directory)
@@ -41,7 +47,8 @@ namespace Simple.Web.Razor
                         var type = RazorTypeBuilder.CreateType(reader);
                         if (type != null)
                         {
-                            ViewPathCache.Add(file, type);
+                            var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
+                            ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
                             CacheViewTypeByModelType(type);
                         }
                     }
@@ -79,16 +86,7 @@ namespace Simple.Web.Razor
 
         public Type GetViewTypeForModelType(Type modelType)
         {
-            if (!_initialized)
-            {
-                lock (LockObject)
-                {
-                    if (!_initialized)
-                    {
-                        Initialize();
-                    }
-                }
-            }
+            InitializeIfNot();
 
             if (AmbiguousModelTypes.Contains(modelType))
             {
@@ -103,35 +101,25 @@ namespace Simple.Web.Razor
                 throw new ViewNotFoundException(modelType);
             }
         }
-    }
 
-    public class ViewNotFoundException : Exception
-    {
-        private readonly Type _modelType;
-
-        public ViewNotFoundException(Type modelType) : base(string.Format("No View present for Model type {0}", modelType.Name))
+        private static void InitializeIfNot()
         {
-            _modelType = modelType;
+            if (!_initialized)
+            {
+                lock (LockObject)
+                {
+                    if (!_initialized)
+                    {
+                        Initialize();
+                    }
+                }
+            }
         }
 
-        public Type ModelType
+        public Type GetViewType(string viewPath)
         {
-            get { return _modelType; }
-        }
-    }
-
-    public class AmbiguousViewException : Exception
-    {
-        private readonly Type _modelType;
-
-        public AmbiguousViewException(Type modelType) : base(string.Format("More than one View present for Model type {0}", modelType.Name))
-        {
-            _modelType = modelType;
-        }
-
-        public Type ModelType
-        {
-            get { return _modelType; }
+            InitializeIfNot();
+            return ViewPathCache[Path.Combine("Views", viewPath)];
         }
     }
 }

@@ -8,12 +8,18 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/form")]
-    public class FormEndpoint : GetEndpoint<RawHtml>
+    public class FormEndpoint : GetEndpoint<object>, ISpecifyView
     {
+        public string Title { get { return "Test Form"; } }
+
         protected override Status Get()
         {
-            Output = Raw.Html(@"<html><body><form action=""/submit"" method=""POST""><input type=""text"" name=""Text"" /><input type=""submit"" /></form></body></html>");
             return 200;
+        }
+
+        public string ViewPath
+        {
+            get { return "Form"; }
         }
     }
 

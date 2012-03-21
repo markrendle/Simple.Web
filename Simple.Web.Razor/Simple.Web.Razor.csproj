@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmbiguousViewException.cs" />
     <Compile Include="AssemblyEx.cs" />
     <Compile Include="RazorHtmlContentTypeHandler.cs" />
     <Compile Include="RazorTypeBuilder.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="SimpleTemplateBase.cs" />
     <Compile Include="TypeNameTranslator.cs" />
     <Compile Include="TypeResolver.cs" />
+    <Compile Include="ViewNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

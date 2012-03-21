@@ -57,6 +57,7 @@
     <Compile Include="IRequest.cs" />
     <Compile Include="IResponse.cs" />
     <Compile Include="IReusable.cs" />
+    <Compile Include="ISpecifyView.cs" />
     <Compile Include="PostEndpoint.cs" />
     <Compile Include="PostHandler.cs" />
     <Compile Include="PropertySetterBuilder.cs" />

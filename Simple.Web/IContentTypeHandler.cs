@@ -6,6 +6,6 @@ namespace Simple.Web
     public interface IContentTypeHandler
     {
         object Read(StreamReader streamReader, Type inputType);
-        void Write(IEndpoint endpoint, TextWriter textWriter);
+        void Write(IOutputEndpoint endpoint, TextWriter textWriter);
     }
 }
