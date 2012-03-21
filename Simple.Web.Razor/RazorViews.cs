@@ -111,6 +111,7 @@ namespace Simple.Web.Razor
                     if (!_initialized)
                     {
                         Initialize();
+                        _initialized = true;
                     }
                 }
             }
