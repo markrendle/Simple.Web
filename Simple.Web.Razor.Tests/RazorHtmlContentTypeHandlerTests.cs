@@ -1,6 +1,7 @@
 namespace Simple.Web.Razor.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using Xunit;
 
@@ -21,10 +22,10 @@ namespace Simple.Web.Razor.Tests
                 type = new RazorTypeBuilder().CreateType(reader);
             }
 
-            var endpoint = new MockEndpoint {Output = new TestModel {Text = "Test Text"}};
+            var output = new MockEndpoint {Model = new TestModel {Text = "Test Text"}, Variables = new Dictionary<string, object> { { "Title", "Foo"}}};
 
             var writer = new StringWriter();
-            RazorHtmlContentTypeHandler.RenderView(endpoint, writer, type);
+            RazorHtmlContentTypeHandler.RenderView(output, writer, type);
             Assert.Equal(expected, writer.ToString().Trim());
         }
     }

@@ -18,5 +18,10 @@ namespace Simple.Web
         {
             return _html;
         }
+
+        public static implicit operator RawHtml(string html)
+        {
+            return new RawHtml(html);
+        }
     }
 }

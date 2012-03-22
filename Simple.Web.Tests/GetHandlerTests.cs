@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Text;
     using Xunit;
 
     public class GetHandlerTests
@@ -12,19 +13,24 @@
         public void GetRootWithHtmlReturnsHtml()
         {
             var target = new GetHandler(typeof(RootEndpoint));
+            var strb = new StringBuilder();
             var context = new MockContext
                               {
                                   Request = new MockRequest
                                                 {
                                                     Url = new Uri("http://test.com/"),
-                                                    AcceptTypes = new[] {"text/html"},
+                                                    AcceptTypes = new[] { "text/html" },
                                                     HttpMethod = "GET",
-                                                }
+                                                },
+                                  Response = new MockResponse
+                                                 {
+                                                     Output = new StringWriter(strb)
+                                                 }
                               };
             target.HandleRequest(context);
             Assert.Equal(200, context.Response.StatusCode);
             Assert.Equal("text/html", context.Response.ContentType);
-            Assert.NotEqual(0, context.Response.OutputStream.Length);
+            Assert.NotEqual(0, strb.Length);
         }
     }
 
@@ -34,7 +40,8 @@
         {
             Response = new MockResponse
                            {
-                               OutputStream = new MockStream()
+                               OutputStream = new MockStream(),
+                               Output = new StringWriter()
                            };
         }
         public IRequest Request { get; set; }
@@ -80,6 +87,8 @@
 
         public string StatusDescription { get; set; }
 
+        public TextWriter Output { get; set; }
+
         public Stream OutputStream { get; set; }
 
         public string ContentType { get; set; }
@@ -92,6 +101,35 @@
         public void Flush()
         {
             _flushed = true;
+        }
+
+        public void Write(string s)
+        {
+            Write(Encoding.UTF8.GetBytes(s));
+        }
+
+        public void Write(object obj)
+        {
+            if (obj != null) Write(obj.ToString());
+        }
+
+        public void Write(char[] buffer, int index, int count)
+        {
+            Write(Encoding.UTF8.GetBytes(buffer));
+        }
+
+        public void Write(char ch)
+        {
+            Write(Encoding.UTF8.GetBytes(new[] {ch}));
+        }
+
+        public void TransmitFile(string file)
+        {
+        }
+
+        private void Write(byte[] bytes)
+        {
+            OutputStream.Write(bytes, 0, bytes.Length);
         }
     }
 
@@ -163,12 +201,13 @@
 
     [UriTemplate("/")]
     [RespondsTo(ContentType.Html)]
-    public class RootEndpoint : GetEndpoint<RawHtml>
+    public class RootEndpoint : IGet<RawHtml>
     {
-        protected override Status Get()
+        public Status Get()
         {
-            Output = Raw.Html("<h1>Hello</h1>");
             return Status.OK;
         }
+
+        public RawHtml Output { get { return "<h1>Hello</h1>"; } }
     }
 }

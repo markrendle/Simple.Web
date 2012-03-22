@@ -8,12 +8,16 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/")]
-    public class IndexEndpoint : GetEndpoint<RawHtml>
+    public class GetIndex : IGet
     {
-        protected override Status Get()
+        public Status Get()
         {
-            Output = Raw.Html("Simple.Web has entered the building.");
             return Status.OK;
+        }
+
+        public object Output
+        {
+            get { return Raw.Html("Simple.Web has entered the building."); }
         }
     }
 }

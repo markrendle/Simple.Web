@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class RoutingTableBuilder
+    internal sealed class RoutingTableBuilder
     {
         private readonly Type _endpointBaseType;
 
@@ -39,17 +39,9 @@
 
         private bool TypeIsEndpoint(Type type)
         {
-            if (type.IsAbstract || type.IsInterface || !typeof(IEndpoint).IsAssignableFrom(type)) return false;
+            if (type.IsAbstract || type.IsInterface) return false;
 
-            var baseType = type.BaseType;
-            while (baseType != null)
-            {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == _endpointBaseType)
-                    return true;
-                baseType = baseType.BaseType;
-            }
-
-            return false;
+            return _endpointBaseType.IsAssignableFrom(type);
         }
 
         public RoutingTable BuildRoutingTable(IEnumerable<Type> endpointTypes)

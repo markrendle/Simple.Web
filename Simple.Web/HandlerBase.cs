@@ -5,8 +5,10 @@ namespace Simple.Web
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Web;
 
-    internal abstract class HandlerBase
+    internal abstract class HandlerBase<TMethod>
+            where TMethod : class
     {
         private readonly Lazy<RoutingTable> _lazyRoutingTable;
 
@@ -17,16 +19,16 @@ namespace Simple.Web
 
         protected readonly ContentTypeHandlerTable ContentTypeHandlerTable = new ContentTypeHandlerTable();
 
-        protected HandlerBase(Type endpointType)
+        protected HandlerBase()
         {
-            _lazyRoutingTable = new Lazy<RoutingTable>(() => new RoutingTableBuilder(endpointType).BuildRoutingTable(),
+            _lazyRoutingTable = new Lazy<RoutingTable>(() => new RoutingTableBuilder(typeof(TMethod)).BuildRoutingTable(),
                                                        LazyThreadSafetyMode.PublicationOnly);
         }
 
-        protected HandlerBase(Type baseEndpointType, IEnumerable<Type> endpointTypes)
+        protected HandlerBase(IEnumerable<Type> endpointTypes)
         {
             _lazyRoutingTable =
-                new Lazy<RoutingTable>(() => new RoutingTableBuilder(baseEndpointType).BuildRoutingTable(endpointTypes),
+                new Lazy<RoutingTable>(() => new RoutingTableBuilder(typeof(TMethod)).BuildRoutingTable(endpointTypes),
                                        LazyThreadSafetyMode.PublicationOnly);
         }
 
@@ -46,15 +48,16 @@ namespace Simple.Web
             if (endpointInfo != null)
             {
                 var endpoint = EndpointFactory.Instance.GetEndpoint(endpointInfo);
+                var runner = EndpointRunner.Create<TMethod>(endpoint);
                 if (endpoint != null)
                 {
-                    OnRunning(endpoint, context);
-                    RunEndpoint(endpoint, context);
+                    OnRunning(runner, context);
+                    RunEndpoint(runner, context);
                 }
             }
         }
 
-        protected virtual void OnRunning(IEndpoint endpoint, IContext context)
+        protected virtual void OnRunning(EndpointRunner endpoint, IContext context)
         {
             
         }
@@ -75,27 +78,24 @@ namespace Simple.Web
             return true;
         }
 
-        private void WriteResponse(IContext context, IOutputEndpoint endpoint)
+        private void WriteResponse(IContext context, EndpointRunner endpoint)
         {
-            using (var writer = new StreamWriter(context.Response.OutputStream))
+            if (endpoint.HasOutput && endpoint.Output is RawHtml)
             {
-                if (endpoint.Output is RawHtml)
+                context.Response.ContentType =
+                    context.Request.AcceptTypes.FirstOrDefault(
+                        at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
+                context.Response.Output.Write(endpoint.Output.ToString());
+            }
+            else
+            {
+                IContentTypeHandler contentTypeHandler;
+                if (!TryGetContentTypeHandler(context, out contentTypeHandler))
                 {
-                    context.Response.ContentType =
-                        context.Request.AcceptTypes.FirstOrDefault(
-                            at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
-                    writer.Write(endpoint.Output.ToString());
+                    throw new UnsupportedMediaTypeException(context.Request.AcceptTypes);
                 }
-                else
-                {
-                    IContentTypeHandler contentTypeHandler;
-                    if (!TryGetContentTypeHandler(context, out contentTypeHandler))
-                    {
-                        throw new UnsupportedMediaTypeException(context.Request.AcceptTypes);
-                    }
-                    context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                    contentTypeHandler.Write(endpoint, writer);
-                }
+                context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
+                contentTypeHandler.Write(new Content(endpoint), context.Response.Output);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Simple.Web
             return true;
         }
 
-        private void RunEndpoint(IEndpoint endpoint, IContext context)
+        private void RunEndpoint(EndpointRunner endpoint, IContext context)
         {
             var status = endpoint.Run();
 
@@ -130,16 +130,59 @@ namespace Simple.Web
                 return;
             }
 
-            WriteResponse(context, (IOutputEndpoint)endpoint);
-
-            context.Response.Flush();
-            context.Response.Close();
+            WriteResponse(context, endpoint);
         }
 
         private void WriteStatusCode(IContext context, Status status)
         {
             context.Response.StatusCode = status.Code;
             context.Response.StatusDescription = status.Description;
+        }
+    }
+
+    abstract class EndpointRunner
+    {
+        private static readonly Dictionary<Type, Func<object,EndpointRunner>> Builders = new Dictionary<Type, Func<object, EndpointRunner>>
+                                                                                             {
+                                                                                                 { typeof(IGet), o => new GetRunner((IGet)o) },
+                                                                                                 { typeof(IPost), o => new PostRunner((IPost)o) },
+                                                                                             };
+
+        private readonly object _endpoint;
+
+        protected EndpointRunner(object endpoint)
+        {
+            if (endpoint == null) throw new ArgumentNullException("endpoint");
+            _endpoint = endpoint;
+        }
+
+        public object Endpoint
+        {
+            get { return _endpoint; }
+        }
+
+        public abstract Status Run();
+        public bool HasInput { get { return _endpoint.GetType().GetProperty("Input") != null; } }
+        public bool HasOutput { get { return _endpoint.GetType().GetProperty("Output") != null; } }
+        public object Input { set { _endpoint.GetType().GetProperty("Input").SetValue(_endpoint, value, null);} }
+        public object Output { get { return _endpoint.GetType().GetProperty("Output").GetValue(_endpoint, null); } }
+
+        public Type InputType
+        {
+            get
+            {
+                var iinput = _endpoint.GetType().GetInterface(typeof(IInput<>).Name);
+                if (iinput != null)
+                {
+                    return iinput.GetGenericArguments()[0];
+                }
+                return null;
+            }
+        }
+
+        public static EndpointRunner Create<TMethod>(object endpoint)
+        {
+            return Builders[typeof (TMethod)](endpoint);
         }
     }
 }

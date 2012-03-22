@@ -21,32 +21,32 @@ namespace Simple.Web.Tests
         }
     }
 
-    class StaticEndpoint : IEndpoint
+    class StaticEndpoint : IGet<object>
     {
-        public Status Run()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public object Output
         {
             get { throw new System.NotImplementedException(); }
+        }
+
+        public Status Get()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
     [UriTemplate("/Tests/{Id}")]
-    class DynamicEndpoint : IEndpoint
+    class DynamicEndpoint : IGet<object>
     {
         public int Id { get; set; }
-
-        public Status Run()
-        {
-            throw new System.NotImplementedException();
-        }
 
         public object Output
         {
             get { throw new System.NotImplementedException(); }
+        }
+
+        public Status Get()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

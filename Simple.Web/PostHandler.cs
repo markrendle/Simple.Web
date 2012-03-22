@@ -4,24 +4,25 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.IO;
 
-    sealed class PostHandler : HandlerBase
+    sealed class PostHandler : HandlerBase<IPost>
     {
-        internal PostHandler() : base(typeof(PostEndpoint<,>))
+        internal PostHandler() : base()
         {
         }
 
-        internal PostHandler(IEnumerable<Type> endpointTypes) : base(typeof(PostEndpoint<,>), endpointTypes)
+        internal PostHandler(IEnumerable<Type> endpointTypes) : base(endpointTypes)
         {
             
         }
 
-        protected override void OnRunning(IEndpoint endpoint, IContext context)
+        protected override void OnRunning(EndpointRunner endpoint, IContext context)
         {
-            var inputEndpoint = (IInputEndpoint) endpoint;
+            if (!endpoint.HasInput) return;
+
             var contentTypeHandler = ContentTypeHandlerTable.GetContentTypeHandler(context.Request.ContentType);
             using (var reader = new StreamReader(context.Request.InputStream))
             {
-                inputEndpoint.Input = contentTypeHandler.Read(reader, inputEndpoint.InputType);
+                endpoint.Input = contentTypeHandler.Read(reader, endpoint.InputType);
             }
         }
     }

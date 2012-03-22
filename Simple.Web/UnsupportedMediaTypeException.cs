@@ -5,7 +5,8 @@ namespace Simple.Web
     using System.Collections.ObjectModel;
     using System.Web;
 
-    public class UnsupportedMediaTypeException : HttpException
+    [Serializable]
+    public sealed class UnsupportedMediaTypeException : HttpException
     {
         private readonly ReadOnlyCollection<string> _contentTypes;
 

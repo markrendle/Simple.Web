@@ -1,24 +1,18 @@
 namespace Simple.Web.Razor.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Dynamic;
 
-    public class MockEndpoint : IOutputEndpoint<TestModel>
+    public class MockEndpoint : IContent
     {
-        public Status Run()
+        public object Model { get; set; }
+
+        public IEnumerable<KeyValuePair<string, object>> Variables { get; set; }
+
+        public string ViewPath
         {
-            return 200;
+            get { return null; }
         }
-
-        public TestModel Output { get; set; }
-
-        object IOutputEndpoint.Output { get { return Output; } }
-
-        public Type OutputType
-        {
-            get { return typeof (TestModel); }
-        }
-
-        public string Title { get { return "Foo"; } }
     }
 }

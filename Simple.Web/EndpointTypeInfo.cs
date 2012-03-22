@@ -4,7 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Linq;
 
-    class EndpointTypeInfo
+    sealed class EndpointTypeInfo
     {
         private readonly Type _type;
         private readonly HashSet<string> _respondsToAcceptTypes;

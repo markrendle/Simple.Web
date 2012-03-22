@@ -85,20 +85,12 @@ namespace Simple.Web
                 }
             }
         }
-    }
 
-    class Comparer<T> : IComparer<T>
-    {
-        private readonly Func<T, T, int> _compare; 
-        public Comparer(Func<T, T, int> compare)
+        public IEnumerable<Type> GetAllTypes()
         {
-            if (compare == null) throw new ArgumentNullException("compare");
-            _compare = compare;
-        }
-
-        public int Compare(T x, T y)
-        {
-            return _compare(x, y);
+            return _staticPaths.Values.SelectMany(list => list.Select(eti => eti.EndpointType))
+                .Concat(_dynamicPaths.Values.SelectMany(list => list.Select(eti => eti.EndpointType)))
+                .Distinct();
         }
     }
 }

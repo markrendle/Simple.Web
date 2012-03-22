@@ -5,7 +5,7 @@ namespace Simple.Web
     using System.Linq;
 
     [ContentTypes("application/x-www-form-urlencoded")]
-    class FormDeserializer : IContentTypeHandler
+    sealed class FormDeserializer : IContentTypeHandler
     {
         public object Read(StreamReader streamReader, Type inputType)
         {
@@ -23,7 +23,7 @@ namespace Simple.Web
             return obj;
         }
 
-        public void Write(IOutputEndpoint endpoint, TextWriter textWriter)
+        public void Write(IContent content, TextWriter textWriter)
         {
             throw new NotImplementedException();
         }

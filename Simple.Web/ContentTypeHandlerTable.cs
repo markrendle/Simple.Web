@@ -63,16 +63,6 @@ namespace Simple.Web
             AddContentTypeHandler(typeof(FormDeserializer));
         }
 
-        internal static void SetContentTypeHandlers(params Type[] types)
-        {
-            foreach (var type in types)
-            {
-                AddContentTypeHandler(type);
-            }
-
-            AddContentTypeHandler(typeof(FormDeserializer));
-        }
-
         private static void AddContentTypeHandler(Type exportedType)
         {
             var contentTypes = Attribute.GetCustomAttributes(exportedType, typeof (ContentTypesAttribute))

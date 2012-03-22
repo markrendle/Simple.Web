@@ -6,7 +6,7 @@ namespace Simple.Web
     using System.Linq.Expressions;
     using System.Reflection;
 
-    class PropertySetterBuilder
+    sealed class PropertySetterBuilder
     {
         private static readonly MethodInfo DictionaryContainsKeyMethod = typeof(IDictionary<string, string>).GetMethod("ContainsKey", new[] { typeof(string) });
         private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string>).GetProperty("Item");

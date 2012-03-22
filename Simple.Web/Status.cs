@@ -1,36 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Simple.Web
 {
-    public interface IEndpoint
-    {
-        Status Run();
-    }
-
-    public interface IInputEndpoint : IEndpoint
-    {
-        object Input { set; }
-        Type InputType { get; }
-    }
-
-    public interface IOutputEndpoint : IEndpoint
-    {
-        object Output { get; }
-        Type OutputType { get; }
-    }
-
-    public interface IInputEndpoint<in TInput> : IInputEndpoint
-    {
-        new TInput Input { set; }
-    }
-
-    public interface IOutputEndpoint<out TOutput> : IOutputEndpoint
-    {
-        new TOutput Output { get; }
-    }
+    using System;
 
     public struct Status : IEquatable<Status>
     {

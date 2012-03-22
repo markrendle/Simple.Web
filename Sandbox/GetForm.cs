@@ -8,11 +8,11 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/form")]
-    public class FormEndpoint : GetEndpoint<object>, ISpecifyView
+    public class GetForm : IGet, ISpecifyView
     {
         public string Title { get { return "Test Form"; } }
 
-        protected override Status Get()
+        public Status Get()
         {
             return 200;
         }

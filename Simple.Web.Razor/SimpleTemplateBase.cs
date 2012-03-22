@@ -1,5 +1,6 @@
 namespace Simple.Web.Razor
 {
+    using System.Diagnostics;
     using System.Dynamic;
     using System.IO;
 
@@ -13,11 +14,13 @@ namespace Simple.Web.Razor
         public virtual void Write(object value)
         {
             Writer.Write(value);
+            Trace.Write(value);
         }
 
         public virtual void WriteLiteral(object value)
         {
             Writer.Write(value);
+            Trace.Write(value);
         }
 
         public virtual void SetModel(object model)
