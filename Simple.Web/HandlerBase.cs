@@ -49,12 +49,20 @@ namespace Simple.Web
             {
                 var endpoint = EndpointFactory.Instance.GetEndpoint(endpointInfo);
                 var runner = EndpointRunner.Create<TMethod>(endpoint);
+
+                SetContext(endpoint, context);
                 if (endpoint != null)
                 {
                     OnRunning(runner, context);
                     RunEndpoint(runner, context);
                 }
             }
+        }
+
+        private void SetContext(object endpoint, IContext context)
+        {
+            var needContext = endpoint as INeedContext;
+            if (needContext != null) needContext.Context = context;
         }
 
         protected virtual void OnRunning(EndpointRunner endpoint, IContext context)
@@ -124,9 +132,16 @@ namespace Simple.Web
 
             WriteStatusCode(context, status);
 
+            if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
+            {
+                var redirect = endpoint.Endpoint as IRedirect;
+                if (redirect != null && !string.IsNullOrWhiteSpace(redirect.Location))
+                {
+                    context.Response.Headers.Set("Location", redirect.Location);
+                }
+            }
             if (status.Code != 200)
             {
-                context.Response.Close();
                 return;
             }
 

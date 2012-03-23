@@ -5,7 +5,7 @@ namespace Simple.Web
     using System.Collections.Specialized;
     using System.IO;
 
-    internal interface IRequest
+    public interface IRequest
     {
         Uri Url { get; }
         IList<string> AcceptTypes { get; }
@@ -13,5 +13,6 @@ namespace Simple.Web
         Stream InputStream { get; }
         string ContentType { get; }
         string HttpMethod { get; }
+        IHeaderCollection Headers { get; }
     }
 }

@@ -1,12 +1,14 @@
 namespace Simple.Web
 {
+    using System.Threading.Tasks;
+
     public interface IGet
     {
         Status Get();
     }
 
-    public interface IGet<out TOutput> : IGet
+    public interface IAsyncGet
     {
-        TOutput Output { get; }
+        Task<Status> Get();
     }
 }

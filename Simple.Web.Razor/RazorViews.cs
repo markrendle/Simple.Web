@@ -6,6 +6,7 @@ namespace Simple.Web.Razor
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
 
     internal class RazorViews
     {
@@ -15,8 +16,10 @@ namespace Simple.Web.Razor
         private static readonly Dictionary<Type, Type> ViewTypeCache = new Dictionary<Type, Type>();
         private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>(); 
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
+
         private static readonly string AppRoot =
-            Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetPath()));
+            Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetPath())).Regex(@"\\bin\\?$",
+                                                                                                          string.Empty);
 
         public static void Initialize()
         {
@@ -121,6 +124,14 @@ namespace Simple.Web.Razor
         {
             InitializeIfNot();
             return ViewPathCache[Path.Combine("Views", viewPath)];
+        }
+    }
+
+    internal static class RegexEx
+    {
+        public static string Regex(this string target, string pattern, string replaceWith)
+        {
+            return new Regex(pattern).Replace(target, replaceWith);
         }
     }
 }

@@ -1,82 +1,85 @@
 namespace Simple.Web
 {
+    using System.Collections.Specialized;
     using System.IO;
     using System.Web;
 
     internal class ResponseWrapper : IResponse
     {
-        private readonly HttpResponse _response;
+        private readonly HttpResponse _httpResponse;
+        private IHeaderCollection _headers;
+
         public void Write(string s)
         {
-            _response.Write(s);
+            _httpResponse.Write(s);
         }
 
         public void Write(object obj)
         {
-            _response.Write(obj);
+            _httpResponse.Write(obj);
         }
 
         public void Write(char[] buffer, int index, int count)
         {
-            _response.Write(buffer, index, count);
+            _httpResponse.Write(buffer, index, count);
         }
 
-        public ResponseWrapper(HttpResponse response)
+        public ResponseWrapper(HttpResponse httpResponse)
         {
-            _response = response;
+            _httpResponse = httpResponse;
         }
 
         public int StatusCode
         {
-            get { return _response.StatusCode; }
-            set { _response.StatusCode = value; }
+            get { return _httpResponse.StatusCode; }
+            set { _httpResponse.StatusCode = value; }
         }
 
         public string StatusDescription
         {
-            get { return _response.StatusDescription; }
-            set { _response.StatusDescription = value; }
+            get { return _httpResponse.StatusDescription; }
+            set { _httpResponse.StatusDescription = value; }
         }
 
         public TextWriter Output
         {
-            get { return _response.Output; }
+            get { return _httpResponse.Output; }
         }
 
         public Stream OutputStream
         {
-            get { return _response.OutputStream; }
+            get { return _httpResponse.OutputStream; }
         }
 
         public string ContentType
         {
-            get { return _response.ContentType; }
-            set { _response.ContentType = value; }
+            get { return _httpResponse.ContentType; }
+            set { _httpResponse.ContentType = value; }
         }
 
         public void Write(char ch)
         {
-            _response.Write(ch);
+            _httpResponse.Write(ch);
         }
 
         public void TransmitFile(string file)
         {
-            _response.TransmitFile(file);
+            _httpResponse.TransmitFile(file);
         }
 
-        public void End()
+        public IHeaderCollection Headers
         {
-            _response.End();
+            get { return _headers ?? (_headers =  new HeaderCollection(_httpResponse.Headers)); }
         }
 
         public void Close()
         {
-            _response.Close();
+            _httpResponse.Close();
         }
 
         public void Flush()
         {
-            _response.Flush();
+            _httpResponse.Flush();
         }
     }
 }

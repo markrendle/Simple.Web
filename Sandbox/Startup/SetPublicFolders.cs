@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sandbox.Startup
+﻿namespace Sandbox.Startup
 {
     using Simple.Web;
 
     public class SetPublicFolders : IStartupTask
     {
-        public void Run()
+        public void Run(IConfiguration configuration, IWebEnvironment environment)
         {
-            SimpleWeb.Configuration.PublicFolders.Add("/Scripts");
+            configuration.PublicFolders.Add("/Scripts");
         }
     }
 }

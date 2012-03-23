@@ -1,5 +1,6 @@
 namespace Simple.Web
 {
+    using System.Collections.Specialized;
     using System.IO;
 
     public interface IResponse
@@ -9,6 +10,7 @@ namespace Simple.Web
         TextWriter Output { get; }
         Stream OutputStream { get; }
         string ContentType { get; set; }
+        IHeaderCollection Headers { get; }
         void Close();
         void Flush();
         void Write(string s);

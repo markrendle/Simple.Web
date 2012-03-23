@@ -9,6 +9,7 @@ namespace Simple.Web
     internal class RequestWrapper : IRequest
     {
         private readonly HttpRequest _httpRequest;
+        private IHeaderCollection _headers;
 
         public RequestWrapper(HttpRequest httpRequest)
         {
@@ -43,6 +44,11 @@ namespace Simple.Web
         public string HttpMethod
         {
             get { return _httpRequest.HttpMethod; }
+        }
+
+        public IHeaderCollection Headers
+        {
+            get { return _headers ?? (_headers =  new HeaderCollection(_httpRequest.Headers)); }
         }
     }
 }

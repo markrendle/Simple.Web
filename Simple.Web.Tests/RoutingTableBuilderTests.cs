@@ -32,7 +32,7 @@ namespace Simple.Web.Tests
         }
     }
 
-    public class GetGenericFoo : IGet<object>
+    public class GetGenericFoo : IGet, IOutput<object>
     {
         public Status Get()
         {

@@ -1,6 +1,6 @@
 namespace Simple.Web
 {
-    internal interface IContext
+    public interface IContext
     {
         IRequest Request { get; }
         IResponse Response { get; }

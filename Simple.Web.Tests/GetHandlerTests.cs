@@ -66,23 +66,12 @@
         public string ContentType { get; set; }
 
         public string HttpMethod { get; set; }
+
+        public IHeaderCollection Headers { get; set; }
     }
 
     class MockResponse : IResponse
     {
-        private bool _closed;
-        private bool _flushed;
-
-        internal bool Flushed
-        {
-            get { return _flushed; }
-        }
-
-        internal bool Closed
-        {
-            get { return _closed; }
-        }
-
         public int StatusCode { get; set; }
 
         public string StatusDescription { get; set; }
@@ -93,14 +82,14 @@
 
         public string ContentType { get; set; }
 
+        public IHeaderCollection Headers { get; set; }
+
         public void Close()
         {
-            _closed = true;
         }
 
         public void Flush()
         {
-            _flushed = true;
         }
 
         public void Write(string s)
@@ -201,7 +190,7 @@
 
     [UriTemplate("/")]
     [RespondsTo(ContentType.Html)]
-    public class RootEndpoint : IGet<RawHtml>
+    public class RootEndpoint : IGet, IOutput<RawHtml>
     {
         public Status Get()
         {

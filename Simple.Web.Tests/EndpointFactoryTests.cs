@@ -21,7 +21,7 @@ namespace Simple.Web.Tests
         }
     }
 
-    class StaticEndpoint : IGet<object>
+    class StaticEndpoint : IGet, IOutput<object>
     {
         public object Output
         {
@@ -35,7 +35,7 @@ namespace Simple.Web.Tests
     }
 
     [UriTemplate("/Tests/{Id}")]
-    class DynamicEndpoint : IGet<object>
+    class DynamicEndpoint : IGet, IOutput<object>
     {
         public int Id { get; set; }
 
