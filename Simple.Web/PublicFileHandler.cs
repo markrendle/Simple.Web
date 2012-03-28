@@ -25,14 +25,14 @@
             string file;
             if (!_knownStaticFiles.TryGetValue(uri.AbsolutePath, out file))
             {
-                file = ValidateFile(uri.AbsolutePath);
-                if (file == null) return false;
+                if (!TryMapFilePath(uri.AbsolutePath, out file)) return false;
             }
 
             try
             {
                 response.StatusCode = 200;
                 response.TransmitFile(file);
+                _knownStaticFiles.TryAdd(uri.AbsolutePath, file);
                 return true;
             }
             catch (FileNotFoundException)
@@ -42,9 +42,8 @@
             return false;
         }
 
-        private string ValidateFile(string absolutePath)
+        private bool TryMapFilePath(string absolutePath, out string file)
         {
-            string file;
             if (_configuration.PublicFileMappings.ContainsKey(absolutePath))
             {
                 file = _environment.PathUtility.MapPath(_configuration.PublicFileMappings[absolutePath]);
@@ -57,13 +56,12 @@
             }
             else
             {
-                return null;
+                file = null;
+                return false;
             }
-            if (_environment.FileUtility.Exists(file))
-            {
-                _knownStaticFiles.TryAdd(absolutePath, file);
-            }
-            return file;
+
+            if (!File.Exists(file)) return false;
+            return true;
         }
     }
 
