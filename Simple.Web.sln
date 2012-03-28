@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Razor", "Simple.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Razor.Tests", "Simple.Web.Razor.Tests\Simple.Web.Razor.Tests.csproj", "{FD018C10-D36C-4C40-8403-07D1F0CCA328}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Ninject", "Simple.Web.Ninject\Simple.Web.Ninject.csproj", "{1B541AA1-44B4-4241-979C-BB6CB5897B56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Ninject.Tests", "Simple.Web.Ninject.Tests\Simple.Web.Ninject.Tests.csproj", "{428EAAAC-67EB-4385-A134-20E7D41CC3BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{FD018C10-D36C-4C40-8403-07D1F0CCA328}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD018C10-D36C-4C40-8403-07D1F0CCA328}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD018C10-D36C-4C40-8403-07D1F0CCA328}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B541AA1-44B4-4241-979C-BB6CB5897B56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B541AA1-44B4-4241-979C-BB6CB5897B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B541AA1-44B4-4241-979C-BB6CB5897B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B541AA1-44B4-4241-979C-BB6CB5897B56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA} = {71E6E108-5645-45D1-B128-E6225253924D}
 		{FD018C10-D36C-4C40-8403-07D1F0CCA328} = {71E6E108-5645-45D1-B128-E6225253924D}
+		{428EAAAC-67EB-4385-A134-20E7D41CC3BE} = {71E6E108-5645-45D1-B128-E6225253924D}
 	EndGlobalSection
 EndGlobal

@@ -8,14 +8,14 @@ namespace Simple.Web.Tests
         [Fact]
         public void ShouldCreateEmptyEndpoint()
         {
-            var actual = new EndpointFactory().GetEndpoint(typeof (StaticEndpoint), new Dictionary<string, string>());
+            var actual = new EndpointFactory(new Configuration()).GetEndpoint(typeof (StaticEndpoint), new Dictionary<string, string>());
             Assert.NotNull(actual);
         }
 
         [Fact]
         public void ShouldCreateEndpointAndPopulateVariable()
         {
-            var actual = new EndpointFactory().GetEndpoint(typeof(DynamicEndpoint), new Dictionary<string, string> { { "Id", "42"}}) as DynamicEndpoint;
+            var actual = new EndpointFactory(new Configuration()).GetEndpoint(typeof(DynamicEndpoint), new Dictionary<string, string> { { "Id", "42"}}) as DynamicEndpoint;
             Assert.NotNull(actual);
             Assert.Equal(42, actual.Id);
         }

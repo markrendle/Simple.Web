@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}</ProjectGuid>
+    <ProjectGuid>{1B541AA1-44B4-4241-979C-BB6CB5897B56}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Web.Tests</RootNamespace>
-    <AssemblyName>Simple.Web.Tests</AssemblyName>
+    <RootNamespace>Simple.Web.Ninject</RootNamespace>
+    <AssemblyName>Simple.Web.Ninject</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.0.0.15\lib\net40\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -38,17 +41,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EndpointBuilderFactoryTests.cs" />
-    <Compile Include="EndpointFactoryTests.cs" />
-    <Compile Include="EndpointInfoTests.cs" />
-    <Compile Include="GetHandlerTests.cs" />
-    <Compile Include="RoutingTableBuilderTests.cs" />
-    <Compile Include="RoutingTableTests.cs" />
+    <Compile Include="NinjectContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
