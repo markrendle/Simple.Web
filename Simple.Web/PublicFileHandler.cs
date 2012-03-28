@@ -7,7 +7,7 @@
         private readonly IConfiguration _configuration;
         private readonly IWebEnvironment _environment;
 
-        public PublicFileHandler() : this(null, null)
+        public PublicFileHandler() : this(SimpleWeb.Configuration, SimpleWeb.Environment)
         {
         }
 
@@ -19,15 +19,25 @@
 
         public bool TryHandleAsFile(Uri uri, IResponse response)
         {
-            if (_configuration.PublicFolders.Any(folder => uri.AbsolutePath.StartsWith(folder, StringComparison.OrdinalIgnoreCase)))
+            string file;
+            if (_configuration.PublicFileMappings.ContainsKey(uri.AbsolutePath))
             {
-                var file = _environment.PathUtility.MapPath(uri.AbsolutePath);
-                if (_environment.FileUtility.Exists(file))
-                {
-                    response.StatusCode = 200;
-                    response.TransmitFile(file);
-                    return true;
-                }
+                file = _environment.PathUtility.MapPath(_configuration.PublicFileMappings[uri.AbsolutePath]);
+            }
+            else if (_configuration.PublicFolders.Any(folder => uri.AbsolutePath.StartsWith(folder, StringComparison.OrdinalIgnoreCase)))
+            {
+                file = _environment.PathUtility.MapPath(uri.AbsolutePath);
+            }
+            else
+            {
+                return false;
+            }
+
+            if (_environment.FileUtility.Exists(file))
+            {
+                response.StatusCode = 200;
+                response.TransmitFile(file);
+                return true;
             }
 
             return false;
