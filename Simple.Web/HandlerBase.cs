@@ -134,7 +134,7 @@ namespace Simple.Web
 
             if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
             {
-                var redirect = endpoint.Endpoint as IRedirect;
+                var redirect = endpoint.Endpoint as IMayRedirect;
                 if (redirect != null && !string.IsNullOrWhiteSpace(redirect.Location))
                 {
                     context.Response.Headers.Set("Location", redirect.Location);

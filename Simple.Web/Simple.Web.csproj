@@ -70,7 +70,7 @@
     <Compile Include="IOutput.cs" />
     <Compile Include="IPathUtility.cs" />
     <Compile Include="IPost.cs" />
-    <Compile Include="IRedirect.cs" />
+    <Compile Include="IMayRedirect.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="IResponse.cs" />
     <Compile Include="IReusable.cs" />
