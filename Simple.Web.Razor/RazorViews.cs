@@ -122,7 +122,9 @@ namespace Simple.Web.Razor
 
         public Type GetViewType(string viewPath)
         {
+            if (viewPath == null) throw new ArgumentNullException("viewPath");
             InitializeIfNot();
+            if (viewPath.EndsWith(".cshtml")) viewPath = Path.GetFileNameWithoutExtension(viewPath);
             return ViewPathCache[Path.Combine("Views", viewPath)];
         }
     }

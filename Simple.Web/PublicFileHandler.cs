@@ -20,24 +20,25 @@
             _environment = environment ?? SimpleWeb.Environment;
         }
 
-        public bool TryHandleAsFile(Uri uri, IResponse response)
+        public bool TryHandleAsFile(IRequest request, IResponse response)
         {
             string file;
-            if (!_knownStaticFiles.TryGetValue(uri.AbsolutePath, out file))
+            if (!_knownStaticFiles.TryGetValue(request.Url.AbsolutePath, out file))
             {
-                if (!TryMapFilePath(uri.AbsolutePath, out file)) return false;
+                if (!TryMapFilePath(request.Url.AbsolutePath, out file)) return false;
             }
 
             try
             {
                 response.StatusCode = 200;
+                response.ContentType = _environment.GetContentTypeFromFileExtension(file, request.AcceptTypes) ?? "text/plain";
                 response.TransmitFile(file);
-                _knownStaticFiles.TryAdd(uri.AbsolutePath, file);
+                _knownStaticFiles.TryAdd(request.Url.AbsolutePath, file);
                 return true;
             }
             catch (FileNotFoundException)
             {
-                _knownStaticFiles.TryRemove(uri.AbsolutePath, out file);
+                _knownStaticFiles.TryRemove(request.Url.AbsolutePath, out file);
             }
             return false;
         }
@@ -50,7 +51,7 @@
             }
             else if (
                 _configuration.PublicFolders.Any(
-                    folder => absolutePath.StartsWith(folder, StringComparison.OrdinalIgnoreCase)))
+                    folder => absolutePath.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
             {
                 file = _environment.PathUtility.MapPath(absolutePath);
             }

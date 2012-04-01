@@ -39,7 +39,7 @@
                 switch (context.Request.HttpMethod)
                 {
                     case "GET":
-                        if (PublicFileHandler.TryHandleAsFile(context.Request.Url, context.Response))
+                        if (PublicFileHandler.TryHandleAsFile(context.Request, context.Response))
                         {
                             break;
                         }
