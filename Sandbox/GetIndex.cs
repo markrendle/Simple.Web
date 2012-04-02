@@ -5,14 +5,15 @@ using System.Web;
 
 namespace Sandbox
 {
+    using System.Threading.Tasks;
     using Simple.Web;
 
     [UriTemplate("/")]
-    public class GetIndex : IGet
+    public class GetIndex : IGetAsync
     {
-        public Status Get()
+        public Task<Status> Get()
         {
-            return Status.OK;
+            return Task.Factory.StartNew(() => Status.OK);
         }
 
         public object Output

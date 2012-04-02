@@ -14,10 +14,32 @@ namespace Simple.Web
 
         public Type Get(string url, out IDictionary<string,string> variables)
         {
-            var types = GetTypesForStatic(url, out variables) ??
+            variables = null;
+            var types = GetTypesForStatic(url) ??
                 GetTypesForDynamic(url, out variables);
 
             return types == null ? null : types.Single().EndpointType;
+        }
+
+        public Type Get(string url, IList<string> acceptTypes, out IDictionary<string, string> variables)
+        {
+            variables = null;
+            var types = GetTypesForStatic(url) ??
+                GetTypesForDynamic(url, out variables);
+
+            if (types == null) return null;
+            var typeInfo = types.SingleOrDefault(t => t.RespondsTo(acceptTypes));
+            if (typeInfo == null) return null;
+            return typeInfo.EndpointType;
+        }
+
+        private IEnumerable<EndpointTypeInfo> GetTypesForStatic(string url)
+        {
+            if (_staticPaths.ContainsKey(url))
+            {
+                return _staticPaths[url];
+            }
+            return null;
         }
 
         private IEnumerable<EndpointTypeInfo> GetTypesForDynamic(string url, out IDictionary<string, string> variables)
@@ -37,27 +59,6 @@ namespace Simple.Web
                 variables.Add(groupName, match.Groups[groupName].Value);
             }
             return entry.Value;
-        }
-
-        public Type Get(string url, IList<string> acceptTypes, out IDictionary<string, string> variables)
-        {
-            var types = GetTypesForStatic(url, out variables) ??
-                GetTypesForDynamic(url, out variables);
-
-            if (types == null) return null;
-            var typeInfo = types.SingleOrDefault(t => t.RespondsTo(acceptTypes));
-            if (typeInfo == null) return null;
-            return typeInfo.EndpointType;
-        }
-
-        private IEnumerable<EndpointTypeInfo> GetTypesForStatic(string url, out IDictionary<string, string> variables)
-        {
-            variables = null;
-            if (_staticPaths.ContainsKey(url))
-            {
-                return _staticPaths[url];
-            }
-            return null;
         }
 
         public void Add(string uriTemplate, Type endpointType)

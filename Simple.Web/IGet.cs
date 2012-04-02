@@ -7,7 +7,7 @@ namespace Simple.Web
         Status Get();
     }
 
-    public interface IAsyncGet
+    public interface IGetAsync
     {
         Task<Status> Get();
     }

@@ -5,9 +5,9 @@ namespace Simple.Web
 
     class Content : IContent
     {
-        private readonly EndpointRunner _runner;
+        private readonly IEndpointRunner _runner;
 
-        internal Content(EndpointRunner runner)
+        internal Content(IEndpointRunner runner)
         {
             _runner = runner;
         }

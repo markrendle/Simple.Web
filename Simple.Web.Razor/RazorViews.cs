@@ -123,7 +123,12 @@ namespace Simple.Web.Razor
         public Type GetViewType(string viewPath)
         {
             InitializeIfNot();
-            return ViewPathCache[Path.Combine("Views", viewPath)];
+            var key = Path.Combine("Views", viewPath);
+            if (!ViewPathCache.ContainsKey(key))
+            {
+                Initialize();
+            }
+            return ViewPathCache[key];
         }
     }
 
