@@ -4,6 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Net;
     using System.Web;
 
     internal class SimpleHandler<TEndpointType> : IHttpHandler
@@ -61,11 +62,28 @@ namespace Simple.Web
 
             if (endpoint != null)
             {
+                if (!CheckAuthentication(endpoint)) return;
+
                 SetContext(endpoint);
                 var runner = EndpointRunner.Create<TEndpointType>(endpoint);
                 runner.BeforeRun(_context, this._contentTypeHandlerTable);
                 RunEndpoint(runner);
             }
+        }
+
+        private bool CheckAuthentication(object endpoint)
+        {
+            var requireAuthentication = endpoint as IRequireAuthentication;
+            if (requireAuthentication == null) return true;
+            if (_context.User == null || !_context.User.IsAuthenticated)
+            {
+                _context.Response.StatusCode = 401;
+                _context.Response.StatusDescription = "Unauthorized";
+                return false;
+            }
+
+            requireAuthentication.CurrentUser = _context.User;
+            return true;
         }
 
         private void SetContext(object endpoint)

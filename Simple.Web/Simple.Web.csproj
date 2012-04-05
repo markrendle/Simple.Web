@@ -76,11 +76,13 @@
     <Compile Include="IPost.cs" />
     <Compile Include="IMayRedirect.cs" />
     <Compile Include="IRequest.cs" />
+    <Compile Include="IRequireAuthentication.cs" />
     <Compile Include="IResponse.cs" />
     <Compile Include="IReusable.cs" />
     <Compile Include="DependencyInjection\ISimpleContainer.cs" />
     <Compile Include="ISpecifyView.cs" />
     <Compile Include="IStartupTask.cs" />
+    <Compile Include="IUser.cs" />
     <Compile Include="IWebEnvironment.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="PathUtility.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Status.cs" />
     <Compile Include="UnsupportedMediaTypeException.cs" />
     <Compile Include="UriTemplateAttribute.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="WebEnvironment.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

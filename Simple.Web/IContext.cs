@@ -4,5 +4,6 @@ namespace Simple.Web
     {
         IRequest Request { get; }
         IResponse Response { get; }
+        IUser User { get; }
     }
 }
