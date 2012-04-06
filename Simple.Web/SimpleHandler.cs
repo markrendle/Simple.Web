@@ -9,6 +9,7 @@ namespace Simple.Web
 
     internal class SimpleHandler<TEndpointType> : IHttpHandler
     {
+        private readonly IAuthenticationProvider _authenticationProvider;
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
@@ -28,13 +29,27 @@ namespace Simple.Web
                 endpointInfo.Variables.Add(key, context.Request.QueryString[key]);
             }
 
-            return new SimpleHandler<TEndpointType>(context, endpointInfo);
+            if (endpointInfo.RequiresAuthentication)
+            {
+                var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
+                                             new AuthenticationProvider();
+                return new SimpleHandler<TEndpointType>(context, endpointInfo, authenticationProvider);
+            }
+            else
+            {
+                return new SimpleHandler<TEndpointType>(context, endpointInfo);
+            }
         }
 
-        private SimpleHandler(IContext context, EndpointInfo endpointInfo)
+        private SimpleHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        {
+        }
+
+        private SimpleHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
             _endpointInfo = endpointInfo;
+            _authenticationProvider = authenticationProvider;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -75,14 +90,16 @@ namespace Simple.Web
         {
             var requireAuthentication = endpoint as IRequireAuthentication;
             if (requireAuthentication == null) return true;
-            if (_context.User == null || !_context.User.IsAuthenticated)
+
+            var user = _authenticationProvider.GetLoggedInUser(_context);
+            if (user == null || !user.IsAuthenticated)
             {
                 _context.Response.StatusCode = 401;
                 _context.Response.StatusDescription = "Unauthorized";
                 return false;
             }
 
-            requireAuthentication.CurrentUser = _context.User;
+            requireAuthentication.CurrentUser = user;
             return true;
         }
 

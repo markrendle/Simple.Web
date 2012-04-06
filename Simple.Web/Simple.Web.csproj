@@ -62,6 +62,7 @@
     <Compile Include="GetRunner.cs" />
     <Compile Include="HandlerBase.cs" />
     <Compile Include="HeaderCollection.cs" />
+    <Compile Include="IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IContentTypeHandler.cs" />
     <Compile Include="IContext.cs" />

@@ -9,8 +9,16 @@ namespace Simple.Web
 
     internal class RoutingTable
     {
-        private readonly Dictionary<string,IList<EndpointTypeInfo>> _staticPaths = new Dictionary<string, IList<EndpointTypeInfo>>();
-        private readonly SortedDictionary<Regex, IList<EndpointTypeInfo>> _dynamicPaths = new SortedDictionary<Regex, IList<EndpointTypeInfo>>(new Comparer<Regex>((x,y) => x.GetGroupNames().Length.CompareTo(y.GetGroupNames().Length)));
+        private const int MaximumGroupCount = 64;
+        private readonly Dictionary<string, IList<EndpointTypeInfo>> _staticPaths =
+            new Dictionary<string, IList<EndpointTypeInfo>>(StringComparer.OrdinalIgnoreCase);
+
+        private readonly List<SortedList<Regex, IList<EndpointTypeInfo>>> _dynamicPaths;
+
+        public RoutingTable()
+        {
+            _dynamicPaths = new List<SortedList<Regex, IList<EndpointTypeInfo>>>(GenerateEmptyLists());
+        }
 
         public Type Get(string url, out IDictionary<string,string> variables)
         {
@@ -44,21 +52,27 @@ namespace Simple.Web
 
         private IEnumerable<EndpointTypeInfo> GetTypesForDynamic(string url, out IDictionary<string, string> variables)
         {
-            var entry = _dynamicPaths.FirstOrDefault(t => t.Key.IsMatch(url));
-            if (entry.Key == null)
+            for (int i = 0; i < MaximumGroupCount; i++)
             {
-                variables = null;
-                return null;
-            }
+                if (_dynamicPaths[i].Count == 0) continue;
 
-            variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var match = entry.Key.Match(url);
-            foreach (var groupName in entry.Key.GetGroupNames())
-            {
-                if (groupName == "0") continue;
-                variables.Add(groupName, match.Groups[groupName].Value);
+                var entry = _dynamicPaths[i].FirstOrDefault(t => t.Key.IsMatch(url));
+                if (entry.Key == null)
+                {
+                    continue;
+                }
+
+                variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                var match = entry.Key.Match(url);
+                foreach (var groupName in entry.Key.GetGroupNames())
+                {
+                    if (groupName == "0") continue;
+                    variables.Add(groupName, match.Groups[groupName].Value);
+                }
+                return entry.Value;
             }
-            return entry.Value;
+            variables = null;
+            return null;
         }
 
         public void Add(string uriTemplate, Type endpointType)
@@ -71,7 +85,7 @@ namespace Simple.Web
             if (uriTemplate.Contains("{"))
             {
                 var regex = new Regex(Regex.Replace(uriTemplate, "{([^}]*)}", "(?<$1>[^/]*)"), RegexOptions.IgnoreCase);
-                _dynamicPaths.Add(regex, new[] {endpointType});
+                _dynamicPaths[regex.GetGroupNames().Length].Add(regex, new[] {endpointType});
             }
             else
             {
@@ -90,8 +104,19 @@ namespace Simple.Web
         public IEnumerable<Type> GetAllTypes()
         {
             return _staticPaths.Values.SelectMany(list => list.Select(eti => eti.EndpointType))
-                .Concat(_dynamicPaths.Values.SelectMany(list => list.Select(eti => eti.EndpointType)))
+                .Concat(_dynamicPaths.SelectMany(l => l.Values.SelectMany(t => t)).Select(e => e.EndpointType))
                 .Distinct();
+        }
+
+        private static IEnumerable<SortedList<Regex, IList<EndpointTypeInfo>>> GenerateEmptyLists()
+        {
+            var regexTermComparer =
+                new Comparer<Regex>(
+                    (regex, regex1) => StringComparer.OrdinalIgnoreCase.Compare(regex.ToString(), regex1.ToString()));
+            for (int i = 0; i < MaximumGroupCount; i++)
+            {
+                yield return new SortedList<Regex, IList<EndpointTypeInfo>>(regexTermComparer);
+            }
         }
     }
 }

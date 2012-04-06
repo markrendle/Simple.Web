@@ -5,6 +5,7 @@ namespace Simple.Web
     public struct Status : IEquatable<Status>
     {
         public static readonly Status OK = new Status(200, "OK");
+        public static readonly Status InternalServerError = new Status(500, "Internal Server Error");
 
         private readonly int _httpStatusCode;
         private readonly string _httpStatusDescription;

@@ -74,7 +74,6 @@
             Assert.Equal(expected, actual);
         }
 
-
         [Fact]
         public void MatchesDynamicUrlWithTrailingValuesAheadOfMultiValue()
         {
@@ -85,6 +84,19 @@
             IDictionary<string, string> variables;
             var actual = target.Get("/tests/1/bar", out variables);
             Assert.Equal(expected, actual);
+        }
+         
+        [Fact]
+        public void MatchesUrlWhenTwoRegexesHaveSameNumberOfGroups()
+        {
+            var target = new RoutingTable();
+            var expectedFoo = typeof(int);
+            var expectedBar = typeof(string);
+            target.Add("/tests/{Id}/foo", expectedFoo);
+            target.Add("/tests/{Id}/bar", expectedBar);
+            IDictionary<string, string> variables;
+            Assert.Equal(expectedFoo, target.Get("/tests/1/foo", out variables));
+            Assert.Equal(expectedBar, target.Get("/tests/1/bar", out variables));
         }
     }
 }

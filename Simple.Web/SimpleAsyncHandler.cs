@@ -12,6 +12,7 @@ namespace Simple.Web
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
+        private readonly IAuthenticationProvider _authenticationProvider;
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
 // ReSharper disable StaticFieldInGenericType
         private static readonly Lazy<RoutingTable> RoutingTable = new Lazy<RoutingTable>(() => new RoutingTableBuilder(typeof(TEndpointType)).BuildRoutingTable());
@@ -29,13 +30,30 @@ namespace Simple.Web
                 endpointInfo.Variables.Add(key, context.Request.QueryString[key]);
             }
 
-            return new SimpleAsyncHandler<TEndpointType>(context, endpointInfo);
+            SimpleAsyncHandler<TEndpointType> instance;
+            if (endpointInfo.RequiresAuthentication)
+            {
+                var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
+                                             new AuthenticationProvider();
+                instance = new SimpleAsyncHandler<TEndpointType>(context, endpointInfo, authenticationProvider);
+            }
+            else
+            {
+                instance = new SimpleAsyncHandler<TEndpointType>(context, endpointInfo);
+            }
+
+            return instance;
         }
 
-        private SimpleAsyncHandler(IContext context, EndpointInfo endpointInfo)
+        private SimpleAsyncHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        {
+        }
+
+        private SimpleAsyncHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
             _endpointInfo = endpointInfo;
+            _authenticationProvider = authenticationProvider;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -50,7 +68,7 @@ namespace Simple.Web
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            var result = new SimpleAsyncHandlerResult<TEndpointType>(_context, _endpointInfo, cb, extraData);
+            var result = new SimpleAsyncHandlerResult<TEndpointType>(_context, _endpointInfo, _authenticationProvider, cb, extraData);
             result.Run();
             return result;
         }
@@ -65,15 +83,17 @@ namespace Simple.Web
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
+        private readonly IAuthenticationProvider _authenticationProvider;
         private readonly AsyncCallback _callback;
         private readonly object _asyncState;
         private volatile bool _isCompleted;
         private AsyncEndpointRunner _runner;
 
-        public SimpleAsyncHandlerResult(IContext context, EndpointInfo endpointInfo, AsyncCallback callback, object asyncState)
+        public SimpleAsyncHandlerResult(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
         {
             _context = context;
             _endpointInfo = endpointInfo;
+            _authenticationProvider = authenticationProvider;
             _callback = callback;
             _asyncState = asyncState;
         }
@@ -104,11 +124,33 @@ namespace Simple.Web
 
             if (endpoint != null)
             {
+                if (!CheckAuthentication(endpoint))
+                {
+                    _callback(this);
+                    return;
+                }
                 SetContext(endpoint);
                 _runner = AsyncEndpointRunner.Create<TEndpointType>(endpoint);
                 _runner.BeforeRun(_context, _contentTypeHandlerTable);
                 RunEndpoint(_runner);
             }
+        }
+
+        private bool CheckAuthentication(object endpoint)
+        {
+            var requireAuthentication = endpoint as IRequireAuthentication;
+            if (requireAuthentication == null) return true;
+
+            var user = _authenticationProvider.GetLoggedInUser(_context);
+            if (user == null || !user.IsAuthenticated)
+            {
+                _context.Response.StatusCode = 401;
+                _context.Response.StatusDescription = "Unauthorized";
+                return false;
+            }
+
+            requireAuthentication.CurrentUser = user;
+            return true;
         }
 
         private void SetContext(object endpoint)

@@ -16,6 +16,14 @@ namespace Simple.Web.Tests
             var table = builder.BuildRoutingTable();
             Assert.Contains(typeof(GetFoo), table.GetAllTypes());
         }
+ 
+        [Fact]
+        public void FindsIGetTypeWhereIGetIsOnBaseClass()
+        {
+            var builder = new RoutingTableBuilder(typeof (IGet));
+            var table = builder.BuildRoutingTable();
+            Assert.Contains(typeof(Bar), table.GetAllTypes());
+        }
     }
 
     [UriTemplate("/foo")]
@@ -43,5 +51,19 @@ namespace Simple.Web.Tests
         {
             get { throw new NotImplementedException(); }
         }
+    }
+
+    public abstract class BaseBar : IGet
+    {
+        public Status Get()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [UriTemplate(("/bar"))]
+    public class Bar : BaseBar
+    {
+        
     }
 }

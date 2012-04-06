@@ -47,6 +47,8 @@
         public IRequest Request { get; set; }
 
         public IResponse Response { get; set; }
+
+        public IUser User { get; set; }
     }
 
     class MockRequest : IRequest

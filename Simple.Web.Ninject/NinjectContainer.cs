@@ -17,7 +17,7 @@
 
         public T Get<T>()
         {
-            return _kernel.Get<T>();
+            return _kernel.TryGet<T>();
         }
     }
 

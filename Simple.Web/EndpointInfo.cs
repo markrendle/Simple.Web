@@ -17,6 +17,8 @@ namespace Simple.Web
 
         public EndpointInfo(Type endpointType, IDictionary<string, string> variables, string httpMethod)
         {
+            if (endpointType == null) throw new ArgumentNullException("endpointType");
+            if (httpMethod == null) throw new ArgumentNullException("httpMethod");
             _endpointType = endpointType;
             _variables = variables;
             _httpMethod = httpMethod;
@@ -35,6 +37,11 @@ namespace Simple.Web
         public Type EndpointType
         {
             get { return _endpointType; }
+        }
+
+        public bool RequiresAuthentication
+        {
+            get { return typeof (IRequireAuthentication).IsAssignableFrom(_endpointType); }
         }
 
         public Type InputType

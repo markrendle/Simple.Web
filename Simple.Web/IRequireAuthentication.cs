@@ -2,6 +2,6 @@
 {
     public interface IRequireAuthentication
     {
-        IUser CurrentUser { get; set; }
+        IUser CurrentUser { set; }
     }
 }

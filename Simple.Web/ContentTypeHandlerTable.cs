@@ -86,11 +86,14 @@ namespace Simple.Web
     {
         public static IEnumerable<Type> FromCurrentAppDomain(Func<Type,bool> predicate)
         {
-            return AppDomain.CurrentDomain.GetAssemblies()
+            var list = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => !a.IsDynamic)
                 .Select(assembly =>
                     assembly.GetExportedTypes().Where(predicate).ToList())
-                .SelectMany(exportedTypes => exportedTypes);
+                .SelectMany(exportedTypes => exportedTypes)
+                .ToList();
+
+            return list;
         }
     }
 }
