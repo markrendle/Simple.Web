@@ -3,8 +3,6 @@ namespace Simple.Web
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-    using System.Net;
     using System.Web;
 
     internal class SimpleHandler<TEndpointType> : IHttpHandler
@@ -128,50 +126,13 @@ namespace Simple.Web
                 return;
             }
 
-            WriteResponse(endpoint);
+            ResponseWriter.Write(endpoint, _context);
         }
 
         private void WriteStatusCode(Status status)
         {
             _context.Response.StatusCode = status.Code;
             _context.Response.StatusDescription = status.Description;
-        }
-
-        private void WriteResponse(EndpointRunner endpoint)
-        {
-            if (endpoint.HasOutput && endpoint.Output is RawHtml)
-            {
-                _context.Response.ContentType =
-                    _context.Request.AcceptTypes.FirstOrDefault(
-                        at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
-                _context.Response.Output.Write(endpoint.Output.ToString());
-            }
-            else
-            {
-                IContentTypeHandler contentTypeHandler;
-                if (!TryGetContentTypeHandler(out contentTypeHandler))
-                {
-                    throw new UnsupportedMediaTypeException(_context.Request.AcceptTypes);
-                }
-                _context.Response.ContentType = contentTypeHandler.GetContentType(_context.Request.AcceptTypes);
-                contentTypeHandler.Write(new Content(endpoint), _context.Response.Output);
-            }
-        }
-
-        private bool TryGetContentTypeHandler(out IContentTypeHandler contentTypeHandler)
-        {
-            try
-            {
-                contentTypeHandler = _contentTypeHandlerTable.GetContentTypeHandler(_context.Request.AcceptTypes);
-            }
-            catch (UnsupportedMediaTypeException)
-            {
-                _context.Response.StatusCode = 415;
-                _context.Response.Close();
-                contentTypeHandler = null;
-                return false;
-            }
-            return true;
         }
 
         public bool IsReusable

@@ -96,9 +96,11 @@
     <Compile Include="RequestWrapper.cs" />
     <Compile Include="RespondsToAttribute.cs" />
     <Compile Include="ResponseWrapper.cs" />
+    <Compile Include="ResponseWriter.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingTableBuilder.cs" />
     <Compile Include="SimpleAsyncHandler.cs" />
+    <Compile Include="SimpleAsyncHandlerResult.cs" />
     <Compile Include="SimpleHandler.cs" />
     <Compile Include="SimpleHandlerFactory.cs" />
     <Compile Include="SimpleWeb.cs" />
