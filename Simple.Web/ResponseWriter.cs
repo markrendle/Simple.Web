@@ -18,6 +18,11 @@ namespace Simple.Web
             }
             else if (runner.HasOutput && runner.Output is Stream)
             {
+                var outputStream = runner.Endpoint as IOutputStream;
+                if (outputStream != null)
+                {
+                    context.Response.ContentType = outputStream.ContentType;
+                }
                 ((Stream)runner.Output).CopyTo(context.Response.OutputStream);
             }
             else
