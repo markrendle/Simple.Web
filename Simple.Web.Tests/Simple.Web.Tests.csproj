@@ -50,6 +50,7 @@
     <Compile Include="RoutingTableBuilderTests.cs" />
     <Compile Include="RoutingTableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UriTemplateAttributeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

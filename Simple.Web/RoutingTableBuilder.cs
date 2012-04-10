@@ -29,10 +29,10 @@
         {
             foreach (var exportedType in endpointTypes)
             {
-                foreach (var uriTemplateAttribute in UriTemplateAttribute.Get(exportedType))
+                var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes).ToList();
+                foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
                 {
-                    var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes);
-                    routingTable.Add(uriTemplateAttribute.Template, new EndpointTypeInfo(exportedType, respondsToTypes));
+                    routingTable.Add(uriTemplate, new EndpointTypeInfo(exportedType, respondsToTypes));
                 }
             }
         }
