@@ -37,6 +37,10 @@ namespace Simple.Web
             if (outputStream != null)
             {
                 context.Response.ContentType = outputStream.ContentType;
+                if (!string.IsNullOrWhiteSpace(outputStream.ContentDisposition))
+                {
+                    context.Response.Headers.Set("Content-Disposition", outputStream.ContentDisposition);
+                }
             }
             using (var stream = (Stream)runner.Output)
             {
