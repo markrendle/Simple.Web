@@ -20,7 +20,7 @@ namespace Simple.Web
             if (endpointType == null) throw new ArgumentNullException("endpointType");
             if (httpMethod == null) throw new ArgumentNullException("httpMethod");
             _endpointType = endpointType;
-            _variables = variables;
+            _variables = variables ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             _httpMethod = httpMethod;
         }
 
