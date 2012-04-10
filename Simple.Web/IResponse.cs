@@ -1,5 +1,6 @@
 namespace Simple.Web
 {
+    using System;
     using System.Collections.Specialized;
     using System.IO;
 
@@ -18,5 +19,6 @@ namespace Simple.Web
         void Write(char[] buffer, int index, int count);
         void Write(char ch);
         void TransmitFile(string file);
+        void SetCookie(ICookie cookie);
     }
 }

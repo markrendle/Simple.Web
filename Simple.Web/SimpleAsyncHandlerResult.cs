@@ -2,11 +2,12 @@ namespace Simple.Web
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
 
-    class SimpleAsyncHandlerResult<TEndpointType> : IAsyncResult
+    class SimpleAsyncHandlerResult<TEndpointType> : IAsyncResult, IDisposable
     {
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly IContext _context;
@@ -113,12 +114,20 @@ namespace Simple.Web
                     _context.Response.Headers.Set("Location", redirect.Location);
                 }
             }
-            if (status.Code != 200)
+
+            var setCookies = _runner.Endpoint as ISetCookies;
+            if (setCookies != null)
             {
-                return;
+                foreach (var cookie in setCookies.CookiesToSet)
+                {
+                    _context.Response.SetCookie(cookie);
+                }
             }
 
-            ResponseWriter.Write(_runner, _context);
+            if (status.IsSuccess)
+            {
+                ResponseWriter.Write(_runner, _context);
+            }
 
             _callback(this);
         }
@@ -143,6 +152,15 @@ namespace Simple.Web
         {
             _context.Response.StatusCode = status.Code;
             _context.Response.StatusDescription = status.Description;
+        }
+
+        public void Dispose()
+        {
+            var disposable = _runner.Endpoint as IDisposable;
+            if (disposable != null)
+            {
+                disposable.Dispose();
+            }
         }
     }
 }

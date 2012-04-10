@@ -67,6 +67,7 @@
     <Compile Include="IContentTypeHandler.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="GetHandler.cs" />
+    <Compile Include="ICookie.cs" />
     <Compile Include="IEndpointRunner.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="IHeaderCollection.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="IResponse.cs" />
     <Compile Include="IReusable.cs" />
     <Compile Include="DependencyInjection\ISimpleContainer.cs" />
+    <Compile Include="ISetCookies.cs" />
     <Compile Include="ISpecifyView.cs" />
     <Compile Include="IStartupTask.cs" />
     <Compile Include="IUser.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="RoutingTableBuilder.cs" />
     <Compile Include="SimpleAsyncHandler.cs" />
     <Compile Include="SimpleAsyncHandlerResult.cs" />
+    <Compile Include="SimpleCookie.cs" />
     <Compile Include="SimpleHandler.cs" />
     <Compile Include="SimpleHandlerFactory.cs" />
     <Compile Include="SimpleWeb.cs" />

@@ -1,5 +1,6 @@
 namespace Simple.Web
 {
+    using System;
     using System.Collections.Specialized;
     using System.IO;
     using System.Web;
@@ -65,6 +66,15 @@ namespace Simple.Web
         public void TransmitFile(string file)
         {
             _httpResponse.TransmitFile(file);
+        }
+
+        public void SetCookie(ICookie cookie)
+        {
+            var simpleCookie = cookie as SimpleCookie;
+            if (simpleCookie != null)
+            {
+                _httpResponse.Cookies.Add(simpleCookie.HttpCookie);
+            }
         }
 
         public IHeaderCollection Headers

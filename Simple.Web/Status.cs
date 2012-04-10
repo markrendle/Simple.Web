@@ -35,6 +35,11 @@ namespace Simple.Web
             get { return _httpStatusDescription; }
         }
 
+        public bool IsSuccess
+        {
+            get { return _httpStatusCode >= 200 && _httpStatusCode <= 299; }
+        }
+
         public bool Equals(Status other)
         {
             return _httpStatusCode == other._httpStatusCode;
