@@ -9,7 +9,6 @@ namespace Simple.Web
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly IAuthenticationProvider _authenticationProvider;
-        private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
 // ReSharper disable StaticFieldInGenericType
         private static readonly Lazy<RoutingTable> RoutingTable = new Lazy<RoutingTable>(() => new RoutingTableBuilder(typeof(TEndpointType)).BuildRoutingTable());
 // ReSharper restore StaticFieldInGenericType

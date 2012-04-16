@@ -52,12 +52,11 @@ namespace Simple.Web
         private static void WriteUsingContentTypeHandler(IEndpointRunner runner, IContext context)
         {
             IContentTypeHandler contentTypeHandler;
-            if (!TryGetContentTypeHandler(context, out contentTypeHandler))
+            if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
-                throw new UnsupportedMediaTypeException(context.Request.AcceptTypes);
+                context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
+                contentTypeHandler.Write(new Content(runner), context.Response.Output);
             }
-            context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-            contentTypeHandler.Write(new Content(runner), context.Response.Output);
         }
 
         private static bool TryGetContentTypeHandler(IContext context, out IContentTypeHandler contentTypeHandler)
@@ -69,7 +68,7 @@ namespace Simple.Web
             catch (UnsupportedMediaTypeException)
             {
                 context.Response.StatusCode = 415;
-                context.Response.Close();
+                context.Response.StatusDescription = "Unsupported media type requested.";
                 contentTypeHandler = null;
                 return false;
             }

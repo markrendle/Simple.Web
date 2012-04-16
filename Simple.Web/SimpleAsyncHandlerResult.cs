@@ -105,17 +105,35 @@ namespace Simple.Web
 
             WriteStatusCode(status);
 
+            SetCookies(_runner.Endpoint as ISetCookies);
+
             if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
             {
-                var redirect = _runner.Endpoint as IMayRedirect;
-                if (redirect != null &&
-                    !string.IsNullOrWhiteSpace(redirect.Location))
-                {
-                    _context.Response.Headers.Set("Location", redirect.Location);
-                }
+                Redirect(_runner.Endpoint as IMayRedirect);
+            }
+            else if (status.IsSuccess)
+            {
+                ResponseWriter.Write(_runner, _context);
             }
 
-            var setCookies = _runner.Endpoint as ISetCookies;
+            _callback(this);
+        }
+
+        private void Redirect(IMayRedirect redirect)
+        {
+            if (redirect != null &&
+                !string.IsNullOrWhiteSpace(redirect.Location))
+            {
+                _context.Response.Headers.Set("Location", redirect.Location);
+            }
+            else
+            {
+                throw new InvalidOperationException("Redirect status returned with no Location.");
+            }
+        }
+
+        private void SetCookies(ISetCookies setCookies)
+        {
             if (setCookies != null)
             {
                 foreach (var cookie in setCookies.CookiesToSet)
@@ -123,13 +141,6 @@ namespace Simple.Web
                     _context.Response.SetCookie(cookie);
                 }
             }
-
-            if (status.IsSuccess)
-            {
-                ResponseWriter.Write(_runner, _context);
-            }
-
-            _callback(this);
         }
 
         private void WriteError(Exception exception)
