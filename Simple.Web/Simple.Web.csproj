@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AssemblyEx.cs" />
     <Compile Include="AsyncEndpointRunner.cs" />
+    <Compile Include="AsyncResult.cs" />
     <Compile Include="Comparer.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ContentType.cs" />

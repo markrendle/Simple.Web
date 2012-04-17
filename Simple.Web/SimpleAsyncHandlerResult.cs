@@ -1,18 +1,15 @@
 namespace Simple.Web
 {
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
 
-    class SimpleAsyncHandlerResult<TEndpointType> : IAsyncResult, IDisposable
+    class SimpleAsyncHandlerResult<TEndpointType> : AsyncResult, IDisposable
     {
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly AsyncCallback _callback;
-        private readonly object _asyncState;
         private readonly HandlerHelper _helper;
-        private volatile bool _isCompleted;
         private AsyncEndpointRunner _runner;
 
         public SimpleAsyncHandlerResult(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
@@ -20,28 +17,8 @@ namespace Simple.Web
             _context = context;
             _endpointInfo = endpointInfo;
             _callback = callback;
-            _asyncState = asyncState;
-            _helper = new HandlerHelper(endpointInfo, context, authenticationProvider);
-        }
-
-        public bool IsCompleted
-        {
-            get { return _isCompleted; }
-        }
-
-        public WaitHandle AsyncWaitHandle
-        {
-            get { return null; }
-        }
-
-        public object AsyncState
-        {
-            get { return _asyncState; }
-        }
-
-        public bool CompletedSynchronously
-        {
-            get { return false; }
+            AsyncState = asyncState;
+            _helper = new HandlerHelper(context, authenticationProvider);
         }
 
         public void Run()
@@ -61,18 +38,23 @@ namespace Simple.Web
                 _runner.BeforeRun(_context, _contentTypeHandlerTable);
                 _runner.Run().ContinueWith(RunContinuation);
             }
+            else
+            {
+                throw new InvalidOperationException("Could not create endpoint handler.");
+            }
         }
 
         private void RunContinuation(Task<Status> t)
         {
-            _isCompleted = true;
+            IsCompleted = true;
             if (t.IsFaulted && t.Exception != null)
             {
                 _helper.WriteError(t.Exception.InnerException);
-                return;
             }
-
-            _helper.WriteResponse(_runner, t.Result);
+            else
+            {
+                _helper.WriteResponse(_runner, t.Result);
+            }
 
             _callback(this);
         }

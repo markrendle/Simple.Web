@@ -7,14 +7,11 @@
 
     internal class HandlerHelper
     {
-        private readonly EndpointInfo _endpointInfo;
         private readonly IContext _context;
         private readonly IAuthenticationProvider _authenticationProvider;
-        private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
 
-        public HandlerHelper(EndpointInfo endpointInfo, IContext context, IAuthenticationProvider authenticationProvider)
+        public HandlerHelper(IContext context, IAuthenticationProvider authenticationProvider)
         {
-            _endpointInfo = endpointInfo;
             _context = context;
             _authenticationProvider = authenticationProvider;
         }
@@ -96,6 +93,7 @@
 
         internal void WriteError(Exception exception)
         {
+            Trace.TraceError(exception.Message);
             var httpException = exception as HttpException;
             if (httpException != null)
             {
@@ -104,10 +102,11 @@
             }
             else
             {
-                Trace.TraceError(exception.Message);
                 _context.Response.StatusCode = 500;
                 _context.Response.StatusDescription = "Internal server error.";
             }
+            _context.Response.ContentType = "text/text";
+            _context.Response.Write(exception.ToString());
         }
 
         private void WriteStatusCode(Status status)

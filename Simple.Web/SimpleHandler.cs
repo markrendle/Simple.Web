@@ -20,7 +20,7 @@ namespace Simple.Web
         {
             _context = context;
             _endpointInfo = endpointInfo;
-            _helper = new HandlerHelper(endpointInfo, context, authenticationProvider);
+            _helper = new HandlerHelper(context, authenticationProvider);
         }
 
         public void ProcessRequest(HttpContext context)
