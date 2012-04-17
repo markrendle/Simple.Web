@@ -13,7 +13,6 @@ namespace Simple.Web
         public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
         {
             Startup();
-
             var simpleContext = new ContextWrapper(context);
             switch (context.Request.HttpMethod.ToUpperInvariant())
             {
@@ -22,11 +21,9 @@ namespace Simple.Web
                     {
                         return new PublicFileHandler();
                     }
-                    return SimpleHandler<IGet>.TryCreate(simpleContext) ??
-                           SimpleAsyncHandler<IGetAsync>.TryCreate(simpleContext);
+                    return VerbHandlerFactory<IGet, IGetAsync>.TryCreate(simpleContext);
                 case "POST":
-                    return SimpleHandler<IPost>.TryCreate(simpleContext) ??
-                           SimpleAsyncHandler<IPostAsync>.TryCreate(simpleContext);
+                    return VerbHandlerFactory<IPost, IPostAsync>.TryCreate(simpleContext);
             }
 
             return null;

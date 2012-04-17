@@ -1,20 +1,17 @@
 namespace Simple.Web
 {
     using System;
-    using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Web;
 
     class SimpleAsyncHandlerResult<TEndpointType> : IAsyncResult, IDisposable
     {
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
-        private readonly IAuthenticationProvider _authenticationProvider;
         private readonly AsyncCallback _callback;
         private readonly object _asyncState;
+        private readonly HandlerHelper _helper;
         private volatile bool _isCompleted;
         private AsyncEndpointRunner _runner;
 
@@ -22,9 +19,9 @@ namespace Simple.Web
         {
             _context = context;
             _endpointInfo = endpointInfo;
-            _authenticationProvider = authenticationProvider;
             _callback = callback;
             _asyncState = asyncState;
+            _helper = new HandlerHelper(endpointInfo, context, authenticationProvider);
         }
 
         public bool IsCompleted
@@ -53,116 +50,31 @@ namespace Simple.Web
 
             if (endpoint != null)
             {
-                if (!CheckAuthentication(endpoint))
+                if (!_helper.CheckAuthentication(endpoint))
                 {
                     _callback(this);
                     return;
                 }
-                SetContext(endpoint);
+                _helper.SetContext(endpoint);
+                _helper.SetFiles(endpoint);
                 _runner = AsyncEndpointRunner.Create<TEndpointType>(endpoint);
                 _runner.BeforeRun(_context, _contentTypeHandlerTable);
-                RunEndpoint(_runner);
+                _runner.Run().ContinueWith(RunContinuation);
             }
-        }
-
-        private bool CheckAuthentication(object endpoint)
-        {
-            var requireAuthentication = endpoint as IRequireAuthentication;
-            if (requireAuthentication == null) return true;
-
-            var user = _authenticationProvider.GetLoggedInUser(_context);
-            if (user == null || !user.IsAuthenticated)
-            {
-                _context.Response.StatusCode = 401;
-                _context.Response.StatusDescription = "Unauthorized";
-                return false;
-            }
-
-            requireAuthentication.CurrentUser = user;
-            return true;
-        }
-
-        private void SetContext(object endpoint)
-        {
-            var needContext = endpoint as INeedContext;
-            if (needContext != null) needContext.Context = _context;
-        }
-
-        private void RunEndpoint(AsyncEndpointRunner endpoint)
-        {
-            endpoint.Run().ContinueWith(RunContinuation);
         }
 
         private void RunContinuation(Task<Status> t)
         {
             _isCompleted = true;
-            if (t.IsFaulted)
+            if (t.IsFaulted && t.Exception != null)
             {
-                WriteError(t.Exception);
+                _helper.WriteError(t.Exception.InnerException);
                 return;
             }
-            var status = t.Result;
 
-            WriteStatusCode(status);
-
-            SetCookies(_runner.Endpoint as ISetCookies);
-
-            if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
-            {
-                Redirect(_runner.Endpoint as IMayRedirect);
-            }
-            else if (status.IsSuccess)
-            {
-                ResponseWriter.Write(_runner, _context);
-            }
+            _helper.WriteResponse(_runner, t.Result);
 
             _callback(this);
-        }
-
-        private void Redirect(IMayRedirect redirect)
-        {
-            if (redirect != null &&
-                !string.IsNullOrWhiteSpace(redirect.Location))
-            {
-                _context.Response.Headers.Set("Location", redirect.Location);
-            }
-            else
-            {
-                throw new InvalidOperationException("Redirect status returned with no Location.");
-            }
-        }
-
-        private void SetCookies(ISetCookies setCookies)
-        {
-            if (setCookies != null)
-            {
-                foreach (var cookie in setCookies.CookiesToSet)
-                {
-                    _context.Response.SetCookie(cookie);
-                }
-            }
-        }
-
-        private void WriteError(Exception exception)
-        {
-            var httpException = exception as HttpException;
-            if (httpException != null)
-            {
-                _context.Response.StatusCode = httpException.ErrorCode;
-                _context.Response.StatusDescription = httpException.Message;
-            }
-            else
-            {
-                Trace.TraceError(exception.Message);
-                _context.Response.StatusCode = 500;
-                _context.Response.StatusDescription = "Internal server error.";
-            }
-        }
-
-        private void WriteStatusCode(Status status)
-        {
-            _context.Response.StatusCode = status.Code;
-            _context.Response.StatusDescription = status.Description;
         }
 
         public void Dispose()

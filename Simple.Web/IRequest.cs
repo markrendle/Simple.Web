@@ -14,5 +14,6 @@ namespace Simple.Web
         string ContentType { get; }
         string HttpMethod { get; }
         IHeaderCollection Headers { get; }
+        IEnumerable<IPostedFile> Files { get; }
     }
 }

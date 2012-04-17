@@ -6,9 +6,9 @@
 
     internal sealed class RoutingTableBuilder
     {
-        private readonly Type _endpointBaseType;
+        private readonly IList<Type> _endpointBaseType;
 
-        public RoutingTableBuilder(Type endpointBaseType)
+        public RoutingTableBuilder(params Type[] endpointBaseType)
         {
             _endpointBaseType = endpointBaseType;
         }
@@ -41,7 +41,7 @@
         {
             if (type.IsAbstract || type.IsInterface) return false;
 
-            return _endpointBaseType.IsAssignableFrom(type);
+            return _endpointBaseType.Any(t => t.IsAssignableFrom(type));
         }
 
         public RoutingTable BuildRoutingTable(IEnumerable<Type> endpointTypes)

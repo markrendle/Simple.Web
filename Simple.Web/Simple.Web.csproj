@@ -61,6 +61,7 @@
     <Compile Include="GetAsyncRunner.cs" />
     <Compile Include="GetRunner.cs" />
     <Compile Include="HandlerBase.cs" />
+    <Compile Include="HandlerHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="IPathUtility.cs" />
     <Compile Include="IPost.cs" />
     <Compile Include="IMayRedirect.cs" />
+    <Compile Include="IPostedFile.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="IRequireAuthentication.cs" />
     <Compile Include="IResponse.cs" />
@@ -85,10 +87,12 @@
     <Compile Include="ISetCookies.cs" />
     <Compile Include="ISpecifyView.cs" />
     <Compile Include="IStartupTask.cs" />
+    <Compile Include="IUploadFiles.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="IWebEnvironment.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="PathUtility.cs" />
+    <Compile Include="PostedFile.cs" />
     <Compile Include="PostHandler.cs" />
     <Compile Include="PostRunner.cs" />
     <Compile Include="PropertySetterBuilder.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="RespondsToAttribute.cs" />
     <Compile Include="ResponseWrapper.cs" />
     <Compile Include="ResponseWriter.cs" />
+    <Compile Include="RoutingException.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="RoutingTableBuilder.cs" />
     <Compile Include="SimpleAsyncHandler.cs" />
@@ -113,6 +118,7 @@
     <Compile Include="UnsupportedMediaTypeException.cs" />
     <Compile Include="UriTemplateAttribute.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="VerbHandlerFactory.cs" />
     <Compile Include="WebEnvironment.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

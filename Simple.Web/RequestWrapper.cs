@@ -50,5 +50,16 @@ namespace Simple.Web
         {
             get { return _headers ?? (_headers =  new HeaderCollection(_httpRequest.Headers)); }
         }
+
+        public IEnumerable<IPostedFile> Files
+        {
+            get
+            {
+                for (int i = 0; i < _httpRequest.Files.Count; i++)
+                {
+                    yield return new PostedFile(_httpRequest.Files.Get(i));
+                }
+            }
+        }
     }
 }
