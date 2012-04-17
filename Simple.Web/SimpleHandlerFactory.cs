@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Simple.Web
 {
+    using System.Diagnostics;
     using System.Web;
 
     public class SimpleHandlerFactory : IHttpHandlerFactory
@@ -46,6 +47,12 @@ namespace Simple.Web
 
         public void ReleaseHandler(IHttpHandler handler)
         {
+            TryDispose(handler);
+        }
+
+        private static void TryDispose(IHttpHandler handler)
+        {
+            DisposeHelper.TryDispose(handler);
         }
     }
 }

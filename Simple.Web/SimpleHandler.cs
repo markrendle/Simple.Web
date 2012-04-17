@@ -4,12 +4,13 @@ namespace Simple.Web
     using System.Diagnostics;
     using System.Web;
 
-    internal class SimpleHandler<TEndpointType> : IHttpHandler
+    internal class SimpleHandler<TEndpointType> : IHttpHandler, IDisposable
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly HandlerHelper _helper;
+        private object _endpoint;
 
         internal SimpleHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
         {
@@ -36,15 +37,15 @@ namespace Simple.Web
 
         private void Run()
         {
-            var endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
+            _endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
 
-            if (endpoint != null)
+            if (_endpoint != null)
             {
-                if (!_helper.CheckAuthentication(endpoint)) return;
+                if (!_helper.CheckAuthentication(_endpoint)) return;
 
-                _helper.SetContext(endpoint);
-                _helper.SetFiles(endpoint);
-                var runner = EndpointRunner.Create<TEndpointType>(endpoint);
+                _helper.SetContext(_endpoint);
+                _helper.SetFiles(_endpoint);
+                var runner = EndpointRunner.Create<TEndpointType>(_endpoint);
                 runner.BeforeRun(_context, _contentTypeHandlerTable);
                 RunEndpoint(runner);
             }
@@ -60,6 +61,32 @@ namespace Simple.Web
         public bool IsReusable
         {
             get { return false; }
+        }
+
+        public void Dispose()
+        {
+            DisposeHelper.TryDispose(_endpoint);
+        }
+    }
+
+    internal static class DisposeHelper
+    {
+        public static void TryDispose(object obj)
+        {
+            if (obj == null) return;
+            var disposable = obj as IDisposable;
+            if (disposable != null)
+            {
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceError(ex.Message);
+                    throw;
+                }
+            }
         }
     }
 }

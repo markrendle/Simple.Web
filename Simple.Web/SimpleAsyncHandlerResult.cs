@@ -79,11 +79,7 @@ namespace Simple.Web
 
         public void Dispose()
         {
-            var disposable = _runner.Endpoint as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
+            DisposeHelper.TryDispose(_runner.Endpoint);
         }
     }
 }
