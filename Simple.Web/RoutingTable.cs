@@ -84,7 +84,7 @@ namespace Simple.Web
         {
             if (uriTemplate.Contains("{"))
             {
-                var regex = new Regex(Regex.Replace(uriTemplate, "{([^}]*)}", "(?<$1>[^/]*)"), RegexOptions.IgnoreCase);
+                var regex = new Regex(Regex.Replace(uriTemplate, "{([^}]*)}", "(?<$1>[^/]*)") + "$", RegexOptions.IgnoreCase);
                 _dynamicPaths[regex.GetGroupNames().Length].Add(regex, new[] {endpointType});
             }
             else

@@ -9,20 +9,19 @@ namespace Simple.Web
 
         public static void Write(IEndpointRunner runner, IContext context)
         {
-            if (runner.HasOutput && runner.Output is RawHtml)
+            var hasOutput = runner.HasOutput;
+
+            if (hasOutput && runner.Output is RawHtml)
             {
                 WriteRawHtml(runner, context);
             }
-            else if (runner.HasOutput && runner.Output is Stream)
+            else if (hasOutput && runner.Output is Stream)
             {
                 CopyStreamToResponse(runner, context);
             }
-            else
+            else if (hasOutput || runner.Endpoint is ISpecifyView)
             {
-                if (runner.HasOutput || runner.Endpoint is ISpecifyView)
-                {
-                    WriteUsingContentTypeHandler(runner, context);
-                }
+                WriteUsingContentTypeHandler(runner, context);
             }
         }
 
