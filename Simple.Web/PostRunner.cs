@@ -43,6 +43,8 @@ namespace Simple.Web
 
         public override void BeforeRun(IContext context, ContentTypeHandlerTable contentTypeHandlerTable)
         {
+            if (_post.GetType().GetInterface("Simple.Web.IInput`1") == null) return;
+
             var contentTypeHandler = contentTypeHandlerTable.GetContentTypeHandler(context.Request.ContentType);
             using (var reader = new StreamReader(context.Request.InputStream))
             {

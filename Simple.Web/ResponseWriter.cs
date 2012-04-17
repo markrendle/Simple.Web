@@ -19,7 +19,10 @@ namespace Simple.Web
             }
             else
             {
-                WriteUsingContentTypeHandler(runner, context);
+                if (runner.HasOutput || runner.Endpoint is ISpecifyView)
+                {
+                    WriteUsingContentTypeHandler(runner, context);
+                }
             }
         }
 
