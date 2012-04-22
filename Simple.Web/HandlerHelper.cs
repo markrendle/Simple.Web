@@ -61,7 +61,7 @@
             {
                 Redirect(runner.Endpoint as IMayRedirect);
             }
-            else if (status.IsSuccess)
+            else if (status.IsSuccess && status != Status.NoContent)
             {
                 ResponseWriter.Write(runner, _context);
             }

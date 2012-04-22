@@ -1,11 +1,25 @@
 namespace Simple.Web
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     public struct Status : IEquatable<Status>
     {
         public static readonly Status OK = new Status(200, "OK");
+        public static readonly Status NoContent = new Status(204, "No Content");
         public static readonly Status InternalServerError = new Status(500, "Internal Server Error");
+        private static readonly StatusLookupCollection StatusLookup;
+
+        static Status()
+        {
+            StatusLookup = new StatusLookupCollection
+                               {
+                                   OK,
+                                   NoContent,
+                                   InternalServerError
+                               };
+        }
 
         private readonly int _httpStatusCode;
         private readonly string _httpStatusDescription;
@@ -22,7 +36,7 @@ namespace Simple.Web
 
         public static implicit operator Status(int httpStatus)
         {
-            return new Status(httpStatus);
+            return StatusLookup.Contains(httpStatus) ? StatusLookup[httpStatus] : new Status(httpStatus);
         }
 
         public int Code
@@ -65,6 +79,14 @@ namespace Simple.Web
         public static bool operator !=(Status left, Status right)
         {
             return !left.Equals(right);
+        }
+
+        private class StatusLookupCollection : KeyedCollection<int,Status>
+        {
+            protected override int GetKeyForItem(Status item)
+            {
+                return item.Code;
+            }
         }
     }
 }
