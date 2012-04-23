@@ -75,6 +75,7 @@
     <Compile Include="IHeaderCollection.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="INeedContext.cs" />
+    <Compile Include="INoCache.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IPathUtility.cs" />
     <Compile Include="IPost.cs" />

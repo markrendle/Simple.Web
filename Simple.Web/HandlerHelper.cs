@@ -57,6 +57,11 @@
 
             SetCookies(runner.Endpoint as ISetCookies);
 
+            if (runner.Endpoint is INoCache)
+            {
+                _context.Response.DisableCache();
+            }
+
             if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
             {
                 Redirect(runner.Endpoint as IMayRedirect);

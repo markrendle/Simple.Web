@@ -77,6 +77,15 @@ namespace Simple.Web
             }
         }
 
+        public void DisableCache()
+        {
+            _httpResponse.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
+            _httpResponse.Cache.SetValidUntilExpires(false);
+            _httpResponse.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            _httpResponse.Cache.SetCacheability(HttpCacheability.NoCache);
+            _httpResponse.Cache.SetNoStore(); 
+        }
+
         public IHeaderCollection Headers
         {
             get { return _headers ?? (_headers =  new HeaderCollection(_httpResponse.Headers)); }

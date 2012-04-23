@@ -20,5 +20,6 @@ namespace Simple.Web
         void Write(char ch);
         void TransmitFile(string file);
         void SetCookie(ICookie cookie);
+        void DisableCache();
     }
 }
