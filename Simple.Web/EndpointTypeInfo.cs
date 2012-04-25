@@ -24,7 +24,7 @@ namespace Simple.Web
             get { return _type; }
         }
 
-        public bool RespondsTo(IList<string> acceptedContentTypes)
+        public bool RespondsTo(IEnumerable<string> acceptedContentTypes)
         {
             return _respondsToAcceptTypes.Count == 0 || _respondsToAcceptTypes.Overlaps(acceptedContentTypes);
         }

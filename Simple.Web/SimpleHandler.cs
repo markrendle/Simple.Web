@@ -4,13 +4,11 @@ namespace Simple.Web
     using System.Diagnostics;
     using System.Web;
 
-    internal class SimpleHandler<TEndpointType> : IHttpHandler, IDisposable
+    internal class SimpleHandler : IHttpHandler
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
-        private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
-        private readonly HandlerHelper _helper;
-        private object _endpoint;
+        private readonly IAuthenticationProvider _authenticationProvider;
 
         internal SimpleHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
         {
@@ -20,7 +18,7 @@ namespace Simple.Web
         {
             _context = context;
             _endpointInfo = endpointInfo;
-            _helper = new HandlerHelper(context, authenticationProvider);
+            _authenticationProvider = authenticationProvider;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -31,41 +29,24 @@ namespace Simple.Web
             }
             catch (Exception ex)
             {
-                _helper.WriteError(ex);
+                new HandlerHelper(_context, _authenticationProvider).WriteError(ex);
             }
         }
 
         private void Run()
         {
-            _endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
+            var endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
 
-            if (_endpoint != null)
+            if (endpoint != null)
             {
-                if (!_helper.CheckAuthentication(_endpoint)) return;
-
-                _helper.SetContext(_endpoint);
-                _helper.SetFiles(_endpoint);
-                var runner = EndpointRunner.Create<TEndpointType>(_endpoint);
-                runner.BeforeRun(_context, _contentTypeHandlerTable);
-                RunEndpoint(runner);
+                var run = EndpointRunnerFactory.Instance.Get(endpoint.GetType());
+                run(endpoint, _context);
             }
-        }
-
-        private void RunEndpoint(EndpointRunner runner)
-        {
-            var status = runner.Run();
-
-            _helper.WriteResponse(runner, status);
         }
 
         public bool IsReusable
         {
             get { return false; }
-        }
-
-        public void Dispose()
-        {
-            DisposeHelper.TryDispose(_endpoint);
         }
     }
 

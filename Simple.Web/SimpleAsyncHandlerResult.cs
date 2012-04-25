@@ -2,15 +2,16 @@ namespace Simple.Web
 {
     using System;
     using System.Threading.Tasks;
+    using CodeGeneration;
 
-    class SimpleAsyncHandlerResult<TEndpointType> : AsyncResult, IDisposable
+    class SimpleAsyncHandlerResult : AsyncResult
     {
-        private readonly ContentTypeHandlerTable _contentTypeHandlerTable = new ContentTypeHandlerTable();
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly AsyncCallback _callback;
         private readonly HandlerHelper _helper;
-        private AsyncEndpointRunner _runner;
+        private AsyncRunner _runner;
+        private object _endpoint;
 
         public SimpleAsyncHandlerResult(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
         {
@@ -23,20 +24,12 @@ namespace Simple.Web
 
         public void Run()
         {
-            var endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
+            _endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
 
-            if (endpoint != null)
+            if (_endpoint != null)
             {
-                if (!_helper.CheckAuthentication(endpoint))
-                {
-                    _callback(this);
-                    return;
-                }
-                _helper.SetContext(endpoint);
-                _helper.SetFiles(endpoint);
-                _runner = AsyncEndpointRunner.Create<TEndpointType>(endpoint);
-                _runner.BeforeRun(_context, _contentTypeHandlerTable);
-                _runner.Run().ContinueWith(RunContinuation);
+                _runner = EndpointRunnerFactory.Instance.GetAsync(_endpointInfo.EndpointType);
+                _runner.Start(_endpoint, _context).ContinueWith(RunContinuation);
             }
             else
             {
@@ -53,15 +46,17 @@ namespace Simple.Web
             }
             else
             {
-                _helper.WriteResponse(_runner, t.Result);
+                try
+                {
+                    _runner.End(_endpoint, _context, t.Result);
+                }
+                catch (Exception ex)
+                {
+                    _helper.WriteError(ex);
+                }
             }
 
             _callback(this);
-        }
-
-        public void Dispose()
-        {
-            DisposeHelper.TryDispose(_runner.Endpoint);
         }
     }
 }

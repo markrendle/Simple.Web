@@ -11,7 +11,7 @@
         public void CallsAreMade()
         {
             Reset();
-            var target = new EndpointRunnerFactory(typeof (TestEndpoint), new StubMethodLookup());
+            var target = new EndpointRunnerBuilder(typeof (TestEndpoint), new StubMethodLookup());
             var runner = target.BuildRunner();
             runner(new TestEndpoint(200), new MockContext());
 
@@ -26,7 +26,7 @@
         public void RedirectPreventsFurtherCalls()
         {
             Reset();
-            var target = new EndpointRunnerFactory(typeof(TestRedirectEndpoint), new StubMethodLookup());
+            var target = new EndpointRunnerBuilder(typeof(TestRedirectEndpoint), new StubMethodLookup());
             var runner = target.BuildRunner();
             runner(new TestRedirectEndpoint(301), new MockContext());
 
@@ -38,7 +38,7 @@
         public void UnusedRedirectDoesNotPreventFurtherCalls()
         {
             Reset();
-            var target = new EndpointRunnerFactory(typeof(TestRedirectEndpoint), new StubMethodLookup());
+            var target = new EndpointRunnerBuilder(typeof(TestRedirectEndpoint), new StubMethodLookup());
             var runner = target.BuildRunner();
             runner(new TestRedirectEndpoint(200), new MockContext());
 
@@ -50,7 +50,7 @@
         public void UploadFilesCallSetFiles()
         {
             Reset();
-            var target = new EndpointRunnerFactory(typeof(TestUploadEndpoint), new StubMethodLookup());
+            var target = new EndpointRunnerBuilder(typeof(TestUploadEndpoint), new StubMethodLookup());
             var runner = target.BuildRunner();
             runner(new TestUploadEndpoint(), new MockContext());
 

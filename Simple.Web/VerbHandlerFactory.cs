@@ -69,11 +69,11 @@ namespace Simple.Web
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleHandler<TSync>(context, endpointInfo, authenticationProvider);
+                instance = new SimpleHandler(context, endpointInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleHandler<TSync>(context, endpointInfo);
+                instance = new SimpleHandler(context, endpointInfo);
             }
             return instance;
         }

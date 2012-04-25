@@ -46,7 +46,7 @@
     <Compile Include="AsyncResult.cs" />
     <Compile Include="CodeGeneration\CheckAuthentication.cs" />
     <Compile Include="CodeGeneration\DisableCache.cs" />
-    <Compile Include="CodeGeneration\EndpointRunnerFactory.cs" />
+    <Compile Include="CodeGeneration\EndpointRunnerBuilder.cs" />
     <Compile Include="CodeGeneration\IMethodLookup.cs" />
     <Compile Include="CodeGeneration\MethodLookup.cs" />
     <Compile Include="CodeGeneration\Redirect.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="EndpointFactory.cs" />
     <Compile Include="EndpointInfo.cs" />
     <Compile Include="EndpointRunner.cs" />
+    <Compile Include="EndpointRunnerFactory.cs" />
     <Compile Include="EndpointTypeInfo.cs" />
     <Compile Include="ExportedTypeHelper.cs" />
     <Compile Include="FileUtility.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="HandlerBase.cs" />
     <Compile Include="HandlerHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
+    <Compile Include="HttpVerbAttribute.cs" />
     <Compile Include="IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IContentTypeHandler.cs" />

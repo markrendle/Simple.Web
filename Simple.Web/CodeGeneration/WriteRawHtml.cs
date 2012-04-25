@@ -4,7 +4,7 @@ namespace Simple.Web.CodeGeneration
 
     static class WriteRawHtml
     {
-        public static void Impl(IOutput<RawHtml> endpoint, IContext context)
+        internal static void Impl(IOutput<RawHtml> endpoint, IContext context)
         {
             context.Response.ContentType =
                 context.Request.AcceptTypes.FirstOrDefault(

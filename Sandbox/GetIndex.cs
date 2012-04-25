@@ -9,14 +9,19 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/")]
-    public class GetIndex : IGetAsync
+    public class GetIndex : IGetAsync, IOutput<RawHtml>
     {
+        //public Status Get()
+        //{
+        //    return Status.OK;
+        //}
+
         public Task<Status> Get()
         {
             return Task.Factory.StartNew(() => Status.OK);
         }
 
-        public object Output
+        public RawHtml Output
         {
             get { return Raw.Html("Simple.Web has entered the building."); }
         }
