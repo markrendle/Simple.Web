@@ -81,19 +81,4 @@ namespace Simple.Web
             return (!type.IsAbstract) && typeof (IContentTypeHandler).IsAssignableFrom(type);
         }
     }
-
-    static class ExportedTypeHelper
-    {
-        public static IEnumerable<Type> FromCurrentAppDomain(Func<Type,bool> predicate)
-        {
-            var list = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => !a.IsDynamic)
-                .Select(assembly =>
-                    assembly.GetExportedTypes().Where(predicate).ToList())
-                .SelectMany(exportedTypes => exportedTypes)
-                .ToList();
-
-            return list;
-        }
-    }
 }

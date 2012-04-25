@@ -103,7 +103,7 @@ namespace Simple.Web
                     throw new UnsupportedMediaTypeException(context.Request.AcceptTypes);
                 }
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                contentTypeHandler.Write(new Content(endpoint), context.Response.Output);
+                contentTypeHandler.Write(new Content(endpoint, null), context.Response.Output);
             }
         }
 

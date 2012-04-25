@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Concurrent;
     using System.Web;
+    using CodeGeneration;
 
     sealed class EndpointFactory
     {

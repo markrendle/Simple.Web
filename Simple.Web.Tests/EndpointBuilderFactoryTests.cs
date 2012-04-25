@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using CodeGeneration;
     using Xunit;
 
     public class EndpointBuilderFactoryTests

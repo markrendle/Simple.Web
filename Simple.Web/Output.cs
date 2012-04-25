@@ -5,16 +5,24 @@ namespace Simple.Web
 
     class Content : IContent
     {
-        private readonly IEndpointRunner _runner;
+        private readonly object _endpoint;
+        private readonly object _model;
+        private readonly string _viewPath;
 
-        internal Content(IEndpointRunner runner)
+        internal Content(object endpoint, object model) : this(endpoint, model, null)
         {
-            _runner = runner;
+        }
+
+        internal Content(object endpoint, object model, string viewPath)
+        {
+            _endpoint = endpoint;
+            _model = model;
+            _viewPath = viewPath;
         }
 
         public object Model
         {
-            get { return _runner.HasOutput ? _runner.Output : null; }
+            get { return _model; }
         }
 
         public IEnumerable<KeyValuePair<string, object>> Variables
@@ -22,8 +30,8 @@ namespace Simple.Web
             get
             {
                 return
-                    _runner.Endpoint.GetType().GetProperties().Where(p => p.CanRead).Select(
-                        p => new KeyValuePair<string, object>(p.Name, p.GetValue(_runner.Endpoint, null)));
+                    _endpoint.GetType().GetProperties().Where(p => p.CanRead).Select(
+                        p => new KeyValuePair<string, object>(p.Name, p.GetValue(_endpoint, null)));
             }
         }
 
@@ -31,9 +39,7 @@ namespace Simple.Web
         {
             get
             {
-                var isv = _runner.Endpoint as ISpecifyView;
-                if (isv != null) return isv.ViewPath;
-                return null;
+                return _viewPath;
             }
         }
     }

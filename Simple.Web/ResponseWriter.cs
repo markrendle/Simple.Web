@@ -57,7 +57,7 @@ namespace Simple.Web
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                contentTypeHandler.Write(new Content(runner), context.Response.Output);
+                contentTypeHandler.Write(new Content(runner.Endpoint, null), context.Response.Output);
             }
         }
 

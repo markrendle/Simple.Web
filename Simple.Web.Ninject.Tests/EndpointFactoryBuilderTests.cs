@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Simple.Web.Ninject.Tests
 {
+    using CodeGeneration;
     using Xunit;
     using global::Ninject.Modules;
 

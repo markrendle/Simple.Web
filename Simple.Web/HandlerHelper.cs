@@ -21,6 +21,11 @@
             var requireAuthentication = endpoint as IRequireAuthentication;
             if (requireAuthentication == null) return true;
 
+            return CheckAuthentication(requireAuthentication);
+        }
+
+        internal bool CheckAuthentication(IRequireAuthentication requireAuthentication)
+        {
             var user = _authenticationProvider.GetLoggedInUser(_context);
             if (user == null || !user.IsAuthenticated)
             {
@@ -32,6 +37,7 @@
             requireAuthentication.CurrentUser = user;
             return true;
         }
+
 
         internal void SetContext(object endpoint)
         {

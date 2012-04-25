@@ -1,4 +1,4 @@
-namespace Simple.Web
+namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Collections.Generic;

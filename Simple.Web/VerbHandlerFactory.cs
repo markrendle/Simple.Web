@@ -1,19 +1,38 @@
 namespace Simple.Web
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web;
 
     internal class VerbHandlerFactory<TSync,TAsync>
     {
-// ReSharper disable StaticFieldInGenericType
-        private static readonly Lazy<RoutingTable> RoutingTable = new Lazy<RoutingTable>(() => new RoutingTableBuilder(typeof(TSync), typeof(TAsync)).BuildRoutingTable());
-// ReSharper restore StaticFieldInGenericType
+        private static readonly ConcurrentDictionary<string, RoutingTable> RoutingTables = new ConcurrentDictionary<string, RoutingTable>(StringComparer.OrdinalIgnoreCase);
+
+        private static RoutingTable BuildRoutingTable(string verb)
+        {
+            var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsVerbHandler)
+                .Where(i => HttpVerbAttribute.Get(i).Verb.Equals(verb, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            return new RoutingTableBuilder(handlerTypes).BuildRoutingTable();
+        }
+
+        private static bool IsVerbHandler(Type type)
+        {
+            return HttpVerbAttribute.IsAppliedTo(type);
+        }
+
+        private static RoutingTable TableFor(string verb)
+        {
+            return RoutingTables.GetOrAdd(verb, BuildRoutingTable);
+        }
 
         public static IHttpHandler TryCreate(IContext context)
         {
             IDictionary<string, string> variables;
-            var endpointType = RoutingTable.Value.Get(context.Request.Url.AbsolutePath, context.Request.AcceptTypes, out variables);
+            var endpointType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.AcceptTypes, out variables);
             if (endpointType == null) return null;
             var endpointInfo = new EndpointInfo(endpointType, variables, context.Request.HttpMethod);
 
