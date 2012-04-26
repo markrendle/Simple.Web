@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyEx.cs" />
+    <Compile Include="Helpers\AssemblyEx.cs" />
     <Compile Include="CodeGeneration\CheckAuthentication.cs" />
     <Compile Include="CodeGeneration\DisableCache.cs" />
     <Compile Include="CodeGeneration\EndpointRunnerBuilder.cs" />
@@ -69,8 +69,8 @@
     <Compile Include="EndpointRunnerFactory.cs" />
     <Compile Include="EndpointTypeInfo.cs" />
     <Compile Include="Helpers\ExportedTypeHelper.cs" />
-    <Compile Include="FileUtility.cs" />
-    <Compile Include="FormDeserializer.cs" />
+    <Compile Include="Helpers\FileUtility.cs" />
+    <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="HttpVerbAttribute.cs" />
@@ -80,21 +80,19 @@
     <Compile Include="IContext.cs" />
     <Compile Include="ICookie.cs" />
     <Compile Include="ICookieCollection.cs" />
-    <Compile Include="IEndpointRunner.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="IHeaderCollection.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="INeedContext.cs" />
     <Compile Include="INoCache.cs" />
     <Compile Include="IOutput.cs" />
-    <Compile Include="IPathUtility.cs" />
+    <Compile Include="Helpers\IPathUtility.cs" />
     <Compile Include="IPost.cs" />
     <Compile Include="IMayRedirect.cs" />
     <Compile Include="IPostedFile.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="IRequireAuthentication.cs" />
     <Compile Include="IResponse.cs" />
-    <Compile Include="IReusable.cs" />
     <Compile Include="DependencyInjection\ISimpleContainer.cs" />
     <Compile Include="ISetCookies.cs" />
     <Compile Include="ISpecifyView.cs" />
@@ -102,14 +100,11 @@
     <Compile Include="IUploadFiles.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="IWebEnvironment.cs" />
-    <Compile Include="Output.cs" />
-    <Compile Include="PathUtility.cs" />
-    <Compile Include="PostedFile.cs" />
+    <Compile Include="ContentTypeHandling\Content.cs" />
     <Compile Include="CodeGeneration\PropertySetterBuilder.cs" />
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
     <Compile Include="RespondsToAttribute.cs" />
-    <Compile Include="ResponseWriter.cs" />
     <Compile Include="Routing\RoutingException.cs" />
     <Compile Include="Routing\RoutingTable.cs" />
     <Compile Include="Routing\RoutingTableBuilder.cs" />

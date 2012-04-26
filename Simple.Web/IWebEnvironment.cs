@@ -1,6 +1,7 @@
 namespace Simple.Web
 {
     using System.Collections.Generic;
+    using Helpers;
 
     public interface IWebEnvironment
     {

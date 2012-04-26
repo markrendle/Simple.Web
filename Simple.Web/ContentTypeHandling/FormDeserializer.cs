@@ -1,9 +1,8 @@
-namespace Simple.Web
+namespace Simple.Web.ContentTypeHandling
 {
     using System;
     using System.IO;
     using System.Linq;
-    using ContentTypeHandling;
 
     [ContentTypes("application/x-www-form-urlencoded")]
     sealed class FormDeserializer : IContentTypeHandler

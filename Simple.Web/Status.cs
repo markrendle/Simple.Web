@@ -1,7 +1,6 @@
 namespace Simple.Web
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
     public struct Status : IEquatable<Status>

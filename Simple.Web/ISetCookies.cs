@@ -1,14 +1,12 @@
 ﻿namespace Simple.Web
 {
-    using System.Collections.Generic;
-
     public interface ISetCookies
     {
-        ICookieCollection ResponseCookies { get;  set; }
+        ICookieCollection ResponseCookies { set; }
     }
 
     public interface IReadCookies
     {
-        ICookieCollection RequestCookies { get; set; }
+        ICookieCollection RequestCookies { set; }
     }
 }
