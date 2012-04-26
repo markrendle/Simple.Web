@@ -6,7 +6,7 @@ namespace Simple.Web
     using System.Linq;
     using System.Web;
 
-    internal class VerbHandlerFactory<TSync,TAsync>
+    internal class VerbHandlerFactory
     {
         private static readonly ConcurrentDictionary<string, RoutingTable> RoutingTables = new ConcurrentDictionary<string, RoutingTable>(StringComparer.OrdinalIgnoreCase);
 
@@ -47,17 +47,13 @@ namespace Simple.Web
         private static IHttpHandler CreateHandler(IContext context, EndpointInfo endpointInfo)
         {
             IHttpHandler instance;
-            if (typeof (TSync).IsAssignableFrom(endpointInfo.EndpointType))
-            {
-                instance = CreateHttpHandler(context, endpointInfo);
-            }
-            else if (typeof (TAsync).IsAssignableFrom(endpointInfo.EndpointType))
+            if (endpointInfo.IsAsync)
             {
                 instance = CreateAsyncHttpHandler(context, endpointInfo);
             }
             else
             {
-                throw new RoutingException(context.Request.Url.ToString(), "No matching route found.");
+                instance = CreateHttpHandler(context, endpointInfo);
             }
             return instance;
         }
@@ -85,11 +81,11 @@ namespace Simple.Web
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleAsyncHandler<TAsync>(context, endpointInfo, authenticationProvider);
+                instance = new SimpleAsyncHandler(context, endpointInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleAsyncHandler<TAsync>(context, endpointInfo);
+                instance = new SimpleAsyncHandler(context, endpointInfo);
             }
             return instance;
         }

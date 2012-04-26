@@ -3,6 +3,7 @@ namespace Simple.Web
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     internal sealed class EndpointInfo
     {
@@ -52,6 +53,11 @@ namespace Simple.Web
         public Type OutputType
         {
             get { return GetInterfaceGenericType(typeof (IOutput<>)); }
+        }
+
+        public bool IsAsync
+        {
+            get { return HttpVerbAttribute.GetMethod(_endpointType).ReturnType == typeof (Task<Status>); }
         }
 
         private Type GetInterfaceGenericType(Type genericType)

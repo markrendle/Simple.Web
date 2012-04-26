@@ -4,7 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Web;
 
-    internal class SimpleAsyncHandler<TEndpointType> : IHttpAsyncHandler
+    internal class SimpleAsyncHandler : IHttpAsyncHandler
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;

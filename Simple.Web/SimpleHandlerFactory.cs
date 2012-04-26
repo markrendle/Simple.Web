@@ -14,20 +14,12 @@ namespace Simple.Web
         public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
         {
             Startup();
-            var simpleContext = new ContextWrapper(context);
-            switch (context.Request.HttpMethod.ToUpperInvariant())
+            if (PublicFileHandler.IsPublicFile(context.Request.Url.AbsolutePath, SimpleWeb.Configuration))
             {
-                case "GET":
-                    if (PublicFileHandler.IsPublicFile(context.Request.Url.AbsolutePath, SimpleWeb.Configuration))
-                    {
-                        return new PublicFileHandler();
-                    }
-                    return VerbHandlerFactory<IGet, IGetAsync>.TryCreate(simpleContext);
-                case "POST":
-                    return VerbHandlerFactory<IPost, IPostAsync>.TryCreate(simpleContext);
+                return new PublicFileHandler();
             }
-
-            return null;
+            var simpleContext = new ContextWrapper(context);
+            return VerbHandlerFactory.TryCreate(simpleContext);
         }
 
         private static void Startup()

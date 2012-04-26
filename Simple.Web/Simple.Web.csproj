@@ -77,7 +77,6 @@
     <Compile Include="FormDeserializer.cs" />
     <Compile Include="GetAsyncRunner.cs" />
     <Compile Include="GetRunner.cs" />
-    <Compile Include="HandlerBase.cs" />
     <Compile Include="HandlerHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="HttpVerbAttribute.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="IConfiguration.cs" />
     <Compile Include="IContentTypeHandler.cs" />
     <Compile Include="IContext.cs" />
-    <Compile Include="GetHandler.cs" />
     <Compile Include="ICookie.cs" />
     <Compile Include="IEndpointRunner.cs" />
     <Compile Include="IGet.cs" />
@@ -112,7 +110,6 @@
     <Compile Include="Output.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="PostedFile.cs" />
-    <Compile Include="PostHandler.cs" />
     <Compile Include="PostRunner.cs" />
     <Compile Include="PropertySetterBuilder.cs" />
     <Compile Include="PublicFileHandler.cs" />
