@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyEx.cs" />
-    <Compile Include="AsyncEndpointRunner.cs" />
     <Compile Include="AsyncResult.cs" />
     <Compile Include="CodeGeneration\CheckAuthentication.cs" />
     <Compile Include="CodeGeneration\DisableCache.cs" />
@@ -69,14 +68,11 @@
     <Compile Include="CodeGeneration\EndpointBuilderFactory.cs" />
     <Compile Include="EndpointFactory.cs" />
     <Compile Include="EndpointInfo.cs" />
-    <Compile Include="EndpointRunner.cs" />
     <Compile Include="EndpointRunnerFactory.cs" />
     <Compile Include="EndpointTypeInfo.cs" />
     <Compile Include="ExportedTypeHelper.cs" />
     <Compile Include="FileUtility.cs" />
     <Compile Include="FormDeserializer.cs" />
-    <Compile Include="GetAsyncRunner.cs" />
-    <Compile Include="GetRunner.cs" />
     <Compile Include="HandlerHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="HttpVerbAttribute.cs" />
@@ -110,7 +106,6 @@
     <Compile Include="Output.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="PostedFile.cs" />
-    <Compile Include="PostRunner.cs" />
     <Compile Include="PropertySetterBuilder.cs" />
     <Compile Include="PublicFileHandler.cs" />
     <Compile Include="Raw.cs" />
