@@ -9,4 +9,9 @@ namespace Simple.Web
             return File.Exists(path);
         }
     }
+
+    public interface IFileUtility
+    {
+        bool Exists(string path);
+    }
 }

@@ -15,5 +15,6 @@ namespace Simple.Web
         string HttpMethod { get; }
         IHeaderCollection Headers { get; }
         IEnumerable<IPostedFile> Files { get; }
+        ICookieCollection Cookies { get; }
     }
 }

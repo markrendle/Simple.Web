@@ -7,6 +7,9 @@ namespace Simple.Web.CodeGeneration
     {
         public MethodInfo CheckAuthentication { get { return Get(typeof (CheckAuthentication)); } }
         public MethodInfo SetFiles { get { return Get(typeof (SetFiles)); } }
+        public MethodInfo SetRequestCookies { get { return Get(typeof (SetRequestCookies)); } }
+        public MethodInfo SetResponseCookies { get { return Get(typeof (SetResponseCookies)); } }
+
         public MethodInfo SetInput { get { return Get(typeof (SetInput)); } }
 
         public MethodInfo WriteStatusCode
@@ -14,7 +17,6 @@ namespace Simple.Web.CodeGeneration
             get { return Get(typeof(WriteStatusCode)); }
         }
 
-        public MethodInfo SetCookies { get { return Get(typeof (SetCookies)); } }
         public MethodInfo DisableCache { get { return Get(typeof (DisableCache)); } }
         public MethodInfo Redirect { get { return Get(typeof (Redirect)); } }
         public MethodInfo WriteStreamResponse { get { return Get(typeof (WriteStreamResponse)); } }

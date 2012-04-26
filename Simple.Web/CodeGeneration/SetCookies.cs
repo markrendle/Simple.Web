@@ -5,14 +5,19 @@ using System.Text;
 
 namespace Simple.Web.CodeGeneration
 {
-    static class SetCookies
+    static class SetRequestCookies
+    {
+        internal static void Impl(IReadCookies setCookies, IContext context)
+        {
+            setCookies.RequestCookies = context.Request.Cookies;
+        }
+    }
+    
+    static class SetResponseCookies
     {
         internal static void Impl(ISetCookies setCookies, IContext context)
         {
-            foreach (var cookie in setCookies.CookiesToSet)
-            {
-                context.Response.SetCookie(cookie);
-            }
+            setCookies.ResponseCookies = context.Request.Cookies;
         }
     }
 }

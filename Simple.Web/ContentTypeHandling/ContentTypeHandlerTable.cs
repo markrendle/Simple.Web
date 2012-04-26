@@ -1,4 +1,4 @@
-namespace Simple.Web
+namespace Simple.Web.ContentTypeHandling
 {
     using System;
     using System.Collections;

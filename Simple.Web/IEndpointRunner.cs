@@ -1,6 +1,7 @@
 namespace Simple.Web
 {
     using System;
+    using ContentTypeHandling;
 
     internal interface IEndpointRunner
     {

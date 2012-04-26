@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Simple.Web.Tests
 {
+    using Routing;
     using Xunit;
 
     public class RoutingTableBuilderTests

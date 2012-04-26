@@ -1,4 +1,4 @@
-namespace Simple.Web
+namespace Simple.Web.ContentTypeHandling
 {
     public static class ContentType
     {

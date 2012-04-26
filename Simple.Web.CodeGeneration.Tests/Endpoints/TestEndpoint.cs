@@ -21,9 +21,6 @@ namespace Simple.Web.CodeGeneration.Tests.Endpoints
 
         public string Input { get; set; }
 
-        public IEnumerable<ICookie> CookiesToSet
-        {
-            get { return Enumerable.Empty<ICookie>(); }
-        }
+        public ICookieCollection ResponseCookies { get; set; }
     }
 }

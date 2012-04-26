@@ -1,8 +1,9 @@
-namespace Simple.Web
+namespace Simple.Web.AspNet
 {
     using System;
     using System.Diagnostics;
     using System.Web;
+    using Helpers;
 
     internal class SimpleHandler : IHttpHandler
     {
@@ -29,7 +30,7 @@ namespace Simple.Web
             }
             catch (Exception ex)
             {
-                new HandlerHelper(_context, _authenticationProvider).WriteError(ex);
+                new ErrorHelper(_context).WriteError(ex);
             }
         }
 

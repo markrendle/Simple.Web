@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Simple.Web.CodeGeneration
 {
+    using ContentTypeHandling;
+
     static class WriteOutput
     {
         public static void Impl<T>(IOutput<T> endpoint, IContext context)

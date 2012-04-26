@@ -1,4 +1,4 @@
-namespace Simple.Web
+namespace Simple.Web.Routing
 {
     using System;
     using System.Runtime.Serialization;

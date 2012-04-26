@@ -4,7 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Linq;
 
-    static class ExportedTypeHelper
+    public static class ExportedTypeHelper
     {
         public static IEnumerable<Type> FromCurrentAppDomain(Func<Type,bool> predicate)
         {

@@ -109,6 +109,10 @@
     <Compile Include="PostForm.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
+      <Project>{266D3482-C95C-4B2F-B7EA-F08F849084D3}</Project>
+      <Name>Simple.Web.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>

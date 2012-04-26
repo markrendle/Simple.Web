@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web.Tests
 {
     using System.Collections.Generic;
+    using Routing;
     using Xunit;
 
     public class RoutingTableTests

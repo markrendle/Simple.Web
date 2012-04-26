@@ -6,7 +6,7 @@
     using System.Web;
     using CodeGeneration;
 
-    sealed class EndpointFactory
+    public sealed class EndpointFactory
     {
         private static EndpointFactory _instance;
         public static EndpointFactory Instance

@@ -1,9 +1,9 @@
-﻿namespace Simple.Web
+﻿namespace Simple.Web.AspNet
 {
     using System;
     using System.Web;
 
-    public class SimpleCookie : ICookie
+    public class CookieWrapper : ICookie
     {
         private readonly HttpCookie _cookie;
         public string Name
@@ -42,20 +42,20 @@
             set { _cookie[key] = value; }
         }
 
-        public HttpCookie HttpCookie
+        internal HttpCookie HttpCookie
         {
             get { return _cookie; }
         }
 
-        public SimpleCookie(string name, string value) : this(new HttpCookie(name, value))
+        public CookieWrapper(string name, string value) : this(new HttpCookie(name, value))
         {
         }
 
-        public SimpleCookie(string name) : this(new HttpCookie(name))
+        public CookieWrapper(string name) : this(new HttpCookie(name))
         {
         }
 
-        public SimpleCookie(HttpCookie cookie)
+        public CookieWrapper(HttpCookie cookie)
         {
             _cookie = cookie;
         }

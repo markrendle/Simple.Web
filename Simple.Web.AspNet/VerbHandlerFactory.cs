@@ -1,12 +1,13 @@
-namespace Simple.Web
+namespace Simple.Web.AspNet
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
+    using Routing;
 
-    internal class VerbHandlerFactory
+    internal static class VerbHandlerFactory
     {
         private static readonly ConcurrentDictionary<string, RoutingTable> RoutingTables = new ConcurrentDictionary<string, RoutingTable>(StringComparer.OrdinalIgnoreCase);
 

@@ -1,7 +1,6 @@
-namespace Simple.Web
+namespace Simple.Web.AspNet
 {
     using System;
-    using System.Collections.Specialized;
     using System.IO;
     using System.Web;
 
@@ -9,6 +8,7 @@ namespace Simple.Web
     {
         private readonly HttpResponse _httpResponse;
         private IHeaderCollection _headers;
+        private ICookieCollection _cookies;
 
         public void Write(string s)
         {
@@ -68,15 +68,6 @@ namespace Simple.Web
             _httpResponse.TransmitFile(file);
         }
 
-        public void SetCookie(ICookie cookie)
-        {
-            var simpleCookie = cookie as SimpleCookie;
-            if (simpleCookie != null)
-            {
-                _httpResponse.Cookies.Add(simpleCookie.HttpCookie);
-            }
-        }
-
         public void DisableCache()
         {
             _httpResponse.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
@@ -89,6 +80,11 @@ namespace Simple.Web
         public IHeaderCollection Headers
         {
             get { return _headers ?? (_headers =  new HeaderCollection(_httpResponse.Headers)); }
+        }
+
+        public ICookieCollection Cookies
+        {
+            get { return _cookies ?? (_cookies = new CookieWrapperCollection(_httpResponse.Cookies)); }
         }
 
         public void Close()

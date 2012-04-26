@@ -6,6 +6,7 @@
     using System.Dynamic;
     using System.IO;
     using System.Reflection;
+    using ContentTypeHandling;
 
     [ContentTypes(ContentType.Html, ContentType.XHtml)]
     public class RazorHtmlContentTypeHandler : IContentTypeHandler

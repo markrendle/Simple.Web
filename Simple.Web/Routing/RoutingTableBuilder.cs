@@ -1,10 +1,10 @@
-﻿namespace Simple.Web
+﻿namespace Simple.Web.Routing
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal sealed class RoutingTableBuilder
+    public sealed class RoutingTableBuilder
     {
         private readonly IList<Type> _endpointBaseTypes;
 

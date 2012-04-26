@@ -1,5 +1,7 @@
 namespace Simple.Web.CodeGeneration
 {
+    using ContentTypeHandling;
+
     static class WriteView
     {
         public static void Impl(ISpecifyView endpoint, IContext context)

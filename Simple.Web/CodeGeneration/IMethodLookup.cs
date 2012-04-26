@@ -6,9 +6,10 @@ namespace Simple.Web.CodeGeneration
     {
         MethodInfo CheckAuthentication { get; }
         MethodInfo SetFiles { get; }
+        MethodInfo SetRequestCookies { get; }
+        MethodInfo SetResponseCookies { get; }
         MethodInfo SetInput { get; }
         MethodInfo WriteStatusCode { get; }
-        MethodInfo SetCookies { get; }
         MethodInfo DisableCache { get; }
         MethodInfo Redirect { get; }
         MethodInfo WriteStreamResponse { get; }

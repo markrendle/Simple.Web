@@ -4,6 +4,11 @@
 
     public interface ISetCookies
     {
-        IEnumerable<ICookie> CookiesToSet { get; }
+        ICookieCollection ResponseCookies { get;  set; }
+    }
+
+    public interface IReadCookies
+    {
+        ICookieCollection RequestCookies { get; set; }
     }
 }

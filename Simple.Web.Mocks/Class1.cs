@@ -49,6 +49,11 @@ namespace Simple.Web.Mocks
         {
             get { throw new NotImplementedException(); }
         }
+
+        public ICookieCollection Cookies
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 
     public class MockResponse : IResponse
@@ -64,6 +69,11 @@ namespace Simple.Web.Mocks
         public string ContentType { get; set; }
 
         public IHeaderCollection Headers { get; set; }
+
+        public ICookieCollection Cookies
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         public void Close()
         {

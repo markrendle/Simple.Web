@@ -6,6 +6,7 @@ namespace Simple.Web.CodeGeneration
 {
     using System.IO;
     using System.Reflection;
+    using ContentTypeHandling;
 
     internal static class SetInput
     {

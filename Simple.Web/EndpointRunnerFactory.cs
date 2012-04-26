@@ -8,7 +8,7 @@ namespace Simple.Web
     using System.Collections.Concurrent;
     using CodeGeneration;
 
-    internal class EndpointRunnerFactory
+    public class EndpointRunnerFactory
     {
         private readonly ConcurrentDictionary<Type, Action<object, IContext>> _cache =
             new ConcurrentDictionary<Type, Action<object, IContext>>();

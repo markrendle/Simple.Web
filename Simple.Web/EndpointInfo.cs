@@ -5,7 +5,7 @@ namespace Simple.Web
     using System.Linq;
     using System.Threading.Tasks;
 
-    internal sealed class EndpointInfo
+    public sealed class EndpointInfo
     {
         private readonly Type _endpointType;
         private readonly string _httpMethod;

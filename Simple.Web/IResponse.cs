@@ -12,6 +12,7 @@ namespace Simple.Web
         Stream OutputStream { get; }
         string ContentType { get; set; }
         IHeaderCollection Headers { get; }
+        ICookieCollection Cookies { get; }
         void Close();
         void Flush();
         void Write(string s);
@@ -19,7 +20,6 @@ namespace Simple.Web
         void Write(char[] buffer, int index, int count);
         void Write(char ch);
         void TransmitFile(string file);
-        void SetCookie(ICookie cookie);
         void DisableCache();
     }
 }

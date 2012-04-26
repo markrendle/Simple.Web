@@ -2,6 +2,7 @@ namespace Simple.Web
 {
     using System.IO;
     using System.Linq;
+    using ContentTypeHandling;
 
     static class ResponseWriter
     {

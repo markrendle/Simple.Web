@@ -1,4 +1,4 @@
-﻿namespace Simple.Web
+﻿namespace Simple.Web.AspNet
 {
     using System;
     using System.Collections.Concurrent;

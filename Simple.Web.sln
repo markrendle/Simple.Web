@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Mocks", "Simple.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{993346D0-C1BB-4238-8FCC-09CA69CE9C02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.AspNet", "Simple.Web.AspNet\Simple.Web.AspNet.csproj", "{266D3482-C95C-4B2F-B7EA-F08F849084D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{266D3482-C95C-4B2F-B7EA-F08F849084D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{266D3482-C95C-4B2F-B7EA-F08F849084D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{266D3482-C95C-4B2F-B7EA-F08F849084D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{266D3482-C95C-4B2F-B7EA-F08F849084D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

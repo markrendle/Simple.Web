@@ -1,7 +1,6 @@
-namespace Simple.Web
+namespace Simple.Web.AspNet
 {
     using System;
-    using System.Collections.Generic;
     using System.Web;
 
     internal class SimpleAsyncHandler : IHttpAsyncHandler

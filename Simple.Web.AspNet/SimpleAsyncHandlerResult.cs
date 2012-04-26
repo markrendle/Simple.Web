@@ -1,15 +1,16 @@
-namespace Simple.Web
+namespace Simple.Web.AspNet
 {
     using System;
     using System.Threading.Tasks;
     using CodeGeneration;
+    using Helpers;
 
     class SimpleAsyncHandlerResult : AsyncResult
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly AsyncCallback _callback;
-        private readonly HandlerHelper _helper;
+        private readonly ErrorHelper _helper;
         private AsyncRunner _runner;
         private object _endpoint;
 
@@ -19,7 +20,7 @@ namespace Simple.Web
             _endpointInfo = endpointInfo;
             _callback = callback;
             AsyncState = asyncState;
-            _helper = new HandlerHelper(context, authenticationProvider);
+            _helper = new ErrorHelper(context);
         }
 
         public void Run()

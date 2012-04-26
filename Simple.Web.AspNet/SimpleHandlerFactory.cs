@@ -1,9 +1,5 @@
-﻿using System;
-using System.Text;
-
-namespace Simple.Web
+﻿namespace Simple.Web.AspNet
 {
-    using System.Diagnostics;
     using System.Web;
 
     public class SimpleHandlerFactory : IHttpHandlerFactory

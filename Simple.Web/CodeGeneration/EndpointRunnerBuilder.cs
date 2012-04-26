@@ -79,7 +79,6 @@
         private void CreateResponseBlocks()
         {
             CreateWriteStatusBlock();
-            CreateSetCookiesBlock();
             CreateNoCacheBlock();
             CreateRedirectBlock();
             CreateOutputBlocks();
@@ -89,6 +88,8 @@
         {
             CreateAuthenticateBlock();
             CreateSetContextBlock();
+            CreateSetRequestCookiesBlock();
+            CreateSetResponseCookiesBlock();
             CreateSetFilesBlock();
             CreateSetInputBlock();
         }
@@ -109,6 +110,22 @@
             }
         }
 
+        private void CreateSetRequestCookiesBlock()
+        {
+            if (typeof (IReadCookies).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetRequestCookiesBlock());
+            }
+        }
+
+        private void CreateSetResponseCookiesBlock()
+        {
+            if (typeof (IReadCookies).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetResponseCookiesBlock());
+            }
+        }
+
         private void CreateSetFilesBlock()
         {
             if (typeof (IUploadFiles).IsAssignableFrom(_type))
@@ -125,22 +142,9 @@
             }
         }
 
-        private void CreateRunBlock()
-        {
-            _blocks.Add(BuildRunBlock());
-        }
-
         private void CreateWriteStatusBlock()
         {
             _blocks.Add(BuildWriteStatus());
-        }
-
-        private void CreateSetCookiesBlock()
-        {
-            if (typeof (ISetCookies).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetCookiesBlock());
-            }
         }
 
         private void CreateNoCacheBlock()
@@ -225,6 +229,16 @@
             return Expression.Assign(Expression.Property(_endpoint, typeof (INeedContext).GetProperty("Context")), _context);
         }
 
+        private Expression BuildSetRequestCookiesBlock()
+        {
+            return Expression.Call(_methodLookup.SetRequestCookies, _endpoint, _context);
+        }
+
+        private Expression BuildSetResponseCookiesBlock()
+        {
+            return Expression.Call(_methodLookup.SetResponseCookies, _endpoint, _context);
+        }
+
         private Expression BuildSetFilesBlock()
         {
             return Expression.Call(_methodLookup.SetFiles, _endpoint, _context);
@@ -239,14 +253,9 @@
         {
             return Expression.IfThen(Expression.Call(_methodLookup.Redirect, _endpoint, _status, _context), Expression.Return(_end));
         }
-
-        private Expression BuildSetCookiesBlock()
-        {
-            return Expression.Call(_methodLookup.SetCookies, _endpoint, _context);
-        }
     }
 
-    internal class AsyncRunner
+    public class AsyncRunner
     {
         private readonly Func<object, IContext, Task<Status>> _start;
         private readonly Action<object, IContext, Status> _end;

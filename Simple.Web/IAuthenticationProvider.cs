@@ -5,7 +5,7 @@
         IUser GetLoggedInUser(IContext context);
     }
 
-    class AuthenticationProvider : IAuthenticationProvider
+    public class AuthenticationProvider : IAuthenticationProvider
     {
         public IUser GetLoggedInUser(IContext context)
         {

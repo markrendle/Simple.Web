@@ -6,6 +6,7 @@ using System.Text;
 namespace Simple.Web.JsonFx
 {
     using System.IO;
+    using ContentTypeHandling;
     using global::JsonFx.Json;
     using global::JsonFx.Json.Resolvers;
     using global::JsonFx.Serialization;

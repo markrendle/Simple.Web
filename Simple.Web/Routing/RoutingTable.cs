@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web
+﻿namespace Simple.Web.Routing
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
-    internal class RoutingTable
+    public class RoutingTable
     {
         private const int MaximumGroupCount = 64;
         private readonly Dictionary<string, IList<EndpointTypeInfo>> _staticPaths =
@@ -111,7 +109,7 @@ namespace Simple.Web
         private static IEnumerable<SortedList<Regex, IList<EndpointTypeInfo>>> GenerateEmptyLists()
         {
             var regexTermComparer =
-                new Comparer<Regex>(
+                new Web.Comparer<Regex>(
                     (regex, regex1) => StringComparer.OrdinalIgnoreCase.Compare(regex.ToString(), regex1.ToString()));
             for (int i = 0; i < MaximumGroupCount; i++)
             {
