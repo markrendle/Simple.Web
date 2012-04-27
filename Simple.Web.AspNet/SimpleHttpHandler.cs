@@ -5,17 +5,17 @@ namespace Simple.Web.AspNet
     using System.Web;
     using Helpers;
 
-    internal class SimpleHandler : IHttpHandler
+    internal class SimpleHttpHandler : IHttpHandler
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly IAuthenticationProvider _authenticationProvider;
 
-        internal SimpleHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        internal SimpleHttpHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
         {
         }
 
-        internal SimpleHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
+        internal SimpleHttpHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
             _endpointInfo = endpointInfo;

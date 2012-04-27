@@ -2,7 +2,7 @@
 {
     using System.Web;
 
-    public class SimpleHandlerFactory : IHttpHandlerFactory
+    public class SimpleHttpHandlerFactory : IHttpHandlerFactory
     {
         private static readonly object StartupSync = new object();
         private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();

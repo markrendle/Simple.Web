@@ -66,11 +66,11 @@ namespace Simple.Web.AspNet
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleHandler(context, endpointInfo, authenticationProvider);
+                instance = new SimpleHttpHandler(context, endpointInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleHandler(context, endpointInfo);
+                instance = new SimpleHttpHandler(context, endpointInfo);
             }
             return instance;
         }
@@ -82,11 +82,11 @@ namespace Simple.Web.AspNet
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleAsyncHandler(context, endpointInfo, authenticationProvider);
+                instance = new SimpleHttpAsyncHandler(context, endpointInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleAsyncHandler(context, endpointInfo);
+                instance = new SimpleHttpAsyncHandler(context, endpointInfo);
             }
             return instance;
         }

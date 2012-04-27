@@ -3,17 +3,17 @@ namespace Simple.Web.AspNet
     using System;
     using System.Web;
 
-    internal class SimpleAsyncHandler : IHttpAsyncHandler
+    internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
     {
         private readonly IContext _context;
         private readonly EndpointInfo _endpointInfo;
         private readonly IAuthenticationProvider _authenticationProvider;
 
-        internal SimpleAsyncHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        internal SimpleHttpAsyncHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
         {
         }
 
-        internal SimpleAsyncHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
+        internal SimpleHttpAsyncHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
             _endpointInfo = endpointInfo;
