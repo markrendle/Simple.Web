@@ -11,17 +11,32 @@ namespace Simple.Web.Razor.Tests
 
     public class RazorTypeBuilderTests
     {
-        private const string TemplateText =
+        private const string HandlerTemplateText =
+            @"@handler Simple.Web.Razor.Tests.TestHandler
+<!DOCTYPE html><html><body>@Handler.Text</body></html>";
+
+        private const string ModelTemplateText =
             @"@model Simple.Web.Razor.Tests.TestModel
 <!DOCTYPE html><html><body>@Model.Text</body></html>";
 
         [Fact]
-        public void GetsAType()
+        public void GetsATypeGivenAModel()
         {
             Type type;
-            using (var reader = new StringReader(TemplateText))
+            using (var reader = new StringReader(ModelTemplateText))
             {
-                type = new RazorTypeBuilder().CreateType(reader, typeof (TestModel));
+                type = new RazorTypeBuilder().CreateType(reader, null, typeof (TestModel));
+            }
+            Assert.NotNull(type);
+        }
+
+        [Fact]
+        public void GetsATypeGivenAHandler()
+        {
+            Type type;
+            using (var reader = new StringReader(HandlerTemplateText))
+            {
+                type = new RazorTypeBuilder().CreateType(reader, typeof (TestHandler), null);
             }
             Assert.NotNull(type);
         }
@@ -30,7 +45,7 @@ namespace Simple.Web.Razor.Tests
         public void GetsModelTypeFromRazorMarkup()
         {
             Type type;
-            using (var reader = new StringReader(TemplateText))
+            using (var reader = new StringReader(ModelTemplateText))
             {
                 type = new RazorTypeBuilder().CreateType(reader);
             }
@@ -38,6 +53,20 @@ namespace Simple.Web.Razor.Tests
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
             Assert.Equal(typeof (TestModel), genericArguments[0]);
+        }
+        
+        [Fact]
+        public void GetsHandlerTypeFromRazorMarkup()
+        {
+            Type type;
+            using (var reader = new StringReader(HandlerTemplateText))
+            {
+                type = new RazorTypeBuilder().CreateType(reader);
+            }
+            Assert.NotNull(type);
+            var genericArguments = type.BaseType.GetGenericArguments();
+            Assert.Equal(1, genericArguments.Length);
+            Assert.Equal(typeof (TestHandler), genericArguments[0]);
         }
 
         [Fact]
@@ -62,7 +91,32 @@ namespace Simple.Web.Razor.Tests
         }
     }
 
+    public class TestHandler
+    {
+        public string Text { get; set; }
+    }
+
     public class TestModel
+    {
+        public string Text { get; set; }
+    }
+    
+    public class TestJustHandler
+    {
+        public string Text { get; set; }
+    }
+
+    public class TestJustModel
+    {
+        public string Text { get; set; }
+    }
+
+    public class TestModelWithHandler
+    {
+        public string Text { get; set; }
+    }
+
+    public class TestHandlerWithModel
     {
         public string Text { get; set; }
     }

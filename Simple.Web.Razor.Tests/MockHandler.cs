@@ -7,6 +7,8 @@ namespace Simple.Web.Razor.Tests
 
     public class MockHandler : IContent
     {
+        public object Handler { get; set; }
+
         public object Model { get; set; }
 
         public IEnumerable<KeyValuePair<string, object>> Variables { get; set; }

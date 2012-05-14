@@ -20,6 +20,11 @@ namespace Simple.Web.ContentTypeHandling
             _viewPath = viewPath;
         }
 
+        public object Handler
+        {
+            get { return _handler; }
+        }
+
         public object Model
         {
             get { return _model; }

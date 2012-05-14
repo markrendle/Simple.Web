@@ -17,8 +17,8 @@ namespace Simple.Web.Ninject.Tests
             var startup = new TestStartup();
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
             var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
-            var actualFunc = target.BuildHandlerBuilder(typeof (TestHandler));
-            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo"}});
+            var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
+            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo" } });
             Assert.Equal(Status.OK, actual.Get());
             Assert.Equal("Foo", actual.TestProperty);
         }

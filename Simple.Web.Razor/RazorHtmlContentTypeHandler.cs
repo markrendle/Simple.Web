@@ -19,15 +19,19 @@
         public void Write(IContent content, TextWriter textWriter)
         {
             Type viewType;
+            var razorViews = new RazorViews();
             if (content.ViewPath != null)
             {
-                viewType = new RazorViews().GetViewType(content.ViewPath);
-            }
-            else if (content.Model != null)
-            {
-                viewType = new RazorViews().GetViewTypeForModelType(content.Model.GetType());
+                viewType = razorViews.GetViewType(content.ViewPath);
             }
             else
+            {
+                var handlerType = content.Handler != null ? content.Handler.GetType() : null;
+                var modelType = content.Model != null ? content.Model.GetType() : null;
+                viewType = razorViews.GetViewTypeForHandlerAndModelType(handlerType, modelType);
+            }
+
+            if (viewType == null)
             {
                 throw new ViewNotFoundException();
             }
@@ -35,14 +39,15 @@
             RenderView(content, textWriter, viewType);
         }
 
-        internal static void RenderView(IContent handler, TextWriter textWriter, Type viewType)
+        internal static void RenderView(IContent content, TextWriter textWriter, Type viewType)
         {
             var instance = (SimpleTemplateBase) Activator.CreateInstance(viewType);
-            instance.SetModel(handler.Model);
+            instance.SetHandler(content.Handler);
+            instance.SetModel(content.Model);
 
             var viewData = new ExpandoObject() as IDictionary<string, object>;
 
-            foreach (var pair in handler.Variables)
+            foreach (var pair in content.Variables)
             {
                 viewData.Add(pair);
             }

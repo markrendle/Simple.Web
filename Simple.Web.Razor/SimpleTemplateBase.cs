@@ -1,6 +1,5 @@
 namespace Simple.Web.Razor
 {
-    using System;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Dynamic;
@@ -41,6 +40,11 @@ namespace Simple.Web.Razor
             WriteLiteral(suffix);
         }
 
+        public virtual void SetHandler(object handler)
+        {
+            
+        }
+
         public virtual void SetModel(object model)
         {
             
@@ -53,74 +57,53 @@ namespace Simple.Web.Razor
         }
     }
 
-    public class AttributePart
+    public abstract class SimpleTemplateModelBase<TModel> : SimpleTemplateBase
     {
-        private readonly object _value;
-        private readonly int _position;
+        private TModel _model;
 
-        private AttributePart(object value, int position)
+        public TModel Model
         {
-            _value = value;
-            _position = position;
+            get { return _model; }
+            set { _model = value; }
         }
 
-        public static implicit operator AttributePart(Tuple<string,int> source)
+        public override void SetModel(object model)
         {
-            return new AttributePart(source.Item1, source.Item2);
-        }
-
-        public static implicit operator AttributePart(Tuple<object,int> source)
-        {
-            return new AttributePart(source.Item1, source.Item2);
-        }
-
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
-
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return Convert.ToString(_value, formatProvider);
+            _model = (TModel)model;
         }
     }
-
-    public class AttributeValue
+    
+    public abstract class SimpleTemplateHandlerBase<THandler> : SimpleTemplateBase
     {
-        private readonly AttributePart _prefix;
-        private readonly AttributePart _value;
-        private readonly bool _literal;
+        private THandler _handler;
 
-        private AttributeValue(AttributePart prefix, AttributePart value, bool literal)
+        public THandler Handler
         {
-            _prefix = prefix;
-            _value = value;
-            _literal = literal;
+            get { return _handler; }
+            set { _handler = value; }
         }
 
-        public static implicit operator AttributeValue(Tuple<Tuple<string, int>, Tuple<object, int>, bool> value)
+        public override void SetHandler(object handler)
         {
-            return new AttributeValue(value.Item1, value.Item2, value.Item3);
-        }
-
-        public static implicit operator AttributeValue(Tuple<Tuple<string, int>, Tuple<string, int>, bool> value)
-        {
-            return new AttributeValue(value.Item1, value.Item2, value.Item3);
-        }
-
-        public override string ToString()
-        {
-            return _prefix.ToString() + _value;
-        }
-
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return _prefix.ToString(formatProvider) + _value.ToString(formatProvider);
+            _handler = (THandler)handler;
         }
     }
-
-    public abstract class SimpleTemplateBase<TModel> : SimpleTemplateBase
+    
+    public abstract class SimpleTemplateHandlerModelBase<THandler, TModel> : SimpleTemplateBase
     {
+        private THandler _handler;
+
+        public THandler Handler
+        {
+            get { return _handler; }
+            set { _handler = value; }
+        }
+
+        public override void SetHandler(object handler)
+        {
+            _handler = (THandler)handler;
+        }
+
         private TModel _model;
 
         public TModel Model

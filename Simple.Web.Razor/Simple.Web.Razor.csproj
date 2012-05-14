@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="AmbiguousViewException.cs" />
     <Compile Include="AssemblyEx.cs" />
+    <Compile Include="AttributePart.cs" />
+    <Compile Include="AttributeValue.cs" />
     <Compile Include="RazorHtmlContentTypeHandler.cs" />
     <Compile Include="RazorTypeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ namespace Simple.Web.ContentTypeHandling
 
     public interface IContent
     {
+        object Handler { get; }
         object Model { get; }
         IEnumerable<KeyValuePair<string, object>> Variables { get; }
         string ViewPath { get; }

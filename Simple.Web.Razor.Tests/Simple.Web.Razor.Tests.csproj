@@ -43,7 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MockEndpoint.cs" />
+    <Compile Include="MockHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RazorHtmlContentTypeHandlerTests.cs" />
     <Compile Include="RazorTypeBuilderTests.cs" />
@@ -69,6 +69,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\AmbiguousModelView2.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\TestHandlerView.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\TestHandlerAndModelView.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
