@@ -5,22 +5,22 @@ namespace Simple.Web
     using System.Linq;
     using System.Threading.Tasks;
 
-    public sealed class EndpointInfo
+    public sealed class HandlerInfo
     {
-        private readonly Type _endpointType;
+        private readonly Type _handlerType;
         private readonly string _httpMethod;
         private readonly IDictionary<string, string> _variables;
 
-        public EndpointInfo(Type endpointType, string httpMethod)
-            : this(endpointType, new Dictionary<string, string>(), httpMethod)
+        public HandlerInfo(Type handlerType, string httpMethod)
+            : this(handlerType, new Dictionary<string, string>(), httpMethod)
         {
         }
 
-        public EndpointInfo(Type endpointType, IDictionary<string, string> variables, string httpMethod)
+        public HandlerInfo(Type handlerType, IDictionary<string, string> variables, string httpMethod)
         {
-            if (endpointType == null) throw new ArgumentNullException("endpointType");
+            if (handlerType == null) throw new ArgumentNullException("handlerType");
             if (httpMethod == null) throw new ArgumentNullException("httpMethod");
-            _endpointType = endpointType;
+            _handlerType = handlerType;
             _variables = variables ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             _httpMethod = httpMethod;
         }
@@ -35,14 +35,14 @@ namespace Simple.Web
             get { return _variables; }
         }
 
-        public Type EndpointType
+        public Type HandlerType
         {
-            get { return _endpointType; }
+            get { return _handlerType; }
         }
 
         public bool RequiresAuthentication
         {
-            get { return typeof (IRequireAuthentication).IsAssignableFrom(_endpointType); }
+            get { return typeof (IRequireAuthentication).IsAssignableFrom(_handlerType); }
         }
 
         public Type InputType
@@ -57,12 +57,12 @@ namespace Simple.Web
 
         public bool IsAsync
         {
-            get { return HttpVerbAttribute.GetMethod(_endpointType).ReturnType == typeof (Task<Status>); }
+            get { return HttpVerbAttribute.GetMethod(_handlerType).ReturnType == typeof (Task<Status>); }
         }
 
         private Type GetInterfaceGenericType(Type genericType)
         {
-            var genericInterface = _endpointType.GetInterface(genericType.Name);
+            var genericInterface = _handlerType.GetInterface(genericType.Name);
             if (genericInterface == null)
             {
                 return null;

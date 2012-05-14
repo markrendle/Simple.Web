@@ -9,16 +9,16 @@ namespace Simple.Web.Ninject.Tests
     using Xunit;
     using global::Ninject.Modules;
 
-    public class EndpointFactoryBuilderTests
+    public class HandlerFactoryBuilderTests
     {
         [Fact]
         public void CreatesInstanceOfType()
         {
             var startup = new TestStartup();
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
-            var target = new EndpointBuilderFactory(SimpleWeb.Configuration);
-            var actualFunc = target.BuildEndpointBuilder(typeof (TestEndpoint));
-            var actual = (TestEndpoint)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo"}});
+            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
+            var actualFunc = target.BuildHandlerBuilder(typeof (TestHandler));
+            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo"}});
             Assert.Equal(Status.OK, actual.Get());
             Assert.Equal("Foo", actual.TestProperty);
         }
@@ -40,10 +40,10 @@ namespace Simple.Web.Ninject.Tests
         }
     }
 
-    public class TestEndpoint : IGet
+    public class TestHandler : IGet
     {
         private readonly IResult _result;
-        public TestEndpoint(IResult result)
+        public TestHandler(IResult result)
         {
             _result = result;
         }

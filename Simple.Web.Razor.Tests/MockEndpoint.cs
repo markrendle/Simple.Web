@@ -5,7 +5,7 @@ namespace Simple.Web.Razor.Tests
     using System.Dynamic;
     using ContentTypeHandling;
 
-    public class MockEndpoint : IContent
+    public class MockHandler : IContent
     {
         public object Model { get; set; }
 

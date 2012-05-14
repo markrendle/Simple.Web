@@ -35,14 +35,14 @@
             RenderView(content, textWriter, viewType);
         }
 
-        internal static void RenderView(IContent endpoint, TextWriter textWriter, Type viewType)
+        internal static void RenderView(IContent handler, TextWriter textWriter, Type viewType)
         {
             var instance = (SimpleTemplateBase) Activator.CreateInstance(viewType);
-            instance.SetModel(endpoint.Model);
+            instance.SetModel(handler.Model);
 
             var viewData = new ExpandoObject() as IDictionary<string, object>;
 
-            foreach (var pair in endpoint.Variables)
+            foreach (var pair in handler.Variables)
             {
                 viewData.Add(pair);
             }

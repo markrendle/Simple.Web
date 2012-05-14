@@ -8,17 +8,17 @@ namespace Simple.Web.AspNet
     internal class SimpleHttpHandler : IHttpHandler
     {
         private readonly IContext _context;
-        private readonly EndpointInfo _endpointInfo;
+        private readonly HandlerInfo _handlerInfo;
         private readonly IAuthenticationProvider _authenticationProvider;
 
-        internal SimpleHttpHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        internal SimpleHttpHandler(IContext context, HandlerInfo handlerInfo) : this(context, handlerInfo, null)
         {
         }
 
-        internal SimpleHttpHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
+        internal SimpleHttpHandler(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
-            _endpointInfo = endpointInfo;
+            _handlerInfo = handlerInfo;
             _authenticationProvider = authenticationProvider;
         }
 
@@ -36,12 +36,12 @@ namespace Simple.Web.AspNet
 
         private void Run()
         {
-            var endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
+            var handler = HandlerFactory.Instance.GetHandler(_handlerInfo);
 
-            if (endpoint != null)
+            if (handler != null)
             {
-                var run = EndpointRunnerFactory.Instance.Get(endpoint.GetType());
-                run(endpoint, _context);
+                var run = HandlerRunnerFactory.Instance.Get(handler.GetType());
+                run(handler, _context);
             }
         }
 

@@ -3,7 +3,7 @@ namespace Simple.Web
     using System.IO;
 
     /// <summary>
-    /// Adds output functionality to an endpoint.
+    /// Adds output functionality to an handler.
     /// </summary>
     /// <typeparam name="TOutput">The type of the output.</typeparam>
     public interface IOutput<out TOutput>
@@ -15,7 +15,7 @@ namespace Simple.Web
     }
 
     /// <summary>
-    /// Adds functionality for endpoints which return raw streams.
+    /// Adds functionality for handlers which return raw streams.
     /// </summary>
     public interface IOutputStream : IOutput<Stream>
     {

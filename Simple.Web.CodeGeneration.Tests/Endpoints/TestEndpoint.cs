@@ -1,13 +1,13 @@
-namespace Simple.Web.CodeGeneration.Tests.Endpoints
+namespace Simple.Web.CodeGeneration.Tests.Handlers
 {
     using System.Collections.Generic;
     using System.Linq;
 
-    class TestEndpoint : IGet, IRequireAuthentication, IInput<string>, ISetCookies, INoCache
+    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, INoCache
     {
         private readonly Status _status;
 
-        public TestEndpoint(Status status)
+        public TestHandler(Status status)
         {
             _status = status;
         }

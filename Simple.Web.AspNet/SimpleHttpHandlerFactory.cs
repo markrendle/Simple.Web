@@ -5,7 +5,7 @@
     public class SimpleHttpHandlerFactory : IHttpHandlerFactory
     {
         private static readonly object StartupSync = new object();
-        private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
+        private static StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
 
         public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
         {

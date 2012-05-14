@@ -5,12 +5,12 @@ namespace Simple.Web.CodeGeneration
 
     static class WriteRawHtml
     {
-        internal static void Impl(IOutput<RawHtml> endpoint, IContext context)
+        internal static void Impl(IOutput<RawHtml> handler, IContext context)
         {
             context.Response.ContentType =
                 context.Request.AcceptTypes.FirstOrDefault(
                     at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
-            context.Response.Output.Write(endpoint.Output.ToString());
+            context.Response.Output.Write(handler.Output.ToString());
         }
     }
 }

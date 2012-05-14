@@ -9,12 +9,12 @@ namespace Simple.Web.CodeGeneration
 
     static class WriteOutput
     {
-        public static void Impl<T>(IOutput<T> endpoint, IContext context)
+        public static void Impl<T>(IOutput<T> handler, IContext context)
         {
-            WriteUsingContentTypeHandler(endpoint, context);
+            WriteUsingContentTypeHandler(handler, context);
         }
 
-        private static void WriteUsingContentTypeHandler<T>(IOutput<T> endpoint, IContext context)
+        private static void WriteUsingContentTypeHandler<T>(IOutput<T> handler, IContext context)
         {
             IContentTypeHandler contentTypeHandler;
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
@@ -22,15 +22,15 @@ namespace Simple.Web.CodeGeneration
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
                 Content content;
 // ReSharper disable SuspiciousTypeConversion.Global
-                var specifyView = endpoint as ISpecifyView;
+                var specifyView = handler as ISpecifyView;
 // ReSharper restore SuspiciousTypeConversion.Global
                 if (specifyView != null)
                 {
-                    content = new Content(endpoint, endpoint.Output, specifyView.ViewPath);
+                    content = new Content(handler, handler.Output, specifyView.ViewPath);
                 }
                 else
                 {
-                    content = new Content(endpoint, endpoint.Output);
+                    content = new Content(handler, handler.Output);
                 }
                 contentTypeHandler.Write(content, context.Response.Output);
             }

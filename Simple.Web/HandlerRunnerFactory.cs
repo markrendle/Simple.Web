@@ -8,7 +8,7 @@ namespace Simple.Web
     using System.Collections.Concurrent;
     using CodeGeneration;
 
-    public class EndpointRunnerFactory
+    public class HandlerRunnerFactory
     {
         private readonly ConcurrentDictionary<Type, Action<object, IContext>> _cache =
             new ConcurrentDictionary<Type, Action<object, IContext>>();
@@ -16,20 +16,20 @@ namespace Simple.Web
         private readonly ConcurrentDictionary<Type, AsyncRunner> _asyncCache =
             new ConcurrentDictionary<Type, AsyncRunner>();
 
-        public static readonly EndpointRunnerFactory Instance = new EndpointRunnerFactory();
+        public static readonly HandlerRunnerFactory Instance = new HandlerRunnerFactory();
 
-        private EndpointRunnerFactory()
+        private HandlerRunnerFactory()
         {
         }
 
-        public Action<object, IContext> Get(Type endpointType)
+        public Action<object, IContext> Get(Type handlerType)
         {
-            return _cache.GetOrAdd(endpointType, t => new EndpointRunnerBuilder(t).BuildRunner());
+            return _cache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t).BuildRunner());
         }
 
-        public AsyncRunner GetAsync(Type endpointType)
+        public AsyncRunner GetAsync(Type handlerType)
         {
-            return _asyncCache.GetOrAdd(endpointType, t => new EndpointRunnerBuilder(t).BuildAsyncRunner());
+            return _asyncCache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t).BuildAsyncRunner());
         }
     }
 }

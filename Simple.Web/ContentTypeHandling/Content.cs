@@ -5,17 +5,17 @@ namespace Simple.Web.ContentTypeHandling
 
     class Content : IContent
     {
-        private readonly object _endpoint;
+        private readonly object _handler;
         private readonly object _model;
         private readonly string _viewPath;
 
-        internal Content(object endpoint, object model) : this(endpoint, model, null)
+        internal Content(object handler, object model) : this(handler, model, null)
         {
         }
 
-        internal Content(object endpoint, object model, string viewPath)
+        internal Content(object handler, object model, string viewPath)
         {
-            _endpoint = endpoint;
+            _handler = handler;
             _model = model;
             _viewPath = viewPath;
         }
@@ -30,8 +30,8 @@ namespace Simple.Web.ContentTypeHandling
             get
             {
                 return
-                    _endpoint.GetType().GetProperties().Where(p => p.CanRead).Select(
-                        p => new KeyValuePair<string, object>(p.Name, p.GetValue(_endpoint, null)));
+                    _handler.GetType().GetProperties().Where(p => p.CanRead).Select(
+                        p => new KeyValuePair<string, object>(p.Name, p.GetValue(_handler, null)));
             }
         }
 

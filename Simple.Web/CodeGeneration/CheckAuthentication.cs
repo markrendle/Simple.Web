@@ -2,7 +2,7 @@ namespace Simple.Web.CodeGeneration
 {
     internal static class CheckAuthentication
     {
-        internal static bool Impl(IRequireAuthentication endpoint, IContext context)
+        internal static bool Impl(IRequireAuthentication handler, IContext context)
         {
             var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ?? new AuthenticationProvider();
             var user = authenticationProvider.GetLoggedInUser(context);
@@ -13,7 +13,7 @@ namespace Simple.Web.CodeGeneration
                 return false;
             }
 
-            endpoint.CurrentUser = user;
+            handler.CurrentUser = user;
             return true;
         }
     }

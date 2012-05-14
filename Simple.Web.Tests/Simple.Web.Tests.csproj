@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointBuilderFactoryTests.cs" />
-    <Compile Include="EndpointFactoryTests.cs" />
     <Compile Include="EndpointInfoTests.cs" />
     <Compile Include="GetHandlerTests.cs" />
     <Compile Include="RoutingTableBuilderTests.cs" />

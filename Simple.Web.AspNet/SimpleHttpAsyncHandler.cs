@@ -6,17 +6,17 @@ namespace Simple.Web.AspNet
     internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
     {
         private readonly IContext _context;
-        private readonly EndpointInfo _endpointInfo;
+        private readonly HandlerInfo _handlerInfo;
         private readonly IAuthenticationProvider _authenticationProvider;
 
-        internal SimpleHttpAsyncHandler(IContext context, EndpointInfo endpointInfo) : this(context, endpointInfo, null)
+        internal SimpleHttpAsyncHandler(IContext context, HandlerInfo handlerInfo) : this(context, handlerInfo, null)
         {
         }
 
-        internal SimpleHttpAsyncHandler(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider)
+        internal SimpleHttpAsyncHandler(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider)
         {
             _context = context;
-            _endpointInfo = endpointInfo;
+            _handlerInfo = handlerInfo;
             _authenticationProvider = authenticationProvider;
         }
 
@@ -32,7 +32,7 @@ namespace Simple.Web.AspNet
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            var result = new SimpleAsyncHandlerResult(_context, _endpointInfo, _authenticationProvider, cb, extraData);
+            var result = new SimpleAsyncHandlerResult(_context, _handlerInfo, _authenticationProvider, cb, extraData);
             result.Run();
             return result;
         }

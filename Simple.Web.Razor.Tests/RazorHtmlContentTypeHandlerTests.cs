@@ -22,7 +22,7 @@ namespace Simple.Web.Razor.Tests
                 type = new RazorTypeBuilder().CreateType(reader);
             }
 
-            var output = new MockEndpoint {Model = new TestModel {Text = "Test Text"}, Variables = new Dictionary<string, object> { { "Title", "Foo"}}};
+            var output = new MockHandler {Model = new TestModel {Text = "Test Text"}, Variables = new Dictionary<string, object> { { "Title", "Foo"}}};
 
             var writer = new StringWriter();
             RazorHtmlContentTypeHandler.RenderView(output, writer, type);

@@ -4,18 +4,18 @@ namespace Simple.Web.CodeGeneration
 
     static class WriteView
     {
-        public static void Impl(ISpecifyView endpoint, IContext context)
+        public static void Impl(ISpecifyView handler, IContext context)
         {
-            WriteUsingContentTypeHandler(endpoint, context);
+            WriteUsingContentTypeHandler(handler, context);
         }
 
-        private static void WriteUsingContentTypeHandler(ISpecifyView endpoint, IContext context)
+        private static void WriteUsingContentTypeHandler(ISpecifyView handler, IContext context)
         {
             IContentTypeHandler contentTypeHandler;
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                var content = new Content(endpoint, null, endpoint.ViewPath);
+                var content = new Content(handler, null, handler.ViewPath);
                 contentTypeHandler.Write(content, context.Response.Output);
             }
         }

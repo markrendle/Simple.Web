@@ -4,22 +4,22 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Linq;
 
-    public sealed class EndpointTypeInfo
+    public sealed class HandlerTypeInfo
     {
         private readonly Type _type;
         private readonly HashSet<string> _respondsToAcceptTypes;
 
-        public EndpointTypeInfo(Type type) : this(type, Enumerable.Empty<string>())
+        public HandlerTypeInfo(Type type) : this(type, Enumerable.Empty<string>())
         {
         }
 
-        public EndpointTypeInfo(Type type, IEnumerable<string> respondsToAcceptTypes)
+        public HandlerTypeInfo(Type type, IEnumerable<string> respondsToAcceptTypes)
         {
             _type = type;
             _respondsToAcceptTypes = new HashSet<string>(respondsToAcceptTypes);
         }
 
-        public Type EndpointType
+        public Type HandlerType
         {
             get { return _type; }
         }

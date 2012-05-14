@@ -5,13 +5,13 @@
     using CodeGeneration;
     using Xunit;
 
-    public class EndpointBuilderFactoryTests
+    public class HandlerBuilderFactoryTests
     {
         [Fact]
         public void CreatesTypeWithParameterlessConstructorUsingDefaultContainer()
         {
-            var target = new EndpointBuilderFactory(new Configuration());
-            var actualFunc = target.BuildEndpointBuilder(typeof (ParameterlessConstructorType));
+            var target = new HandlerBuilderFactory(new Configuration());
+            var actualFunc = target.BuildHandlerBuilder(typeof (ParameterlessConstructorType));
             var actual = actualFunc(new Dictionary<string, string>());
             Assert.IsType<ParameterlessConstructorType>(actual);
         }
@@ -19,8 +19,8 @@
         [Fact]
         public void CreatingTypeWithNoParameterlessConstructorUsingDefaultContainerThrowsInvalidOperationException()
         {
-            var target = new EndpointBuilderFactory(new Configuration());
-            var actualFunc = target.BuildEndpointBuilder(typeof (NoParameterlessConstructorType));
+            var target = new HandlerBuilderFactory(new Configuration());
+            var actualFunc = target.BuildHandlerBuilder(typeof (NoParameterlessConstructorType));
             Assert.Throws<InvalidOperationException>(() => actualFunc(new Dictionary<string, string>()));
         }
     }

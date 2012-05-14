@@ -7,44 +7,44 @@ namespace Simple.Web.Tests
 {
     using Xunit;
 
-    public class EndpointInfoTests
+    public class HandlerInfoTests
     {
         [Fact]
         public void GetsCorrectInputTypeForGeneric()
         {
-            var target = new EndpointInfo(typeof (TestGenericInputEndpoint), "GET");
-            Assert.Equal(typeof(EndpointInfoTests), target.InputType);
+            var target = new HandlerInfo(typeof (TestGenericInputHandler), "GET");
+            Assert.Equal(typeof(HandlerInfoTests), target.InputType);
         }
 
         [Fact]
-        public void GetsNullForNotInputEndpoint()
+        public void GetsNullForNotInputHandler()
         {
-            var target = new EndpointInfo(typeof(TestEndpoint), "GET");
+            var target = new HandlerInfo(typeof(TestHandler), "GET");
             Assert.Null(target.InputType);
         }
 
         [Fact]
         public void GetsCorrectOutputTypeForGeneric()
         {
-            var target = new EndpointInfo(typeof (TestGenericOutputEndpoint), "GET");
-            Assert.Equal(typeof(EndpointInfoTests), target.OutputType);
+            var target = new HandlerInfo(typeof (TestGenericOutputHandler), "GET");
+            Assert.Equal(typeof(HandlerInfoTests), target.OutputType);
         }
 
         [Fact]
-        public void GetsNullForNotOutputEndpoint()
+        public void GetsNullForNotOutputHandler()
         {
-            var target = new EndpointInfo(typeof(TestEndpoint), "GET");
+            var target = new HandlerInfo(typeof(TestHandler), "GET");
             Assert.Null(target.OutputType);
         }
 
-        class TestGenericInputEndpoint : IInput<EndpointInfoTests>
+        class TestGenericInputHandler : IInput<HandlerInfoTests>
         {
             public Status Run()
             {
                 throw new NotImplementedException();
             }
 
-            public EndpointInfoTests Input
+            public HandlerInfoTests Input
             {
                 set { throw new NotImplementedException(); }
             }
@@ -55,7 +55,7 @@ namespace Simple.Web.Tests
             }
         }
 
-        class TestInputEndpoint : IPost
+        class TestInputHandler : IPost
         {
             public Status Run()
             {
@@ -78,14 +78,14 @@ namespace Simple.Web.Tests
             }
         }
 
-        class TestGenericOutputEndpoint : IOutput<EndpointInfoTests>
+        class TestGenericOutputHandler : IOutput<HandlerInfoTests>
         {
             public Status Run()
             {
                 throw new NotImplementedException();
             }
 
-            public EndpointInfoTests Output
+            public HandlerInfoTests Output
             {
                 get { throw new NotImplementedException(); }
             }
@@ -96,7 +96,7 @@ namespace Simple.Web.Tests
             }
         }
 
-        class TestOutputEndpoint : IGet
+        class TestOutputHandler : IGet
         {
             public Status Run()
             {
@@ -119,7 +119,7 @@ namespace Simple.Web.Tests
             }
         }
 
-        class TestEndpoint : IGet
+        class TestHandler : IGet
         {
             public Status Get()
             {

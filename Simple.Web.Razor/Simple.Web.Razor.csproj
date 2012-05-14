@@ -56,13 +56,13 @@
     <Compile Include="ViewNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
       <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
       <Name>Simple.Web</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

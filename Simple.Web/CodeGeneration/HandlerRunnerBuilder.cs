@@ -7,27 +7,27 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Builds methods to run endpoints for an <see cref="IContext"/>.
+    /// Builds methods to run handlers for an <see cref="IContext"/>.
     /// </summary>
-    internal class EndpointRunnerBuilder
+    internal class HandlerRunnerBuilder
     {
         private readonly Type _type;
         private readonly IMethodLookup _methodLookup;
         private readonly List<Expression> _blocks = new List<Expression>(); 
         private readonly LabelTarget _end = Expression.Label("end");
-        private readonly ParameterExpression _endpointParameter;
+        private readonly ParameterExpression _handlerParameter;
         private ParameterExpression _context;
-        private readonly ParameterExpression _endpoint;
+        private readonly ParameterExpression _handler;
         private ParameterExpression _status;
         private ParameterExpression _task;
 
-        public EndpointRunnerBuilder(Type type, IMethodLookup methodLookup = null)
+        public HandlerRunnerBuilder(Type type, IMethodLookup methodLookup = null)
         {
             if (type == null) throw new ArgumentNullException("type");
             _type = type;
             _methodLookup = methodLookup ?? new MethodLookup();
-            _endpointParameter = Expression.Parameter(typeof(object), "obj");
-            _endpoint = Expression.Variable(_type, "endpoint");
+            _handlerParameter = Expression.Parameter(typeof(object), "obj");
+            _handler = Expression.Variable(_type, "handler");
         }
 
         public Action<object, IContext> BuildRunner()
@@ -35,7 +35,7 @@
             _status = Expression.Variable(typeof(Status), "status");
             _context = Expression.Parameter(typeof(IContext), "context");
 
-            _blocks.Add(Expression.Assign(_endpoint, Expression.Convert(_endpointParameter, _type)));
+            _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
             CreateSetupBlocks();
             _blocks.Add(BuildRunBlock());
             CreateResponseBlocks();
@@ -44,34 +44,34 @@
 
             _blocks.Add(Expression.Label(_end));
 
-            var block = Expression.Block(new[] {_endpoint, _status}, _blocks);
+            var block = Expression.Block(new[] {_handler, _status}, _blocks);
 
-            return Expression.Lambda<Action<object, IContext>>(block, _endpointParameter, _context).Compile();
+            return Expression.Lambda<Action<object, IContext>>(block, _handlerParameter, _context).Compile();
         }
 
         public AsyncRunner BuildAsyncRunner()
         {
             _task = Expression.Variable(typeof (Task<Status>), "task");
             _context = Expression.Parameter(typeof(IContext), "context");
-            _blocks.Add(Expression.Assign(_endpoint, Expression.Convert(_endpointParameter, _type)));
+            _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
             CreateSetupBlocks();
             _blocks.Add(BuildAsyncRunBlock());
             _blocks.Add(Expression.Label(_end));
             _blocks.Add(_task);
-            var block = Expression.Block(new[] {_endpoint, _task}, _blocks);
+            var block = Expression.Block(new[] {_handler, _task}, _blocks);
 
             var start =
-                Expression.Lambda<Func<object, IContext, Task<Status>>>(block, _endpointParameter, _context).Compile();
+                Expression.Lambda<Func<object, IContext, Task<Status>>>(block, _handlerParameter, _context).Compile();
 
             _blocks.Clear();
             _context = Expression.Parameter(typeof(IContext), "context");
-            _blocks.Add(Expression.Assign(_endpoint, Expression.Convert(_endpointParameter, _type)));
+            _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
             _status = Expression.Parameter(typeof(Status), "status");
 
             CreateResponseBlocks();
-            block = Expression.Block(new[] {_endpoint}, _blocks);
+            block = Expression.Block(new[] {_handler}, _blocks);
 
-            var end = Expression.Lambda<Action<object, IContext, Status>>(block, _endpointParameter, _context, _status).Compile();
+            var end = Expression.Lambda<Action<object, IContext, Status>>(block, _handlerParameter, _context, _status).Compile();
 
             return new AsyncRunner(start, end);
         }
@@ -167,11 +167,11 @@
         {
             if (typeof (IOutputStream).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_methodLookup.WriteStreamResponse, _endpoint, _context));
+                _blocks.Add(Expression.Call(_methodLookup.WriteStreamResponse, _handler, _context));
             }
             else if (typeof (IOutput<RawHtml>).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_methodLookup.WriteRawHtml, _endpoint, _context));
+                _blocks.Add(Expression.Call(_methodLookup.WriteRawHtml, _handler, _context));
             }
             else if (_type.GetInterface(typeof (IOutput<>).Name) != null)
             {
@@ -179,7 +179,7 @@
             }
             else if (typeof (ISpecifyView).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_methodLookup.WriteView, _endpoint, _context));
+                _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
             }
         }
 
@@ -187,7 +187,7 @@
         {
             if (typeof(IDisposable).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_endpoint, typeof(IDisposable).GetMethod("Dispose")));
+                _blocks.Add(Expression.Call(_handler, typeof(IDisposable).GetMethod("Dispose")));
             }
         }
 
@@ -200,58 +200,58 @@
         {
             var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
             var run = _type.GetMethod(verb.Method);
-            return Expression.Assign(_status, Expression.Call(_endpoint, run));
+            return Expression.Assign(_status, Expression.Call(_handler, run));
         }
 
         private Expression BuildAsyncRunBlock()
         {
             var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
             var run = _type.GetMethod(verb.Method);
-            return Expression.Assign(_task, Expression.Call(_endpoint, run));
+            return Expression.Assign(_task, Expression.Call(_handler, run));
         }
 
         private Expression BuildSetInputBlock()
         {
             var inputType = _type.GetInterface(typeof (IInput<>).Name).GetGenericArguments().Single();
             var setInput = _methodLookup.SetInput.MakeGenericMethod(inputType);
-            return Expression.Call(setInput, _endpoint, _context);
+            return Expression.Call(setInput, _handler, _context);
         }
 
         private Expression BuildWriteOutputBlock()
         {
             var inputType = _type.GetInterface(typeof (IOutput<>).Name).GetGenericArguments().Single();
             var writeOutput = _methodLookup.WriteOutput.MakeGenericMethod(inputType);
-            return Expression.Call(writeOutput, _endpoint, _context);
+            return Expression.Call(writeOutput, _handler, _context);
         }
 
         private Expression BuildSetContextBlock()
         {
-            return Expression.Assign(Expression.Property(_endpoint, typeof (INeedContext).GetProperty("Context")), _context);
+            return Expression.Assign(Expression.Property(_handler, typeof (INeedContext).GetProperty("Context")), _context);
         }
 
         private Expression BuildSetRequestCookiesBlock()
         {
-            return Expression.Call(_methodLookup.SetRequestCookies, _endpoint, _context);
+            return Expression.Call(_methodLookup.SetRequestCookies, _handler, _context);
         }
 
         private Expression BuildSetResponseCookiesBlock()
         {
-            return Expression.Call(_methodLookup.SetResponseCookies, _endpoint, _context);
+            return Expression.Call(_methodLookup.SetResponseCookies, _handler, _context);
         }
 
         private Expression BuildSetFilesBlock()
         {
-            return Expression.Call(_methodLookup.SetFiles, _endpoint, _context);
+            return Expression.Call(_methodLookup.SetFiles, _handler, _context);
         }
 
         private Expression BuildAuthenticateBlock()
         {
-            return Expression.IfThen(Expression.Not(Expression.Call(_methodLookup.CheckAuthentication, _endpoint, _context)), Expression.Return(_end));
+            return Expression.IfThen(Expression.Not(Expression.Call(_methodLookup.CheckAuthentication, _handler, _context)), Expression.Return(_end));
         }
 
         private Expression BuildRedirectBlock()
         {
-            return Expression.IfThen(Expression.Call(_methodLookup.Redirect, _endpoint, _status, _context), Expression.Return(_end));
+            return Expression.IfThen(Expression.Call(_methodLookup.Redirect, _handler, _status, _context), Expression.Return(_end));
         }
     }
 

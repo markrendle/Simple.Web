@@ -10,7 +10,7 @@ namespace Simple.Web.CodeGeneration
 
     internal static class SetInput
     {
-        internal static void Impl<T>(IInput<T> endpoint, IContext context)
+        internal static void Impl<T>(IInput<T> handler, IContext context)
         {
             if (context.Request.InputStream.Length == 0) return;
 
@@ -18,7 +18,7 @@ namespace Simple.Web.CodeGeneration
             var contentTypeHandler = contentTypeHandlerTable.GetContentTypeHandler(context.Request.ContentType);
             using (var reader = new StreamReader(context.Request.InputStream))
             {
-                endpoint.Input = (T)contentTypeHandler.Read(reader, typeof(T));
+                handler.Input = (T)contentTypeHandler.Read(reader, typeof(T));
             }
         }
     }

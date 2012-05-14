@@ -1,19 +1,19 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
-    using Endpoints;
+    using Handlers;
     using Mocks;
     using Stubs;
     using Xunit;
 
-    public class EndpointRunnerFactoryTest
+    public class HandlerRunnerFactoryTest
     {
         [Fact]
         public void CallsAreMade()
         {
             Reset();
-            var target = new EndpointRunnerBuilder(typeof (TestEndpoint), new StubMethodLookup());
+            var target = new HandlerRunnerBuilder(typeof (TestHandler), new StubMethodLookup());
             var runner = target.BuildRunner();
-            runner(new TestEndpoint(200), new MockContext());
+            runner(new TestHandler(200), new MockContext());
 
             Assert.True(StubCheckAuthentication.Called);
             Assert.True(StubSetInput.Called);
@@ -26,9 +26,9 @@
         public void RedirectPreventsFurtherCalls()
         {
             Reset();
-            var target = new EndpointRunnerBuilder(typeof(TestRedirectEndpoint), new StubMethodLookup());
+            var target = new HandlerRunnerBuilder(typeof(TestRedirectHandler), new StubMethodLookup());
             var runner = target.BuildRunner();
-            runner(new TestRedirectEndpoint(301), new MockContext());
+            runner(new TestRedirectHandler(301), new MockContext());
 
             Assert.True(StubRedirect.Called);
             Assert.False(StubWriteStreamResponse.Called);
@@ -38,9 +38,9 @@
         public void UnusedRedirectDoesNotPreventFurtherCalls()
         {
             Reset();
-            var target = new EndpointRunnerBuilder(typeof(TestRedirectEndpoint), new StubMethodLookup());
+            var target = new HandlerRunnerBuilder(typeof(TestRedirectHandler), new StubMethodLookup());
             var runner = target.BuildRunner();
-            runner(new TestRedirectEndpoint(200), new MockContext());
+            runner(new TestRedirectHandler(200), new MockContext());
 
             Assert.True(StubRedirect.Called);
             Assert.True(StubWriteStreamResponse.Called);
@@ -50,9 +50,9 @@
         public void UploadFilesCallSetFiles()
         {
             Reset();
-            var target = new EndpointRunnerBuilder(typeof(TestUploadEndpoint), new StubMethodLookup());
+            var target = new HandlerRunnerBuilder(typeof(TestUploadHandler), new StubMethodLookup());
             var runner = target.BuildRunner();
-            runner(new TestUploadEndpoint(), new MockContext());
+            runner(new TestUploadHandler(), new MockContext());
 
             Assert.True(StubSetFiles.Called);
         }

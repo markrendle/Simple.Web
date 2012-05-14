@@ -1,8 +1,8 @@
-namespace Simple.Web.CodeGeneration.Tests.Endpoints
+namespace Simple.Web.CodeGeneration.Tests.Handlers
 {
     using System.Collections.Generic;
 
-    class TestUploadEndpoint : IPost, IUploadFiles
+    class TestUploadHandler : IPost, IUploadFiles
     {
         public Status Post()
         {

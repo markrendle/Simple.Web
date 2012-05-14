@@ -1,13 +1,13 @@
-namespace Simple.Web.CodeGeneration.Tests.Endpoints
+namespace Simple.Web.CodeGeneration.Tests.Handlers
 {
     using System;
     using System.IO;
 
-    class TestRedirectEndpoint : IGet, IMayRedirect, IOutputStream
+    class TestRedirectHandler : IGet, IMayRedirect, IOutputStream
     {
         private readonly Status _status;
 
-        public TestRedirectEndpoint(Status status)
+        public TestRedirectHandler(Status status)
         {
             _status = status;
         }

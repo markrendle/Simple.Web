@@ -6,48 +6,48 @@
 
     public sealed class RoutingTableBuilder
     {
-        private readonly IList<Type> _endpointBaseTypes;
+        private readonly IList<Type> _handlerBaseTypes;
 
-        public RoutingTableBuilder(params Type[] endpointBaseTypes)
+        public RoutingTableBuilder(params Type[] handlerBaseTypes)
         {
-            _endpointBaseTypes = endpointBaseTypes;
+            _handlerBaseTypes = handlerBaseTypes;
         }
 
         public RoutingTable BuildRoutingTable()
         {
             var routingTable = new RoutingTable();
-            PopulateRoutingTableWithEndpoints(routingTable);
+            PopulateRoutingTableWithHandlers(routingTable);
             return routingTable;
         }
 
-        private void PopulateRoutingTableWithEndpoints(RoutingTable routingTable)
+        private void PopulateRoutingTableWithHandlers(RoutingTable routingTable)
         {
-            PopulateRoutingTableWithEndpoints(routingTable, ExportedTypeHelper.FromCurrentAppDomain(TypeIsEndpoint));
+            PopulateRoutingTableWithHandlers(routingTable, ExportedTypeHelper.FromCurrentAppDomain(TypeIsHandler));
         }
 
-        private void PopulateRoutingTableWithEndpoints(RoutingTable routingTable, IEnumerable<Type> endpointTypes)
+        private void PopulateRoutingTableWithHandlers(RoutingTable routingTable, IEnumerable<Type> handlerTypes)
         {
-            foreach (var exportedType in endpointTypes)
+            foreach (var exportedType in handlerTypes)
             {
                 var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes).ToList();
                 foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
                 {
-                    routingTable.Add(uriTemplate, new EndpointTypeInfo(exportedType, respondsToTypes));
+                    routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes));
                 }
             }
         }
 
-        private bool TypeIsEndpoint(Type type)
+        private bool TypeIsHandler(Type type)
         {
             if (type.IsAbstract || type.IsInterface) return false;
 
-            return _endpointBaseTypes.Any(t => t.IsAssignableFrom(type));
+            return _handlerBaseTypes.Any(t => t.IsAssignableFrom(type));
         }
 
-        public RoutingTable BuildRoutingTable(IEnumerable<Type> endpointTypes)
+        public RoutingTable BuildRoutingTable(IEnumerable<Type> handlerTypes)
         {
             var routingTable = new RoutingTable();
-            PopulateRoutingTableWithEndpoints(routingTable, endpointTypes);
+            PopulateRoutingTableWithHandlers(routingTable, handlerTypes);
             return routingTable;
         }
     }

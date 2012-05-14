@@ -6,16 +6,16 @@ namespace Simple.Web.CodeGeneration
     using System.Linq.Expressions;
     using System.Reflection;
 
-    public class EndpointBuilderFactory
+    public class HandlerBuilderFactory
     {
         private readonly IConfiguration _configuration;
 
-        public EndpointBuilderFactory(IConfiguration configuration)
+        public HandlerBuilderFactory(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public Func<IDictionary<string, string>, object> BuildEndpointBuilder(Type type)
+        public Func<IDictionary<string, string>, object> BuildHandlerBuilder(Type type)
         {
             var container = Expression.Constant(_configuration.Container);
             var getMethod = Expression.Call(container, _configuration.Container.GetType().GetMethod("Get").MakeGenericMethod(type));

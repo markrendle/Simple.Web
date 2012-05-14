@@ -4,11 +4,11 @@ namespace Simple.Web.CodeGeneration
 
     internal static class SetFiles
     {
-        internal static void Impl(IUploadFiles endpoint, IContext context)
+        internal static void Impl(IUploadFiles handler, IContext context)
         {
             if (context.Request.Files.Any())
             {
-                endpoint.Files = context.Request.Files;
+                handler.Files = context.Request.Files;
             }
         }
     }

@@ -41,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HandlerFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Helpers\AssemblyEx.cs" />
     <Compile Include="CodeGeneration\CheckAuthentication.cs" />
     <Compile Include="CodeGeneration\DisableCache.cs" />
-    <Compile Include="CodeGeneration\EndpointRunnerBuilder.cs" />
+    <Compile Include="CodeGeneration\HandlerRunnerBuilder.cs" />
     <Compile Include="CodeGeneration\IMethodLookup.cs" />
     <Compile Include="CodeGeneration\MethodLookup.cs" />
     <Compile Include="CodeGeneration\Redirect.cs" />
@@ -63,11 +66,10 @@
     <Compile Include="ContentTypeHandling\ContentTypeHandlerTable.cs" />
     <Compile Include="ContentTypeHandling\ContentTypesAttribute.cs" />
     <Compile Include="DependencyInjection\DefaultSimpleContainer.cs" />
-    <Compile Include="CodeGeneration\EndpointBuilderFactory.cs" />
-    <Compile Include="EndpointFactory.cs" />
-    <Compile Include="EndpointInfo.cs" />
-    <Compile Include="EndpointRunnerFactory.cs" />
-    <Compile Include="EndpointTypeInfo.cs" />
+    <Compile Include="CodeGeneration\HandlerBuilderFactory.cs" />
+    <Compile Include="HandlerInfo.cs" />
+    <Compile Include="HandlerRunnerFactory.cs" />
+    <Compile Include="HandlerTypeInfo.cs" />
     <Compile Include="Helpers\ExportedTypeHelper.cs" />
     <Compile Include="Helpers\FileUtility.cs" />
     <Compile Include="ContentTypeHandling\FormDeserializer.cs" />

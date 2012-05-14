@@ -33,60 +33,60 @@ namespace Simple.Web.AspNet
         public static IHttpHandler TryCreate(IContext context)
         {
             IDictionary<string, string> variables;
-            var endpointType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.AcceptTypes, out variables);
-            if (endpointType == null) return null;
-            var endpointInfo = new EndpointInfo(endpointType, variables, context.Request.HttpMethod);
+            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.AcceptTypes, out variables);
+            if (handlerType == null) return null;
+            var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
             foreach (var key in context.Request.QueryString.AllKeys)
             {
-                endpointInfo.Variables.Add(key, context.Request.QueryString[key]);
+                handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
             }
 
-            return CreateHandler(context, endpointInfo);
+            return CreateHandler(context, handlerInfo);
         }
 
-        private static IHttpHandler CreateHandler(IContext context, EndpointInfo endpointInfo)
+        private static IHttpHandler CreateHandler(IContext context, HandlerInfo handlerInfo)
         {
             IHttpHandler instance;
-            if (endpointInfo.IsAsync)
+            if (handlerInfo.IsAsync)
             {
-                instance = CreateAsyncHttpHandler(context, endpointInfo);
+                instance = CreateAsyncHttpHandler(context, handlerInfo);
             }
             else
             {
-                instance = CreateHttpHandler(context, endpointInfo);
+                instance = CreateHttpHandler(context, handlerInfo);
             }
             return instance;
         }
 
-        private static IHttpHandler CreateHttpHandler(IContext context, EndpointInfo endpointInfo)
+        private static IHttpHandler CreateHttpHandler(IContext context, HandlerInfo handlerInfo)
         {
             IHttpHandler instance;
-            if (endpointInfo.RequiresAuthentication)
+            if (handlerInfo.RequiresAuthentication)
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleHttpHandler(context, endpointInfo, authenticationProvider);
+                instance = new SimpleHttpHandler(context, handlerInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleHttpHandler(context, endpointInfo);
+                instance = new SimpleHttpHandler(context, handlerInfo);
             }
             return instance;
         }
 
-        private static IHttpHandler CreateAsyncHttpHandler(IContext context, EndpointInfo endpointInfo)
+        private static IHttpHandler CreateAsyncHttpHandler(IContext context, HandlerInfo handlerInfo)
         {
             IHttpHandler instance;
-            if (endpointInfo.RequiresAuthentication)
+            if (handlerInfo.RequiresAuthentication)
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new AuthenticationProvider();
-                instance = new SimpleHttpAsyncHandler(context, endpointInfo, authenticationProvider);
+                instance = new SimpleHttpAsyncHandler(context, handlerInfo, authenticationProvider);
             }
             else
             {
-                instance = new SimpleHttpAsyncHandler(context, endpointInfo);
+                instance = new SimpleHttpAsyncHandler(context, handlerInfo);
             }
             return instance;
         }

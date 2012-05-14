@@ -8,16 +8,16 @@ namespace Simple.Web.AspNet
     class SimpleAsyncHandlerResult : AsyncResult
     {
         private readonly IContext _context;
-        private readonly EndpointInfo _endpointInfo;
+        private readonly HandlerInfo _handlerInfo;
         private readonly AsyncCallback _callback;
         private readonly ErrorHelper _helper;
         private AsyncRunner _runner;
-        private object _endpoint;
+        private object _handler;
 
-        public SimpleAsyncHandlerResult(IContext context, EndpointInfo endpointInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
+        public SimpleAsyncHandlerResult(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
         {
             _context = context;
-            _endpointInfo = endpointInfo;
+            _handlerInfo = handlerInfo;
             _callback = callback;
             AsyncState = asyncState;
             _helper = new ErrorHelper(context);
@@ -25,16 +25,16 @@ namespace Simple.Web.AspNet
 
         public void Run()
         {
-            _endpoint = EndpointFactory.Instance.GetEndpoint(_endpointInfo);
+            _handler = HandlerFactory.Instance.GetHandler(_handlerInfo);
 
-            if (_endpoint != null)
+            if (_handler != null)
             {
-                _runner = EndpointRunnerFactory.Instance.GetAsync(_endpointInfo.EndpointType);
-                _runner.Start(_endpoint, _context).ContinueWith(RunContinuation);
+                _runner = HandlerRunnerFactory.Instance.GetAsync(_handlerInfo.HandlerType);
+                _runner.Start(_handler, _context).ContinueWith(RunContinuation);
             }
             else
             {
-                throw new InvalidOperationException("Could not create endpoint handler.");
+                throw new InvalidOperationException("Could not create handler handler.");
             }
         }
 
@@ -49,7 +49,7 @@ namespace Simple.Web.AspNet
             {
                 try
                 {
-                    _runner.End(_endpoint, _context, t.Result);
+                    _runner.End(_handler, _context, t.Result);
                 }
                 catch (Exception ex)
                 {

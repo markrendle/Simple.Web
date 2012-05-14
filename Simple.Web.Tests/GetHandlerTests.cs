@@ -21,7 +21,7 @@
 
     [UriTemplate("/")]
     [RespondsTo(ContentType.Html)]
-    public class RootEndpoint : IGet, IOutput<RawHtml>
+    public class RootHandler : IGet, IOutput<RawHtml>
     {
         public Status Get()
         {
