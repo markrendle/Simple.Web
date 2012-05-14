@@ -28,7 +28,7 @@
             {
                 var handlerType = content.Handler != null ? content.Handler.GetType() : null;
                 var modelType = content.Model != null ? content.Model.GetType() : null;
-                viewType = razorViews.GetViewTypeForHandlerAndModelType(handlerType, modelType);
+                viewType = razorViews.GetViewType(handlerType, modelType);
             }
 
             if (viewType == null)

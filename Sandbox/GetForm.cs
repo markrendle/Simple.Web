@@ -8,18 +8,13 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/form")]
-    public class GetForm : IGet, ISpecifyView
+    public class GetForm : IGet
     {
         public string Title { get { return "Test Form"; } }
 
         public Status Get()
         {
             return 200;
-        }
-
-        public string ViewPath
-        {
-            get { return "Form"; }
         }
     }
 

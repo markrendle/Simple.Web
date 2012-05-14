@@ -177,7 +177,7 @@
             {
                 _blocks.Add(BuildWriteOutputBlock());
             }
-            else if (typeof (ISpecifyView).IsAssignableFrom(_type))
+            else
             {
                 _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
             }

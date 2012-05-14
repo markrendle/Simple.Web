@@ -29,6 +29,17 @@ namespace Simple.Web.Razor.Tests
             }
             Assert.NotNull(type);
         }
+        
+        [Fact]
+        public void GetsATypeGivenADerivedModel()
+        {
+            Type type;
+            using (var reader = new StringReader(ModelTemplateText))
+            {
+                type = new RazorTypeBuilder().CreateType(reader, null, typeof (SuperTestModel));
+            }
+            Assert.NotNull(type);
+        }
 
         [Fact]
         public void GetsATypeGivenAHandler()
@@ -54,7 +65,7 @@ namespace Simple.Web.Razor.Tests
             Assert.Equal(1, genericArguments.Length);
             Assert.Equal(typeof (TestModel), genericArguments[0]);
         }
-        
+
         [Fact]
         public void GetsHandlerTypeFromRazorMarkup()
         {
@@ -99,6 +110,11 @@ namespace Simple.Web.Razor.Tests
     public class TestModel
     {
         public string Text { get; set; }
+    }
+
+    public class SuperTestModel : TestModel
+    {
+        
     }
     
     public class TestJustHandler

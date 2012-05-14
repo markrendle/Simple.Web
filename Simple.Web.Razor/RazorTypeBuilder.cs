@@ -114,6 +114,7 @@
         {
             var assemblies = new List<string>
                                  {
+                                     typeof(SimpleWeb).Assembly.GetPath(),
                                      Assembly.GetExecutingAssembly().GetPath(),
                                      Assembly.GetCallingAssembly().GetPath(),
                                      typeof (Enumerable).Assembly.GetPath(),

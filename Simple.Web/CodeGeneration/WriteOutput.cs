@@ -20,18 +20,7 @@ namespace Simple.Web.CodeGeneration
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-                Content content;
-// ReSharper disable SuspiciousTypeConversion.Global
-                var specifyView = handler as ISpecifyView;
-// ReSharper restore SuspiciousTypeConversion.Global
-                if (specifyView != null)
-                {
-                    content = new Content(handler, handler.Output, specifyView.ViewPath);
-                }
-                else
-                {
-                    content = new Content(handler, handler.Output);
-                }
+                var content = new Content(handler, handler.Output);
                 contentTypeHandler.Write(content, context.Response.Output);
             }
         }

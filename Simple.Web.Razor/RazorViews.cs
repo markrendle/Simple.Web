@@ -153,46 +153,121 @@ namespace Simple.Web.Razor
             return validTypes.Contains(genericType);
         }
 
-        public Type GetViewTypeForModelType(Type modelType)
+        public Type GetViewType(Type handlerType, Type modelType)
         {
             InitializeIfNot();
 
+            Type type;
+
+            if (TryGetCombinedType(handlerType, modelType, out type)) return type;
+
+            if (TryGetHandlerType(handlerType, modelType, out type)) return type;
+
+            if (handlerType != null)
+            {
+                if (TryGetHandlerType(handlerType.GetInterfaces(), out type)) return type;
+            }
+
+            if (TryGetModelType(handlerType, modelType, out type)) return type;
+
+            if (modelType != null)
+            {
+                if (TryGetModelType(modelType.GetInterfaces(), out type)) return type;
+            }
+
+            throw new ViewNotFoundException(handlerType, modelType);
+        }
+
+        private static bool TryGetModelType(Type handlerType, Type modelType, out Type type)
+        {
+            if (modelType == null)
+            {
+                type = null;
+                return false;
+            }
             if (AmbiguousModelTypes.Contains(modelType))
             {
-                throw new AmbiguousViewException(null, modelType);
+                throw new AmbiguousViewException(handlerType, modelType);
             }
-            try
+            if (ModelTypeCache.ContainsKey(modelType))
             {
-                return ModelTypeCache[modelType];
+                {
+                    type = ModelTypeCache[modelType];
+                    return true;
+                }
             }
-            catch (KeyNotFoundException)
-            {
-                throw new ViewNotFoundException(null, modelType);
-            }
+
+            return TryGetModelType(handlerType, modelType.BaseType, out type);
         }
 
-        public Type GetViewTypeForHandlerType(Type handlerType)
+        private static bool TryGetModelType(Type[] modelTypeInterfaces, out Type type)
         {
-            InitializeIfNot();
+            if (modelTypeInterfaces == null || modelTypeInterfaces.Length == 0)
+            {
+                type = null;
+                return false;
+            }
 
+            var q = from @interface in modelTypeInterfaces
+                    where ModelTypeCache.ContainsKey(@interface)
+                    select ModelTypeCache[@interface];
+            var list = q.ToList();
+            if (list.Count == 1)
+            {
+                type = list[0];
+                return true;
+            }
+
+            type = null;
+            return false;
+        }
+
+        private static bool TryGetHandlerType(Type handlerType, Type modelType, out Type type)
+        {
+            if (handlerType == null)
+            {
+                type = null;
+                return false;
+            }
             if (AmbiguousHandlerTypes.Contains(handlerType))
             {
-                throw new AmbiguousViewException(handlerType, null);
+                throw new AmbiguousViewException(handlerType, modelType);
             }
-            try
+            if (HandlerTypeCache.ContainsKey(handlerType))
             {
-                return HandlerTypeCache[handlerType];
+                {
+                    type = HandlerTypeCache[handlerType];
+                    return true;
+                }
             }
-            catch (KeyNotFoundException)
+
+            return TryGetHandlerType(handlerType.BaseType, modelType, out type);
+        }
+        
+        private static bool TryGetHandlerType(Type[] handlerTypeInterfaces, out Type type)
+        {
+            if (handlerTypeInterfaces == null || handlerTypeInterfaces.Length == 0)
             {
-                throw new ViewNotFoundException(handlerType, null);
+                type = null;
+                return false;
             }
+
+            var q = from @interface in handlerTypeInterfaces
+                       where HandlerTypeCache.ContainsKey(@interface)
+                       select HandlerTypeCache[@interface];
+            var list = q.ToList();
+            if (list.Count == 1)
+            {
+                type = list[0];
+                return true;
+            }
+
+            type = null;
+            return false;
         }
 
-        public Type GetViewTypeForHandlerAndModelType(Type handlerType, Type modelType)
+        private static bool TryGetCombinedType(Type handlerType, Type modelType, out Type type)
         {
-            InitializeIfNot();
-
             if (handlerType != null && modelType != null)
             {
                 var key = Tuple.Create(handlerType, modelType);
@@ -203,35 +278,25 @@ namespace Simple.Web.Razor
                 }
                 if (HandlerAndModelTypeCache.ContainsKey(key))
                 {
-                    return HandlerAndModelTypeCache[key];
+                    {
+                        type = HandlerAndModelTypeCache[key];
+                        return true;
+                    }
+                }
+
+                if (handlerType.BaseType != null)
+                {
+                    if (TryGetCombinedType(handlerType.BaseType, modelType, out type)) return true;
+                }
+
+                if (modelType.BaseType != null)
+                {
+                    if (TryGetCombinedType(handlerType, modelType.BaseType, out type)) return true;
                 }
             }
 
-            if (handlerType != null)
-            {
-                if (AmbiguousHandlerTypes.Contains(handlerType))
-                {
-                    throw new AmbiguousViewException(handlerType, modelType);
-                }
-                if (HandlerTypeCache.ContainsKey(handlerType))
-                {
-                    return HandlerTypeCache[handlerType];
-                }
-            }
-
-            if (modelType != null)
-            {
-                if (AmbiguousModelTypes.Contains(modelType))
-                {
-                    throw new AmbiguousViewException(handlerType, modelType);
-                }
-                if (ModelTypeCache.ContainsKey(modelType))
-                {
-                    return ModelTypeCache[modelType];
-                }
-            }
-            
-            throw new ViewNotFoundException(handlerType, modelType);
+            type = null;
+            return false;
         }
 
         private static void InitializeIfNot()
