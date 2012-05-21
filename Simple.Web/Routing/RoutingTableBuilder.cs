@@ -34,6 +34,12 @@
                 {
                     routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes));
                 }
+
+                // If it's the LoginPage, set it to the configuration
+                if (SimpleWeb.Configuration.LoginPage == null && typeof(ILoginPage).IsAssignableFrom(exportedType))
+                {
+                    SimpleWeb.Configuration.LoginPage = exportedType;
+                }
             }
         }
 
@@ -44,7 +50,7 @@
             return _handlerBaseTypes.Any(t => t.IsAssignableFrom(type));
         }
 
-        public RoutingTable BuildRoutingTable(IEnumerable<Type> handlerTypes)
+        internal RoutingTable BuildRoutingTable(IEnumerable<Type> handlerTypes)
         {
             var routingTable = new RoutingTable();
             PopulateRoutingTableWithHandlers(routingTable, handlerTypes);

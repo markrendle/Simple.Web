@@ -7,6 +7,7 @@ namespace Simple.Web
     {
         public static readonly Status OK = new Status(200, "OK");
         public static readonly Status NoContent = new Status(204, "No Content");
+        public static readonly Status TemporaryRedirect = new Status(307, "Temporary Redirect");
         public static readonly Status InternalServerError = new Status(500, "Internal Server Error");
         private static readonly StatusLookupCollection StatusLookup;
 
@@ -16,7 +17,8 @@ namespace Simple.Web
                                {
                                    OK,
                                    NoContent,
-                                   InternalServerError
+                                   InternalServerError,
+                                   TemporaryRedirect
                                };
         }
 

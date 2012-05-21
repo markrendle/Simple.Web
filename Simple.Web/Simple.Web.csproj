@@ -71,10 +71,13 @@
     <Compile Include="HandlerRunnerFactory.cs" />
     <Compile Include="HandlerTypeInfo.cs" />
     <Compile Include="Helpers\ExportedTypeHelper.cs" />
+    <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\FileUtility.cs" />
     <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
+    <Compile Include="Helpers\ResponseExtensions.cs" />
+    <Compile Include="Helpers\UriFromType.cs" />
     <Compile Include="HttpVerbAttribute.cs" />
     <Compile Include="IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
@@ -85,6 +88,8 @@
     <Compile Include="IGet.cs" />
     <Compile Include="IHeaderCollection.cs" />
     <Compile Include="IInput.cs" />
+    <Compile Include="ILoginPage.cs" />
+    <Compile Include="ILoginPost.cs" />
     <Compile Include="INeedContext.cs" />
     <Compile Include="INoCache.cs" />
     <Compile Include="IOutput.cs" />
