@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Simple.Web")]
-[assembly: AssemblyDescription("A web framework.")]
-[assembly: AssemblyConfiguration("Release")]
-[assembly: AssemblyCompany("Mark Rendle")]
-[assembly: AssemblyProduct("Simple.Web")]
-[assembly: AssemblyCopyright("Copyright © Mark Rendle 2012")]
+[assembly: AssemblyTitle("Simple.Web.ContentTypeHandling.Tests")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("Simple.Web.ContentTypeHandling.Tests")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e7c30a7a-8e62-43a0-93b5-d77c2218a2c0")]
+[assembly: Guid("8871f033-6071-4af7-921a-e4e720890052")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,9 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.0.1")]
-[assembly: AssemblyFileVersion("0.0.0.1")]
-
-[assembly: InternalsVisibleTo("Simple.Web.Tests")]
-[assembly: InternalsVisibleTo("Simple.Web.ContentTypeHandling.Tests")]
-[assembly: InternalsVisibleTo("Simple.Web.CodeGeneration.Tests")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

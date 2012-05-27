@@ -24,7 +24,8 @@ namespace Simple.Web.CodeGeneration
         {
             try
             {
-                contentTypeHandler = new ContentTypeHandlerTable().GetContentTypeHandler(context.Request.AcceptTypes);
+                string matchedType;
+                contentTypeHandler = new ContentTypeHandlerTable().GetContentTypeHandler(context.Request.AcceptTypes, out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {

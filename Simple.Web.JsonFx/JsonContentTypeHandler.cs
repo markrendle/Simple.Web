@@ -13,7 +13,7 @@ namespace Simple.Web.JsonFx
     using global::JsonFx.Serialization.Resolvers;
     using global::JsonFx.Xml.Resolvers;
 
-    [ContentTypes(ContentType.Json)]
+    [ContentTypes(ContentType.Json, "application/*+json")]
     public class JsonContentTypeHandler : IContentTypeHandler
     {
         public object Read(StreamReader streamReader, Type inputType)
