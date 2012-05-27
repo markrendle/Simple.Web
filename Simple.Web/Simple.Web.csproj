@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheOptions.cs" />
     <Compile Include="HandlerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -91,9 +92,9 @@
     <Compile Include="IHeaderCollection.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="ILoginPage.cs" />
-    <Compile Include="ILoginPost.cs" />
+    <Compile Include="IHandleLogin.cs" />
     <Compile Include="INeedContext.cs" />
-    <Compile Include="INoCache.cs" />
+    <Compile Include="ICacheability.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="Helpers\IPathUtility.cs" />
     <Compile Include="IPost.cs" />

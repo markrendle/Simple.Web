@@ -149,7 +149,7 @@
 
         private void CreateNoCacheBlock()
         {
-            if (typeof (INoCache).IsAssignableFrom(_type))
+            if (typeof (ICacheability).IsAssignableFrom(_type))
             {
                 _blocks.Add(Expression.Call(_methodLookup.DisableCache, _context));
             }

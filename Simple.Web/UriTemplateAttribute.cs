@@ -4,24 +4,40 @@ using System.Linq;
 
 namespace Simple.Web
 {
+    /// <summary>
+    /// Indicates that a type is a handler, and specifies the URI template that it matches.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class UriTemplateAttribute : Attribute
     {
         private readonly string _template;
         private readonly bool _inheritFromBaseClass;
 
-        // This is a positional argument
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UriTemplateAttribute"/> class.
+        /// </summary>
+        /// <param name="template">The URI template.</param>
+        /// <param name="inheritFromBaseClass">If set to <c>true</c> (the default) any URI template from a base class will be prepended to the specified template.</param>
         public UriTemplateAttribute(string template, bool inheritFromBaseClass = true)
         {
             _template = template;
             _inheritFromBaseClass = inheritFromBaseClass;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the URI template from the base class is inherited.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if start of template is inherited from base class; otherwise, <c>false</c>.
+        /// </value>
         public bool InheritFromBaseClass
         {
             get { return _inheritFromBaseClass; }
         }
 
+        /// <summary>
+        /// Gets the template.
+        /// </summary>
         public string Template
         {
             get { return _template; }

@@ -7,9 +7,12 @@ namespace Simple.Web.CodeGeneration
 {
     static class DisableCache
     {
-        public static void Impl(IContext context)
+        public static void Impl(ICacheability handler, IContext context)
         {
-            context.Response.DisableCache();
+            if (handler.CacheOptions.Disable)
+            {
+                context.Response.DisableCache();
+            }
         }
     }
 }

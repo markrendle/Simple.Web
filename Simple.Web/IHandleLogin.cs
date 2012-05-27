@@ -6,9 +6,9 @@ using System.Text;
 namespace Simple.Web
 {
     /// <summary>
-    /// Represents the handler which serves the Login Page for a Forms-based authentication application.
+    /// Represents the handler which accepts the POST operation for a login in a Forms-based authentication application.
     /// </summary>
-    public interface ILoginPage
+    public interface IHandleLogin
     {
         /// <summary>
         /// Sets the URL that the application should return to once login is complete.
@@ -20,5 +20,6 @@ namespace Simple.Web
         /// This property will be set by the framework.
         /// </remarks>
         string ReturnUrl { set; }
+        Guid UserToken { get; }
     }
 }

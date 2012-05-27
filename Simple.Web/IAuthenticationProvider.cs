@@ -9,7 +9,25 @@
     {
         public IUser GetLoggedInUser(IContext context)
         {
-            throw new System.NotImplementedException();
+            return AnonymousUser.Instance;
+        }
+    }
+
+    class AnonymousUser : IUser
+    {
+        public static readonly IUser Instance = new AnonymousUser();
+        private AnonymousUser()
+        {
+            
+        }
+        public string Name
+        {
+            get { return "Anonymous"; }
+        }
+
+        public bool IsAuthenticated
+        {
+            get { return false; }
         }
     }
 }

@@ -3,7 +3,7 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
     using System.Collections.Generic;
     using System.Linq;
 
-    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, INoCache
+    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, ICacheability
     {
         private readonly Status _status;
 
@@ -22,5 +22,10 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
         public string Input { get; set; }
 
         public ICookieCollection ResponseCookies { get; set; }
+
+        public CacheOptions CacheOptions
+        {
+            get { return CacheOptions.DisableCaching; }
+        }
     }
 }

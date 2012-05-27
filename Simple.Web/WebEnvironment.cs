@@ -7,6 +7,9 @@ namespace Simple.Web
     using System.Reflection;
     using Helpers;
 
+    /// <summary>
+    /// Default implementation of <see cref="IWebEnvironment"/>
+    /// </summary>
     public sealed class WebEnvironment : IWebEnvironment
     {
         private static readonly IDictionary<string,string[]> ContentTypeLookup = new Dictionary<string, string[]>
@@ -21,11 +24,17 @@ namespace Simple.Web
             
         private readonly IFileUtility _fileUtility = new FileUtility();
 
+        /// <summary>
+        /// Gets the root folder of the application in the host.
+        /// </summary>
         public string AppRoot
         {
             get { return BinBasedAppRoot; }
         }
 
+        /// <summary>
+        /// Gets the path utility.
+        /// </summary>
         public IPathUtility PathUtility
         {
             get
@@ -38,11 +47,22 @@ namespace Simple.Web
             }
         }
 
+        /// <summary>
+        /// Gets the file utility.
+        /// </summary>
         public IFileUtility FileUtility
         {
             get { return _fileUtility; }
         }
 
+        /// <summary>
+        /// Gets the content type from a file extension.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <param name="acceptedTypes">The accepted types.</param>
+        /// <returns>
+        /// The acceptable type for the file.
+        /// </returns>
         public string GetContentTypeFromFileExtension(string file, IList<string> acceptedTypes)
         {
             var extension = Path.GetExtension(file);
