@@ -22,6 +22,7 @@ namespace Simple.Web.AspNet
 
         private static bool IsVerbHandler(Type type)
         {
+            if (type.IsInterface || type.IsAbstract) return false;
             return HttpVerbAttribute.IsAppliedTo(type);
         }
 
@@ -33,7 +34,7 @@ namespace Simple.Web.AspNet
         public static IHttpHandler TryCreate(IContext context)
         {
             IDictionary<string, string> variables;
-            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.AcceptTypes, out variables);
+            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.ContentType, context.Request.AcceptTypes, out variables);
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 

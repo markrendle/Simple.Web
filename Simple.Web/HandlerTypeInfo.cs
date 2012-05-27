@@ -31,9 +31,9 @@ namespace Simple.Web
             return _respondsWithTypes.Count == 0 || _respondsWithTypes.Overlaps(contentTypes);
         }
 
-        public bool RespondsTo(IEnumerable<string> contentTypes)
+        public bool RespondsTo(string contentType)
         {
-            return _respondsToTypes.Count == 0 || _respondsToTypes.Overlaps(contentTypes);
+            return _respondsToTypes.Count == 0 || _respondsToTypes.Contains(contentType);
         }
     }
 }

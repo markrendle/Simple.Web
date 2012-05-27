@@ -32,8 +32,9 @@ namespace Simple.Web
             {
                 return _pathUtility ??
                        (_pathUtility =
-                        ExportedTypeHelper.FromCurrentAppDomain(t => typeof (IPathUtility).IsAssignableFrom(t)).Select(
-                            Activator.CreateInstance).Cast<IPathUtility>().FirstOrDefault());
+                        ExportedTypeHelper.FromCurrentAppDomain(t => typeof (IPathUtility).IsAssignableFrom(t))
+                            .Where(t => !(t.IsInterface || t.IsAbstract))
+                            .Select(Activator.CreateInstance).Cast<IPathUtility>().FirstOrDefault());
             }
         }
 

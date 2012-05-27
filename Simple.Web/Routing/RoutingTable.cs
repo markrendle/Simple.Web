@@ -27,14 +27,14 @@
             return types == null ? null : types.Single().HandlerType;
         }
 
-        public Type Get(string url, IList<string> acceptTypes, out IDictionary<string, string> variables)
+        public Type Get(string url, string contentType, IList<string> acceptTypes, out IDictionary<string, string> variables)
         {
             variables = null;
             var types = GetTypesForStatic(url) ??
                 GetTypesForDynamic(url, out variables);
 
             if (types == null) return null;
-            var typeInfo = types.SingleOrDefault(t => t.RespondsWith(acceptTypes));
+            var typeInfo = types.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWith(acceptTypes));
             if (typeInfo == null) return null;
             return typeInfo.HandlerType;
         }

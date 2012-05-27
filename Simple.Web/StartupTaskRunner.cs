@@ -12,7 +12,10 @@
         {
             foreach (var type in ExportedTypeHelper.FromCurrentAppDomain(StartupTaskType.IsAssignableFrom))
             {
-                CreateAndRunTask(type);
+                if (!(type.IsInterface || type.IsAbstract))
+                {
+                    CreateAndRunTask(type);
+                }
             }
         }
 

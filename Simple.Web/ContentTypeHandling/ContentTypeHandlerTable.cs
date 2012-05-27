@@ -113,7 +113,7 @@ namespace Simple.Web.ContentTypeHandling
 
         private static bool TypeIsContentTypeHandler(Type type)
         {
-            return (!type.IsAbstract) && typeof (IContentTypeHandler).IsAssignableFrom(type);
+            return (!type.IsAbstract) && (!type.IsInterface) && typeof (IContentTypeHandler).IsAssignableFrom(type);
         }
     }
 }

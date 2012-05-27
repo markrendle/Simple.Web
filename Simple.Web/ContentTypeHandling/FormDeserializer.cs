@@ -10,7 +10,7 @@ namespace Simple.Web.ContentTypeHandling
         public object Read(StreamReader streamReader, Type inputType)
         {
             string text = streamReader.ReadToEnd();
-            var pairs = text.Split('\n').Select(s => Tuple.Create<string, string>(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
+            var pairs = text.Split('\n').Select(s => Tuple.Create(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
             var obj = Activator.CreateInstance(inputType);
             foreach (var pair in pairs)
             {
