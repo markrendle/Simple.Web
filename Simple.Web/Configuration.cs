@@ -16,12 +16,13 @@ namespace Simple.Web
 
         public ISet<string> PublicFolders { get { return _publicFolders; } }
 
-
         private ISimpleContainer _container = new DefaultSimpleContainer();
         public ISimpleContainer Container
         {
             get { return _container; }
             set { _container = value ?? new DefaultSimpleContainer(); }
         }
+
+        public Type LoginPage { get; set; }
     }
 }

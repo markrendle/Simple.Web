@@ -1,5 +1,6 @@
 namespace Simple.Web
 {
+    using System;
     using System.Collections.Generic;
     using DependencyInjection;
 
@@ -8,5 +9,6 @@ namespace Simple.Web
         ISet<string> PublicFolders { get; }
         IDictionary<string, string> PublicFileMappings { get; }
         ISimpleContainer Container { get; set; }
+        Type LoginPage { get; set; }
     }
 }
