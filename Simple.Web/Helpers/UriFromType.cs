@@ -6,7 +6,6 @@ using System.Text;
 namespace Simple.Web.Helpers
 {
     using System.Linq.Expressions;
-    using System.Text.RegularExpressions;
 
     public static class UriFromType
     {
@@ -58,7 +57,7 @@ namespace Simple.Web.Helpers
             foreach (var uriTemplateAttribute in uriTemplateAttributes)
             {
                 var template = uriTemplateAttribute.Template;
-                var variables = new HashSet<string>(ExtractVariableNames(template), StringComparer.OrdinalIgnoreCase);
+                var variables = new HashSet<string>(UriTemplateHelper.ExtractVariableNames(template), StringComparer.OrdinalIgnoreCase);
                 if (variables.All(values.ContainsKey))
                 {
                     var uri = uriTemplateAttribute.Template;
@@ -71,32 +70,6 @@ namespace Simple.Web.Helpers
             }
 
             throw new InvalidOperationException("Cannot find matching Uri template.");
-        }
-
-        private static IEnumerable<string> ExtractVariableNames(string template)
-        {
-            return new Regex("{([^}]*)}").Matches(template).Cast<Match>().Select(m => m.Value.Trim('{', '}'));
-        }
-
-        private static bool GetExpressionValue(Expression expression, out object value)
-        {
-            var memberExpression = expression as MemberExpression;
-            if (memberExpression != null)
-            {
-                var constantExpression = memberExpression.Expression as ConstantExpression;
-                if (constantExpression != null)
-                {
-                    value = constantExpression.Value.GetType().GetField(memberExpression.Member.Name).GetValue(constantExpression.Value);
-                    return true;
-                }
-                if (GetExpressionValue(memberExpression.Expression, out value))
-                {
-                    value = value.GetType().GetField(memberExpression.Member.Name).GetValue(constantExpression.Value);
-                    return true;
-                }
-            }
-            value = null;
-            return false;
         }
 
         private static void AssertAtLeastOne(IList<UriTemplateAttribute> attributes)
