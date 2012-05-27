@@ -25,3 +25,6 @@ Simple.Data/Simple.Data.idc
 .DS_Store
 mono-release-*
 Simple.Web.sln.DotSettings.user
+test
+test*ml
+build

@@ -22,8 +22,7 @@ namespace Simple.Web.Razor
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
 
         private static readonly string AppRoot =
-            Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetPath())).Regex(@"\\bin\\?$",
-                                                                                                          string.Empty);
+            Path.GetDirectoryName(typeof(RazorViews).Assembly.GetPath()).Regex(@"\\bin\\?$", string.Empty);
 
         public static void Initialize()
         {
@@ -32,6 +31,9 @@ namespace Simple.Web.Razor
             const string directory = "Views";
 
             var viewsDirectory = Path.Combine(AppRoot, directory);
+
+            Console.WriteLine(viewsDirectory);
+            Trace.WriteLine(viewsDirectory);
 
             if (!Directory.Exists(viewsDirectory))
             {

@@ -7,19 +7,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web", "Simple.Web\Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Tests", "Simple.Web.Tests\Simple.Web.Tests.csproj", "{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Tests", "Tests\Simple.Web.Tests\Simple.Web.Tests.csproj", "{29FBE3C3-4CB4-4625-8AA7-C748E1F0D2BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.JsonFx", "Simple.Web.JsonFx\Simple.Web.JsonFx.csproj", "{A1E30AC1-2765-4E4F-8155-682A64D8B204}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Razor", "Simple.Web.Razor\Simple.Web.Razor.csproj", "{A226D857-22FD-4C10-8596-EB7821C59255}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Razor.Tests", "Simple.Web.Razor.Tests\Simple.Web.Razor.Tests.csproj", "{FD018C10-D36C-4C40-8403-07D1F0CCA328}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Razor.Tests", "Tests\Simple.Web.Razor.Tests\Simple.Web.Razor.Tests.csproj", "{FD018C10-D36C-4C40-8403-07D1F0CCA328}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Ninject", "Simple.Web.Ninject\Simple.Web.Ninject.csproj", "{1B541AA1-44B4-4241-979C-BB6CB5897B56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Ninject.Tests", "Simple.Web.Ninject.Tests\Simple.Web.Ninject.Tests.csproj", "{428EAAAC-67EB-4385-A134-20E7D41CC3BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Ninject.Tests", "Tests\Simple.Web.Ninject.Tests\Simple.Web.Ninject.Tests.csproj", "{428EAAAC-67EB-4385-A134-20E7D41CC3BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.CodeGeneration.Tests", "Simple.Web.CodeGeneration.Tests\Simple.Web.CodeGeneration.Tests.csproj", "{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.CodeGeneration.Tests", "Tests\Simple.Web.CodeGeneration.Tests\Simple.Web.CodeGeneration.Tests.csproj", "{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Mocks", "Simple.Web.Mocks\Simple.Web.Mocks.csproj", "{D50161E6-44C7-4527-825F-9EC3755ED2BD}"
 EndProject
@@ -27,7 +27,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.AspNet", "Simple.Web.AspNet\Simple.Web.AspNet.csproj", "{266D3482-C95C-4B2F-B7EA-F08F849084D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.ContentTypeHandling.Tests", "Simple.Web.ContentTypeHandling.Tests\Simple.Web.ContentTypeHandling.Tests.csproj", "{730BBC21-8495-4825-988B-FCF4D2AE5742}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.ContentTypeHandling.Tests", "Tests\Simple.Web.ContentTypeHandling.Tests\Simple.Web.ContentTypeHandling.Tests.csproj", "{730BBC21-8495-4825-988B-FCF4D2AE5742}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{215E4826-D3DF-4981-B3D6-9DD6AB393F26}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
