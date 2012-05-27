@@ -50,7 +50,7 @@
     <Compile Include="Stubs\StubDisableCache.cs" />
     <Compile Include="Stubs\StubMethodLookup.cs" />
     <Compile Include="Stubs\StubRedirect.cs" />
-    <Compile Include="Stubs\StubSetCookies.cs" />
+    <Compile Include="Stubs\StubSetResponseCookies.cs" />
     <Compile Include="Stubs\StubSetFiles.cs" />
     <Compile Include="Stubs\StubSetInput.cs" />
     <Compile Include="Stubs\StubWriteOutput.cs" />

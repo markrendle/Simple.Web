@@ -120,7 +120,7 @@
 
         private void CreateSetResponseCookiesBlock()
         {
-            if (typeof (IReadCookies).IsAssignableFrom(_type))
+            if (typeof (ISetCookies).IsAssignableFrom(_type))
             {
                 _blocks.Add(BuildSetResponseCookiesBlock());
             }

@@ -19,7 +19,7 @@
             Assert.True(StubSetInput.Called);
             Assert.Equal(typeof(string), StubSetInput.WithType);
             Assert.True(StubWriteStatusCode.Called);
-            Assert.True(StubSetCookies.Called);
+            Assert.True(StubSetResponseCookies.Called);
         }
 
         [Fact]
@@ -62,7 +62,7 @@
             StubCheckAuthentication.Called =
                 StubSetInput.Called =
                 StubWriteStatusCode.Called =
-                StubSetCookies.Called =
+                StubSetResponseCookies.Called =
                 StubRedirect.Called =
                 StubWriteStreamResponse.Called =
                 StubWriteOutput.Called =

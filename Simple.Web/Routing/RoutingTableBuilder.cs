@@ -29,10 +29,11 @@
         {
             foreach (var exportedType in handlerTypes)
             {
+                var respondsWithTypes = RespondsWithAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes).ToList();
                 var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes).ToList();
                 foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
                 {
-                    routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes));
+                    routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes, respondsWithTypes));
                 }
 
                 // If it's the LoginPage, set it to the configuration

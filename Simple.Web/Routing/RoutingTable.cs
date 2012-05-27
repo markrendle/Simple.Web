@@ -34,7 +34,7 @@
                 GetTypesForDynamic(url, out variables);
 
             if (types == null) return null;
-            var typeInfo = types.SingleOrDefault(t => t.RespondsTo(acceptTypes));
+            var typeInfo = types.SingleOrDefault(t => t.RespondsWith(acceptTypes));
             if (typeInfo == null) return null;
             return typeInfo.HandlerType;
         }

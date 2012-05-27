@@ -112,6 +112,7 @@
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
     <Compile Include="RespondsToAttribute.cs" />
+    <Compile Include="RespondsWithAttribute.cs" />
     <Compile Include="Routing\RoutingException.cs" />
     <Compile Include="Routing\RoutingTable.cs" />
     <Compile Include="Routing\RoutingTableBuilder.cs" />

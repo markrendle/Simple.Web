@@ -7,16 +7,18 @@ namespace Simple.Web
     public sealed class HandlerTypeInfo
     {
         private readonly Type _type;
-        private readonly HashSet<string> _respondsToAcceptTypes;
+        private readonly HashSet<string> _respondsWithTypes;
+        private readonly HashSet<string> _respondsToTypes;
 
-        public HandlerTypeInfo(Type type) : this(type, Enumerable.Empty<string>())
+        public HandlerTypeInfo(Type type) : this(type, null, null)
         {
         }
 
-        public HandlerTypeInfo(Type type, IEnumerable<string> respondsToAcceptTypes)
+        public HandlerTypeInfo(Type type, IEnumerable<string> respondsToTypes, IEnumerable<string> respondsWithTypes)
         {
             _type = type;
-            _respondsToAcceptTypes = new HashSet<string>(respondsToAcceptTypes);
+            _respondsWithTypes = new HashSet<string>(respondsWithTypes ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+            _respondsToTypes = new HashSet<string>(respondsToTypes ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
         }
 
         public Type HandlerType
@@ -24,9 +26,14 @@ namespace Simple.Web
             get { return _type; }
         }
 
-        public bool RespondsTo(IEnumerable<string> acceptedContentTypes)
+        public bool RespondsWith(IEnumerable<string> contentTypes)
         {
-            return _respondsToAcceptTypes.Count == 0 || _respondsToAcceptTypes.Overlaps(acceptedContentTypes);
+            return _respondsWithTypes.Count == 0 || _respondsWithTypes.Overlaps(contentTypes);
+        }
+
+        public bool RespondsTo(IEnumerable<string> contentTypes)
+        {
+            return _respondsToTypes.Count == 0 || _respondsToTypes.Overlaps(contentTypes);
         }
     }
 }

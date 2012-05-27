@@ -20,7 +20,7 @@
     
 
     [UriTemplate("/")]
-    [RespondsTo(ContentType.Html)]
+    [RespondsWith(ContentType.Html)]
     public class RootHandler : IGet, IOutput<RawHtml>
     {
         public Status Get()

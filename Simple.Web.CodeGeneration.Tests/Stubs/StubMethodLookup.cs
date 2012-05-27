@@ -8,17 +8,17 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
 
         public MethodInfo SetResponseCookies
         {
-            get { throw new System.NotImplementedException(); }
+            get { return typeof (StubSetResponseCookies).GetMethod("Impl"); }
         }
 
         public MethodInfo SetInput { get { return typeof (StubSetInput).GetMethod("Impl"); } }
         public MethodInfo WriteStatusCode { get { return typeof (StubWriteStatusCode).GetMethod("Impl"); } }
-        public MethodInfo SetCookies { get { return typeof (StubSetCookies).GetMethod("Impl"); } }
+        public MethodInfo SetCookies { get { return typeof (StubSetResponseCookies).GetMethod("Impl"); } }
         public MethodInfo SetFiles { get { return typeof(StubSetFiles).GetMethod("Impl"); } }
 
         public MethodInfo SetRequestCookies
         {
-            get { throw new System.NotImplementedException(); }
+            get { return typeof(StubSetRequestCookies).GetMethod("Impl"); }
         }
 
         public MethodInfo DisableCache { get { return typeof(StubDisableCache).GetMethod("Impl"); } }
