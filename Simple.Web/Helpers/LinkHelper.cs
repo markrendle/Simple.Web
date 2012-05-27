@@ -1,8 +1,8 @@
 ﻿namespace Simple.Web.Helpers
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
 
     /// <summary>
@@ -10,6 +10,8 @@
     /// </summary>
     public static class LinkHelper
     {
+        private static readonly ConcurrentDictionary<Type, ILinkBuilder> LinkBuilders = new ConcurrentDictionary<Type, ILinkBuilder>();
+
         /// <summary>
         /// Gets the links for a model.
         /// </summary>
@@ -19,36 +21,26 @@
         {
             if (model == null) throw new ArgumentNullException("model");
 
-            // There are few places where LINQ syntax is preferable. This is one of those places.
-            var q = from type in ExportedTypeHelper.FromCurrentAppDomain(LinksFromAttribute.Exists)
-                    let forModel = LinksFromAttribute.Get(type, model.GetType())
-                    where forModel.Count != 0
-                    from attribute in forModel
-                    let uri = BuildUri(model, attribute)
-                    select new Link(type, uri, attribute.Rel, attribute.Type);
-
-            return new ReadOnlyCollection<Link>(q.ToArray());
+            return LinkBuilders.GetOrAdd(model.GetType(), CreateBuilder).LinksForModel(model);
         }
 
-        private static string BuildUri(object model, LinksFromAttribute attribute)
+        private static ILinkBuilder CreateBuilder(Type modelType)
         {
-            var uri = attribute.UriTemplate;
-            var variables = new HashSet<string>(UriTemplateHelper.ExtractVariableNames(attribute.UriTemplate),
-                                                StringComparer.OrdinalIgnoreCase);
-            if (variables.Count > 0)
+            var linkList = new List<Link>();
+            foreach (var type in ExportedTypeHelper.FromCurrentAppDomain(LinksFromAttribute.Exists))
             {
-                foreach (var variable in variables)
-                {
-                    var prop = model.GetType().GetProperty(variable);
-                    if (prop == null)
-                    {
-                        continue;
-                    }
-                    var value = prop.GetValue(model, null) ?? "NULL";
-                    uri = uri.Replace("{" + variable + "}", value.ToString());
-                }
+                var attributesForModel = LinksFromAttribute.Get(type, modelType);
+                if (attributesForModel.Count == 0) continue;
+                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.Rel, a.Type)));
             }
-            return uri;
+
+            if (linkList.Count > 0)
+            {
+                return new LinkBuilder(linkList);
+            }
+
+            return LinkBuilder.Empty;
         }
     }
+
 }

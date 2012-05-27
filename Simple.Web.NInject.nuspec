@@ -12,8 +12,8 @@
     <description>A REST-focused, object-oriented Web Framework for .NET 4.</description>
     <tags>simple.web</tags>
     <dependencies>
-      <dependency id="NInject" version="3.0" />
       <dependency id="Simple.Web" version="0.1.0" />
+      <dependency id="NInject" version="3.0" />
     </dependencies>
   </metadata>
   <files>

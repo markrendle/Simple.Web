@@ -32,9 +32,6 @@ namespace Simple.Web.Razor
 
             var viewsDirectory = Path.Combine(AppRoot, directory);
 
-            Console.WriteLine(viewsDirectory);
-            Trace.WriteLine(viewsDirectory);
-
             if (!Directory.Exists(viewsDirectory))
             {
                 return;

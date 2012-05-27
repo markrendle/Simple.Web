@@ -77,6 +77,7 @@
     <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
+    <Compile Include="Helpers\LinkBuilder.cs" />
     <Compile Include="Helpers\LinkHelper.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Helpers\UriFromType.cs" />
