@@ -29,20 +29,7 @@ namespace Simple.Web.Xml
                 var enumerable = content.Model as IEnumerable<object>;
                 if (enumerable != null)
                 {
-                    XElement collection = null;
-                    foreach (var element in ProcessList(enumerable))
-                    {
-                        if (collection == null)
-                        {
-                            var plural = PluralizationService.CreateService(CultureInfo.CurrentCulture);
-                            collection = new XElement(plural.Pluralize(element.Name.LocalName));
-                        }
-                        collection.Add(element);
-                    }
-                    if (collection != null)
-                    {
-                        WriteXml(outputStream, collection);
-                    }
+                    WriteList(outputStream, enumerable);
                 }
                 else
                 {
@@ -56,6 +43,25 @@ namespace Simple.Web.Xml
                         WriteWithLinks(content, outputStream, links);
                     }
                 }
+            }
+        }
+
+        private static void WriteList(Stream outputStream, IEnumerable<object> enumerable)
+        {
+            XElement collection = null;
+            foreach (var element in ProcessList(enumerable))
+            {
+                if (collection == null)
+                {
+                    // This gives us a nice collection name instead of the hideous ArrayOfXyz
+                    var plural = PluralizationService.CreateService(CultureInfo.CurrentCulture);
+                    collection = new XElement(plural.Pluralize(element.Name.LocalName));
+                }
+                collection.Add(element);
+            }
+            if (collection != null)
+            {
+                WriteXml(outputStream, collection);
             }
         }
 
