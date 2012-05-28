@@ -7,6 +7,7 @@ namespace Simple.Web.JsonFx
 {
     using System.IO;
     using ContentTypeHandling;
+    using Links;
     using global::JsonFx.Json;
     using global::JsonFx.Json.Resolvers;
     using global::JsonFx.Serialization;
@@ -16,27 +17,102 @@ namespace Simple.Web.JsonFx
     [ContentTypes(ContentType.Json, "application/*+json")]
     public class JsonContentTypeHandler : IContentTypeHandler
     {
-        public object Read(StreamReader streamReader, Type inputType)
+        public object Read(Stream inputStream, Type inputType)
         {
-            var resolver = new CombinedResolverStrategy(
-                new JsonResolverStrategy(),                                                             // simple JSON attributes
-                new DataContractResolverStrategy(),                                                     // DataContract attributes
-                new XmlResolverStrategy(),                                                              // XmlSerializer attributes
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.PascalCase),       // DotNetStyle
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.CamelCase),        // jsonStyle
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Lowercase, "-"),   // xml-style
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_"));  // CONST_STYLE
+            var resolver = CreateResolverStrategy();
 
             // pass the combined resolver strategy into the settings object
             var reader = new JsonReader(new DataReaderSettings(resolver));
 
-            return reader.Read(streamReader, inputType);
+            using (var streamReader = new StreamReader(inputStream))
+            {
+                return reader.Read(streamReader, inputType);
+            }
         }
 
-        public void Write(IContent content, TextWriter textWriter)
+        private static CombinedResolverStrategy CreateResolverStrategy()
+        {
+            return new CombinedResolverStrategy(
+                new JsonResolverStrategy(), // simple JSON attributes
+                new DataContractResolverStrategy(), // DataContract attributes
+                new XmlResolverStrategy(), // XmlSerializer attributes
+                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.PascalCase), // DotNetStyle
+                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.CamelCase), // jsonStyle
+                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Lowercase, "-"), // xml-style
+                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_")); // CONST_STYLE
+        }
+
+        public void Write(IContent content, Stream outputStream)
         {
             if (content.Model != null)
-                new JsonWriter().Write(content.Model, textWriter);
+            {
+                object output;
+
+                var enumerable = content.Model as IEnumerable<object>;
+                if (enumerable != null)
+                {
+                    output = ProcessList(enumerable);
+                }
+                else
+                {
+                    output = ProcessContent(content);
+                }
+                using (var streamWriter = new StreamWriter(outputStream))
+                {
+                    new JsonWriter().Write(output, streamWriter);
+                }
+            }
+        }
+
+        private static object ProcessContent(IContent content)
+        {
+            var links = content.Links.Select(EnsureJson).ToList();
+            if (links.Count == 0)
+            {
+                return content.Model;
+            }
+            var dictionary = content.Model.ToDictionary();
+            dictionary.Add("links", links);
+            return dictionary;
+        }
+
+        private static IEnumerable<object> ProcessList(IEnumerable<object> source)
+        {
+            bool skipLinkCheck = false;
+            foreach (var o in source)
+            {
+                if (!skipLinkCheck)
+                {
+                    var links = LinkHelper.GetLinksForModel(o).Select(EnsureJson).ToList();
+                    if (links.Count == 0)
+                    {
+                        skipLinkCheck = true;
+                    }
+                    else
+                    {
+                        var dictionary = o.ToDictionary();
+                        dictionary.Add("links", links);
+                        yield return dictionary;
+                        continue;
+                    }
+                    
+                }
+
+                yield return o;
+            }
+        }
+
+        private static Link EnsureJson(Link source)
+        {
+            if (!string.IsNullOrWhiteSpace(source.Type))
+            {
+                if (source.Type.EndsWith("json"))
+                {
+                    return source;
+                }
+                return new Link(source.GetHandlerType(), source.Href, source.Rel, source.Type + "+json", source.Title);
+            }
+            return new Link(source.GetHandlerType(), source.Href, source.Rel, ContentType.Json, source.Title);
         }
     }
 }

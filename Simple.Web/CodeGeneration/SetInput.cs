@@ -16,10 +16,7 @@ namespace Simple.Web.CodeGeneration
 
             var contentTypeHandlerTable = new ContentTypeHandlerTable();
             var contentTypeHandler = contentTypeHandlerTable.GetContentTypeHandler(context.Request.ContentType);
-            using (var reader = new StreamReader(context.Request.InputStream))
-            {
-                handler.Input = (T)contentTypeHandler.Read(reader, typeof(T));
-            }
+            handler.Input = (T)contentTypeHandler.Read(context.Request.InputStream, typeof(T));
         }
     }
 }

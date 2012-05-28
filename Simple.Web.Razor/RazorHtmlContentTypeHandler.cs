@@ -11,12 +11,12 @@
     [ContentTypes(ContentType.Html, ContentType.XHtml)]
     public class RazorHtmlContentTypeHandler : IContentTypeHandler
     {
-        public object Read(StreamReader streamReader, Type inputType)
+        public object Read(Stream inputStream, Type inputType)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(IContent content, TextWriter textWriter)
+        public void Write(IContent content, Stream outputStream)
         {
             Type viewType;
             var razorViews = new RazorViews();
@@ -36,7 +36,10 @@
                 throw new ViewNotFoundException();
             }
 
-            RenderView(content, textWriter, viewType);
+            using (var streamWriter = new StreamWriter(outputStream))
+            {
+                RenderView(content, streamWriter, viewType);
+            }
         }
 
         internal static void RenderView(IContent content, TextWriter textWriter, Type viewType)

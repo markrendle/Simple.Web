@@ -55,12 +55,12 @@ namespace Simple.Web.ContentTypeHandling.Tests
     [ContentTypes(ContentType.Json, "application/*+json")]
     public class TestContentTypeHandler : IContentTypeHandler
     {
-        public object Read(StreamReader streamReader, Type inputType)
+        public object Read(Stream inputStream, Type inputType)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(IContent content, TextWriter textWriter)
+        public void Write(IContent content, Stream outputStream)
         {
             throw new NotImplementedException();
         }

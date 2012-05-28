@@ -35,7 +35,7 @@ namespace Simple.Web
         /// <returns>
         /// The <see cref="T:Simple.Web.ICookie"/> specified by <paramref name="name."/>
         /// </returns>
-        /// <param name="name">Name of cookie to retrieve. </param>
+        /// <param name="name">Title of cookie to retrieve. </param>
         ICookie this[string name] { get; }
 
         /// <summary>

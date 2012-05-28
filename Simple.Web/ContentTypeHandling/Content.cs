@@ -2,6 +2,7 @@ namespace Simple.Web.ContentTypeHandling
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Links;
 
     class Content : IContent
     {
@@ -47,5 +48,7 @@ namespace Simple.Web.ContentTypeHandling
                 return _viewPath;
             }
         }
+
+        public IEnumerable<Link> Links { get { return LinkHelper.GetLinksForModel(_model); } }
     }
 }

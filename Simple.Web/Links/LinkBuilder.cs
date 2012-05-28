@@ -25,7 +25,7 @@ namespace Simple.Web.Links
         public ICollection<Link> LinksForModel(object model)
         {
             var actuals =
-                _templates.Select(l => new Link(l.HandlerType, BuildUri(model, l.Href), l.Rel, l.Type)).ToList();
+                _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).ToList();
             return new ReadOnlyCollection<Link>(actuals);
         }
 

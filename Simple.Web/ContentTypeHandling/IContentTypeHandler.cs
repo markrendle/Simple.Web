@@ -1,20 +1,26 @@
 namespace Simple.Web.ContentTypeHandling
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
 
+    /// <summary>
+    /// Represents a handler for a specific content type.
+    /// </summary>
     public interface IContentTypeHandler
     {
-        object Read(StreamReader streamReader, Type inputType);
-        void Write(IContent content, TextWriter textWriter);
-    }
+        /// <summary>
+        /// Reads content from the specified input stream.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <param name="inputType">Type of the input.</param>
+        /// <returns>A model constructed from the content in the input stream.</returns>
+        object Read(Stream inputStream, Type inputType);
 
-    public interface IContent
-    {
-        object Handler { get; }
-        object Model { get; }
-        IEnumerable<KeyValuePair<string, object>> Variables { get; }
-        string ViewPath { get; }
+        /// <summary>
+        /// Writes the specified content.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="outputStream">The output stream.</param>
+        void Write(IContent content, Stream outputStream);
     }
 }

@@ -7,9 +7,13 @@ namespace Simple.Web.ContentTypeHandling
     [ContentTypes("application/x-www-form-urlencoded")]
     sealed class FormDeserializer : IContentTypeHandler
     {
-        public object Read(StreamReader streamReader, Type inputType)
+        public object Read(Stream inputStream, Type inputType)
         {
-            string text = streamReader.ReadToEnd();
+            string text;
+            using (var streamReader = new StreamReader(inputStream))
+            {
+                text = streamReader.ReadToEnd();
+            }
             var pairs = text.Split('\n').Select(s => Tuple.Create(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
             var obj = Activator.CreateInstance(inputType);
             foreach (var pair in pairs)
@@ -23,7 +27,7 @@ namespace Simple.Web.ContentTypeHandling
             return obj;
         }
 
-        public void Write(IContent content, TextWriter textWriter)
+        public void Write(IContent content, Stream outputStream)
         {
             throw new NotImplementedException();
         }

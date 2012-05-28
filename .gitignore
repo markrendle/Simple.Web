@@ -28,3 +28,4 @@ Simple.Web.sln.DotSettings.user
 test
 test*ml
 build
+*.ncrunchproject

@@ -3,7 +3,9 @@ namespace Simple.Web.Razor.Tests
     using System;
     using System.Collections.Generic;
     using System.Dynamic;
+    using System.Linq;
     using ContentTypeHandling;
+    using Links;
 
     public class MockHandler : IContent
     {
@@ -16,6 +18,11 @@ namespace Simple.Web.Razor.Tests
         public string ViewPath
         {
             get { return null; }
+        }
+
+        public IEnumerable<Link> Links
+        {
+            get { return Enumerable.Empty<Link>(); }
         }
     }
 }

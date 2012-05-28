@@ -5,7 +5,7 @@
     using System.Linq;
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    internal sealed class LinksFromAttribute : Attribute
+    public sealed class LinksFromAttribute : Attribute
     {
         private readonly Type _modelType;
         private readonly string _uriTemplate;
@@ -29,6 +29,8 @@
         public string Rel { get; set; }
 
         public string Type { get; set; }
+
+        public string Title { get; set; }
 
         public static bool Exists(Type type)
         {

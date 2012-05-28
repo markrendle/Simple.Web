@@ -6,6 +6,7 @@ using System.Text;
 namespace Simple.Web.CodeGeneration
 {
     using ContentTypeHandling;
+    using Links;
 
     static class WriteOutput
     {
@@ -21,7 +22,7 @@ namespace Simple.Web.CodeGeneration
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
                 var content = new Content(handler, handler.Output);
-                contentTypeHandler.Write(content, context.Response.Output);
+                contentTypeHandler.Write(content, context.Response.OutputStream);
             }
         }
 

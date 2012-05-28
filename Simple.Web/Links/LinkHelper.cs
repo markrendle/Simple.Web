@@ -31,7 +31,7 @@
             {
                 var attributesForModel = LinksFromAttribute.Get(type, modelType);
                 if (attributesForModel.Count == 0) continue;
-                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.Rel, a.Type)));
+                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.Rel, a.Type, a.Title)));
             }
 
             if (linkList.Count > 0)

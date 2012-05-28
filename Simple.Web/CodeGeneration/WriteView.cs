@@ -1,6 +1,7 @@
 namespace Simple.Web.CodeGeneration
 {
     using ContentTypeHandling;
+    using Links;
 
     static class WriteView
     {
@@ -16,7 +17,7 @@ namespace Simple.Web.CodeGeneration
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
                 var content = new Content(handler, null);
-                contentTypeHandler.Write(content, context.Response.Output);
+                contentTypeHandler.Write(content, context.Response.OutputStream);
             }
         }
 
