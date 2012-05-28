@@ -10,6 +10,7 @@ namespace Simple.Web.Links
     internal interface ILinkBuilder
     {
         ICollection<Link> LinksForModel(object model);
+        Link CanonicalForModel(object model);
     }
 
     internal class LinkBuilder : ILinkBuilder
@@ -27,6 +28,13 @@ namespace Simple.Web.Links
             var actuals =
                 _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).ToList();
             return new ReadOnlyCollection<Link>(actuals);
+        }
+        
+        public Link CanonicalForModel(object model)
+        {
+            return
+                _templates.Where(t => t.Rel == "self").Select(
+                    l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).FirstOrDefault();
         }
 
         private static string BuildUri(object model, string uriTemplate)
@@ -56,6 +64,11 @@ namespace Simple.Web.Links
             public ICollection<Link> LinksForModel(object model)
             {
                 return EmptyArray;
+            }
+
+            public Link CanonicalForModel(object model)
+            {
+                return null;
             }
         }
     }

@@ -1,48 +1,20 @@
 ﻿namespace Simple.Web.Links
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.ComponentModel;
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    public sealed class LinksFromAttribute : Attribute
+    public sealed class LinksFromAttribute : LinkAttributeBase
     {
-        private readonly Type _modelType;
-        private readonly string _uriTemplate;
-
-        public LinksFromAttribute(Type modelType, string uriTemplate)
+        public LinksFromAttribute(Type modelType, string uriTemplate) : base(modelType, uriTemplate)
         {
-            _modelType = modelType;
-            _uriTemplate = uriTemplate;
         }
 
-        public string UriTemplate
+        public override string GetRel()
         {
-            get { return _uriTemplate; }
-        }
-
-        public Type ModelType
-        {
-            get { return _modelType; }
+            return Rel;
         }
 
         public string Rel { get; set; }
-
-        public string Type { get; set; }
-
-        public string Title { get; set; }
-
-        public static bool Exists(Type type)
-        {
-            return GetCustomAttributes(type, typeof(LinksFromAttribute)).Length > 0;
-        }
-
-        public static IList<LinksFromAttribute> Get(Type type, Type modelType)
-        {
-            return GetCustomAttributes(type, typeof (LinksFromAttribute))
-                .Cast<LinksFromAttribute>()
-                .Where(a => a.ModelType == modelType)
-                .ToList();
-        }
     }
 }

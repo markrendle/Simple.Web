@@ -24,14 +24,21 @@
             return LinkBuilders.GetOrAdd(model.GetType(), CreateBuilder).LinksForModel(model);
         }
 
+        public static Link GetCanonicalLinkForModel(object model)
+        {
+            if (model == null) throw new ArgumentNullException("model");
+
+            return LinkBuilders.GetOrAdd(model.GetType(), CreateBuilder).CanonicalForModel(model);
+        }
+
         private static ILinkBuilder CreateBuilder(Type modelType)
         {
             var linkList = new List<Link>();
-            foreach (var type in ExportedTypeHelper.FromCurrentAppDomain(LinksFromAttribute.Exists))
+            foreach (var type in ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists))
             {
-                var attributesForModel = LinksFromAttribute.Get(type, modelType);
+                var attributesForModel = LinkAttributeBase.Get(type, modelType);
                 if (attributesForModel.Count == 0) continue;
-                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.Rel, a.Type, a.Title)));
+                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.GetRel(), a.Type, a.Title)));
             }
 
             if (linkList.Count > 0)

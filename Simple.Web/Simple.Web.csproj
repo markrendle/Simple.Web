@@ -85,6 +85,8 @@
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="IModified.cs" />
+    <Compile Include="Links\CanonicalAttribute.cs" />
+    <Compile Include="Links\LinkAttributeBase.cs" />
     <Compile Include="Links\LinkBuilder.cs" />
     <Compile Include="Links\LinkHelper.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
