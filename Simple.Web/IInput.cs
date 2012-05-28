@@ -7,14 +7,11 @@ namespace Simple.Web
     public interface IInput<in TInput>
     {
         /// <summary>
-        /// Sets the input.
+        /// Used by the framework to provide the input model.
         /// </summary>
         /// <value>
-        /// The input.
+        /// The input model.
         /// </value>
-        /// <remarks>
-        /// This property will be set by the framework.
-        /// </remarks>
         TInput Input { set; }
     }
 }

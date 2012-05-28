@@ -20,6 +20,10 @@
             Assert.Equal(typeof(string), StubSetInput.WithType);
             Assert.True(StubWriteStatusCode.Called);
             Assert.True(StubSetResponseCookies.Called);
+            Assert.True(StubSetInputETag.Called);
+            Assert.True(StubSetOutputETag.Called);
+            Assert.True(StubSetLastModified.Called);
+            Assert.True(StubSetIfModifiedSince.Called);
         }
 
         [Fact]

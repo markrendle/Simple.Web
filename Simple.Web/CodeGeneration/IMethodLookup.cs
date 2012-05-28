@@ -9,8 +9,12 @@ namespace Simple.Web.CodeGeneration
         MethodInfo SetRequestCookies { get; }
         MethodInfo SetResponseCookies { get; }
         MethodInfo SetInput { get; }
+        MethodInfo SetInputETag { get; }
+        MethodInfo SetOutputETag { get; }
+        MethodInfo SetLastModified { get; }
+        MethodInfo SetIfModifiedSince { get; }
         MethodInfo WriteStatusCode { get; }
-        MethodInfo DisableCache { get; }
+        MethodInfo SetCache { get; }
         MethodInfo Redirect { get; }
         MethodInfo WriteStreamResponse { get; }
         MethodInfo WriteRawHtml { get; }

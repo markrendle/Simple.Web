@@ -79,8 +79,10 @@
         private void CreateResponseBlocks()
         {
             CreateWriteStatusBlock();
-            CreateNoCacheBlock();
+            CreateCacheBlock();
             CreateRedirectBlock();
+            CreateSetOutputETagBlock();
+            CreateSetLastModifiedBlock();
             CreateOutputBlocks();
         }
 
@@ -92,6 +94,8 @@
             CreateSetResponseCookiesBlock();
             CreateSetFilesBlock();
             CreateSetInputBlock();
+            CreateSetInputETagBlock();
+            CreateSetIfModifiedSinceBlock();
         }
 
         private void CreateAuthenticateBlock()
@@ -115,6 +119,38 @@
             if (typeof (IReadCookies).IsAssignableFrom(_type))
             {
                 _blocks.Add(BuildSetRequestCookiesBlock());
+            }
+        }
+
+        private void CreateSetInputETagBlock()
+        {
+            if (typeof (IETag).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetInputETagBlock());
+            }
+        }
+
+        private void CreateSetOutputETagBlock()
+        {
+            if (typeof (IETag).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetOutputETagBlock());
+            }
+        }
+        
+        private void CreateSetLastModifiedBlock()
+        {
+            if (typeof (IModified).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetLastModifiedBlock());
+            }
+        }
+
+        private void CreateSetIfModifiedSinceBlock()
+        {
+            if (typeof (IModified).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetIfModifiedSinceBlock());
             }
         }
 
@@ -147,11 +183,11 @@
             _blocks.Add(BuildWriteStatus());
         }
 
-        private void CreateNoCacheBlock()
+        private void CreateCacheBlock()
         {
             if (typeof (ICacheability).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_methodLookup.DisableCache, _context));
+                _blocks.Add(Expression.Call(_methodLookup.SetCache, _context));
             }
         }
 
@@ -237,6 +273,26 @@
         private Expression BuildSetResponseCookiesBlock()
         {
             return Expression.Call(_methodLookup.SetResponseCookies, _handler, _context);
+        }
+
+        private Expression BuildSetInputETagBlock()
+        {
+            return Expression.Call(_methodLookup.SetInputETag, _handler, _context);
+        }
+
+        private Expression BuildSetLastModifiedBlock()
+        {
+            return Expression.Call(_methodLookup.SetLastModified, _handler, _context);
+        }
+
+        private Expression BuildSetIfModifiedSinceBlock()
+        {
+            return Expression.Call(_methodLookup.SetIfModifiedSince, _handler, _context);
+        }
+
+        private Expression BuildSetOutputETagBlock()
+        {
+            return Expression.Call(_methodLookup.SetOutputETag, _handler, _context);
         }
 
         private Expression BuildSetFilesBlock()

@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using Helpers;
+    using Links;
     using Xunit;
 
     public class LinkHelperTests

@@ -1,4 +1,4 @@
-﻿namespace Simple.Web.Helpers
+﻿namespace Simple.Web.Links
 {
     using System;
     using System.Collections.Concurrent;

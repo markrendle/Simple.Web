@@ -12,6 +12,27 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
         }
 
         public MethodInfo SetInput { get { return typeof (StubSetInput).GetMethod("Impl"); } }
+
+        public MethodInfo SetInputETag
+        {
+            get { return typeof (StubSetInputETag).GetMethod("Impl"); }
+        }
+
+        public MethodInfo SetOutputETag
+        {
+            get { return typeof (StubSetOutputETag).GetMethod("Impl"); }
+        }
+
+        public MethodInfo SetLastModified
+        {
+            get { return typeof(StubSetLastModified).GetMethod("Impl"); }
+        }
+
+        public MethodInfo SetIfModifiedSince
+        {
+            get { return typeof(StubSetIfModifiedSince).GetMethod("Impl"); }
+        }
+
         public MethodInfo WriteStatusCode { get { return typeof (StubWriteStatusCode).GetMethod("Impl"); } }
         public MethodInfo SetCookies { get { return typeof (StubSetResponseCookies).GetMethod("Impl"); } }
         public MethodInfo SetFiles { get { return typeof(StubSetFiles).GetMethod("Impl"); } }
@@ -21,7 +42,7 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
             get { return typeof(StubSetRequestCookies).GetMethod("Impl"); }
         }
 
-        public MethodInfo DisableCache { get { return typeof(StubDisableCache).GetMethod("Impl"); } }
+        public MethodInfo SetCache { get { return typeof(StubDisableCache).GetMethod("Impl"); } }
         public MethodInfo Redirect { get { return typeof(StubRedirect).GetMethod("Impl"); } }
         public MethodInfo WriteStreamResponse { get { return typeof (StubWriteStreamResponse).GetMethod("Impl"); }}
         public MethodInfo WriteRawHtml { get { return typeof (StubWriteRawHtml).GetMethod("Impl"); } }

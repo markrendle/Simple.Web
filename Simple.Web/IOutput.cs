@@ -32,4 +32,10 @@ namespace Simple.Web
         /// the content as a file instead of displaying it.</remarks>
         string ContentDisposition { get; }
     }
+
+    public interface IETag
+    {
+        string InputETag { set; }
+        string OutputETag { get; }
+    }
 }

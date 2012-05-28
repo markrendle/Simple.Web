@@ -109,12 +109,26 @@ namespace Simple.Web.Mocks
 
         public void SetCookie(ICookie cookie)
         {
-            throw new NotImplementedException();
         }
 
         public void DisableCache()
         {
-            throw new NotImplementedException();
+        }
+
+        public void SetCacheAbsoluteExpiry(DateTime expiresAt)
+        {
+        }
+
+        public void SetCacheSlidingExpiry(TimeSpan expiresIn)
+        {
+        }
+
+        public void SetETag(string etag)
+        {
+        }
+
+        public void SetLastModified(DateTime lastModified)
+        {
         }
 
         private void Write(byte[] bytes)

@@ -22,5 +22,10 @@ namespace Sandbox
         {
             get { return Raw.Html(string.Format("<{1}>Hello, {0}</{1}>", Name, Tag)); }
         }
+
+        public string OutputETag
+        {
+            get { return null; }
+        }
     }
 }

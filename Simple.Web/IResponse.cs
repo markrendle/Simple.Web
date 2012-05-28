@@ -21,5 +21,9 @@ namespace Simple.Web
         void Write(char ch);
         void TransmitFile(string file);
         void DisableCache();
+        void SetCacheAbsoluteExpiry(DateTime expiresAt);
+        void SetCacheSlidingExpiry(TimeSpan expiresIn);
+        void SetETag(string etag);
+        void SetLastModified(DateTime lastModified);
     }
 }

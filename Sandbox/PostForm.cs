@@ -13,6 +13,16 @@ namespace Sandbox
 
         public Form Input { get; set; }
 
+        public string InputETag
+        {
+            set {  }
+        }
+
         public Form Output { get; set; }
+
+        public string OutputETag
+        {
+            get { return null; }
+        }
     }
 }

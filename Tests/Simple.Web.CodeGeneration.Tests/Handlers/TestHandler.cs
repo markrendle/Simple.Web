@@ -1,9 +1,10 @@
 namespace Simple.Web.CodeGeneration.Tests.Handlers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, ICacheability
+    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, ICacheability, IETag, IModified
     {
         private readonly Status _status;
 
@@ -26,6 +27,26 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
         public CacheOptions CacheOptions
         {
             get { return CacheOptions.DisableCaching; }
+        }
+
+        public string InputETag
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public string OutputETag
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public DateTime? IfModifiedSince
+        {
+            set { throw new NotImplementedException(); }
+        }
+
+        public DateTime? LastModified
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

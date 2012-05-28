@@ -42,12 +42,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheOptions.cs" />
+    <Compile Include="CodeGeneration\SetIfModifiedSince.cs" />
+    <Compile Include="CodeGeneration\SetInputETag.cs" />
+    <Compile Include="CodeGeneration\SetLastModified.cs" />
+    <Compile Include="CodeGeneration\SetOutputETag.cs" />
     <Compile Include="HandlerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\AssemblyEx.cs" />
     <Compile Include="CodeGeneration\CheckAuthentication.cs" />
-    <Compile Include="CodeGeneration\DisableCache.cs" />
+    <Compile Include="CodeGeneration\SetCache.cs" />
     <Compile Include="CodeGeneration\HandlerRunnerBuilder.cs" />
     <Compile Include="CodeGeneration\IMethodLookup.cs" />
     <Compile Include="CodeGeneration\MethodLookup.cs" />
@@ -77,8 +81,9 @@
     <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
-    <Compile Include="Helpers\LinkBuilder.cs" />
-    <Compile Include="Helpers\LinkHelper.cs" />
+    <Compile Include="IModified.cs" />
+    <Compile Include="Links\LinkBuilder.cs" />
+    <Compile Include="Links\LinkHelper.cs" />
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Helpers\UriFromType.cs" />
     <Compile Include="Helpers\UriTemplateHelper.cs" />
@@ -113,8 +118,8 @@
     <Compile Include="IWebEnvironment.cs" />
     <Compile Include="ContentTypeHandling\Content.cs" />
     <Compile Include="CodeGeneration\PropertySetterBuilder.cs" />
-    <Compile Include="Link.cs" />
-    <Compile Include="LinksFromAttribute.cs" />
+    <Compile Include="Links\Link.cs" />
+    <Compile Include="Links\LinksFromAttribute.cs" />
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
     <Compile Include="RespondsToAttribute.cs" />
@@ -131,9 +136,7 @@
     <Compile Include="User.cs" />
     <Compile Include="WebEnvironment.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Rest\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

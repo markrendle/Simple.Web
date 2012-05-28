@@ -77,6 +77,27 @@ namespace Simple.Web.AspNet
             _httpResponse.Cache.SetNoStore(); 
         }
 
+        public void SetCacheAbsoluteExpiry(DateTime expiresAt)
+        {
+            _httpResponse.Cache.SetExpires(expiresAt);
+        }
+
+        public void SetCacheSlidingExpiry(TimeSpan expiresIn)
+        {
+            _httpResponse.Cache.SetSlidingExpiration(true);
+            _httpResponse.Cache.SetExpires(DateTime.Now + expiresIn);
+        }
+
+        public void SetETag(string etag)
+        {
+            _httpResponse.Cache.SetETag(etag);
+        }
+
+        public void SetLastModified(DateTime lastModified)
+        {
+            _httpResponse.Cache.SetLastModified(lastModified);
+        }
+
         public IHeaderCollection Headers
         {
             get { return _headers ?? (_headers =  new HeaderCollection(_httpResponse.Headers)); }
