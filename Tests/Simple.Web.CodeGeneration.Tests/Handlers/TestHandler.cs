@@ -3,21 +3,10 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
-    class TestHandler : IGet, IRequireAuthentication, IInput<string>, ISetCookies, ICacheability, IETag, IModified
+    abstract class TestHandlerBase : IRequireAuthentication, IInput<string>, ISetCookies, ICacheability, IETag, IModified
     {
-        private readonly Status _status;
-
-        public TestHandler(Status status)
-        {
-            _status = status;
-        }
-
-        public Status Get()
-        {
-            return _status;
-        }
-
         public IUser CurrentUser { get; set; }
 
         public string Input { get; set; }
@@ -47,6 +36,36 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
         public DateTime? LastModified
         {
             get { throw new NotImplementedException(); }
+        }
+    }
+
+    class TestHandler : TestHandlerBase, IGet
+    {
+        private readonly Status _status;
+
+        public TestHandler(Status status)
+        {
+            _status = status;
+        }
+
+        public Status Get()
+        {
+            return _status;
+        }
+    }
+    
+    class TestAsyncHandler : TestHandlerBase, IGetAsync
+    {
+        private readonly Status _status;
+
+        public TestAsyncHandler(Status status)
+        {
+            _status = status;
+        }
+
+        public Task<Status> Get()
+        {
+            return Task.Factory.StartNew(() => _status);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
             get { return typeof(StubSetRequestCookies).GetMethod("Impl"); }
         }
 
-        public MethodInfo SetCache { get { return typeof(StubDisableCache).GetMethod("Impl"); } }
+        public MethodInfo SetCache { get { return typeof(StubSetCache).GetMethod("Impl"); } }
         public MethodInfo Redirect { get { return typeof(StubRedirect).GetMethod("Impl"); } }
         public MethodInfo WriteStreamResponse { get { return typeof (StubWriteStreamResponse).GetMethod("Impl"); }}
         public MethodInfo WriteRawHtml { get { return typeof (StubWriteRawHtml).GetMethod("Impl"); } }

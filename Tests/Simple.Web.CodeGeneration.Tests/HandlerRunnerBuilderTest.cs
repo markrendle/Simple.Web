@@ -5,7 +5,7 @@
     using Stubs;
     using Xunit;
 
-    public class HandlerRunnerFactoryTest
+    public class HandlerRunnerBuilderTest
     {
         [Fact]
         public void CallsAreMade()
@@ -14,6 +14,29 @@
             var target = new HandlerRunnerBuilder(typeof (TestHandler), new StubMethodLookup());
             var runner = target.BuildRunner();
             runner(new TestHandler(200), new MockContext());
+
+            Assert.True(StubCheckAuthentication.Called);
+            Assert.True(StubSetInput.Called);
+            Assert.Equal(typeof(string), StubSetInput.WithType);
+            Assert.True(StubWriteStatusCode.Called);
+            Assert.True(StubSetResponseCookies.Called);
+            Assert.True(StubSetInputETag.Called);
+            Assert.True(StubSetOutputETag.Called);
+            Assert.True(StubSetLastModified.Called);
+            Assert.True(StubSetIfModifiedSince.Called);
+        }
+        
+        [Fact]
+        public void CallsAreMadeAsync()
+        {
+            Reset();
+            var target = new HandlerRunnerBuilder(typeof (TestAsyncHandler), new StubMethodLookup());
+            var runner = target.BuildAsyncRunner();
+            var testAsyncHandler = new TestAsyncHandler(200);
+            var mockContext = new MockContext();
+            var task = runner.Start(testAsyncHandler, mockContext);
+            task.Wait();
+            runner.End(testAsyncHandler, mockContext, task.Result);
 
             Assert.True(StubCheckAuthentication.Called);
             Assert.True(StubSetInput.Called);
@@ -73,7 +96,7 @@
                 StubWriteRawHtml.Called =
                 StubWriteView.Called =
                 StubSetFiles.Called =
-                StubDisableCache.Called =
+                StubSetCache.Called =
                 false;
 
             StubSetInput.WithType = null;
