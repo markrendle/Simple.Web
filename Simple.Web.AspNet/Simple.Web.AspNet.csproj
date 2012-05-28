@@ -44,6 +44,7 @@
     <Compile Include="AsyncResult.cs" />
     <Compile Include="ContextWrapper.cs" />
     <Compile Include="CookieWrapperCollection.cs" />
+    <Compile Include="OptionsHandler.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="PostedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

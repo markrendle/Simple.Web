@@ -10,6 +10,7 @@ namespace Simple.Web.CodeGeneration
             context.Response.ContentType =
                 context.Request.AcceptTypes.FirstOrDefault(
                     at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
+            if (context.Request.HttpMethod.Equals("HEAD")) return;
             context.Response.Output.Write(handler.Output.ToString());
         }
     }

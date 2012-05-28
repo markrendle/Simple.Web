@@ -9,6 +9,8 @@
             {
                 context.Response.Headers.Set("Content-Disposition", outputStream.ContentDisposition);
             }
+            if (context.Request.HttpMethod.Equals("HEAD")) return;
+
             using (var stream = outputStream.Output)
             {
                 stream.Position = 0;

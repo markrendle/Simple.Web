@@ -84,7 +84,11 @@
     <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="HeaderCollection.cs" />
+    <Compile Include="IDelete.cs" />
+    <Compile Include="IHead.cs" />
     <Compile Include="IModified.cs" />
+    <Compile Include="IPatch.cs" />
+    <Compile Include="IPut.cs" />
     <Compile Include="Links\CanonicalAttribute.cs" />
     <Compile Include="Links\LinkAttributeBase.cs" />
     <Compile Include="Links\LinkBuilder.cs" />

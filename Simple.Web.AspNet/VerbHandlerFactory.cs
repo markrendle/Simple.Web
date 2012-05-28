@@ -33,6 +33,12 @@ namespace Simple.Web.AspNet
 
         public static IHttpHandler TryCreate(IContext context)
         {
+            // If it's OPTIONS, we can handle that without any help.
+            if (context.Request.HttpMethod.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+            {
+                return CreateOptionsHandler(context);
+            }
+
             IDictionary<string, string> variables;
             var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.ContentType, context.Request.AcceptTypes, out variables);
             if (handlerType == null) return null;
@@ -90,6 +96,11 @@ namespace Simple.Web.AspNet
                 instance = new SimpleHttpAsyncHandler(context, handlerInfo);
             }
             return instance;
+        }
+
+        private static IHttpHandler CreateOptionsHandler(IContext context)
+        {
+            return new OptionsHandler(RoutingTables);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Simple.Web.CodeGeneration
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
+                if (context.Request.HttpMethod.Equals("HEAD")) return;
+
                 var content = new Content(handler, handler.Output);
                 contentTypeHandler.Write(content, context.Response.OutputStream);
             }
