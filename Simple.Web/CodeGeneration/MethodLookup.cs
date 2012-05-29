@@ -21,6 +21,7 @@ namespace Simple.Web.CodeGeneration
         public MethodInfo WriteRawHtml { get { return Get(typeof (WriteRawHtml)); } }
         public MethodInfo WriteOutput { get { return Get(typeof (WriteOutput)); } }
         public MethodInfo WriteView { get { return Get(typeof (WriteView)); } }
+        public MethodInfo SetUserCookie { get { return Get(typeof (SetUserCookie)); } }
 
         private static MethodInfo Get(Type type)
         {

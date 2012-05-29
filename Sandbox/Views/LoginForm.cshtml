@@ -1,0 +1,29 @@
+﻿@handler Sandbox.LoginForm
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <div>
+            <form action="/login" method="POST">
+                <fieldset>
+                    <legend>Enter your login details:</legend>
+                    <br />
+                    <div>
+                        <label for="username">Username: </label>
+                        <input type="text" name="username" id="username"/>
+                    </div>
+                    <div>
+                        <label for="password">Password: </label>
+                        <input type="password" name="password" id="password"/>
+                    </div>
+                    <input type="hidden" name="returnUrl" id="returnUrl" value="@Handler.ReturnUrl" />
+                    <input type="submit" value="Log in"/>
+                </fieldset>
+            </form>
+        </div>
+    </body>
+</html>

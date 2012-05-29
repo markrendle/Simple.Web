@@ -8,7 +8,7 @@ namespace Sandbox
     using Simple.Web;
 
     [UriTemplate("/form")]
-    public class GetForm : IGet
+    public class GetForm : IGet, IRequireAuthentication
     {
         public string Title { get { return "Test Form"; } }
 
@@ -16,6 +16,8 @@ namespace Sandbox
         {
             return 200;
         }
+
+        public IUser CurrentUser { get; set; }
     }
 
     public class Form

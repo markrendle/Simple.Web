@@ -47,6 +47,7 @@
     <Compile Include="CodeGeneration\SetInputETag.cs" />
     <Compile Include="CodeGeneration\SetLastModified.cs" />
     <Compile Include="CodeGeneration\SetOutputETag.cs" />
+    <Compile Include="CodeGeneration\SetUserCookie.cs" />
     <Compile Include="ContentTypeHandling\IContent.cs" />
     <Compile Include="ContentTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="HandlerFactory.cs">
@@ -86,6 +87,7 @@
     <Compile Include="HeaderCollection.cs" />
     <Compile Include="IDelete.cs" />
     <Compile Include="IHead.cs" />
+    <Compile Include="ILogin.cs" />
     <Compile Include="IModified.cs" />
     <Compile Include="IPatch.cs" />
     <Compile Include="IPut.cs" />

@@ -34,5 +34,7 @@ namespace Simple.Web
         /// The login page.
         /// </value>
         Type LoginPage { get; set; }
+
+        IAuthenticationProvider AuthenticationProvider { get; set; }
     }
 }

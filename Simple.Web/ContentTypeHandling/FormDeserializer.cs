@@ -7,6 +7,7 @@ namespace Simple.Web.ContentTypeHandling
     [ContentTypes("application/x-www-form-urlencoded")]
     sealed class FormDeserializer : IContentTypeHandler
     {
+        private static readonly char[] SplitTokens = new[] {'\n', '&'};
         public object Read(Stream inputStream, Type inputType)
         {
             string text;
@@ -14,11 +15,12 @@ namespace Simple.Web.ContentTypeHandling
             {
                 text = streamReader.ReadToEnd();
             }
-            var pairs = text.Split('\n').Select(s => Tuple.Create(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
+            var pairs = text.Split(SplitTokens, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => Tuple.Create(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
             var obj = Activator.CreateInstance(inputType);
             foreach (var pair in pairs)
             {
-                var property = inputType.GetProperty(pair.Item1);
+                var property = inputType.GetProperty(pair.Item1) ?? inputType.GetProperties().FirstOrDefault(p => p.Name.Equals(pair.Item1, StringComparison.OrdinalIgnoreCase));
                 if (property != null)
                 {
                     property.SetValue(obj, Convert.ChangeType(pair.Item2, property.PropertyType), null);

@@ -23,7 +23,7 @@ namespace Sandbox
 
         public RawHtml Output
         {
-            get { return Raw.Html("Simple.Web has entered the building."); }
+            get { return "<h2>Simple.Web is making your life easier.</h2>"; }
         }
     }
 }

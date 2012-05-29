@@ -22,7 +22,6 @@ namespace Simple.Web.AspNet
 
         private static bool IsVerbHandler(Type type)
         {
-            if (type.IsInterface || type.IsAbstract) return false;
             return HttpVerbAttribute.IsAppliedTo(type);
         }
 
@@ -72,7 +71,7 @@ namespace Simple.Web.AspNet
             if (handlerInfo.RequiresAuthentication)
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
-                                             new AuthenticationProvider();
+                                             new DefaultAuthenticationProvider();
                 instance = new SimpleHttpHandler(context, handlerInfo, authenticationProvider);
             }
             else
@@ -88,7 +87,7 @@ namespace Simple.Web.AspNet
             if (handlerInfo.RequiresAuthentication)
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
-                                             new AuthenticationProvider();
+                                             new DefaultAuthenticationProvider();
                 instance = new SimpleHttpAsyncHandler(context, handlerInfo, authenticationProvider);
             }
             else

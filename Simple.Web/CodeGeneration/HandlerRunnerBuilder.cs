@@ -79,6 +79,7 @@
         private void CreateResponseBlocks()
         {
             CreateWriteStatusBlock();
+            CreateSetUserCookieBlock();
             CreateCacheBlock();
             CreateRedirectBlock();
             CreateSetOutputETagBlock();
@@ -183,6 +184,14 @@
             _blocks.Add(BuildWriteStatus());
         }
 
+        private void CreateSetUserCookieBlock()
+        {
+            if (typeof(ILogin).IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildSetUserCookie());
+            }
+        }
+
         private void CreateCacheBlock()
         {
             if (typeof (ICacheability).IsAssignableFrom(_type))
@@ -230,6 +239,11 @@
         private Expression BuildWriteStatus()
         {
             return Expression.Call(_methodLookup.WriteStatusCode, _status, _context);
+        }
+
+        private Expression BuildSetUserCookie()
+        {
+            return Expression.Call(_methodLookup.SetUserCookie, _handler, _context);
         }
 
         private Expression BuildRunBlock()

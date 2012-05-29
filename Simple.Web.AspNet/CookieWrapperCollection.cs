@@ -22,7 +22,7 @@ namespace Simple.Web.AspNet
 
         public ICookie this[string name]
         {
-            get { return new CookieWrapper(_cookies[name]); }
+            get { return new CookieWrapper(_cookies[name] ?? new HttpCookie(name)); }
         }
 
         public string GetKey(int index)

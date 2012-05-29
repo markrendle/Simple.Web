@@ -8,7 +8,7 @@ namespace Simple.Web.CodeGeneration
     {
         internal static bool Impl(IRequireAuthentication handler, IContext context)
         {
-            var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ?? new AuthenticationProvider();
+            var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ?? new DefaultAuthenticationProvider();
             var user = authenticationProvider.GetLoggedInUser(context);
             if (user == null || !user.IsAuthenticated)
             {
@@ -19,7 +19,7 @@ namespace Simple.Web.CodeGeneration
                     {
                         context.Response.Headers.Set("Location",
                                                      uriTemplateAttribute.Template + "?returnUrl=" +
-                                                     Uri.EscapeUriString(context.Request.Url.ToString()));
+                                                     Uri.EscapeDataString(context.Request.Url.ToString()));
                         context.Response.SetStatus(Status.TemporaryRedirect);
                         return false;
                     }

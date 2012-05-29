@@ -50,5 +50,19 @@ namespace Simple.Web
         /// The login page.
         /// </value>
         public Type LoginPage { get; set; }
+
+        private IAuthenticationProvider _authenticationProvider;
+
+        /// <summary>
+        /// Gets or sets the authentication provider.
+        /// </summary>
+        /// <value>
+        /// The authentication provider.
+        /// </value>
+        public IAuthenticationProvider AuthenticationProvider
+        {
+            get { return _authenticationProvider ?? (_authenticationProvider = Container.Get<IAuthenticationProvider>()); }
+            set { _authenticationProvider = value; }
+        }
     }
 }

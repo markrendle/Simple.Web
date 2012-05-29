@@ -103,6 +103,9 @@
     <Compile Include="GetForm.cs" />
     <Compile Include="GetHello.cs" />
     <Compile Include="GetIndex.cs" />
+    <Compile Include="LoginForm.cs" />
+    <Compile Include="LoginPost.cs" />
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Models\SubmitData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup\SetPublicFolders.cs" />
@@ -133,6 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Public\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\LoginForm.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

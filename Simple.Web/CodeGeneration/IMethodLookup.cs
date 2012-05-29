@@ -20,5 +20,6 @@ namespace Simple.Web.CodeGeneration
         MethodInfo WriteRawHtml { get; }
         MethodInfo WriteOutput { get; }
         MethodInfo WriteView { get; }
+        MethodInfo SetUserCookie { get; }
     }
 }

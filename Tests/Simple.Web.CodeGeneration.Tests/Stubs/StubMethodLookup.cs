@@ -47,6 +47,12 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
         public MethodInfo WriteStreamResponse { get { return typeof (StubWriteStreamResponse).GetMethod("Impl"); }}
         public MethodInfo WriteRawHtml { get { return typeof (StubWriteRawHtml).GetMethod("Impl"); } }
         public MethodInfo WriteView { get { return typeof(StubWriteView).GetMethod("Impl"); } }
+
+        public MethodInfo SetUserCookie
+        {
+            get { return typeof (StubSetUserCookie).GetMethod("Impl"); }
+        }
+
         public MethodInfo WriteOutput { get { return typeof(StubWriteOutput).GetMethod("Impl"); } }
 
     }
