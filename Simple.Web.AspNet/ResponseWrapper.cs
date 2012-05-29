@@ -1,7 +1,9 @@
 namespace Simple.Web.AspNet
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Web;
 
     internal class ResponseWrapper : IResponse
@@ -96,6 +98,52 @@ namespace Simple.Web.AspNet
         public void SetLastModified(DateTime lastModified)
         {
             _httpResponse.Cache.SetLastModified(lastModified);
+        }
+
+        public void SetCacheVaryByContentEncodings(ICollection<string> varyByContentEncodings)
+        {
+            foreach (var encoding in varyByContentEncodings)
+            {
+                _httpResponse.Cache.VaryByContentEncodings[encoding] = true;
+            }
+        }
+
+        public void SetCacheVaryByParams(ICollection<string> varyByParams)
+        {
+            if (varyByParams.Count == 1 && "none".Equals(varyByParams.Single(), StringComparison.OrdinalIgnoreCase))
+            {
+                _httpResponse.Cache.VaryByParams.IgnoreParams = true;
+                return;
+            }
+            foreach (var param in varyByParams)
+            {
+                _httpResponse.Cache.VaryByParams[param] = true;
+            }
+        }
+
+        public void SetCacheVaryByHeaders(ICollection<string> varyByHeaders)
+        {
+            foreach (var header in varyByHeaders)
+            {
+                switch (header.ToLowerInvariant())
+                {
+                    case "accept":
+                        _httpResponse.Cache.VaryByHeaders.AcceptTypes = true;
+                        break;
+                    case "accept-charset":
+                        _httpResponse.Cache.VaryByHeaders.UserCharSet = true;
+                        break;
+                    case "accept-language":
+                        _httpResponse.Cache.VaryByHeaders.UserLanguage = true;
+                        break;
+                    case "user-agent":
+                        _httpResponse.Cache.VaryByHeaders.UserAgent = true;
+                        break;
+                    default:
+                        _httpResponse.Cache.VaryByHeaders[header] = true;
+                        break;
+                }
+            }
         }
 
         public IHeaderCollection Headers

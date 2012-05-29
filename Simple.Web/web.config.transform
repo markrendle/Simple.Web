@@ -1,0 +1,36 @@
+<configuration>
+  <configSections>
+    <sectionGroup name="system.web.webPages.razor" type="System.Web.WebPages.Razor.Configuration.RazorWebSectionGroup, System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <section name="host" type="System.Web.WebPages.Razor.Configuration.HostSection, System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" requirePermission="false" />
+      <section name="pages" type="System.Web.WebPages.Razor.Configuration.RazorPagesSection, System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" requirePermission="false" />
+    </sectionGroup>
+  </configSections>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0">
+      <assemblies>
+        <add assembly="System.Web.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"/>
+        <add assembly="System.Web.Routing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"/>
+        <add assembly="System.Data.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+        <add assembly="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+      </assemblies>
+      <buildProviders>
+        <add
+           extension=".cshtml"
+           type="System.Web.WebPages.Razor.RazorBuildProvider, System.Web.WebPages.Razor"/>
+      </buildProviders>
+    </compilation>
+    <httpHandlers>
+      <add verb="*" path="*" type="Simple.Web.AspNet.SimpleHttpHandlerFactory"/>
+    </httpHandlers>
+  </system.web>
+  <system.webServer>
+    <handlers>
+      <add name="Simple.Web" path="*" verb="*" type="Simple.Web.AspNet.SimpleHttpHandlerFactory"/>
+    </handlers>
+  </system.webServer>
+  <system.web.webPages.razor>
+    <host factoryType="System.Web.WebPages.Razor.WebRazorHostFactory, System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <pages pageBaseType="Simple.Web.Razor.SimpleTemplateBase">
+    </pages>
+  </system.web.webPages.razor>
+</configuration>

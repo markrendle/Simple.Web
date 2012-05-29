@@ -131,6 +131,18 @@ namespace Simple.Web.Mocks
         {
         }
 
+        public void SetCacheVaryByContentEncodings(ICollection<string> varyByContentEncodings)
+        {
+        }
+
+        public void SetCacheVaryByParams(ICollection<string> varyByParams)
+        {
+        }
+
+        public void SetCacheVaryByHeaders(ICollection<string> varyByHeaders)
+        {
+        }
+
         private void Write(byte[] bytes)
         {
             OutputStream.Write(bytes, 0, bytes.Length);

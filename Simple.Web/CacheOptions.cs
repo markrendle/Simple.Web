@@ -1,6 +1,7 @@
 namespace Simple.Web
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Carries information on how to cache a resource.
@@ -12,40 +13,11 @@ namespace Simple.Web
         /// </summary>
         public static readonly CacheOptions DisableCaching = new CacheOptions();
 
-        private readonly TimeSpan? _slidingExpiry;
-
-        /// <summary>
-        /// Gets the sliding expiry time.
-        /// </summary>
-        public TimeSpan? SlidingExpiry
-        {
-            get { return _slidingExpiry; }
-        }
-
-        /// <summary>
-        /// Gets the absolute expiry time.
-        /// </summary>
-        public DateTime? AbsoluteExpiry
-        {
-            get { return _absoluteExpiry; }
-        }
-
         private readonly DateTime? _absoluteExpiry;
+        private readonly TimeSpan? _slidingExpiry;
 
         private CacheOptions()
         {
-            
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether caching should be disabled for a resource.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if caching should be disabled; otherwise, <c>false</c>.
-        /// </value>
-        public bool Disable
-        {
-            get { return !(_slidingExpiry.HasValue || _absoluteExpiry.HasValue); }
         }
 
         /// <summary>
@@ -67,5 +39,38 @@ namespace Simple.Web
         {
             _slidingExpiry = slidingExpiry;
         }
+
+        /// <summary>
+        /// Gets the sliding expiry time.
+        /// </summary>
+        public TimeSpan? SlidingExpiry
+        {
+            get { return _slidingExpiry; }
+        }
+
+        /// <summary>
+        /// Gets the absolute expiry time.
+        /// </summary>
+        public DateTime? AbsoluteExpiry
+        {
+            get { return _absoluteExpiry; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether caching should be disabled for a resource.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if caching should be disabled; otherwise, <c>false</c>.
+        /// </value>
+        public bool Disable
+        {
+            get { return !(_slidingExpiry.HasValue || _absoluteExpiry.HasValue); }
+        }
+
+        public ICollection<string> VaryByHeaders { get; set; }
+
+        public ICollection<string> VaryByParams { get; set; }
+
+        public ICollection<string> VaryByContentEncodings { get; set; } 
     }
 }

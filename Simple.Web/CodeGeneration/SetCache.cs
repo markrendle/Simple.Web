@@ -14,14 +14,24 @@ namespace Simple.Web.CodeGeneration
             if (handler.CacheOptions.Disable)
             {
                 context.Response.DisableCache();
+                return;
             }
-            else if (handler.CacheOptions.AbsoluteExpiry.HasValue)
+            if (handler.CacheOptions.AbsoluteExpiry.HasValue)
             {
                 context.Response.SetCacheAbsoluteExpiry(handler.CacheOptions.AbsoluteExpiry.Value);
             }
             else if (handler.CacheOptions.SlidingExpiry.HasValue)
             {
                 context.Response.SetCacheSlidingExpiry(handler.CacheOptions.SlidingExpiry.Value);
+            }
+            else
+            {
+                return;
+            }
+
+            if (handler.CacheOptions.VaryByContentEncodings != null)
+            {
+                context.Response.SetCacheVaryByContentEncodings(handler.CacheOptions.VaryByContentEncodings);
             }
         }
     }

@@ -1,6 +1,7 @@
 namespace Simple.Web
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.IO;
 
@@ -25,5 +26,8 @@ namespace Simple.Web
         void SetCacheSlidingExpiry(TimeSpan expiresIn);
         void SetETag(string etag);
         void SetLastModified(DateTime lastModified);
+        void SetCacheVaryByContentEncodings(ICollection<string> varyByContentEncodings);
+        void SetCacheVaryByParams(ICollection<string> varyByParams);
+        void SetCacheVaryByHeaders(ICollection<string> varyByHeaders);
     }
 }
