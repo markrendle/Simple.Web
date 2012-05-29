@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Reflection;
+    using Helpers;
 
     public sealed class StartupTaskRunner
     {

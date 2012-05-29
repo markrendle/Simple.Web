@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using Helpers;
 
     /// <summary>
     /// Helper methods for working with RESTful links.

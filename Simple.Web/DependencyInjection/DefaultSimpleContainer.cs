@@ -2,6 +2,7 @@ namespace Simple.Web.DependencyInjection
 {
     using System;
     using System.Linq;
+    using Helpers;
 
     internal class DefaultSimpleContainer : ISimpleContainer
     {

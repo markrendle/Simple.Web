@@ -6,6 +6,7 @@ namespace Simple.Web.ContentTypeHandling
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Helpers;
 
     internal class ContentTypeHandlerTable
     {
