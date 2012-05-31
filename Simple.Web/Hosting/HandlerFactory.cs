@@ -22,10 +22,10 @@
         }
 
         private readonly HandlerBuilderFactory _handlerBuilderFactory;
-        private readonly ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>> _getBuilders =
-            new ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>>();
-        private readonly ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>> _postBuilders =
-            new ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>>();
+
+        private readonly
+            ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>>> _builders =
+                new ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, object>>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerFactory"/> class.
@@ -38,38 +38,18 @@
         }
 
         /// <summary>
-        /// Gets the handler for a particular type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="variables">The variables.</param>
-        /// <returns></returns>
-        public object GetHandler(Type type, IDictionary<string,string> variables)
-        {
-            var builder = _getBuilders.GetOrAdd(type, _handlerBuilderFactory.BuildHandlerBuilder);
-            return builder(variables);
-        }
-
-        /// <summary>
         /// Gets the handler.
         /// </summary>
         /// <param name="handlerInfo">The handler info.</param>
         /// <returns></returns>
         public object GetHandler(HandlerInfo handlerInfo)
         {
-            Func<IDictionary<string, string>, object> builder;
+            var builderDictionary = _builders.GetOrAdd(handlerInfo.HttpMethod,
+                                                       _ =>
+                                                       new ConcurrentDictionary
+                                                           <Type, Func<IDictionary<string, string>, object>>());
 
-            if (handlerInfo.HttpMethod == "GET")
-            {
-                builder = _getBuilders.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
-            }
-            else if (handlerInfo.HttpMethod == "POST")
-            {
-                builder = _postBuilders.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
-            }
-            else
-            {
-                throw new HttpException(405, "Method not allowed.");
-            }
+            var builder = builderDictionary.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
             return builder(handlerInfo.Variables);
         }
     }
