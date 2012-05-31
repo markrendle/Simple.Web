@@ -1,6 +1,8 @@
 namespace Simple.Web.CodeGeneration.Tests.Stubs
 {
     using System;
+    using Behaviors;
+    using Http;
 
     class StubWriteOutput
     {

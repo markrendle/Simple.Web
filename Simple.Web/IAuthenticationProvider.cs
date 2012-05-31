@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web
 {
     using System;
+    using Http;
 
     public interface IAuthenticationProvider
     {

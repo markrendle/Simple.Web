@@ -1,5 +1,7 @@
 namespace Simple.Web.CodeGeneration.Tests.Stubs
 {
+    using Http;
+
     class StubWriteStatusCode
     {
         public static bool Called;

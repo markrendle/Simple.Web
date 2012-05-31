@@ -1,5 +1,7 @@
 namespace Simple.Web.CodeGeneration.Tests.Stubs
 {
+    using Behaviors;
+    using Http;
     using Xunit;
 
     class StubCheckAuthentication

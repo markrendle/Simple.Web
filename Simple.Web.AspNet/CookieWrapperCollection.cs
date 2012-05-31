@@ -5,6 +5,7 @@ namespace Simple.Web.AspNet
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
+    using Http;
 
     internal class CookieWrapperCollection : ICookieCollection
     {

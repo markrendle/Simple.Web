@@ -7,18 +7,15 @@ namespace Sandbox
 {
     using System.Threading.Tasks;
     using Simple.Web;
+    using Simple.Web.Behaviors;
 
     [UriTemplate("/")]
-    public class GetIndex : IGetAsync, IOutput<RawHtml>
+    public class GetIndex : IGet, IOutput<RawHtml>
     {
-        //public Status Get()
-        //{
-        //    return Status.OK;
-        //}
-
-        public Task<Status> Get()
+        public Status Get()
         {
-            return Task.Factory.StartNew(() => Status.OK);
+            return Status.OK;
+            //return Task.Factory.StartNew(() => Status.OK);
         }
 
         public RawHtml Output

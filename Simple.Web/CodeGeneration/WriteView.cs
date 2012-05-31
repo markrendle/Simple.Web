@@ -1,6 +1,7 @@
 namespace Simple.Web.CodeGeneration
 {
     using ContentTypeHandling;
+    using Http;
     using Links;
 
     static class WriteView

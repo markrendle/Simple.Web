@@ -2,6 +2,7 @@ namespace Simple.Web.AspNet
 {
     using System;
     using System.Web;
+    using Http;
 
     internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
     {

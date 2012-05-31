@@ -6,6 +6,7 @@ namespace Simple.Web.AspNet
     using System.Linq;
     using System.Web;
     using Helpers;
+    using Http;
     using Routing;
 
     internal static class VerbHandlerFactory

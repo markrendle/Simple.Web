@@ -2,9 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Reflection;
     using System.Threading.Tasks;
+    using Helpers;
+    using Http;
 
     /// <summary>
     /// Builds methods to run handlers for an <see cref="IContext"/>.
@@ -79,153 +83,88 @@
         private void CreateResponseBlocks()
         {
             CreateWriteStatusBlock();
-            CreateSetUserCookieBlock();
-            CreateCacheBlock();
-            CreateRedirectBlock();
-            CreateSetOutputETagBlock();
-            CreateSetLastModifiedBlock();
-            CreateOutputBlocks();
+
+            foreach (var behaviorInfo in ResponseBehaviorInfo.GetInPriorityOrder())
+            {
+                AddBehaviorBlock(behaviorInfo);
+            }
+
+            foreach (var behaviorInfo in OutputBehaviorInfo.GetInPriorityOrder())
+            {
+                // Only one Output block is going to be relevant
+                if (AddBehaviorBlock(behaviorInfo)) return;
+            }
+
+            // If we didn't trigger an Output, try writing a View.
+            _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
         }
 
         private void CreateSetupBlocks()
         {
-            CreateAuthenticateBlock();
-            CreateSetContextBlock();
-            CreateSetRequestCookiesBlock();
-            CreateSetResponseCookiesBlock();
-            CreateSetFilesBlock();
-            CreateSetInputBlock();
-            CreateSetInputETagBlock();
-            CreateSetIfModifiedSinceBlock();
-        }
-
-        private void CreateAuthenticateBlock()
-        {
-            if (typeof (IRequireAuthentication).IsAssignableFrom(_type))
+            foreach (var behaviorInfo in RequestBehaviorInfo.GetInPriorityOrder())
             {
-                _blocks.Add(BuildAuthenticateBlock());
+                AddBehaviorBlock(behaviorInfo);
             }
         }
 
-        private void CreateSetContextBlock()
+        private bool AddBehaviorBlock(BehaviorInfo behaviorInfo)
         {
-            if (typeof (INeedContext).IsAssignableFrom(_type))
+            if (behaviorInfo.BehaviorType.IsGenericType)
             {
-                _blocks.Add(BuildSetContextBlock());
+                var genericInterface = _type.GetInterface(behaviorInfo.BehaviorType.FullName);
+                if (genericInterface != null)
+                {
+                    _blocks.Add(BuildBehaviorBlock(behaviorInfo, genericInterface.GetGenericArguments()));
+                    return true;
+                }
             }
+            if (behaviorInfo.BehaviorType.IsAssignableFrom(_type))
+            {
+                _blocks.Add(BuildBehaviorBlock(behaviorInfo));
+                return true;
+            }
+
+            return false;
         }
 
-        private void CreateSetRequestCookiesBlock()
+        private Expression BuildBehaviorBlock(BehaviorInfo behaviorInfo)
         {
-            if (typeof (IReadCookies).IsAssignableFrom(_type))
+            var method = behaviorInfo.GetMethod();
+
+            var methodCallExpression = BuildMethodCallExpression(method);
+
+            // If the implementation method returns a boolean, then when it is false, stop processing.
+            if (method.ReturnType == typeof(bool))
             {
-                _blocks.Add(BuildSetRequestCookiesBlock());
+                return Expression.IfThen(Expression.Not(methodCallExpression), Expression.Return(_end));
             }
+            return methodCallExpression;
         }
 
-        private void CreateSetInputETagBlock()
+        private MethodCallExpression BuildMethodCallExpression(MethodInfo method)
         {
-            if (typeof (IETag).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetInputETagBlock());
-            }
+            var methodCallExpression = method.GetParameters().Length == 2
+                                           ? Expression.Call(method, _handler, _context)
+                                           : Expression.Call(method, _handler, _context, _status);
+            return methodCallExpression;
         }
 
-        private void CreateSetOutputETagBlock()
+        private Expression BuildBehaviorBlock(BehaviorInfo behaviorInfo, Type[] genericArguments)
         {
-            if (typeof (IETag).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetOutputETagBlock());
-            }
-        }
-        
-        private void CreateSetLastModifiedBlock()
-        {
-            if (typeof (IModified).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetLastModifiedBlock());
-            }
-        }
+            var method = behaviorInfo.GetMethod(genericArguments);
+            var methodCallExpression = BuildMethodCallExpression(method);
 
-        private void CreateSetIfModifiedSinceBlock()
-        {
-            if (typeof (IModified).IsAssignableFrom(_type))
+            // If the implementation method returns a boolean, then when it is false, stop processing.
+            if (method.ReturnType == typeof(bool))
             {
-                _blocks.Add(BuildSetIfModifiedSinceBlock());
+                return Expression.IfThen(Expression.Not(methodCallExpression), Expression.Return(_end));
             }
-        }
-
-        private void CreateSetResponseCookiesBlock()
-        {
-            if (typeof (ISetCookies).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetResponseCookiesBlock());
-            }
-        }
-
-        private void CreateSetFilesBlock()
-        {
-            if (typeof (IUploadFiles).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetFilesBlock());
-            }
-        }
-
-        private void CreateSetInputBlock()
-        {
-            if (_type.GetInterface(typeof (IInput<>).Name) != null)
-            {
-                _blocks.Add(BuildSetInputBlock());
-            }
+            return methodCallExpression;
         }
 
         private void CreateWriteStatusBlock()
         {
             _blocks.Add(BuildWriteStatus());
-        }
-
-        private void CreateSetUserCookieBlock()
-        {
-            if (typeof(ILogin).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildSetUserCookie());
-            }
-        }
-
-        private void CreateCacheBlock()
-        {
-            if (typeof (ICacheability).IsAssignableFrom(_type))
-            {
-                _blocks.Add(Expression.Call(_methodLookup.SetCache, _context));
-            }
-        }
-
-        private void CreateRedirectBlock()
-        {
-            if (typeof (IMayRedirect).IsAssignableFrom(_type))
-            {
-                _blocks.Add(BuildRedirectBlock());
-            }
-        }
-
-        private void CreateOutputBlocks()
-        {
-            if (typeof (IOutputStream).IsAssignableFrom(_type))
-            {
-                _blocks.Add(Expression.Call(_methodLookup.WriteStreamResponse, _handler, _context));
-            }
-            else if (typeof (IOutput<RawHtml>).IsAssignableFrom(_type))
-            {
-                _blocks.Add(Expression.Call(_methodLookup.WriteRawHtml, _handler, _context));
-            }
-            else if (_type.GetInterface(typeof (IOutput<>).Name) != null)
-            {
-                _blocks.Add(BuildWriteOutputBlock());
-            }
-            else
-            {
-                _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
-            }
         }
 
         private void CreateDisposeBlock()
@@ -241,11 +180,6 @@
             return Expression.Call(_methodLookup.WriteStatusCode, _status, _context);
         }
 
-        private Expression BuildSetUserCookie()
-        {
-            return Expression.Call(_methodLookup.SetUserCookie, _handler, _context);
-        }
-
         private Expression BuildRunBlock()
         {
             var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
@@ -258,92 +192,6 @@
             var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
             var run = _type.GetMethod(verb.Method);
             return Expression.Assign(_task, Expression.Call(_handler, run));
-        }
-
-        private Expression BuildSetInputBlock()
-        {
-            var inputType = _type.GetInterface(typeof (IInput<>).Name).GetGenericArguments().Single();
-            var setInput = _methodLookup.SetInput.MakeGenericMethod(inputType);
-            return Expression.Call(setInput, _handler, _context);
-        }
-
-        private Expression BuildWriteOutputBlock()
-        {
-            var inputType = _type.GetInterface(typeof (IOutput<>).Name).GetGenericArguments().Single();
-            var writeOutput = _methodLookup.WriteOutput.MakeGenericMethod(inputType);
-            return Expression.Call(writeOutput, _handler, _context);
-        }
-
-        private Expression BuildSetContextBlock()
-        {
-            return Expression.Assign(Expression.Property(_handler, typeof (INeedContext).GetProperty("Context")), _context);
-        }
-
-        private Expression BuildSetRequestCookiesBlock()
-        {
-            return Expression.Call(_methodLookup.SetRequestCookies, _handler, _context);
-        }
-
-        private Expression BuildSetResponseCookiesBlock()
-        {
-            return Expression.Call(_methodLookup.SetResponseCookies, _handler, _context);
-        }
-
-        private Expression BuildSetInputETagBlock()
-        {
-            return Expression.Call(_methodLookup.SetInputETag, _handler, _context);
-        }
-
-        private Expression BuildSetLastModifiedBlock()
-        {
-            return Expression.Call(_methodLookup.SetLastModified, _handler, _context);
-        }
-
-        private Expression BuildSetIfModifiedSinceBlock()
-        {
-            return Expression.Call(_methodLookup.SetIfModifiedSince, _handler, _context);
-        }
-
-        private Expression BuildSetOutputETagBlock()
-        {
-            return Expression.Call(_methodLookup.SetOutputETag, _handler, _context);
-        }
-
-        private Expression BuildSetFilesBlock()
-        {
-            return Expression.Call(_methodLookup.SetFiles, _handler, _context);
-        }
-
-        private Expression BuildAuthenticateBlock()
-        {
-            return Expression.IfThen(Expression.Not(Expression.Call(_methodLookup.CheckAuthentication, _handler, _context)), Expression.Return(_end));
-        }
-
-        private Expression BuildRedirectBlock()
-        {
-            return Expression.IfThen(Expression.Call(_methodLookup.Redirect, _handler, _status, _context), Expression.Return(_end));
-        }
-    }
-
-    public class AsyncRunner
-    {
-        private readonly Func<object, IContext, Task<Status>> _start;
-        private readonly Action<object, IContext, Status> _end;
-
-        public AsyncRunner(Func<object, IContext, Task<Status>> start, Action<object, IContext, Status> end)
-        {
-            _start = start;
-            _end = end;
-        }
-
-        public Action<object, IContext, Status> End
-        {
-            get { return _end; }
-        }
-
-        public Func<object, IContext, Task<Status>> Start
-        {
-            get { return _start; }
         }
     }
 }

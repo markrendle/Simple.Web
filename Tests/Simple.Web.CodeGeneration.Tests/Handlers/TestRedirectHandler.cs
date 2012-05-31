@@ -2,6 +2,7 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
 {
     using System;
     using System.IO;
+    using Behaviors;
 
     class TestRedirectHandler : IGet, IMayRedirect, IOutputStream
     {

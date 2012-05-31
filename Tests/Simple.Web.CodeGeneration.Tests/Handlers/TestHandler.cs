@@ -4,6 +4,8 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Behaviors;
+    using Http;
 
     abstract class TestHandlerBase : IRequireAuthentication, IInput<string>, ISetCookies, ICacheability, IETag, IModified
     {

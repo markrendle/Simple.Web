@@ -2,6 +2,7 @@
 {
     using System;
     using System.Web;
+    using Http;
 
     public class CookieWrapper : ICookie
     {

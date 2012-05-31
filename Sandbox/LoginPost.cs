@@ -3,6 +3,7 @@
     using System;
     using Models;
     using Simple.Web;
+    using Simple.Web.Behaviors;
     using Simple.Web.Helpers;
 
     [UriTemplate("/login")]

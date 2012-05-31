@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Simple.Web.Helpers
 {
+    using Http;
+
     public static class ResponseExtensions
     {
         public static void SetStatus(this IResponse response, Status status)

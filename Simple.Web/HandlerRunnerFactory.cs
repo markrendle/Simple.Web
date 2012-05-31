@@ -7,6 +7,7 @@ namespace Simple.Web
 {
     using System.Collections.Concurrent;
     using CodeGeneration;
+    using Http;
 
     public class HandlerRunnerFactory
     {

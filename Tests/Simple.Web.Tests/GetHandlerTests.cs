@@ -5,6 +5,7 @@
     using System.Collections.Specialized;
     using System.IO;
     using System.Text;
+    using Behaviors;
     using ContentTypeHandling;
     using Mocks;
     using Xunit;

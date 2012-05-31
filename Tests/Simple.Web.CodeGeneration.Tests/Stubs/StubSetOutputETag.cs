@@ -1,5 +1,8 @@
 namespace Simple.Web.CodeGeneration.Tests.Stubs
 {
+    using Behaviors;
+    using Http;
+
     class StubSetOutputETag
     {
         public static bool Called;

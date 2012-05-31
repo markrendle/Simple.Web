@@ -5,6 +5,7 @@ namespace Simple.Web.AspNet
     using System.IO;
     using System.Linq;
     using System.Web;
+    using Http;
 
     internal class ResponseWrapper : IResponse
     {

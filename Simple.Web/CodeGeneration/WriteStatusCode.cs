@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Simple.Web.CodeGeneration
 {
+    using Http;
+
     internal static class WriteStatusCode
     {
         internal static void Impl(Status status, IContext context)

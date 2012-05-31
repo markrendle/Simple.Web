@@ -1,7 +1,9 @@
 namespace Simple.Web.CodeGeneration
 {
     using System.Linq;
+    using Behaviors;
     using ContentTypeHandling;
+    using Http;
 
     static class WriteRawHtml
     {

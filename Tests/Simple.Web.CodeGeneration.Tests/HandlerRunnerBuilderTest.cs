@@ -1,106 +1,84 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
-    using Handlers;
+    using Behaviors;
+    using Http;
     using Mocks;
-    using Stubs;
     using Xunit;
 
     public class HandlerRunnerBuilderTest
     {
         [Fact]
-        public void CallsAreMade()
+        public void CallsFooImplementation()
         {
-            Reset();
-            var target = new HandlerRunnerBuilder(typeof (TestHandler), new StubMethodLookup());
-            var runner = target.BuildRunner();
-            runner(new TestHandler(200), new MockContext());
-
-            Assert.True(StubCheckAuthentication.Called);
-            Assert.True(StubSetInput.Called);
-            Assert.Equal(typeof(string), StubSetInput.WithType);
-            Assert.True(StubWriteStatusCode.Called);
-            Assert.True(StubSetResponseCookies.Called);
-            Assert.True(StubSetInputETag.Called);
-            Assert.True(StubSetOutputETag.Called);
-            Assert.True(StubSetLastModified.Called);
-            Assert.True(StubSetIfModifiedSince.Called);
+            var target = new HandlerRunnerBuilder(typeof (Foo)).BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
+            var foo = new Foo();
+            target(foo, context);
+            Assert.True(foo.Called);
         }
         
         [Fact]
-        public void CallsAreMadeAsync()
+        public void BarStopsFoo()
         {
-            Reset();
-            var target = new HandlerRunnerBuilder(typeof (TestAsyncHandler), new StubMethodLookup());
-            var runner = target.BuildAsyncRunner();
-            var testAsyncHandler = new TestAsyncHandler(200);
-            var mockContext = new MockContext();
-            var task = runner.Start(testAsyncHandler, mockContext);
-            task.Wait();
-            runner.End(testAsyncHandler, mockContext, task.Result);
-
-            Assert.True(StubCheckAuthentication.Called);
-            Assert.True(StubSetInput.Called);
-            Assert.Equal(typeof(string), StubSetInput.WithType);
-            Assert.True(StubWriteStatusCode.Called);
-            Assert.True(StubSetResponseCookies.Called);
-            Assert.True(StubSetInputETag.Called);
-            Assert.True(StubSetOutputETag.Called);
-            Assert.True(StubSetLastModified.Called);
-            Assert.True(StubSetIfModifiedSince.Called);
+            var target = new HandlerRunnerBuilder(typeof (Bar)).BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
+            var bar = new Bar();
+            target(bar, context);
+            Assert.True(((IBar)bar).Called);
+            Assert.False(((IFoo)bar).Called);
         }
+    }
 
-        [Fact]
-        public void RedirectPreventsFurtherCalls()
+    class Bar : IGet, IFoo, IBar
+    {
+        bool IFoo.Called { get; set; }
+        bool IBar.Called { get; set; }
+
+        public Status Get()
         {
-            Reset();
-            var target = new HandlerRunnerBuilder(typeof(TestRedirectHandler), new StubMethodLookup());
-            var runner = target.BuildRunner();
-            runner(new TestRedirectHandler(301), new MockContext());
-
-            Assert.True(StubRedirect.Called);
-            Assert.False(StubWriteStreamResponse.Called);
+            return new Status();
         }
+    }
 
-        [Fact]
-        public void UnusedRedirectDoesNotPreventFurtherCalls()
+    class Foo : IGet, IFoo
+    {
+        public bool Called { get; set; }
+        public Status Get()
         {
-            Reset();
-            var target = new HandlerRunnerBuilder(typeof(TestRedirectHandler), new StubMethodLookup());
-            var runner = target.BuildRunner();
-            runner(new TestRedirectHandler(200), new MockContext());
-
-            Assert.True(StubRedirect.Called);
-            Assert.True(StubWriteStreamResponse.Called);
+            return new Status();
         }
+    }
 
-        [Fact]
-        public void UploadFilesCallSetFiles()
+    [RequestBehavior(typeof(FooImpl))]
+    public interface IFoo
+    {
+        bool Called { get; set; }
+    }
+
+    public static class FooImpl
+    {
+        public static bool Called;
+        public static void Impl(IFoo foo, IContext context)
         {
-            Reset();
-            var target = new HandlerRunnerBuilder(typeof(TestUploadHandler), new StubMethodLookup());
-            var runner = target.BuildRunner();
-            runner(new TestUploadHandler(), new MockContext());
-
-            Assert.True(StubSetFiles.Called);
+            foo.Called = true;
         }
+    }
+    
+    [RequestBehavior(typeof(BarImpl), Priority = Priority.Highest)]
+    public interface IBar
+    {
+        bool Called { get; set; }
+    }
 
-        private static void Reset()
+    public static class BarImpl
+    {
+        public static bool Called;
+        public static bool Impl(IBar bar, IContext context)
         {
-            StubCheckAuthentication.Called =
-                StubSetInput.Called =
-                StubWriteStatusCode.Called =
-                StubSetResponseCookies.Called =
-                StubRedirect.Called =
-                StubWriteStreamResponse.Called =
-                StubWriteOutput.Called =
-                StubWriteRawHtml.Called =
-                StubWriteView.Called =
-                StubSetFiles.Called =
-                StubSetCache.Called =
-                false;
-
-            StubSetInput.WithType = null;
-            StubWriteOutput.WithType = null;
+            bar.Called = true;
+            return false;
         }
     }
 }

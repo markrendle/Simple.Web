@@ -5,6 +5,7 @@ namespace Simple.Web.AspNet
     using System.Collections.Specialized;
     using System.IO;
     using System.Web;
+    using Http;
 
     internal class RequestWrapper : IRequest
     {

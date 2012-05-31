@@ -1,6 +1,7 @@
 namespace Simple.Web.AspNet
 {
     using System.Web;
+    using Http;
 
     class ContextWrapper : IContext
     {

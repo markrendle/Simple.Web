@@ -4,6 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Behaviors;
 
     public sealed class HandlerInfo
     {

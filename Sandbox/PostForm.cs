@@ -1,6 +1,7 @@
 namespace Sandbox
 {
     using Simple.Web;
+    using Simple.Web.Behaviors;
 
     [UriTemplate("/submit")]
     public class PostForm : IPost, IInput<Form>, IOutput<Form>

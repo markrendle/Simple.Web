@@ -2,6 +2,7 @@ namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Reflection;
+    using Behaviors.Implementations;
 
     class MethodLookup : IMethodLookup
     {

@@ -4,6 +4,7 @@ namespace Simple.Web.AspNet
     using System.Threading.Tasks;
     using CodeGeneration;
     using Helpers;
+    using Http;
 
     class SimpleAsyncHandlerResult : AsyncResult
     {

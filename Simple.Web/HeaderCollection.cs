@@ -2,6 +2,7 @@ namespace Simple.Web
 {
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using Http;
 
     public class HeaderCollection : IHeaderCollection
     {

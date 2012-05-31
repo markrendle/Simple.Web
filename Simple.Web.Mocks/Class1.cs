@@ -7,11 +7,13 @@ namespace Simple.Web.Mocks
 {
     using System.Collections.Specialized;
     using System.IO;
+    using Http;
 
     public class MockContext : IContext
     {
         public MockContext()
         {
+            Request = new MockRequest();
             Response = new MockResponse
             {
                 OutputStream = new MockStream(),

@@ -1,6 +1,7 @@
 ﻿namespace Sandbox
 {
     using Simple.Web;
+    using Simple.Web.Behaviors;
 
     [UriTemplate("/login")]
     public class LoginForm : IGet, ILoginPage

@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenericTest.cs" />
     <Compile Include="HandlerRunnerBuilderTest.cs" />
     <Compile Include="Handlers\TestUploadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

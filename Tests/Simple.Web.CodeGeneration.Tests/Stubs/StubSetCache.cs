@@ -1,5 +1,7 @@
 namespace Simple.Web.CodeGeneration.Tests.Stubs
 {
+    using Http;
+
     class StubSetCache
     {
         public static bool Called;

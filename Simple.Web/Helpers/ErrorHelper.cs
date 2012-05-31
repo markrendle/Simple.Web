@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Web;
+    using Http;
 
     public class ErrorHelper
     {
@@ -27,7 +28,7 @@
                 _context.Response.StatusCode = 500;
                 _context.Response.StatusDescription = "Internal server error.";
             }
-            _context.Response.ContentType = "text/text";
+            _context.Response.ContentType = "text/html";
             _context.Response.Write(exception.ToString());
         }
     }
