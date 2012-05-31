@@ -13,9 +13,9 @@
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public static void Impl(IReadCookies setCookies, IContext context)
+        public static void Impl(IReadCookies handler, IContext context)
         {
-            setCookies.RequestCookies = context.Request.Cookies;
+            handler.RequestCookies = context.Request.Cookies;
         }
     }
 }

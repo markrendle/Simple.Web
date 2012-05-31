@@ -14,16 +14,16 @@
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public static void Impl(IOutputStream outputStream, IContext context)
+        public static void Impl(IOutputStream handler, IContext context)
         {
-            context.Response.ContentType = outputStream.ContentType;
-            if (!string.IsNullOrWhiteSpace(outputStream.ContentDisposition))
+            context.Response.ContentType = handler.ContentType;
+            if (!string.IsNullOrWhiteSpace(handler.ContentDisposition))
             {
-                context.Response.SetHeader("Content-Disposition", outputStream.ContentDisposition);
+                context.Response.SetHeader("Content-Disposition", handler.ContentDisposition);
             }
             if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-            using (var stream = outputStream.Output)
+            using (var stream = handler.Output)
             {
                 stream.Position = 0;
                 stream.CopyTo(context.Response.OutputStream);

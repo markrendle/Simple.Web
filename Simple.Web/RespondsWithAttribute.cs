@@ -5,19 +5,29 @@ namespace Simple.Web
     using System.Collections.ObjectModel;
     using System.Linq;
 
+    /// <summary>
+    /// Denotes which Content-Types a handler may serve.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
     public sealed class RespondsWithAttribute : Attribute
     {
-        private readonly string[] _acceptTypes;
+        private readonly string[] _contentTypes;
 
-        public RespondsWithAttribute(params string[] acceptTypes)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RespondsWithAttribute"/> class.
+        /// </summary>
+        /// <param name="contentTypes">The Content-Types served by the handler.</param>
+        public RespondsWithAttribute(params string[] contentTypes)
         {
-            _acceptTypes = acceptTypes;
+            _contentTypes = contentTypes;
         }
 
-        public ReadOnlyCollection<string> AcceptTypes
+        /// <summary>
+        /// Gets the Content-Types served by the handler.
+        /// </summary>
+        public ReadOnlyCollection<string> ContentTypes
         {
-            get { return Array.AsReadOnly(_acceptTypes); }
+            get { return Array.AsReadOnly(_contentTypes); }
         }
 
         internal static IEnumerable<RespondsWithAttribute> Get(Type type)

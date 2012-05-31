@@ -3,7 +3,9 @@
   <Assemblies>
     <Item>D:\Code\Simple.Web\build\Simple.Web.dll</Item>
   </Assemblies>
-  <DocFiles />
+  <DocFiles>
+    <Item>D:\Code\Simple.Web\build\Simple.Web.xml</Item>
+  </DocFiles>
   <ReferencedAssemblies />
   <ReferencedDocFiles />
   <ReferenceDirectories />

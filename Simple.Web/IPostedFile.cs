@@ -2,6 +2,9 @@ namespace Simple.Web
 {
     using System.IO;
 
+    /// <summary>
+    /// Represents a file uploaded over HTTP.
+    /// </summary>
     public interface IPostedFile
     {
         /// <summary>

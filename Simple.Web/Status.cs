@@ -75,6 +75,13 @@ namespace Simple.Web
             _httpStatusDescription = httpStatusDescription;
         }
 
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
+        /// </summary>
+        /// <param name="httpStatus">The HTTP status.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
         public static implicit operator Status(int httpStatus)
         {
             return StatusLookup.Contains(httpStatus) ? StatusLookup[httpStatus] : new Status(httpStatus);
@@ -144,11 +151,27 @@ namespace Simple.Web
             return _httpStatusCode;
         }
 
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
         public static bool operator ==(Status left, Status right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
         public static bool operator !=(Status left, Status right)
         {
             return !left.Equals(right);

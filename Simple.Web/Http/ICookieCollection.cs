@@ -2,6 +2,9 @@ namespace Simple.Web.Http
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Abstraction over a collection of HTTP cookies.
+    /// </summary>
     public interface ICookieCollection
     {
         /// <summary>
@@ -33,7 +36,7 @@ namespace Simple.Web.Http
         /// Gets the cookie with the specified name from the cookie collection.
         /// </summary>
         /// <returns>
-        /// The <see cref="T:Simple.Web.Http.ICookie"/> specified by <paramref name="name."/>
+        /// The <see cref="T:Simple.Web.Http.ICookie"/> specified by <paramref name="name"/>.
         /// </returns>
         /// <param name="name">Title of cookie to retrieve. </param>
         ICookie this[string name] { get; }

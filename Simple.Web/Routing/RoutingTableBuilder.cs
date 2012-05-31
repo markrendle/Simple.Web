@@ -7,15 +7,26 @@
     using Helpers;
     using Hosting;
 
+    /// <summary>
+    /// Factory class for building routing tables.
+    /// </summary>
     public sealed class RoutingTableBuilder
     {
         private readonly IList<Type> _handlerBaseTypes;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoutingTableBuilder"/> class.
+        /// </summary>
+        /// <param name="handlerBaseTypes">The handler base types.</param>
         public RoutingTableBuilder(params Type[] handlerBaseTypes)
         {
             _handlerBaseTypes = handlerBaseTypes;
         }
 
+        /// <summary>
+        /// Builds the routing table.
+        /// </summary>
+        /// <returns>The routing table for the provided base types.</returns>
         public RoutingTable BuildRoutingTable()
         {
             var routingTable = new RoutingTable();
@@ -32,7 +43,7 @@
         {
             foreach (var exportedType in handlerTypes)
             {
-                var respondsWithTypes = RespondsWithAttribute.Get(exportedType).SelectMany(rta => rta.AcceptTypes).ToList();
+                var respondsWithTypes = RespondsWithAttribute.Get(exportedType).SelectMany(rta => rta.ContentTypes).ToList();
                 var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.ContentTypes).ToList();
                 foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
                 {

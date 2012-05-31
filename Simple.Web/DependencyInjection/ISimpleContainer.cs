@@ -10,7 +10,7 @@
         /// Gets an instance of <c>T</c>.
         /// </summary>
         /// <typeparam name="T">The type of thing to construct.</typeparam>
-        /// <returns>A new instance of <see cref="T"/>.</returns>
+        /// <returns>A new instance of T.</returns>
         T Get<T>();
     }
 }

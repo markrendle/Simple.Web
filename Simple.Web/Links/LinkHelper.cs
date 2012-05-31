@@ -25,6 +25,11 @@
             return LinkBuilders.GetOrAdd(model.GetType(), CreateBuilder).LinksForModel(model);
         }
 
+        /// <summary>
+        /// Gets the canonical link for a model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>A <see cref="Link"/> object representing the canonical URI for the model, if one is found.</returns>
         public static Link GetCanonicalLinkForModel(object model)
         {
             if (model == null) throw new ArgumentNullException("model");

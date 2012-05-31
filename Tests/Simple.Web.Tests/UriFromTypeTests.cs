@@ -44,7 +44,6 @@ namespace Simple.Web.Tests
         [Fact]
         public void GetsDynamicUriFromField()
         {
-            int id = 42;
             var actual = UriFromType.Get(() => new Dynamic {Id = _idTest});
             Assert.Equal("/dynamic/42", actual.ToString());
         }
@@ -52,7 +51,6 @@ namespace Simple.Web.Tests
         [Fact]
         public void GetsDynamicUriFromProperty()
         {
-            int id = 42;
             var actual = UriFromType.Get(() => new Dynamic { Id = IdTest });
             Assert.Equal("/dynamic/42", actual.ToString());
         }
@@ -60,7 +58,6 @@ namespace Simple.Web.Tests
         [Fact]
         public void GetsDynamicUriFromStaticField()
         {
-            int id = 42;
             var actual = UriFromType.Get(() => new Dynamic { Id = StaticIdTest });
             Assert.Equal("/dynamic/42", actual.ToString());
         }

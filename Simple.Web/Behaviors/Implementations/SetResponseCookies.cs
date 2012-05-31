@@ -13,11 +13,11 @@ namespace Simple.Web.Behaviors.Implementations
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public static void Impl(ISetCookies setCookies, IContext context)
+        public static void Impl(ISetCookies handler, IContext context)
         {
             if (context.Request != null)
             {
-                setCookies.ResponseCookies = context.Request.Cookies;
+                handler.ResponseCookies = context.Request.Cookies;
             }
         }
     }
