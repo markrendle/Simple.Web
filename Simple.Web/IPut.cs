@@ -1,6 +1,7 @@
 namespace Simple.Web
 {
     using System.Threading.Tasks;
+    using Http;
 
     /// <summary>
     /// Represents a synchronous handler for a PUT operation.

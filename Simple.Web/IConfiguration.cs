@@ -2,6 +2,7 @@ namespace Simple.Web
 {
     using System;
     using System.Collections.Generic;
+    using Authentication;
     using DependencyInjection;
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web.AspNet
 {
     using System.Web;
+    using Hosting;
 
     public class SimpleHttpHandlerFactory : IHttpHandlerFactory
     {

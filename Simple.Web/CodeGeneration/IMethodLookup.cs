@@ -2,24 +2,18 @@ namespace Simple.Web.CodeGeneration
 {
     using System.Reflection;
 
+    /// <summary>
+    /// Provides methods for the code generator
+    /// </summary>
     public interface IMethodLookup
     {
-        MethodInfo CheckAuthentication { get; }
-        MethodInfo SetFiles { get; }
-        MethodInfo SetRequestCookies { get; }
-        MethodInfo SetResponseCookies { get; }
-        MethodInfo SetInput { get; }
-        MethodInfo SetInputETag { get; }
-        MethodInfo SetOutputETag { get; }
-        MethodInfo SetLastModified { get; }
-        MethodInfo SetIfModifiedSince { get; }
+        /// <summary>
+        /// Gets a method to write the status code to the response.
+        /// </summary>
         MethodInfo WriteStatusCode { get; }
-        MethodInfo SetCache { get; }
-        MethodInfo Redirect { get; }
-        MethodInfo WriteStreamResponse { get; }
-        MethodInfo WriteRawHtml { get; }
-        MethodInfo WriteOutput { get; }
+        /// <summary>
+        /// Gets a method to render a view to the response.
+        /// </summary>
         MethodInfo WriteView { get; }
-        MethodInfo SetUserCookie { get; }
     }
 }

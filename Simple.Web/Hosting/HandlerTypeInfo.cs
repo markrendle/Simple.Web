@@ -1,10 +1,10 @@
-namespace Simple.Web
+namespace Simple.Web.Hosting
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public sealed class HandlerTypeInfo
+    internal sealed class HandlerTypeInfo
     {
         private readonly Type _type;
         private readonly HashSet<string> _respondsWithTypes;

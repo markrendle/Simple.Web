@@ -10,6 +10,10 @@ namespace Simple.Web.Behaviors
     {
         private readonly Type _implementingType;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BehaviorAttribute"/> class.
+        /// </summary>
+        /// <param name="implementingType">The type which implements the behavior.</param>
         protected BehaviorAttribute(Type implementingType)
         {
             _implementingType = implementingType;

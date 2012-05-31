@@ -2,6 +2,8 @@ namespace Simple.Web.AspNet
 {
     using System;
     using System.Web;
+    using Authentication;
+    using Hosting;
     using Http;
 
     internal class SimpleHttpAsyncHandler : IHttpAsyncHandler

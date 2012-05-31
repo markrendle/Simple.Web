@@ -1,5 +1,7 @@
 namespace Simple.Web.Behaviors
 {
+    using Authentication;
+
     /// <summary>
     /// Represents the handler which processes the login for a Forms-based authentication application.
     /// </summary>

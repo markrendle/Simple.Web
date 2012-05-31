@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <Assemblies>
+    <Item>D:\Code\Simple.Web\build\Simple.Web.dll</Item>
+  </Assemblies>
+  <DocFiles />
+  <ReferencedAssemblies />
+  <ReferencedDocFiles />
+  <ReferenceDirectories />
+  <NamespaceSummaries />
+  <Settings>
+    <OutputDirectory>D:\Code\Simple.Web\docs</OutputDirectory>
+    <OverwritePreviousFiles>true</OverwritePreviousFiles>
+    <DocumentationTitle>Simple.Web</DocumentationTitle>
+    <CreateLogFile>false</CreateLogFile>
+    <OutputFormats>Website</OutputFormats>
+    <ShowMissingNamespaces>true</ShowMissingNamespaces>
+    <ShowMissingSummaries>true</ShowMissingSummaries>
+    <ShowMissingTypeParams>true</ShowMissingTypeParams>
+    <ShowMissingParams>true</ShowMissingParams>
+    <ShowMissingReturns>true</ShowMissingReturns>
+    <ShowMissingValues>true</ShowMissingValues>
+    <WarnForMissingValues>true</WarnForMissingValues>
+    <DocumentInternals>false</DocumentInternals>
+    <DocumentPrivatesAndSealedProtecteds>false</DocumentPrivatesAndSealedProtecteds>
+    <DocumentExplicitInterfaceImplementations>true</DocumentExplicitInterfaceImplementations>
+    <DocumentExtensionMethods>true</DocumentExtensionMethods>
+    <DefaultLanguage>CSharp</DefaultLanguage>
+    <IsPreliminary>true</IsPreliminary>
+    <AutoDocumentConstructors>true</AutoDocumentConstructors>
+    <InheritDocumentation>true</InheritDocumentation>
+    <OutputLanguage>en</OutputLanguage>
+    <CreateOverviewPage>true</CreateOverviewPage>
+    <ShowOverviewPageAsRootNode>false</ShowOverviewPageAsRootNode>
+    <OverviewNodeName>Overview</OverviewNodeName>
+    <CustomOverviewFile null="true" />
+    <MergeAssemblies>true</MergeAssemblies>
+    <HierarchicalNamespaces>false</HierarchicalNamespaces>
+    <ChildNestedTypes>false</ChildNestedTypes>
+    <DisplayNamespaceLabels>false</DisplayNamespaceLabels>
+    <Style>MSDN Lightweight</Style>
+    <OpenExternalLinksInNewPage>true</OpenExternalLinksInNewPage>
+    <UseGuidFilenames>false</UseGuidFilenames>
+    <FooterHtml></FooterHtml>
+    <ChmFileName>Documentation</ChmFileName>
+    <DeleteIntermediateFiles>true</DeleteIntermediateFiles>
+    <BinaryTOC>false</BinaryTOC>
+    <CreateIndex>true</CreateIndex>
+    <FullTextSearch>true</FullTextSearch>
+  </Settings>
+</Project>

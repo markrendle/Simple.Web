@@ -5,7 +5,9 @@ namespace Simple.Web.AspNet
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
+    using Authentication;
     using Helpers;
+    using Hosting;
     using Http;
     using Routing;
 
@@ -45,9 +47,9 @@ namespace Simple.Web.AspNet
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
-            foreach (var key in context.Request.QueryString.AllKeys)
+            foreach (var key in context.Request.QueryString.Select(g => g.Key))
             {
-                handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
+                handlerInfo.Variables.Add(key, context.Request.QueryString[key].FirstOrDefault());
             }
 
             return CreateHandler(context, handlerInfo);

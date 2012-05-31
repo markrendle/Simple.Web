@@ -22,5 +22,16 @@ namespace Simple.Web.Helpers
             response.StatusCode = status.Code;
             response.StatusDescription = status.Description;
         }
+
+        /// <summary>
+        /// Writes text to the response body.
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <param name="text">The text.</param>
+        public static void Write(this IResponse response, string text)
+        {
+            var bytes = Encoding.UTF8.GetBytes(text);
+            response.OutputStream.Write(bytes, 0, bytes.Length);
+        }
     }
 }

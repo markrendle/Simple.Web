@@ -67,10 +67,28 @@ namespace Simple.Web.Http
             get { return !(_slidingExpiry.HasValue || _absoluteExpiry.HasValue); }
         }
 
+        /// <summary>
+        /// Gets or sets names of headers which should be considered by the caching systems.
+        /// </summary>
+        /// <value>
+        /// The headers to vary by.
+        /// </value>
         public ICollection<string> VaryByHeaders { get; set; }
 
+        /// <summary>
+        /// Gets or sets names of query parameters which should be considered by the caching systems.
+        /// </summary>
+        /// <value>
+        /// The query parameters to vary by.
+        /// </value>
         public ICollection<string> VaryByParams { get; set; }
 
+        /// <summary>
+        /// Gets or sets names of content encodings which should be considered by the caching systems.
+        /// </summary>
+        /// <value>
+        /// The content encodings to vary by.
+        /// </value>
         public ICollection<string> VaryByContentEncodings { get; set; } 
     }
 }

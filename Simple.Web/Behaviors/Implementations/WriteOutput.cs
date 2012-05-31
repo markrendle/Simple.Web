@@ -1,13 +1,23 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
     using System.Linq;
+    using System.Text;
     using Behaviors;
     using CodeGeneration;
     using ContentTypeHandling;
     using Http;
 
+    /// <summary>
+    /// This type supports the framework directly and should not be used from your code.
+    /// </summary>
     public static class WriteOutput
     {
+        /// <summary>
+        /// This method supports the framework directly and should not be used from your code
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public static void Impl<T>(IOutput<T> handler, IContext context)
         {
             if (typeof(T) == typeof(RawHtml))
@@ -54,7 +64,8 @@
                 context.Request.AcceptTypes.FirstOrDefault(
                     at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            context.Response.Output.Write(handler.Output.ToString());
+            var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+            context.Response.OutputStream.Write(bytes, 0, bytes.Length);
         }
     }
 }

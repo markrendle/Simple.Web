@@ -30,3 +30,4 @@ test*ml
 build
 *.ncrunchproject
 Simple.Web.ncrunchsolution.user
+docs

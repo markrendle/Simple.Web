@@ -5,11 +5,19 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Extension method for copying an object's properties to a dictionary.
+    /// </summary>
     public static class ObjectToDictionary
     {
         private static readonly ConcurrentDictionary<Type, Func<object, IDictionary<string, object>>> Converters =
             new ConcurrentDictionary<Type, Func<object, IDictionary<string, object>>>();
 
+        /// <summary>
+        /// Copies all readable properties from an object to a dictionary.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>A dictionary representation of the object's properties.</returns>
         public static IDictionary<string, object> ToDictionary(this object obj)
         {
             if (obj == null) throw new ArgumentNullException("obj");

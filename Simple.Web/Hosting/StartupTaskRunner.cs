@@ -1,14 +1,20 @@
-﻿namespace Simple.Web
+﻿namespace Simple.Web.Hosting
 {
     using System;
     using System.Diagnostics;
     using System.Reflection;
-    using Helpers;
+    using Simple.Web.Helpers;
 
+    /// <summary>
+    /// Runs startup tasks (in types with the <see cref="IStartupTask"/> interface). Should be called from the Hosting system.
+    /// </summary>
     public sealed class StartupTaskRunner
     {
         private static readonly Type StartupTaskType = typeof (IStartupTask);
 
+        /// <summary>
+        /// Runs the startup tasks.
+        /// </summary>
         public void RunStartupTasks()
         {
             foreach (var type in ExportedTypeHelper.FromCurrentAppDomain(StartupTaskType.IsAssignableFrom))

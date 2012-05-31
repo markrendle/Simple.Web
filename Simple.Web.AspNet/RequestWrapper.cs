@@ -2,15 +2,15 @@ namespace Simple.Web.AspNet
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.IO;
+    using System.Linq;
     using System.Web;
+    using Helpers;
     using Http;
 
     internal class RequestWrapper : IRequest
     {
         private readonly HttpRequest _httpRequest;
-        private IHeaderCollection _headers;
         private ICookieCollection _cookies;
 
         public RequestWrapper(HttpRequest httpRequest)
@@ -28,9 +28,9 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.AcceptTypes; }
         }
 
-        public NameValueCollection QueryString
+        public ILookup<string, string> QueryString
         {
-            get { return _httpRequest.QueryString; }
+            get { return _httpRequest.QueryString.ToLookup(); }
         }
 
         public Stream InputStream
@@ -48,9 +48,12 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.HttpMethod; }
         }
 
-        public IHeaderCollection Headers
+        public ILookup<string, string> Headers
         {
-            get { return _headers ?? (_headers =  new HeaderCollection(_httpRequest.Headers)); }
+            get
+            {
+                return _httpRequest.Headers.ToLookup();
+            }
         }
 
         public IEnumerable<IPostedFile> Files

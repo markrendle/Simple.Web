@@ -1,5 +1,7 @@
 ﻿namespace Simple.Web.Behaviors
 {
+    using Authentication;
+
     /// <summary>
     /// Indicates that a handler resource is only available to authenticated users.
     /// </summary>

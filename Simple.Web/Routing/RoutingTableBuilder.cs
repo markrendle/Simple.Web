@@ -5,6 +5,7 @@
     using System.Linq;
     using Behaviors;
     using Helpers;
+    using Hosting;
 
     public sealed class RoutingTableBuilder
     {

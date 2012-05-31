@@ -6,7 +6,7 @@ namespace Simple.Web.CodeGeneration
     using System.Linq.Expressions;
     using System.Reflection;
 
-    public class HandlerBuilderFactory
+    internal class HandlerBuilderFactory
     {
         private readonly IConfiguration _configuration;
 

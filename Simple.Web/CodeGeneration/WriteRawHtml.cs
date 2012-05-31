@@ -1,6 +1,7 @@
 namespace Simple.Web.CodeGeneration
 {
     using System.Linq;
+    using System.Text;
     using Behaviors;
     using ContentTypeHandling;
     using Http;
@@ -13,7 +14,8 @@ namespace Simple.Web.CodeGeneration
                 context.Request.AcceptTypes.FirstOrDefault(
                     at => at == ContentType.Html || at == ContentType.XHtml) ?? "text/html";
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            context.Response.Output.Write(handler.Output.ToString());
+            var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+            context.Response.OutputStream.Write(bytes, 0, bytes.Length);
         }
     }
 }

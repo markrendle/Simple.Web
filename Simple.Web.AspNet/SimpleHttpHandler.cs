@@ -4,6 +4,7 @@ namespace Simple.Web.AspNet
     using System.Diagnostics;
     using System.Web;
     using Helpers;
+    using Hosting;
     using Http;
 
     internal class SimpleHttpHandler : IHttpHandler

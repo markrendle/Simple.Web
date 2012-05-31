@@ -40,3 +40,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Simple.Web.CodeGeneration.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.JsonFx.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.Xml.Tests")]
+[assembly: InternalsVisibleTo("Simple.Web.Ninject.Tests")]

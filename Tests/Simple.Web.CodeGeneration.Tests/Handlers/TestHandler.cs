@@ -4,6 +4,7 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Authentication;
     using Behaviors;
     using Http;
 

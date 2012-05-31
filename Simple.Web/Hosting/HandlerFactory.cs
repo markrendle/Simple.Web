@@ -1,10 +1,10 @@
-﻿namespace Simple.Web
+﻿namespace Simple.Web.Hosting
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.Concurrent;
     using System.Web;
-    using CodeGeneration;
+    using Simple.Web.CodeGeneration;
 
     /// <summary>
     /// Builds handlers. To be used by Hosting plug-ins.

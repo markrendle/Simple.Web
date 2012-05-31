@@ -4,7 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Hosting;
 
+    /// <summary>
+    /// Handles routing for hosts.
+    /// </summary>
     public class RoutingTable
     {
         private const int MaximumGroupCount = 64;
@@ -13,11 +17,17 @@
 
         private readonly List<SortedList<Regex, IList<HandlerTypeInfo>>> _dynamicPaths;
 
-        public RoutingTable()
+        internal RoutingTable()
         {
             _dynamicPaths = new List<SortedList<Regex, IList<HandlerTypeInfo>>>(GenerateEmptyLists());
         }
 
+        /// <summary>
+        /// Gets the type of handler for the specified URL.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="variables">The values of the variables from the URI template.</param>
+        /// <returns></returns>
         public Type Get(string url, out IDictionary<string,string> variables)
         {
             variables = null;
@@ -27,6 +37,14 @@
             return types == null ? null : types.Single().HandlerType;
         }
 
+        /// <summary>
+        /// Gets the type of handler for the specified URL.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="contentType">Value of the Content-Type header from the Request.</param>
+        /// <param name="acceptTypes">Values of the Accepts header from the Request.</param>
+        /// <param name="variables">The variables.</param>
+        /// <returns></returns>
         public Type Get(string url, string contentType, IList<string> acceptTypes, out IDictionary<string, string> variables)
         {
             variables = null;
@@ -73,12 +91,12 @@
             return null;
         }
 
-        public void Add(string uriTemplate, Type handlerType)
+        internal void Add(string uriTemplate, Type handlerType)
         {
             Add(uriTemplate, new HandlerTypeInfo(handlerType));
         }
 
-        public void Add(string uriTemplate, HandlerTypeInfo handlerType)
+        internal void Add(string uriTemplate, HandlerTypeInfo handlerType)
         {
             if (uriTemplate.Contains("{"))
             {
@@ -99,7 +117,7 @@
             }
         }
 
-        public IEnumerable<Type> GetAllTypes()
+        internal IEnumerable<Type> GetAllTypes()
         {
             return _staticPaths.Values.SelectMany(list => list.Select(eti => eti.HandlerType))
                 .Concat(_dynamicPaths.SelectMany(l => l.Values.SelectMany(t => t)).Select(e => e.HandlerType))
@@ -109,7 +127,7 @@
         private static IEnumerable<SortedList<Regex, IList<HandlerTypeInfo>>> GenerateEmptyLists()
         {
             var regexTermComparer =
-                new Web.Comparer<Regex>(
+                new Helpers.Comparer<Regex>(
                     (regex, regex1) => StringComparer.OrdinalIgnoreCase.Compare(regex.ToString(), regex1.ToString()));
             for (int i = 0; i < MaximumGroupCount; i++)
             {

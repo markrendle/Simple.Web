@@ -6,6 +6,7 @@ using System.Web;
 namespace Sandbox
 {
     using Simple.Web;
+    using Simple.Web.Authentication;
     using Simple.Web.Behaviors;
 
     [UriTemplate("/form")]

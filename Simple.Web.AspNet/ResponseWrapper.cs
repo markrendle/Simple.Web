@@ -10,7 +10,6 @@ namespace Simple.Web.AspNet
     internal class ResponseWrapper : IResponse
     {
         private readonly HttpResponse _httpResponse;
-        private IHeaderCollection _headers;
         private ICookieCollection _cookies;
 
         public void Write(string s)
@@ -147,9 +146,9 @@ namespace Simple.Web.AspNet
             }
         }
 
-        public IHeaderCollection Headers
+        public void SetHeader(string headerName, string value)
         {
-            get { return _headers ?? (_headers =  new HeaderCollection(_httpResponse.Headers)); }
+            _httpResponse.Headers.Set(headerName, value);
         }
 
         public ICookieCollection Cookies

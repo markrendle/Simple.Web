@@ -2,6 +2,7 @@ namespace Simple.Web
 {
     using System;
     using System.Security.Principal;
+    using Authentication;
 
     public class User : IUser
     {

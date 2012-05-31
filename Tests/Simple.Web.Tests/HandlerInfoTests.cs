@@ -6,6 +6,7 @@ using System.Text;
 namespace Simple.Web.Tests
 {
     using Behaviors;
+    using Hosting;
     using Xunit;
 
     public class HandlerInfoTests
