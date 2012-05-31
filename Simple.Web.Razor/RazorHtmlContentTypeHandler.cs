@@ -18,18 +18,10 @@
 
         public void Write(IContent content, Stream outputStream)
         {
-            Type viewType;
             var razorViews = new RazorViews();
-            if (content.ViewPath != null)
-            {
-                viewType = razorViews.GetViewType(content.ViewPath);
-            }
-            else
-            {
-                var handlerType = content.Handler != null ? content.Handler.GetType() : null;
-                var modelType = content.Model != null ? content.Model.GetType() : null;
-                viewType = razorViews.GetViewType(handlerType, modelType);
-            }
+            var handlerType = content.Handler != null ? content.Handler.GetType() : null;
+            var modelType = content.Model != null ? content.Model.GetType() : null;
+            var viewType = razorViews.GetViewType(handlerType, modelType);
 
             if (viewType == null)
             {

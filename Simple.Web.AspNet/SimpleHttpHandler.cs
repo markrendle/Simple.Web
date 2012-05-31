@@ -10,17 +10,11 @@ namespace Simple.Web.AspNet
     {
         private readonly IContext _context;
         private readonly HandlerInfo _handlerInfo;
-        private readonly IAuthenticationProvider _authenticationProvider;
 
-        internal SimpleHttpHandler(IContext context, HandlerInfo handlerInfo) : this(context, handlerInfo, null)
-        {
-        }
-
-        internal SimpleHttpHandler(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider)
+        internal SimpleHttpHandler(IContext context, HandlerInfo handlerInfo)
         {
             _context = context;
             _handlerInfo = handlerInfo;
-            _authenticationProvider = authenticationProvider;
         }
 
         public void ProcessRequest(HttpContext context)
@@ -41,7 +35,7 @@ namespace Simple.Web.AspNet
 
             if (handler != null)
             {
-                var run = HandlerRunnerFactory.Instance.Get(handler.GetType());
+                var run = HandlerRunnerFactory.Instance.Get(handler.GetType(), _context.Request.HttpMethod);
                 run(handler, _context);
             }
         }

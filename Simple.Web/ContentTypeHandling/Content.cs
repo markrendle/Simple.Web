@@ -4,6 +4,9 @@ namespace Simple.Web.ContentTypeHandling
     using System.Linq;
     using Links;
 
+    /// <summary>
+    /// Default implementation of the <see cref="IContent"/> interface.
+    /// </summary>
     class Content : IContent
     {
         private readonly object _handler;
@@ -21,16 +24,25 @@ namespace Simple.Web.ContentTypeHandling
             _viewPath = viewPath;
         }
 
+        /// <summary>
+        /// Gets the handler which generated the model.
+        /// </summary>
         public object Handler
         {
             get { return _handler; }
         }
 
+        /// <summary>
+        /// Gets the model.
+        /// </summary>
         public object Model
         {
             get { return _model; }
         }
 
+        /// <summary>
+        /// Gets the variables from the handler.
+        /// </summary>
         public IEnumerable<KeyValuePair<string, object>> Variables
         {
             get
@@ -41,14 +53,9 @@ namespace Simple.Web.ContentTypeHandling
             }
         }
 
-        public string ViewPath
-        {
-            get
-            {
-                return _viewPath;
-            }
-        }
-
+        /// <summary>
+        /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
+        /// </summary>
         public IEnumerable<Link> Links { get { return LinkHelper.GetLinksForModel(_model); } }
     }
 }

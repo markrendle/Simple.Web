@@ -33,7 +33,7 @@ namespace Simple.Web.AspNet
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            var result = new SimpleAsyncHandlerResult(_context, _handlerInfo, _authenticationProvider, cb, extraData);
+            var result = new SimpleAsyncHandlerResult(_context, _handlerInfo, cb, extraData);
             result.Run();
             return result;
         }

@@ -1,4 +1,4 @@
-namespace Simple.Web
+namespace Simple.Web.Helpers
 {
     using System;
     using System.Reflection;

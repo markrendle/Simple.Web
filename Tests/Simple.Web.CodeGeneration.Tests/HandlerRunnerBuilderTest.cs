@@ -10,7 +10,7 @@
         [Fact]
         public void CallsFooImplementation()
         {
-            var target = new HandlerRunnerBuilder(typeof (Foo)).BuildRunner();
+            var target = new HandlerRunnerBuilder(typeof (Foo), "GET").BuildRunner();
             var context = new Mocks.MockContext();
             context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
             var foo = new Foo();
@@ -21,7 +21,7 @@
         [Fact]
         public void BarStopsFoo()
         {
-            var target = new HandlerRunnerBuilder(typeof (Bar)).BuildRunner();
+            var target = new HandlerRunnerBuilder(typeof (Bar), "GET").BuildRunner();
             var context = new Mocks.MockContext();
             context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
             var bar = new Bar();

@@ -16,6 +16,7 @@
     internal class HandlerRunnerBuilder
     {
         private readonly Type _type;
+        private readonly string _httpMethod;
         private readonly IMethodLookup _methodLookup;
         private readonly List<Expression> _blocks = new List<Expression>(); 
         private readonly LabelTarget _end = Expression.Label("end");
@@ -25,10 +26,11 @@
         private ParameterExpression _status;
         private ParameterExpression _task;
 
-        public HandlerRunnerBuilder(Type type, IMethodLookup methodLookup = null)
+        public HandlerRunnerBuilder(Type type, string httpMethod, IMethodLookup methodLookup = null)
         {
             if (type == null) throw new ArgumentNullException("type");
             _type = type;
+            _httpMethod = httpMethod;
             _methodLookup = methodLookup ?? new MethodLookup();
             _handlerParameter = Expression.Parameter(typeof(object), "obj");
             _handler = Expression.Variable(_type, "handler");
@@ -88,6 +90,9 @@
             {
                 AddBehaviorBlock(behaviorInfo);
             }
+
+            // Don't write response for HEAD requests
+            if ("HEAD".Equals(_httpMethod, StringComparison.OrdinalIgnoreCase)) return;
 
             foreach (var behaviorInfo in OutputBehaviorInfo.GetInPriorityOrder())
             {

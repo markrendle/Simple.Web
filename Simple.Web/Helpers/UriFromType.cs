@@ -7,13 +7,26 @@ namespace Simple.Web.Helpers
 {
     using System.Linq.Expressions;
 
+    /// <summary>
+    /// Helper class to build URIs from a Handler's type
+    /// </summary>
     public static class UriFromType
     {
+        /// <summary>
+        /// Gets the URI for a handler without template parameters.
+        /// </summary>
+        /// <typeparam name="THandler">The type of the handler.</typeparam>
+        /// <returns>The URI.</returns>
         public static Uri Get<THandler>()
         {
             return Get(typeof (THandler));
         }
 
+        /// <summary>
+        /// Gets the URI for a handler without template parameters.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The URI.</returns>
         public static Uri Get(Type type)
         {
             var uriTemplateAttributes = UriTemplateAttribute.Get(type).ToArray();
@@ -30,6 +43,12 @@ namespace Simple.Web.Helpers
             return new Uri(template, UriKind.Relative);
         }
 
+        /// <summary>
+        /// Gets the URI for a handler with template parameters.
+        /// </summary>
+        /// <typeparam name="THandler">The type of the handler.</typeparam>
+        /// <param name="expression">An expression specifying values for properties on the Handler.</param>
+        /// <returns>A URI with the necessary values incorporated.</returns>
         public static Uri Get<THandler>(Expression<Func<THandler>> expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");

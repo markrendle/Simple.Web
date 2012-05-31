@@ -23,14 +23,14 @@ namespace Simple.Web
         {
         }
 
-        public Action<object, IContext> Get(Type handlerType)
+        public Action<object, IContext> Get(Type handlerType, string httpMethod)
         {
-            return _cache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t).BuildRunner());
+            return _cache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t, httpMethod).BuildRunner());
         }
 
-        public AsyncRunner GetAsync(Type handlerType)
+        public AsyncRunner GetAsync(Type handlerType, string httpMethod)
         {
-            return _asyncCache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t).BuildAsyncRunner());
+            return _asyncCache.GetOrAdd(handlerType, t => new HandlerRunnerBuilder(t, httpMethod).BuildAsyncRunner());
         }
     }
 }

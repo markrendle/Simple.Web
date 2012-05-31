@@ -24,11 +24,6 @@ namespace Simple.Web.ContentTypeHandling
         IEnumerable<KeyValuePair<string, object>> Variables { get; }
 
         /// <summary>
-        /// Gets the view path specified by the handler, if any.
-        /// </summary>
-        string ViewPath { get; }
-
-        /// <summary>
         /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
         /// </summary>
         IEnumerable<Link> Links { get; } 

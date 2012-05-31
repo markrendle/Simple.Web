@@ -56,6 +56,7 @@
     <Compile Include="CodeGeneration\OutputBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />
+    <Compile Include="Helpers\IFileUtility.cs" />
     <Compile Include="Http\CacheOptions.cs" />
     <Compile Include="Behaviors\Implementations\SetIfModifiedSince.cs" />
     <Compile Include="Behaviors\Implementations\SetInputETag.cs" />

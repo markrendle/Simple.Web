@@ -74,7 +74,7 @@ namespace Simple.Web.AspNet
             {
                 var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
                                              new DefaultAuthenticationProvider();
-                instance = new SimpleHttpHandler(context, handlerInfo, authenticationProvider);
+                instance = new SimpleHttpHandler(context, handlerInfo);
             }
             else
             {

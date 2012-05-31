@@ -10,7 +10,7 @@
         [Fact]
         public void CallsFooImplementation()
         {
-            var target = new HandlerRunnerBuilder(typeof(StringFoo)).BuildRunner();
+            var target = new HandlerRunnerBuilder(typeof(StringFoo), "GET").BuildRunner();
             var context = new Mocks.MockContext();
             context.Request = new MockRequest { AcceptTypes = new[] { "text/html" } };
             var foo = new StringFoo();

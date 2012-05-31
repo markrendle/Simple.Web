@@ -4,7 +4,6 @@ namespace Simple.Web.Behaviors
     /// Represents a handler that is expecting input.
     /// </summary>
     /// <typeparam name="TInput">The type of the input.</typeparam>
-
     [RequestBehavior(typeof(Implementations.SetInput))]
     public interface IInput<in TInput>
     {

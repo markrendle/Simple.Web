@@ -15,7 +15,7 @@ namespace Simple.Web.AspNet
         private AsyncRunner _runner;
         private object _handler;
 
-        public SimpleAsyncHandlerResult(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider, AsyncCallback callback, object asyncState)
+        public SimpleAsyncHandlerResult(IContext context, HandlerInfo handlerInfo, AsyncCallback callback, object asyncState)
         {
             _context = context;
             _handlerInfo = handlerInfo;
@@ -30,7 +30,7 @@ namespace Simple.Web.AspNet
 
             if (_handler != null)
             {
-                _runner = HandlerRunnerFactory.Instance.GetAsync(_handlerInfo.HandlerType);
+                _runner = HandlerRunnerFactory.Instance.GetAsync(_handlerInfo.HandlerType, _context.Request.HttpMethod);
                 _runner.Start(_handler, _context).ContinueWith(RunContinuation);
             }
             else

@@ -35,6 +35,12 @@ namespace Simple.Web
         /// </value>
         Type LoginPage { get; set; }
 
+        /// <summary>
+        /// Gets or sets the authentication provider.
+        /// </summary>
+        /// <value>
+        /// The authentication provider.
+        /// </value>
         IAuthenticationProvider AuthenticationProvider { get; set; }
     }
 }
