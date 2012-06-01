@@ -5,31 +5,31 @@ namespace Simple.Web.Http
     using System.Reflection;
 
     /// <summary>
-    /// Specifies which HTTP verb (e.g. GET, POST, HEAD) a Handler interface deals with.
+    /// Specifies which HTTP method (e.g. GET, POST, HEAD) a Handler interface deals with.
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-    public class HttpVerbAttribute : Attribute
+    public class HttpMethodAttribute : Attribute
     {
-        private readonly string _verb;
+        private readonly string _httpMethod;
         private readonly string _method;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpVerbAttribute"/> class.
+        /// Initializes a new instance of the <see cref="HttpMethodAttribute"/> class.
         /// </summary>
-        /// <param name="verb">The HTTP verb.</param>
-        public HttpVerbAttribute(string verb) : this(verb, null)
+        /// <param name="httpMethod">The HTTP Method.</param>
+        public HttpMethodAttribute(string httpMethod) : this(httpMethod, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpVerbAttribute"/> class.
+        /// Initializes a new instance of the <see cref="HttpMethodAttribute"/> class.
         /// </summary>
-        /// <param name="verb">The HTTP verb.</param>
+        /// <param name="httpMethod">The HTTP Method.</param>
         /// <param name="method">The name of the entry-point method in the type.</param>
-        public HttpVerbAttribute(string verb, string method)
+        public HttpMethodAttribute(string httpMethod, string method)
         {
-            _verb = verb;
-            _method = method ?? char.ToUpperInvariant(verb[0]) + verb.Substring(1).ToLowerInvariant();
+            _httpMethod = httpMethod;
+            _method = method ?? char.ToUpperInvariant(httpMethod[0]) + httpMethod.Substring(1).ToLowerInvariant();
         }
 
         /// <summary>
@@ -41,21 +41,21 @@ namespace Simple.Web.Http
         }
 
         /// <summary>
-        /// Gets the HTTP verb.
+        /// Gets the HTTP Method.
         /// </summary>
-        public string Verb
+        public string HttpMethod
         {
-            get { return _verb; }
+            get { return _httpMethod; }
         }
 
         /// <summary>
-        /// Gets the <see cref="HttpVerbAttribute"/> specified type.
+        /// Gets the <see cref="HttpMethodAttribute"/> specified type.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns><c>null</c> if the attribute does not exist.</returns>
-        public static HttpVerbAttribute Get(Type type)
+        public static HttpMethodAttribute Get(Type type)
         {
-            return GetCustomAttribute(type, typeof (HttpVerbAttribute)) as HttpVerbAttribute;
+            return GetCustomAttribute(type, typeof (HttpMethodAttribute)) as HttpMethodAttribute;
         }
 
         /// <summary>
@@ -70,15 +70,15 @@ namespace Simple.Web.Http
         }
 
         /// <summary>
-        /// Determines whether the <see cref="HttpVerbAttribute"/> is applied to the specified type.
+        /// Determines whether the <see cref="HttpMethodAttribute"/> is applied to the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>
-        ///   <c>true</c> if <see cref="HttpVerbAttribute"/> is applied to the specified type; otherwise, <c>false</c>.
+        ///   <c>true</c> if <see cref="HttpMethodAttribute"/> is applied to the specified type; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsAppliedTo(Type type)
         {
-            return GetCustomAttribute(type, typeof (HttpVerbAttribute)) != null;
+            return GetCustomAttribute(type, typeof (HttpMethodAttribute)) != null;
         }
     }
 }

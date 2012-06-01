@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a PATCH operation.
     /// </summary>
-    [HttpVerb("PATCH")]
+    [HttpMethod("PATCH")]
     public interface IPatch
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a PATCH operation.
     /// </summary>
-    [HttpVerb("PATCH")]
+    [HttpMethod("PATCH")]
     public interface IPatchAsync
     {
         /// <summary>

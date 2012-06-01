@@ -16,7 +16,7 @@
                 return new PublicFileHandler();
             }
             var simpleContext = new ContextWrapper(context);
-            return VerbHandlerFactory.TryCreate(simpleContext);
+            return HttpMethodHandlerFactory.TryCreate(simpleContext);
         }
 
         private static void Startup()

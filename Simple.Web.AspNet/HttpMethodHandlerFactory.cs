@@ -11,27 +11,27 @@ namespace Simple.Web.AspNet
     using Http;
     using Routing;
 
-    internal static class VerbHandlerFactory
+    internal static class HttpMethodHandlerFactory
     {
         private static readonly ConcurrentDictionary<string, RoutingTable> RoutingTables = new ConcurrentDictionary<string, RoutingTable>(StringComparer.OrdinalIgnoreCase);
 
-        private static RoutingTable BuildRoutingTable(string verb)
+        private static RoutingTable BuildRoutingTable(string httpMethod)
         {
-            var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsVerbHandler)
-                .Where(i => HttpVerbAttribute.Get(i).Verb.Equals(verb, StringComparison.OrdinalIgnoreCase))
+            var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler)
+                .Where(i => HttpMethodAttribute.Get(i).HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
 
             return new RoutingTableBuilder(handlerTypes).BuildRoutingTable();
         }
 
-        private static bool IsVerbHandler(Type type)
+        private static bool IsHttpMethodHandler(Type type)
         {
-            return HttpVerbAttribute.IsAppliedTo(type);
+            return HttpMethodAttribute.IsAppliedTo(type);
         }
 
-        private static RoutingTable TableFor(string verb)
+        private static RoutingTable TableFor(string httpMethod)
         {
-            return RoutingTables.GetOrAdd(verb, BuildRoutingTable);
+            return RoutingTables.GetOrAdd(httpMethod, BuildRoutingTable);
         }
 
         public static IHttpHandler TryCreate(IContext context)

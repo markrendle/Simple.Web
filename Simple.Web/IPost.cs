@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a POST operation.
     /// </summary>
-    [HttpVerb("POST")]
+    [HttpMethod("POST")]
     public interface IPost
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a POST operation.
     /// </summary>
-    [HttpVerb("POST")]
+    [HttpMethod("POST")]
     public interface IPostAsync
     {
         /// <summary>

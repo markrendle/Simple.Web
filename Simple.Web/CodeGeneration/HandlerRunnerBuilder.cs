@@ -187,15 +187,15 @@
 
         private Expression BuildRunBlock()
         {
-            var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
-            var run = _type.GetMethod(verb.Method);
+            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
+            var run = _type.GetMethod(httpMethodAttribute.Method);
             return Expression.Assign(_status, Expression.Call(_handler, run));
         }
 
         private Expression BuildAsyncRunBlock()
         {
-            var verb = HttpVerbAttribute.Get(_type.GetInterfaces().Single(HttpVerbAttribute.IsAppliedTo));
-            var run = _type.GetMethod(verb.Method);
+            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
+            var run = _type.GetMethod(httpMethodAttribute.Method);
             return Expression.Assign(_task, Expression.Call(_handler, run));
         }
     }

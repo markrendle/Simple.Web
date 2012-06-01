@@ -117,7 +117,7 @@
     <Compile Include="Helpers\ResponseExtensions.cs" />
     <Compile Include="Helpers\UriFromType.cs" />
     <Compile Include="Helpers\UriTemplateHelper.cs" />
-    <Compile Include="Http\HttpVerbAttribute.cs" />
+    <Compile Include="Http\HttpMethodAttribute.cs" />
     <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="ContentTypeHandling\IContentTypeHandler.cs" />

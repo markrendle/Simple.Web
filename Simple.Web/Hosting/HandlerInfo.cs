@@ -109,7 +109,7 @@ namespace Simple.Web.Hosting
         /// </value>
         public bool IsAsync
         {
-            get { return HttpVerbAttribute.GetMethod(_handlerType).ReturnType == typeof (Task<Status>); }
+            get { return HttpMethodAttribute.GetMethod(_handlerType).ReturnType == typeof (Task<Status>); }
         }
 
         private Type GetInterfaceGenericType(Type genericType)

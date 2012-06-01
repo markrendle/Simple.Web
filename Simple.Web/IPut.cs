@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a PUT operation.
     /// </summary>
-    [HttpVerb("PUT")]
+    [HttpMethod("PUT")]
     public interface IPut
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a PUT operation.
     /// </summary>
-    [HttpVerb("PUT")]
+    [HttpMethod("PUT")]
     public interface IPutAsync
     {
         /// <summary>

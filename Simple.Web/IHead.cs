@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a HEAD operation.
     /// </summary>
-    [HttpVerb("HEAD")]
+    [HttpMethod("HEAD")]
     public interface IHead
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a HEAD operation.
     /// </summary>
-    [HttpVerb("HEAD")]
+    [HttpMethod("HEAD")]
     public interface IHeadAsync
     {
         /// <summary>

@@ -56,7 +56,7 @@
     <Compile Include="CookieWrapper.cs" />
     <Compile Include="SimpleHttpHandler.cs" />
     <Compile Include="SimpleHttpHandlerFactory.cs" />
-    <Compile Include="VerbHandlerFactory.cs" />
+    <Compile Include="HttpMethodHandlerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

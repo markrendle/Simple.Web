@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a GET operation.
     /// </summary>
-    [HttpVerb("GET")]
+    [HttpMethod("GET")]
     public interface IGet
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a GET operation.
     /// </summary>
-    [HttpVerb("GET")]
+    [HttpMethod("GET")]
     public interface IGetAsync
     {
         /// <summary>

@@ -6,7 +6,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents a synchronous handler for a DELETE operation.
     /// </summary>
-    [HttpVerb("DELETE")]
+    [HttpMethod("DELETE")]
     public interface IDelete
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Simple.Web
     /// <summary>
     /// Represents an asynchronous handler for a DELETE operation.
     /// </summary>
-    [HttpVerb("DELETE")]
+    [HttpMethod("DELETE")]
     public interface IDeleteAsync
     {
         /// <summary>
