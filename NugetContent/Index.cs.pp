@@ -1,3 +1,5 @@
+using Simple.Web.Behaviors;
+
 namespace $rootnamespace$
 {
     using Simple.Web;
