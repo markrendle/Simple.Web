@@ -40,7 +40,7 @@ namespace Simple.Web.CodeGeneration
 
             if (cookieProperty.PropertyType == typeof (string))
             {
-                assignment = Expression.Assign(property, getCookieValue);
+                assignment = Expression.IfThen(Expression.NotEqual(getCookieValue, Expression.Constant(null, typeof(string))), Expression.Assign(property, getCookieValue));
             }
             else
             {
@@ -58,26 +58,24 @@ namespace Simple.Web.CodeGeneration
             var ctor = cookieProperty.PropertyType.GetConstructor(new Type[0]);
             if (ctor == null) return null;
             var instance = Expression.Variable(cookieProperty.PropertyType);
-            var construct = Expression.Assign(property, Expression.New(ctor));
+            var construct = Expression.Assign(instance, Expression.New(ctor));
             var setterBlock = PropertySetterBuilder.MakePropertySetterBlock(cookieProperty.PropertyType, getCookieValues, instance, construct);
-            return Expression.Assign(property, setterBlock);
+            return Expression.IfThen(Expression.NotEqual(getCookieValues, Expression.Constant(null, typeof(IDictionary<string,string>))),  Expression.Assign(property, setterBlock));
         }
 
         private static Expression CreateParseAssignment(PropertyInfo cookieProperty, MemberExpression property,
                                                         MethodCallExpression getCookieValue, MethodInfo parseMethod)
         {
-            Expression assignment;
             Expression callExpression = Expression.Call(parseMethod, getCookieValue);
             if (parseMethod.ReturnType != cookieProperty.PropertyType)
             {
                 callExpression = Expression.Convert(callExpression, cookieProperty.PropertyType);
             }
-            assignment =
-                Expression.TryCatch(
-                    Expression.Assign(property, callExpression),
-                    Expression.Catch(typeof (Exception),
-                                     Expression.Default(cookieProperty.PropertyType)));
-            return assignment;
+            return Expression.TryCatch(
+                Expression.IfThenElse(Expression.NotEqual(getCookieValue, Expression.Constant(null, typeof (string))),
+                                      Expression.Assign(property, callExpression),
+                                      Expression.Default(cookieProperty.PropertyType)),
+                Expression.Catch(typeof (Exception), Expression.Empty()));
         }
 
         private static MethodInfo GetParseMethod(PropertyInfo cookieProperty)
@@ -94,6 +92,7 @@ namespace Simple.Web.CodeGeneration
 
         private static string GetCookieValue(IContext context, string name)
         {
+            if (context.Request.Cookies == null) return null;
             if (!context.Request.Cookies.ContainsKey(name)) return null;
             return context.Request.Cookies[name].Value;
         }
@@ -102,14 +101,6 @@ namespace Simple.Web.CodeGeneration
         {
             if (!context.Request.Cookies.ContainsKey(name)) return null;
             return context.Request.Cookies[name].Values;
-        }
-    }
-
-    internal static class TypeEx
-    {
-        internal static bool IsNullable(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
         }
     }
 }

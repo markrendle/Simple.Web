@@ -84,9 +84,20 @@ namespace Simple.Web.CodeGeneration
             return new AsyncRunner(start, end);
         }
 
+        private void CreateSetupBlocks()
+        {
+            _blocks.AddRange(CookiePropertySetter.GetCookiePropertySetters(_type, _handler, _context));
+
+            foreach (var behaviorInfo in RequestBehaviorInfo.GetInPriorityOrder())
+            {
+                AddBehaviorBlock(behaviorInfo);
+            }
+        }
+
         private void CreateResponseBlocks()
         {
             CreateWriteStatusBlock();
+            _blocks.AddRange(PropertyCookieSetter.GetPropertyCookieSetters(_type, _handler, _context));
 
             foreach (var behaviorInfo in ResponseBehaviorInfo.GetInPriorityOrder())
             {
@@ -104,16 +115,6 @@ namespace Simple.Web.CodeGeneration
 
             // If we didn't trigger an Output, try writing a View.
             _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
-        }
-
-        private void CreateSetupBlocks()
-        {
-            _blocks.AddRange(CookiePropertySetter.GetCookiePropertySetters(_type, _handler, _context));
-
-            foreach (var behaviorInfo in RequestBehaviorInfo.GetInPriorityOrder())
-            {
-                AddBehaviorBlock(behaviorInfo);
-            }
         }
 
         private bool AddBehaviorBlock(BehaviorInfo behaviorInfo)

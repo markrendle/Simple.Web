@@ -8,6 +8,7 @@ namespace Simple.Web.Mocks
 
     public class MockResponse : IResponse
     {
+        public readonly Dictionary<string,object> Cookies = new Dictionary<string, object>(); 
         public int StatusCode { get; set; }
 
         public string StatusDescription { get; set; }
@@ -24,15 +25,17 @@ namespace Simple.Web.Mocks
 
         public void SetCookie(string name, string value, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
         {
+            Cookies[name] = value;
         }
 
         public void SetCookie(string name, IDictionary<string, string> values, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
         {
+            Cookies[name] = values;
         }
 
-        public ICookieCollection Cookies
+        public void RemoveCookie(string name)
         {
-            get { throw new NotImplementedException(); }
+            
         }
 
         public void Close()

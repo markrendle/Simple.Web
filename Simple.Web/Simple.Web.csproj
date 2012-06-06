@@ -62,6 +62,7 @@
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
+    <Compile Include="CodeGeneration\TypeEx.cs" />
     <Compile Include="Helpers\IFileUtility.cs" />
     <Compile Include="Helpers\NameValueCollectionEx.cs" />
     <Compile Include="Http\CacheOptions.cs" />

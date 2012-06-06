@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Simple.Web.AspNet
 {
     using System.Web;
@@ -10,6 +12,7 @@ namespace Simple.Web.AspNet
         private readonly RequestWrapper _request;
         private readonly ResponseWrapper _response;
         private readonly IUser _user;
+        private readonly IDictionary<string, object> _variables = new Dictionary<string,object>();
 
         public ContextWrapper(HttpContext context)
         {
@@ -32,6 +35,11 @@ namespace Simple.Web.AspNet
         public IResponse Response
         {
             get { return _response; }
+        }
+
+        public IDictionary<string, object> Variables
+        {
+            get { return _variables; }
         }
     }
 }

@@ -68,6 +68,12 @@ namespace Simple.Web.Http
         void SetCookie(string name, IDictionary<string,string> values, DateTime? expires = null, bool httpOnly = false, bool secure = false, string domain = null, string path = null);
 
         /// <summary>
+        /// Removes the named cookie.
+        /// </summary>
+        /// <param name="name">The name of the cookie to remove.</param>
+        void RemoveCookie(string name);
+
+        /// <summary>
         /// Transmits a file to the client using whatever optimizations are available.
         /// </summary>
         /// <param name="file">The file path.</param>

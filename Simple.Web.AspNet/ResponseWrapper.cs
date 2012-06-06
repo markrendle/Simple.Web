@@ -168,6 +168,11 @@ namespace Simple.Web.AspNet
             _httpResponse.Cookies.Set(cookie);
         }
 
+        public void RemoveCookie(string name)
+        {
+            _httpResponse.Cookies.Remove(name);
+        }
+
         private static HttpCookie MakeHttpCookie(string name, DateTime? expires, bool httpOnly, bool secure,
                                                  string domain, string path)
         {

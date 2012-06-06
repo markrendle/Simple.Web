@@ -53,7 +53,7 @@
     <HierarchicalNamespaces>false</HierarchicalNamespaces>
     <ChildNestedTypes>false</ChildNestedTypes>
     <DisplayNamespaceLabels>false</DisplayNamespaceLabels>
-    <Style>MSDN Lightweight</Style>
+    <Style>Developer Center</Style>
     <OpenExternalLinksInNewPage>true</OpenExternalLinksInNewPage>
     <UseGuidFilenames>false</UseGuidFilenames>
     <FooterHtml></FooterHtml>

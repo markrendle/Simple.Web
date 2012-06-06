@@ -113,6 +113,31 @@ namespace Simple.Web.Tests
             Assert.Equal("Pass", target.Test.Name);
             Assert.Equal(42, target.Test.Age);
         }
+
+        [Fact]
+        public void SetsCookieFromSingleValueProperty()
+        {
+            var request = new MockRequest();
+            var response = new MockResponse();
+            var context = new MockContext {Request = request, Response = response};
+            var handler = new SingleStringCookieHandler {Test = "Pass"};
+            Run(handler, context);
+            Assert.True(response.Cookies.ContainsKey("Test"));
+            Assert.Equal("Pass", response.Cookies["Test"]);
+        }
+
+        private static void Run<T>(T handler, IContext context)
+        {
+            var runner = new HandlerRunnerBuilder(typeof(T), "GET").BuildRunner();
+            try
+            {
+                runner(handler, context);
+            }
+            catch (ArgumentNullException)
+            {
+                // Content-type handling is going to throw an exception here.
+            }
+        }
     }
 
     class SingleStringCookieHandler : IGet

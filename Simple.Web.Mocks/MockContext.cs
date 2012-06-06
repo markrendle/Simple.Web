@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Simple.Web.Mocks
 {
     using System.IO;
@@ -6,6 +8,8 @@ namespace Simple.Web.Mocks
 
     public class MockContext : IContext
     {
+        private readonly IDictionary<string, object> _variables = new Dictionary<string, object>();
+
         public MockContext()
         {
             Request = new MockRequest();
@@ -17,6 +21,10 @@ namespace Simple.Web.Mocks
         public IRequest Request { get; set; }
 
         public IResponse Response { get; set; }
+        public IDictionary<string, object> Variables
+        {
+            get { return _variables; }
+        }
 
         public IUser User { get; set; }
     }
