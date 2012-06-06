@@ -99,6 +99,7 @@ namespace Simple.Web.CodeGeneration
 
         private static IDictionary<string,string> GetCookieValues(IContext context, string name)
         {
+            if (context.Request.Cookies == null) return null;
             if (!context.Request.Cookies.ContainsKey(name)) return null;
             return context.Request.Cookies[name].Values;
         }

@@ -13,6 +13,8 @@ namespace Simple.Web.CodeGeneration
     {
         private static readonly MethodInfo SetCookieValueMethod =
             typeof (PropertyCookieSetter).GetMethod("SetCookieValue", BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly MethodInfo SetCookieValuesMethod =
+            typeof (PropertyCookieSetter).GetMethod("SetCookieValues", BindingFlags.NonPublic | BindingFlags.Static);
 
         private static readonly MethodInfo ToStringMethod = typeof (object).GetMethod("ToString");
 
@@ -22,14 +24,22 @@ namespace Simple.Web.CodeGeneration
             {
                 var attribute = (CookieAttribute)Attribute.GetCustomAttribute(cookieProperty, typeof(CookieAttribute));
                 var name = Expression.Constant(attribute.Name ?? cookieProperty.Name, typeof(string));
-                var str = Expression.Variable(typeof (string));
 
-                var trace = Expression.Call(typeof (Trace).GetMethod("WriteLine", new[] { typeof(object)}), Expression.Convert(handler, typeof(object)));
-                var call = Expression.Call(SetCookieValueMethod, context, name,
-                                           Expression.Convert(Expression.Property(handler, cookieProperty), typeof (object)));
-
-                yield return Expression.Block(new ParameterExpression[] {str},
-                                              new Expression[] { trace, call });
+                if (cookieProperty.PropertyType.IsPrimitive || cookieProperty.PropertyType == typeof(string) || cookieProperty.PropertyType == typeof(Guid) || cookieProperty.PropertyType.IsNullable())
+                {
+                    var call = Expression.Call(SetCookieValueMethod, context, name,
+                                               Expression.Convert(Expression.Property(handler, cookieProperty),
+                                                                  typeof (object)));
+                    yield return call;
+                }
+                else
+                {
+                    
+                    var call = Expression.Call(SetCookieValuesMethod, context, name,
+                                               Expression.Convert(Expression.Property(handler, cookieProperty),
+                                                                  typeof (object)));
+                    yield return call;
+                }
             }
         }       
 
@@ -42,6 +52,18 @@ namespace Simple.Web.CodeGeneration
             else
             {
                 context.Response.SetCookie(name, value.ToString());
+            }
+        }
+
+        private static void SetCookieValues(IContext context, string name, object value)
+        {
+            if (value == null)
+            {
+                context.Response.RemoveCookie(name);
+            }
+            else
+            {
+                context.Response.SetCookie(name, value.ObjectToDictionary());
             }
         }
     }

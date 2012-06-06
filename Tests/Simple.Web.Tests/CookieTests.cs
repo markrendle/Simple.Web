@@ -125,6 +125,20 @@ namespace Simple.Web.Tests
             Assert.True(response.Cookies.ContainsKey("Test"));
             Assert.Equal("Pass", response.Cookies["Test"]);
         }
+        
+        [Fact]
+        public void SetsCookieFromComplexProperty()
+        {
+            var request = new MockRequest();
+            var response = new MockResponse();
+            var context = new MockContext {Request = request, Response = response};
+            var handler = new ComplexCookieHandler() { Test = new ComplexCookie { Name = "Pass", Age = 42 } };
+            Run(handler, context);
+            Assert.True(response.Cookies.ContainsKey("Test"));
+            var dict = response.Cookies["Test"] as IDictionary<string, string>;
+            Assert.NotNull(dict);
+            Assert.Equal("Pass", dict["Name"]);
+        }
 
         private static void Run<T>(T handler, IContext context)
         {
