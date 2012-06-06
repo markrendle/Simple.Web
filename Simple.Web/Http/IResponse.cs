@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Simple.Web.Http
 {
     using System;
@@ -40,10 +42,31 @@ namespace Simple.Web.Http
         /// <param name="headerName">Name of the header.</param>
         /// <param name="value">The value.</param>
         void SetHeader(string headerName, string value);
+
         /// <summary>
-        /// Gets the cookies.
+        /// Sets a cookie.
         /// </summary>
-        ICookieCollection Cookies { get; }
+        /// <param name="name">The name of the cookie.</param>
+        /// <param name="value">The value of the cookie.</param>
+        /// <param name="expires">The time at which the cookie expires.</param>
+        /// <param name="httpOnly">Set to <c>true</c> to prevent cookie being read by client-side script.</param>
+        /// <param name="secure">Set to <c>true</c> to transmit cookie using SSL.</param>
+        /// <param name="domain">The domain with which to associate the cookie.</param>
+        /// <param name="path">The virtual path with which to associate the cookie.</param>
+        void SetCookie(string name, string value, DateTime? expires = null, bool httpOnly = false, bool secure = false, string domain = null, string path = null);
+
+        /// <summary>
+        /// Sets a multi-value cookie.
+        /// </summary>
+        /// <param name="name">The name of the cookie.</param>
+        /// <param name="values">The key/value pairs contained in the cookie.</param>
+        /// <param name="expires">The time at which the cookie expires.</param>
+        /// <param name="httpOnly">Set to <c>true</c> to prevent cookie being read by client-side script.</param>
+        /// <param name="secure">Set to <c>true</c> to transmit cookie using SSL.</param>
+        /// <param name="domain">The domain with which to associate the cookie.</param>
+        /// <param name="path">The virtual path with which to associate the cookie.</param>
+        void SetCookie(string name, IDictionary<string,string> values, DateTime? expires = null, bool httpOnly = false, bool secure = false, string domain = null, string path = null);
+
         /// <summary>
         /// Transmits a file to the client using whatever optimizations are available.
         /// </summary>

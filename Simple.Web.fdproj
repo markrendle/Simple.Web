@@ -9,7 +9,20 @@
   <ReferencedAssemblies />
   <ReferencedDocFiles />
   <ReferenceDirectories />
-  <NamespaceSummaries />
+  <NamespaceSummaries>
+    <Namespace name="Simple.Web">Contains the major classes and interfaces required to implement an application.</Namespace>
+    <Namespace name="Simple.Web.Authentication">Contains interfaces and classes required for building secure applications.</Namespace>
+    <Namespace name="Simple.Web.Behaviors">Contains interfaces for specifying requirements and actions for a Handler.</Namespace>
+    <Namespace name="Simple.Web.Behaviors.Implementations">Contains the static classes which implement the back-end code for the Behaviors.</Namespace>
+    <Namespace name="Simple.Web.CodeGeneration">Contains classes for generating methods at runtime to handle request lifeycles.</Namespace>
+    <Namespace name="Simple.Web.ContentTypeHandling">Contains classes and interfaces relating to content-type negotiation, serialization and deserialization of type, and rendering of responses.</Namespace>
+    <Namespace name="Simple.Web.DependencyInjection">Contains interfaces relating to IoC containers.</Namespace>
+    <Namespace name="Simple.Web.Helpers">Contains helper classes useful to the framework and to application developers.</Namespace>
+    <Namespace name="Simple.Web.Hosting">Contains classes and interfaces related to hosting Simple.Web applications on different servers.</Namespace>
+    <Namespace name="Simple.Web.Http">Contains interfaces and classes for handling HTTP requests and responses.</Namespace>
+    <Namespace name="Simple.Web.Links">Contains interfaces, classes and attributes for building link-heavy RESTful systems.</Namespace>
+    <Namespace name="Simple.Web.Routing">Contains classes relating to request routing.</Namespace>
+  </NamespaceSummaries>
   <Settings>
     <OutputDirectory>D:\Code\Simple.Web\docs</OutputDirectory>
     <OverwritePreviousFiles>true</OverwritePreviousFiles>

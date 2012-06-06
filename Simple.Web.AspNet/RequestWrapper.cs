@@ -11,7 +11,7 @@ namespace Simple.Web.AspNet
     internal class RequestWrapper : IRequest
     {
         private readonly HttpRequest _httpRequest;
-        private ICookieCollection _cookies;
+        private IDictionary<string, ICookie> _cookies;
 
         public RequestWrapper(HttpRequest httpRequest)
         {
@@ -67,9 +67,9 @@ namespace Simple.Web.AspNet
             }
         }
 
-        public ICookieCollection Cookies
+        public IDictionary<string, ICookie> Cookies
         {
-            get { return _cookies ?? (_cookies = new CookieWrapperCollection(_httpRequest.Cookies)); }
+            get { return _cookies ?? (_cookies = CookieWrapper.Wrap(_httpRequest.Cookies).ToDictionary(c => c.Name)); }
         }
     }
 }

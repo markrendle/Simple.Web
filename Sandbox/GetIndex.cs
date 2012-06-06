@@ -10,17 +10,22 @@ namespace Sandbox
     using Simple.Web.Behaviors;
 
     [UriTemplate("/")]
-    public class GetIndex : IGet, IOutput<RawHtml>
+    public class GetIndex : IGetAsync, IOutput<RawHtml>
     {
-        public Status Get()
+        public Task<Status> Get()
         {
-            return Status.OK;
-            //return Task.Factory.StartNew(() => Status.OK);
+            return DoLongRunningThing()
+                .ContinueWith(t => Status.OK);
         }
 
         public RawHtml Output
         {
             get { return "<h2>Simple.Web is making your life easier.</h2>"; }
+        }
+
+        private Task DoLongRunningThing()
+        {
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

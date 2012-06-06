@@ -1,3 +1,5 @@
+using Simple.Web.Behaviors;
+
 namespace Simple.Web.CodeGeneration
 {
     using System;
@@ -12,13 +14,13 @@ namespace Simple.Web.CodeGeneration
         private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string>).GetProperty("Item");
 
         private readonly ParameterExpression _param;
-        private readonly ParameterExpression _obj;
+        private readonly Expression _obj;
         private readonly PropertyInfo _property;
         private MemberExpression _nameProperty;
         private IndexExpression _itemProperty;
         private MethodCallExpression _containsKey;
 
-        public PropertySetterBuilder(ParameterExpression param, ParameterExpression obj, PropertyInfo property)
+        public PropertySetterBuilder(ParameterExpression param, Expression obj, PropertyInfo property)
         {
             _param = param;
             _obj = obj;
@@ -77,7 +79,7 @@ namespace Simple.Web.CodeGeneration
                 callConvert = Expression.Call(changeTypeMethod, _itemProperty,
                                               Expression.Constant(_property.PropertyType.GetEnumUnderlyingType()));
             }
-            else if (_property.PropertyType.IsGenericType && _property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            else if (_property.PropertyType.IsNullable())
             {
                 callConvert = Expression.Call(changeTypeMethod, _itemProperty,
                                               Expression.Constant(_property.PropertyType.GetGenericArguments().Single()));
@@ -107,6 +109,44 @@ namespace Simple.Web.CodeGeneration
         private static object SafeConvert(object source, Type targetType)
         {
             return ReferenceEquals(source, null) ? null : Convert.ChangeType(source, targetType);
+        }
+
+        public static BlockExpression MakePropertySetterBlock(Type type, ParameterExpression variables,
+                                                               ParameterExpression instance, BinaryExpression construct)
+        {
+            var lines = new List<Expression> { construct };
+
+            var setters = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanWrite && Attribute.GetCustomAttribute(p, typeof(CookieAttribute)) == null)
+                .Where(PropertyIsPrimitive)
+                .Select(p => new PropertySetterBuilder(variables, instance, p))
+                .Select(ps => ps.CreatePropertySetter());
+
+            lines.AddRange(setters);
+            lines.Add(instance);
+
+            var block = Expression.Block(type, new[] { instance }, lines);
+            return block;
+        }
+        
+        public static BlockExpression MakePropertySetterBlock(Type type, MethodCallExpression getVariables,
+                                                               ParameterExpression instance, BinaryExpression construct)
+        {
+            var variables = Expression.Variable(typeof (IDictionary<string, string>));
+            var lines = new List<Expression> { construct };
+            lines.Add(Expression.Assign(variables, getVariables));
+
+            var setters = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanWrite && Attribute.GetCustomAttribute(p, typeof(CookieAttribute)) == null)
+                .Where(PropertyIsPrimitive)
+                .Select(p => new PropertySetterBuilder(variables, instance, p))
+                .Select(ps => ps.CreatePropertySetter());
+
+            lines.AddRange(setters);
+            lines.Add(instance);
+
+            var block = Expression.Block(type, new[] { variables, instance }.AsEnumerable(), lines.AsEnumerable());
+            return block;
         }
     }
 }

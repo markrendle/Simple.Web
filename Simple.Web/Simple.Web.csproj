@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Authentication\AnonymousUser.cs" />
     <Compile Include="Behaviors\BehaviorAttribute.cs" />
+    <Compile Include="Behaviors\CookieAttribute.cs" />
     <Compile Include="Behaviors\IETag.cs" />
     <Compile Include="Behaviors\Implementations\SetContext.cs" />
     <Compile Include="Behaviors\Implementations\SetResponseCookies.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Behaviors\ResponseBehaviorAttribute.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
+    <Compile Include="CodeGeneration\CookiePropertySetter.cs" />
     <Compile Include="CodeGeneration\OutputBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />

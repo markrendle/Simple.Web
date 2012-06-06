@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.CodeGeneration
+﻿using Simple.Web.Behaviors;
+
+namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Collections.Generic;
@@ -106,6 +108,8 @@
 
         private void CreateSetupBlocks()
         {
+            _blocks.AddRange(CookiePropertySetter.GetCookiePropertySetters(_type, _handler, _context));
+
             foreach (var behaviorInfo in RequestBehaviorInfo.GetInPriorityOrder())
             {
                 AddBehaviorBlock(behaviorInfo);

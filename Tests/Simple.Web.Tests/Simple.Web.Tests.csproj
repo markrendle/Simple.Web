@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CookieTests.cs" />
     <Compile Include="ExpressionHelperTests.cs" />
     <Compile Include="HandlerBuilderFactoryTests.cs" />
     <Compile Include="HandlerInfoTests.cs" />

@@ -49,6 +49,6 @@ namespace Simple.Web.Http
         /// <summary>
         /// Gets the cookies.
         /// </summary>
-        ICookieCollection Cookies { get; }
+        IDictionary<string, ICookie> Cookies { get; }
     }
 }

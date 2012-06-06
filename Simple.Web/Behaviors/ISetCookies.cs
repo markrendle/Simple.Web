@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.Behaviors
+﻿using System.Collections.Generic;
+
+namespace Simple.Web.Behaviors
 {
     using Http;
 
@@ -14,6 +16,6 @@
         /// <value>
         /// The response cookies.
         /// </value>
-        ICookieCollection ResponseCookies { set; }
+        IDictionary<string, ICookie> ResponseCookies { set; }
     }
 }

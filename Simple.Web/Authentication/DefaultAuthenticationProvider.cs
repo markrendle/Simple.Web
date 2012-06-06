@@ -35,7 +35,7 @@ namespace Simple.Web.Authentication
         /// <param name="user">The user.</param>
         public void SetLoggedInUser(IContext context, IUser user)
         {
-            context.Response.Cookies[UserCookieName].Value = user.Guid.ToString("N");
+            context.Response.SetCookie(UserCookieName, user.Guid.ToString("N"));
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Simple.Web.ContentTypeHandling
 
         public IContentTypeHandler GetContentTypeHandler(IList<string> contentTypes, out string matchedType)
         {
+            if (contentTypes == null) throw new ArgumentNullException("contentTypes");
             EnsureTableIsPopulated();
 
             for (int i = 0; i < contentTypes.Count; i++)

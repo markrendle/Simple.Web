@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Simple.Web.Http
 {
     using System;
@@ -42,6 +44,15 @@ namespace Simple.Web.Http
         /// The value.
         /// </value>
         string Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the values.
+        /// </summary>
+        /// <value>
+        /// The values.
+        /// </value>
+        IDictionary<string, string> Values { get; set; }
+
         /// <summary>
         /// Gets or sets the <see cref="System.String"/> with the specified key in a multi-value cookie.
         /// </summary>

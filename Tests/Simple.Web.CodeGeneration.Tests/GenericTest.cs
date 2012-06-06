@@ -11,8 +11,7 @@
         public void CallsFooImplementation()
         {
             var target = new HandlerRunnerBuilder(typeof(StringFoo), "GET").BuildRunner();
-            var context = new Mocks.MockContext();
-            context.Request = new MockRequest { AcceptTypes = new[] { "text/html" } };
+            var context = new Mocks.MockContext {Request = new MockRequest {AcceptTypes = new[] {"text/html"}}};
             var foo = new StringFoo();
             target(foo, context);
             Assert.True(foo.Called);

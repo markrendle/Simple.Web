@@ -22,6 +22,14 @@ namespace Simple.Web.Mocks
         {
         }
 
+        public void SetCookie(string name, string value, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
+        {
+        }
+
+        public void SetCookie(string name, IDictionary<string, string> values, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
+        {
+        }
+
         public ICookieCollection Cookies
         {
             get { throw new NotImplementedException(); }

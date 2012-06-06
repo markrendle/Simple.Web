@@ -1,4 +1,7 @@
-﻿namespace Simple.Web.AspNet
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Simple.Web.AspNet
 {
     using System;
     using System.Web;
@@ -37,6 +40,23 @@
             set { _cookie.Value = value; }
         }
 
+        public IDictionary<string, string> Values
+        {
+            get
+            {
+                return
+                    _cookie.Values.AllKeys.Select(s => new KeyValuePair<string, string>(s, _cookie.Values[s])).
+                        ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            }
+            set
+            {
+                foreach (var kvp in value)
+                {
+                    _cookie.Values[kvp.Key] = kvp.Value;
+                }
+            }
+        }
+
         public string this[string key]
         {
             get { return _cookie[key]; }
@@ -59,6 +79,16 @@
         public CookieWrapper(HttpCookie cookie)
         {
             _cookie = cookie;
+        }
+
+        public static ICookie Wrap(HttpCookie cookie)
+        {
+            return new CookieWrapper(cookie);
+        }
+
+        public static IEnumerable<ICookie> Wrap(HttpCookieCollection collection)
+        {
+            return collection.Cast<HttpCookie>().Select(CookieWrapper.Wrap);
         }
     }
 }

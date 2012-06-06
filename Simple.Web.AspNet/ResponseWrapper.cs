@@ -151,6 +151,34 @@ namespace Simple.Web.AspNet
             _httpResponse.Headers.Set(headerName, value);
         }
 
+        public void SetCookie(string name, string value, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
+        {
+            var cookie = MakeHttpCookie(name, expires, httpOnly, secure, domain, path);
+            cookie.Value = value;
+            _httpResponse.Cookies.Set(cookie);
+        }
+
+        public void SetCookie(string name, IDictionary<string, string> values, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
+        {
+            var cookie = MakeHttpCookie(name, expires, httpOnly, secure, domain, path);
+            foreach (var value in values)
+            {
+                cookie.Values.Add(value.Key, value.Value);
+            }
+            _httpResponse.Cookies.Set(cookie);
+        }
+
+        private static HttpCookie MakeHttpCookie(string name, DateTime? expires, bool httpOnly, bool secure,
+                                                 string domain, string path)
+        {
+            var cookie = new HttpCookie(name) {HttpOnly = httpOnly, Secure = secure, Domain = domain, Path = path};
+            if (expires.HasValue)
+            {
+                cookie.Expires = expires.Value;
+            }
+            return cookie;
+        }
+
         public ICookieCollection Cookies
         {
             get { return _cookies ?? (_cookies = new CookieWrapperCollection(_httpResponse.Cookies)); }
