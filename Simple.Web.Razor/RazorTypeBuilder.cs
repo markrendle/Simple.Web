@@ -8,7 +8,9 @@
     using System.Linq;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Web.Razor;
+    using Engine;
     using Microsoft.CSharp;
 
     internal class RazorTypeBuilder
@@ -23,17 +25,12 @@
 
         public Type CreateType(TextReader reader)
         {
-            var handlerType = ExtractType(ref reader, "@handler");
-            var modelType = ExtractType(ref reader, "@model");
-
-            return CreateTypeImpl(reader, handlerType, modelType);
+            return CreateTypeImpl(reader);
         }
 
-        private static Type CreateTypeImpl(TextReader reader, Type handlerType, Type modelType)
+        private static Type CreateTypeImpl(TextReader reader)
         {
-            var baseType = DecideBaseType(handlerType, modelType);
-
-            var engine = CreateRazorTemplateEngine(baseType);
+            var engine = CreateRazorTemplateEngine();
 
             var razorResult = engine.GenerateCode(reader);
 
@@ -47,32 +44,14 @@
             return assembly.GetExportedTypes().FirstOrDefault();
         }
 
-        private static Type DecideBaseType(Type handlerType, Type modelType)
-        {
-            if (handlerType == null)
-            {
-                if (modelType == null)
-                {
-                    return typeof (SimpleTemplateBase);
-                }
-                return typeof (SimpleTemplateModelBase<>).MakeGenericType(modelType);
-            }
-            if (modelType == null)
-            {
-                return typeof (SimpleTemplateHandlerBase<>).MakeGenericType(handlerType);
-            }
-
-            return typeof (SimpleTemplateHandlerModelBase<,>).MakeGenericType(handlerType, modelType);
-        }
-
-        private static RazorTemplateEngine CreateRazorTemplateEngine(Type baseType)
+        private static RazorTemplateEngine CreateRazorTemplateEngine()
         {
             var language = new CSharpRazorCodeLanguage();
-            var host = new RazorEngineHost(language)
+            var host = new SimpleRazorEngineHost(language)
                            {
-                               DefaultBaseClass = baseType.FullName,
-                               DefaultClassName = "SimpleTemplate",
-                               DefaultNamespace = "Simple.Web.Razor",
+                               DefaultBaseClass = "SimpleTemplateBase",
+                               DefaultClassName = "SimpleView",
+                               DefaultNamespace = "SimpleRazor",
                            };
             foreach (string nameSpace in DefaultNamespaceImports)
             {
@@ -125,12 +104,12 @@
             assemblies.AddRange(TypeResolver.KnownGoodAssemblies.Select(knownGoodAssembly => knownGoodAssembly.GetPath()));
 
             assemblies.AddRange(
-                Assembly.GetCallingAssembly().GetReferencedAssemblies().Where(an => an.EscapedCodeBase != null).Select(
+                AppDomain.CurrentDomain.GetAssemblies().Where(an => (!an.GlobalAssemblyCache) && (!an.IsDynamic) && an.EscapedCodeBase != null).Select(
                     an => an.GetPath()));
             return assemblies.Distinct();
         }
 
-        private static Type ExtractType(ref TextReader reader, string directive)
+        internal static Type ExtractType(ref TextReader reader, string directive)
         {
             Type modelType = null;
             using (var writer = new StringWriter())
@@ -162,9 +141,62 @@
 
         internal Type CreateType(TextReader reader, Type handlerType, Type modelType)
         {
-            ExtractType(ref reader, "@model");
-            ExtractType(ref reader, "@handler");
-            return CreateTypeImpl(reader, handlerType, modelType);
+            TypeHelper.ExtractType(ref reader, "@model");
+            TypeHelper.ExtractType(ref reader, "@handler");
+            return CreateTypeImpl(reader);
+        }
+    }
+
+    static class TypeHelper
+    {
+        private static readonly TypeResolver TypeResolver = new TypeResolver();
+        internal static Type ExtractType(ref TextReader reader, string directive)
+        {
+            Type modelType = null;
+            using (var writer = new StringWriter())
+            {
+                while (reader.Peek() > -1)
+                {
+                    var line = reader.ReadLine();
+                    if (line != null && line.Trim().StartsWith(directive))
+                    {
+                        modelType = FindTypeFromRazorLine(line, directive);
+                    }
+                    else
+                    {
+                        writer.WriteLine(line);
+                    }
+                }
+
+                using (Interlocked.CompareExchange(ref reader, new StringReader(writer.ToString()), reader))
+                {
+                }
+            }
+            return modelType;
+        }
+
+        internal static Type DecideBaseType(Type handlerType, Type modelType)
+        {
+            if (handlerType == null)
+            {
+                if (modelType == null)
+                {
+                    return typeof(SimpleTemplateBase);
+                }
+                return typeof(SimpleTemplateModelBase<>).MakeGenericType(modelType);
+            }
+            if (modelType == null)
+            {
+                return typeof(SimpleTemplateHandlerBase<>).MakeGenericType(handlerType);
+            }
+
+            return typeof(SimpleTemplateHandlerModelBase<,>).MakeGenericType(handlerType, modelType);
+        }
+
+        private static Type FindTypeFromRazorLine(string line, string directive)
+        {
+            string typeName = line.Replace(directive, "").Trim();
+            return TypeResolver.FindType(typeName);
         }
     }
 

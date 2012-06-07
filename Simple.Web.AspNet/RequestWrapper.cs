@@ -69,7 +69,7 @@ namespace Simple.Web.AspNet
 
         public IDictionary<string, ICookie> Cookies
         {
-            get { return _cookies ?? (_cookies = CookieWrapper.Wrap(_httpRequest.Cookies).ToDictionary(c => c.Name)); }
+            get { return _cookies ?? (_cookies = CookieWrapper.Wrap(_httpRequest.Cookies).ToDictionary(c => c.Name, c => c)); }
         }
     }
 }

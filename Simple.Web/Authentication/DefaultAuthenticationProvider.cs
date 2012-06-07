@@ -20,10 +20,14 @@ namespace Simple.Web.Authentication
         public IUser GetLoggedInUser(IContext context)
         {
             Guid userGuid;
-            var cookie = context.Request.Cookies[UserCookieName];
-            if (cookie != null && (!string.IsNullOrWhiteSpace(cookie.Value)) && Guid.TryParse(cookie.Value, out userGuid))
+            ICookie cookie;
+            if (context.Request.Cookies.TryGetValue(UserCookieName, out cookie))
             {
-                return new User(userGuid, string.Empty);
+                if (cookie != null && (!string.IsNullOrWhiteSpace(cookie.Value)) &&
+                    Guid.TryParse(cookie.Value, out userGuid))
+                {
+                    return new User(userGuid, string.Empty);
+                }
             }
             return AnonymousUser.Instance;
         }

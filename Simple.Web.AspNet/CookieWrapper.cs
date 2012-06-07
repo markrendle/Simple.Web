@@ -88,7 +88,7 @@ namespace Simple.Web.AspNet
 
         public static IEnumerable<ICookie> Wrap(HttpCookieCollection collection)
         {
-            return collection.Cast<HttpCookie>().Select(CookieWrapper.Wrap);
+            return collection.Cast<string>().Select(n => Wrap(collection[n]));
         }
     }
 }

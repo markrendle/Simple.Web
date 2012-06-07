@@ -20,39 +20,6 @@ namespace Simple.Web.Razor.Tests
 <!DOCTYPE html><html><body>@Model.Text</body></html>";
 
         [Fact]
-        public void GetsATypeGivenAModel()
-        {
-            Type type;
-            using (var reader = new StringReader(ModelTemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader, null, typeof (TestModel));
-            }
-            Assert.NotNull(type);
-        }
-        
-        [Fact]
-        public void GetsATypeGivenADerivedModel()
-        {
-            Type type;
-            using (var reader = new StringReader(ModelTemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader, null, typeof (SuperTestModel));
-            }
-            Assert.NotNull(type);
-        }
-
-        [Fact]
-        public void GetsATypeGivenAHandler()
-        {
-            Type type;
-            using (var reader = new StringReader(HandlerTemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader, typeof (TestHandler), null);
-            }
-            Assert.NotNull(type);
-        }
-
-        [Fact]
         public void GetsModelTypeFromRazorMarkup()
         {
             Type type;

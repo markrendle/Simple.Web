@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +49,7 @@
     <Compile Include="RazorHtmlContentTypeHandlerTests.cs" />
     <Compile Include="RazorTypeBuilderTests.cs" />
     <Compile Include="RazorViewsTests.cs" />
+    <Compile Include="SimpleRazorBuildProviderTests.cs" />
     <Compile Include="TypeNameTranslatorTests.cs" />
   </ItemGroup>
   <ItemGroup>

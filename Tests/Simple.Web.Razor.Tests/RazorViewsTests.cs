@@ -52,13 +52,6 @@ namespace Simple.Web.Razor.Tests
         }
         
         [Fact]
-        public void FindsViewForHandlerAndModelType()
-        {
-            Assert.Equal(typeof (SimpleTemplateHandlerModelBase<TestHandler, TestModel>),
-                         new RazorViews().GetViewType(typeof (TestHandler), typeof(TestModel)).BaseType);
-        }
-        
-        [Fact]
         public void ThrowsViewNotFoundExceptionForInvalidModelType()
         {
             Assert.Throws<ViewNotFoundException>(() => new RazorViews().GetViewType(typeof(InvalidHandler), typeof(InvalidModel)));
