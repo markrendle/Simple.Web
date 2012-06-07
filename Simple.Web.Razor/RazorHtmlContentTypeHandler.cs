@@ -40,14 +40,6 @@
             instance.SetHandler(content.Handler);
             instance.SetModel(content.Model);
 
-            var viewData = new ExpandoObject() as IDictionary<string, object>;
-
-            foreach (var pair in content.Variables)
-            {
-                viewData.Add(pair);
-            }
-
-            instance.Var = viewData;
             instance.Writer = textWriter;
             instance.Execute();
         }

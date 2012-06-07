@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Web;
+using Simple.Web.Razor;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -35,3 +37,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("0.2.1.0")]
 [assembly: AssemblyFileVersion("0.2.1.0")]
 [assembly: InternalsVisibleTo("Simple.Web.Razor.Tests")]
+
+[assembly: PreApplicationStartMethod(typeof(PreApplicationStartCode), "Start")]

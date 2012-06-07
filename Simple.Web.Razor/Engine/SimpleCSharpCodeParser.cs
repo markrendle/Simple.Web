@@ -21,7 +21,7 @@ namespace Simple.Web.Razor.Engine
 
         private static SpanCodeGenerator CreateBaseTypeCodeGeneratorFromModel(string modelTypeName)
         {
-            return new SetBaseTypeCodeGenerator(string.Format("Simple.Web.Razor.SimpleTemplateModelBase<{0}>", modelTypeName));
+            return new SetModelTypeCodeGenerator(modelTypeName);
         }
 
         private void HandlerDirective()
@@ -34,7 +34,7 @@ namespace Simple.Web.Razor.Engine
 
         private static SpanCodeGenerator CreateBaseTypeCodeGeneratorFromHandler(string handlerTypeName)
         {
-            return new SetBaseTypeCodeGenerator(string.Format("Simple.Web.Razor.SimpleTemplateHandlerBase<{0}>", handlerTypeName));
+            return new SetHandlerTypeCodeGenerator(handlerTypeName);
         }
     }
 }

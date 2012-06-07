@@ -1,134 +1,144 @@
 ﻿namespace Simple.Web.Razor
 {
     using System;
+    using System.CodeDom;
+    using System.CodeDom.Compiler;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
+    using System.Linq;
+    using System.Security;
+    using System.Web;
     using System.Web.Compilation;
     using System.Web.Razor;
+    using System.Web.Razor.Generator;
     using System.Web.Razor.Parser.SyntaxTree;
+    using Engine;
 
-    [BuildProviderAppliesTo(BuildProviderAppliesTo.Web)]
+    [BuildProviderAppliesTo(BuildProviderAppliesTo.Web | BuildProviderAppliesTo.Code)]
     public class SimpleRazorBuildProvider : BuildProvider
     {
-        private CompilerType _compilerType;
+        internal static readonly string[] DefaultNamespaceImports = new[]
+                                                                       {
+                                                                           "System", "System.Text", "System.Linq",
+                                                                           "System.Collections.Generic", "Simple.Web", "Simple.Web.Razor"
+                                                                       };
+        private CodeCompileUnit _generatedCode = null;
+        private RazorEngineHost _host = null;
+        private IList _virtualPathDependencies;
 
-        public SimpleRazorBuildProvider()
+        internal RazorEngineHost Host
         {
-            using (var writer = new StreamWriter(@"C:\Temp\BPlog.txt", false))
+            get
             {
-                writer.WriteLine("Bastard");
+                if (_host == null)
+                {
+                    _host = CreateHost();
+                }
+                return _host;
             }
+            set { _host = value; }
+        }
+
+        // Returns the base dependencies and any dependencies added via AddVirtualPathDependencies
+        public override ICollection VirtualPathDependencies
+        {
+            get
+            {
+                if (_virtualPathDependencies != null)
+                {
+                    // Return a readonly wrapper so as to prevent users from modifying the collection directly.
+                    return ArrayList.ReadOnly(_virtualPathDependencies);
+                }
+                else
+                {
+                    return base.VirtualPathDependencies;
+                }
+            }
+        }
+
+        public new string VirtualPath
+        {
+            get { return base.VirtualPath; }
         }
 
         public override CompilerType CodeCompilerType
         {
             get
             {
-                Log("Get CodeCompilerType");
-                var type = _compilerType ?? (_compilerType = GetDefaultCompilerTypeForLanguage("C#"));
-                Log("Got CodeCompilerType");
-                return type;
+                EnsureGeneratedCode();
+                CompilerType compilerType = GetDefaultCompilerTypeForLanguage(Host.CodeLanguage.LanguageName);
+                return compilerType;
             }
+        }
+
+        public override Type GetGeneratedType(CompilerResults results)
+        {
+            return results.CompiledAssembly.GetType(String.Format(CultureInfo.CurrentCulture, "{0}.{1}", Host.DefaultNamespace, "Foot"));
+        }
+
+        internal CodeCompileUnit GeneratedCode
+        {
+            get
+            {
+                EnsureGeneratedCode();
+                return _generatedCode;
+            }
+            set { _generatedCode = value; }
         }
 
         public override void GenerateCode(AssemblyBuilder assemblyBuilder)
         {
-            Log("GenerateCode");
-            var reader = this.OpenReader();
-            var handlerType = TypeHelper.ExtractType(ref reader, "@handler");
-            var modelType = TypeHelper.ExtractType(ref reader, "@model");
-            var baseType = TypeHelper.DecideBaseType(handlerType, modelType);
+            assemblyBuilder.AddAssemblyReference(typeof(SimpleWeb).Assembly);
+            assemblyBuilder.AddAssemblyReference(typeof(SimpleTemplateBase).Assembly);
+            assemblyBuilder.AddCodeCompileUnit(this, GeneratedCode);
+            assemblyBuilder.GenerateTypeFactory(String.Format(CultureInfo.InvariantCulture, "{0}.{1}", Host.DefaultNamespace, "Foot"));
+        }
 
-            using (var writer = new StreamWriter(@"C:\Temp\BP.txt", true))
-            {
-                writer.WriteLine(handlerType);
-                writer.WriteLine(modelType);
-            }
+        protected internal virtual TextReader InternalOpenReader()
+        {
+            return OpenReader();
+        }
 
-            var host = new RazorEngineHost(new CSharpRazorCodeLanguage())
+        private RazorEngineHost CreateHost()
+        {
+            var host = new SimpleRazorEngineHost(new CSharpRazorCodeLanguage())
                 {
-                    DefaultBaseClass = baseType.FullName,
+                    DefaultBaseClass = "SimpleTemplateBase",
+                    DefaultClassName = "SimpleView",
                     DefaultNamespace = "SimpleRazor",
-                    DefaultClassName = "SimpleRazorView"
                 };
-
-            var engine = new RazorTemplateEngine(host);
-            var code = engine.GenerateCode(reader);
-
-            reader.Dispose();
-
-            if (!code.Success)
+            foreach (string nameSpace in DefaultNamespaceImports)
             {
-                throw new RazorParserException(code.ParserErrors);
+                host.NamespaceImports.Add(nameSpace);
             }
 
-            assemblyBuilder.AddCodeCompileUnit(this, code.GeneratedCode);
-            assemblyBuilder.GenerateTypeFactory("SimpleRazor.SimpleRazorView");
+            return host;
         }
 
-        public override Type GetGeneratedType(System.CodeDom.Compiler.CompilerResults results)
+        private void EnsureGeneratedCode()
         {
-            Log("GetGeneratedType");
-            var generatedType = results.CompiledAssembly.GetType("SimpleRazor.SimpleRazorView");
-            if (generatedType == null)
+            if (_generatedCode == null)
             {
-                Log("No worky");
-            }
-            else
-            {
-                Log(generatedType.Name);
-            }
-            return generatedType;
-        }
-
-        public override void ProcessCompileErrors(System.CodeDom.Compiler.CompilerResults results)
-        {
-            Log("ProcessCompileErrors");
-            base.ProcessCompileErrors(results);
-        }
-
-        protected override System.CodeDom.CodeCompileUnit GetCodeCompileUnit(out System.Collections.IDictionary linePragmasTable)
-        {
-            Log("GetCodeCompileUnit");
-            var codeCompileUnit = base.GetCodeCompileUnit(out linePragmasTable);
-            Log("GotCodeCompileUnit");
-            return codeCompileUnit;
-        }
-
-        public override string GetCustomString(System.CodeDom.Compiler.CompilerResults results)
-        {
-            Log("GetCustommString");
-            return base.GetCustomString(results);
-        }
-
-        public override BuildProviderResultFlags GetResultFlags(System.CodeDom.Compiler.CompilerResults results)
-        {
-            Log("GetResultFlags");
-            return base.GetResultFlags(results);
-        }
-
-        private static void Log(string text)
-        {
-            using (var writer = new StreamWriter(@"C:\Temp\BPlog.txt", true))
-            {
-                writer.WriteLine(text);
+                var engine = new RazorTemplateEngine(Host);
+                GeneratorResults results = null;
+                using (TextReader reader = InternalOpenReader())
+                {
+                    results = engine.GenerateCode(reader);//, className: null, rootNamespace: null, sourceFileName: Host.PhysicalPath);
+                }
+                if (!results.Success)
+                {
+                    throw CreateExceptionFromParserError(results.ParserErrors.Last(), VirtualPath);
+                }
+                _generatedCode = results.GeneratedCode;
             }
         }
-    }
 
-    public class RazorParserException : Exception
-    {
-        private readonly IList<RazorError> _errors;
-
-        public RazorParserException(IList<RazorError> errors)
+        private static HttpParseException CreateExceptionFromParserError(RazorError error, string virtualPath)
         {
-            _errors = errors;
-        }
-
-        public IList<RazorError> Errors
-        {
-            get { return _errors; }
+            return new HttpParseException(error.Message + Environment.NewLine, null, virtualPath, null, error.Location.LineIndex + 1);
         }
     }
 }

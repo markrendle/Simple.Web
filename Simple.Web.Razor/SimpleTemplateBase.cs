@@ -1,5 +1,6 @@
 namespace Simple.Web.Razor
 {
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Dynamic;
@@ -7,17 +8,19 @@ namespace Simple.Web.Razor
 
     public abstract class SimpleTemplateBase
     {
-        private dynamic _var = new ExpandoObject();
-
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public TextWriter Writer { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public abstract void Execute();
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void Write(object value)
         {
             Writer.Write(value);
             Trace.Write(value);
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void WriteLiteral(object value)
         {
             Writer.Write(value);
@@ -30,6 +33,7 @@ namespace Simple.Web.Razor
         //    Trace.Write(value);
         //}
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void WriteAttribute(string attributeName, AttributePart prefix, AttributePart suffix, params AttributeValue[] values)
         {
             WriteLiteral(prefix);
@@ -40,34 +44,35 @@ namespace Simple.Web.Razor
             WriteLiteral(suffix);
         }
 
-        public virtual void SetHandler(object handler)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal virtual void SetHandler(object handler)
         {
             
         }
 
-        public virtual void SetModel(object model)
+        protected dynamic Handler { get; private set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal virtual void SetModel(object model)
         {
             
         }
 
-        internal protected dynamic Var
-        {
-            get { return _var; }
-            set { _var = value; }
-        }
+        protected dynamic Model { get; private set; }
     }
 
     public abstract class SimpleTemplateModelBase<TModel> : SimpleTemplateBase
     {
         private TModel _model;
 
-        public TModel Model
+        public new TModel Model
         {
             get { return _model; }
-            set { _model = value; }
+            //set { _model = value; }
         }
 
-        public override void SetModel(object model)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal override void SetModel(object model)
         {
             _model = (TModel)model;
         }
@@ -77,13 +82,14 @@ namespace Simple.Web.Razor
     {
         private THandler _handler;
 
-        public THandler Handler
+        public new THandler Handler
         {
             get { return _handler; }
-            set { _handler = value; }
+            //set { _handler = value; }
         }
 
-        public override void SetHandler(object handler)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal override void SetHandler(object handler)
         {
             _handler = (THandler)handler;
         }
@@ -93,26 +99,28 @@ namespace Simple.Web.Razor
     {
         private THandler _handler;
 
-        public THandler Handler
+        public new THandler Handler
         {
             get { return _handler; }
-            set { _handler = value; }
+            //set { _handler = value; }
         }
 
-        public override void SetHandler(object handler)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal override void SetHandler(object handler)
         {
             _handler = (THandler)handler;
         }
 
         private TModel _model;
 
-        public TModel Model
+        public new TModel Model
         {
             get { return _model; }
-            set { _model = value; }
+            //set { _model = value; }
         }
 
-        public override void SetModel(object model)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal override void SetModel(object model)
         {
             _model = (TModel)model;
         }

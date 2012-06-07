@@ -21,9 +21,4 @@ namespace Sandbox
 
         public IUser CurrentUser { get; set; }
     }
-
-    public class Form
-    {
-        public string Text { get; set; }
-    }
 }

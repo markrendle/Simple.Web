@@ -18,7 +18,7 @@
         internal static readonly string[] DefaultNamespaceImports = new[]
                                                                        {
                                                                            "System", "System.Text", "System.Linq",
-                                                                           "System.Collections.Generic"
+                                                                           "System.Collections.Generic", "Simple.Web"
                                                                        };
 
         private static readonly TypeResolver TypeResolver = new TypeResolver();

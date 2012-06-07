@@ -1,5 +1,6 @@
 namespace Sandbox
 {
+    using Models;
     using Simple.Web;
     using Simple.Web.Behaviors;
 
