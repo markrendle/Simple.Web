@@ -39,7 +39,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+      <HintPath>..\..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -56,9 +56,6 @@
     <Compile Include="UriTemplateAttributeTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Simple.Web.Mocks\Simple.Web.Mocks.csproj">
       <Project>{D50161E6-44C7-4527-825F-9EC3755ED2BD}</Project>
       <Name>Simple.Web.Mocks</Name>
@@ -67,6 +64,9 @@
       <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
       <Name>Simple.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

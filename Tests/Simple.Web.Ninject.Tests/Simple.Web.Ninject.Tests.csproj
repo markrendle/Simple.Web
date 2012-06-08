@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ninject">
-      <HintPath>..\packages\Ninject.3.0.0.15\lib\net40\Ninject.dll</HintPath>
+      <HintPath>..\..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,7 +42,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
+      <HintPath>..\..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

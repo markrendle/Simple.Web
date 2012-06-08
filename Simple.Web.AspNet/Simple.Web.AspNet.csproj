@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AsyncResult.cs" />
     <Compile Include="ContextWrapper.cs" />
     <Compile Include="CookieWrapperCollection.cs" />

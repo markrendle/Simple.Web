@@ -3,7 +3,9 @@
 namespace Simple.Web.Behaviors
 {
     /// <summary>
-    /// 
+    /// Apply this attribute to a property on a handler class to have it persisted as a cookie.
+    /// Primitive properties (including strings and guids) will be persisted as single-value cookies.
+    /// Complex properties will be persisted as multi-value cookies.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class CookieAttribute : Attribute
