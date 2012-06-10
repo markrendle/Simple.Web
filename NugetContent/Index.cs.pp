@@ -1,6 +1,7 @@
 namespace $rootnamespace$
 {
     using Simple.Web;
+    using Simple.Web.Behaviors;
 
     [UriTemplate("/")]
     public class Index : IGet, IOutput<RawHtml>
