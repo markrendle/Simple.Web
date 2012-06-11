@@ -78,13 +78,33 @@ namespace Simple.Web
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
         /// </summary>
-        /// <param name="httpStatus">The HTTP status.</param>
+        /// <param name="httpStatus">The HTTP status code.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
         public static implicit operator Status(int httpStatus)
         {
             return StatusLookup.Contains(httpStatus) ? StatusLookup[httpStatus] : new Status(httpStatus);
+        }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
+        /// </summary>
+        /// <param name="source">The string source.</param>
+        /// <example>
+        /// Status status = 404 + "Not Found";
+        /// </example>
+        /// <exception cref="InvalidCastException">Thrown when an object cannot be cast to a required type.</exception>
+        public static implicit operator Status(string source)
+        {
+            try
+            {
+                return new Status(int.Parse(source.Substring(0, 3)), source.Substring(3).Trim());
+            }
+            catch (Exception)
+            {
+                throw new InvalidCastException("Status can only be implicitly cast from an integer, or a string of the format 'nnnSss...s', e.g. '404Not Found'.");
+            }
         }
 
         /// <summary>
