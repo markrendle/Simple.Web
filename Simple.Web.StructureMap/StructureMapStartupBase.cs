@@ -6,8 +6,8 @@ namespace Simple.Web.StructureMap
     {
         public void Run(IConfiguration configuration, IWebEnvironment environment)
         {
-            var container = new Container(Configure);
-            configuration.Container = new StructureMapContainer(container);
+            ObjectFactory.Configure(Configure);
+            configuration.Container = new StructureMapContainer(ObjectFactory.Container);
         }
 
         internal protected abstract void Configure(ConfigurationExpression cfg);

@@ -6,6 +6,14 @@ namespace Simple.Web.DependencyInjection
 
     internal class DefaultSimpleContainer : ISimpleContainer
     {
+        public ISimpleContainerScope BeginScope()
+        {
+            return new DefaultSimpleContainerScope();
+        }
+    }
+
+    internal class DefaultSimpleContainerScope : ISimpleContainerScope
+    {
         public T Get<T>()
         {
             if (typeof(T).IsInterface || typeof(T).IsAbstract)
@@ -32,7 +40,7 @@ namespace Simple.Web.DependencyInjection
                 if (implementations[0].GetConstructor(new Type[0]) != null)
                 {
                     {
-                        instance = (T) Activator.CreateInstance(implementations[0]);
+                        instance = (T)Activator.CreateInstance(implementations[0]);
                         return true;
                     }
                 }
@@ -43,7 +51,11 @@ namespace Simple.Web.DependencyInjection
 
         private static bool IsImplementationOf<T>(Type type)
         {
-            return (!(type.IsInterface || type.IsAbstract)) && typeof (T).IsAssignableFrom(type);
+            return (!(type.IsInterface || type.IsAbstract)) && typeof(T).IsAssignableFrom(type);
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

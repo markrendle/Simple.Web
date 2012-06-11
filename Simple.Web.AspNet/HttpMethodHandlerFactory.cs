@@ -74,8 +74,8 @@ namespace Simple.Web.AspNet
             IHttpHandler instance;
             if (handlerInfo.RequiresAuthentication)
             {
-                var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
-                                             new DefaultAuthenticationProvider();
+                /*var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
+                                             new DefaultAuthenticationProvider();*/
                 instance = new SimpleHttpHandler(context, handlerInfo);
             }
             else
@@ -90,7 +90,7 @@ namespace Simple.Web.AspNet
             IHttpHandler instance;
             if (handlerInfo.RequiresAuthentication)
             {
-                var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
+                var authenticationProvider = /*SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??*/
                                              new DefaultAuthenticationProvider();
                 instance = new SimpleHttpAsyncHandler(context, handlerInfo, authenticationProvider);
             }
