@@ -71,33 +71,13 @@ namespace Simple.Web.AspNet
 
         private static IHttpHandler CreateHttpHandler(IContext context, HandlerInfo handlerInfo)
         {
-            IHttpHandler instance;
-            if (handlerInfo.RequiresAuthentication)
-            {
-                /*var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??
-                                             new DefaultAuthenticationProvider();*/
-                instance = new SimpleHttpHandler(context, handlerInfo);
-            }
-            else
-            {
-                instance = new SimpleHttpHandler(context, handlerInfo);
-            }
+            var instance = new SimpleHttpHandler(context, handlerInfo);
             return instance;
         }
 
         private static IHttpHandler CreateAsyncHttpHandler(IContext context, HandlerInfo handlerInfo)
         {
-            IHttpHandler instance;
-            if (handlerInfo.RequiresAuthentication)
-            {
-                var authenticationProvider = /*SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??*/
-                                             new DefaultAuthenticationProvider();
-                instance = new SimpleHttpAsyncHandler(context, handlerInfo, authenticationProvider);
-            }
-            else
-            {
-                instance = new SimpleHttpAsyncHandler(context, handlerInfo);
-            }
+            var instance = new SimpleHttpAsyncHandler(context, handlerInfo);
             return instance;
         }
 
