@@ -20,7 +20,7 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns></returns>
         public static bool Impl(IRequireAuthentication handler, IContext context)
         {
-            var authenticationProvider = SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ?? new DefaultAuthenticationProvider();
+            var authenticationProvider = /*SimpleWeb.Configuration.Container.Get<IAuthenticationProvider>() ??*/ new DefaultAuthenticationProvider();
             var user = authenticationProvider.GetLoggedInUser(context);
             if (user == null || !user.IsAuthenticated)
             {

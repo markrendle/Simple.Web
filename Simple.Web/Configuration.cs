@@ -62,7 +62,7 @@ namespace Simple.Web
         /// </value>
         public IAuthenticationProvider AuthenticationProvider
         {
-            get { return _authenticationProvider ?? (_authenticationProvider = Container.Get<IAuthenticationProvider>()); }
+            get { return _authenticationProvider/* ?? (_authenticationProvider = Container.Get<IAuthenticationProvider>())*/; }
             set { _authenticationProvider = value; }
         }
     }

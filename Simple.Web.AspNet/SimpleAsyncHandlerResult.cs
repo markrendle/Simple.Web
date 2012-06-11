@@ -14,7 +14,7 @@ namespace Simple.Web.AspNet
         private readonly AsyncCallback _callback;
         private readonly ErrorHelper _helper;
         private AsyncRunner _runner;
-        private object _handler;
+        private IScopedHandler _handler;
 
         public SimpleAsyncHandlerResult(IContext context, HandlerInfo handlerInfo, AsyncCallback callback, object asyncState)
         {
@@ -32,7 +32,7 @@ namespace Simple.Web.AspNet
             if (_handler != null)
             {
                 _runner = HandlerRunnerFactory.Instance.GetAsync(_handlerInfo.HandlerType, _context.Request.HttpMethod);
-                _runner.Start(_handler, _context).ContinueWith(RunContinuation);
+                _runner.Start(_handler.Handler, _context).ContinueWith(RunContinuation);
             }
             else
             {
@@ -42,24 +42,31 @@ namespace Simple.Web.AspNet
 
         private void RunContinuation(Task<Status> t)
         {
-            IsCompleted = true;
-            if (t.IsFaulted && t.Exception != null)
+            try
             {
-                _helper.WriteError(t.Exception.InnerException);
-            }
-            else
-            {
-                try
+                IsCompleted = true;
+                if (t.IsFaulted && t.Exception != null)
                 {
-                    _runner.End(_handler, _context, t.Result);
+                    _helper.WriteError(t.Exception.InnerException);
                 }
-                catch (Exception ex)
+                else
                 {
-                    _helper.WriteError(ex);
+                    try
+                    {
+                        _runner.End(_handler.Handler, _context, t.Result);
+                    }
+                    catch (Exception ex)
+                    {
+                        _helper.WriteError(ex);
+                    }
                 }
-            }
 
-            _callback(this);
+                _callback(this);
+            }
+            finally
+            {
+                _handler.Dispose();
+            }
         }
     }
 }

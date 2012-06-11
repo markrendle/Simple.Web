@@ -13,7 +13,7 @@
             var target = new HandlerBuilderFactory(new Configuration());
             var actualFunc = target.BuildHandlerBuilder(typeof (ParameterlessConstructorType));
             var actual = actualFunc(new Dictionary<string, string>());
-            Assert.IsType<ParameterlessConstructorType>(actual);
+            Assert.IsType<ParameterlessConstructorType>(actual.Handler);
         }
 
         [Fact]

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using StructureMap;
+using StructureMap.Configuration.DSL;
 
-namespace Simple.Web.Ninject.Tests
+namespace Simple.Web.StructureMap.Tests
 {
     using CodeGeneration;
     using Xunit;
-    using global::Ninject.Modules;
 
     public class HandlerFactoryBuilderTests
     {
@@ -34,26 +35,31 @@ namespace Simple.Web.Ninject.Tests
             TestHandler handler;
             using (var scopedHandler = actualFunc(new Dictionary<string, string>()))
             {
-                handler = (TestHandler)scopedHandler.Handler;
+                handler = (TestHandler) scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);
             }
             Assert.Equal(true, handler.IsDisposed);
         }
     }
 
-    public class TestStartup : NinjectStartupBase
+    public class TestStartup : StructureMapStartupBase
     {
-        protected override IEnumerable<INinjectModule> CreateModules()
+        protected override void Configure(ConfigurationExpression cfg)
         {
-            yield return new TestModule();
+            cfg.Scan(x =>
+                         {
+                             x.TheCallingAssembly();
+                             x.LookForRegistries();
+                         });
         }
     }
 
-    public class TestModule : NinjectModule
+    public class TestRegistry : Registry
     {
-        public override void Load()
+        public TestRegistry()
         {
-            Bind<IResult>().To<OkResult>();
+            For<IResult>()
+                .Use<OkResult>();
         }
     }
 
@@ -73,7 +79,7 @@ namespace Simple.Web.Ninject.Tests
         }
 
         public string TestProperty { get; set; }
-
+        
         public void Dispose()
         {
             IsDisposed = true;
