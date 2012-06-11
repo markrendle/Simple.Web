@@ -32,12 +32,13 @@ namespace Simple.Web.AspNet
 
         private void Run()
         {
-            var handler = HandlerFactory.Instance.GetHandler(_handlerInfo);
-
-            if (handler != null)
+            using (var handler = HandlerFactory.Instance.GetHandler(_handlerInfo))
             {
-                var run = HandlerRunnerFactory.Instance.Get(handler.GetType(), _context.Request.HttpMethod);
-                run(handler, _context);
+                if (handler != null)
+                {
+                    var run = HandlerRunnerFactory.Instance.Get(handler.Handler.GetType(), _context.Request.HttpMethod);
+                    run(handler.Handler, _context);
+                }
             }
         }
 

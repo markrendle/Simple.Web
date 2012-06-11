@@ -60,12 +60,14 @@
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
     <Compile Include="CodeGeneration\CookiePropertySetter.cs" />
+    <Compile Include="CodeGeneration\IScopedHandler.cs" />
     <Compile Include="CodeGeneration\ObjectEx.cs" />
     <Compile Include="CodeGeneration\OutputBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\PropertyCookieSetter.cs" />
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
+    <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
     <Compile Include="Helpers\IFileUtility.cs" />
     <Compile Include="Helpers\NameValueCollectionEx.cs" />
