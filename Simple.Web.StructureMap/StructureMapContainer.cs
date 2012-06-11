@@ -1,4 +1,5 @@
-﻿using Simple.Web.DependencyInjection;
+﻿using System;
+using Simple.Web.DependencyInjection;
 using StructureMap;
 
 namespace Simple.Web.StructureMap
@@ -8,6 +9,21 @@ namespace Simple.Web.StructureMap
         private readonly IContainer _container;
 
         internal StructureMapContainer(IContainer container)
+        {
+            _container = container;
+        }
+
+        public ISimpleContainerScope BeginScope()
+        {
+            return new StructureMapContainerScope(_container.GetNestedContainer());
+        }
+    }
+
+    public class StructureMapContainerScope: ISimpleContainerScope
+    {
+        private readonly IContainer _container;
+
+        internal StructureMapContainerScope(IContainer container)
         {
             _container = container;
         }
@@ -22,6 +38,11 @@ namespace Simple.Web.StructureMap
             {
                 return _container.GetInstance<T>();
             }
+        }
+
+        public void Dispose()
+        {
+            _container.Dispose();
         }
     }
 }
