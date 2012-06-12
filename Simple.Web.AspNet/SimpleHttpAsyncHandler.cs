@@ -1,6 +1,8 @@
 namespace Simple.Web.AspNet
 {
     using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Web;
     using Authentication;
     using Hosting;
@@ -8,21 +10,6 @@ namespace Simple.Web.AspNet
 
     internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
     {
-        private readonly IContext _context;
-        private readonly HandlerInfo _handlerInfo;
-        private readonly IAuthenticationProvider _authenticationProvider;
-
-        internal SimpleHttpAsyncHandler(IContext context, HandlerInfo handlerInfo) : this(context, handlerInfo, null)
-        {
-        }
-
-        internal SimpleHttpAsyncHandler(IContext context, HandlerInfo handlerInfo, IAuthenticationProvider authenticationProvider)
-        {
-            _context = context;
-            _handlerInfo = handlerInfo;
-            _authenticationProvider = authenticationProvider;
-        }
-
         public void ProcessRequest(HttpContext context)
         {
             throw new InvalidOperationException();
@@ -35,13 +22,20 @@ namespace Simple.Web.AspNet
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            var result = new SimpleAsyncHandlerResult(_context, _handlerInfo, cb, extraData);
-            result.Run();
-            return result;
+            var app = new Application();
+            return new TaskAsyncResult(app.Run(new ContextWrapper(context)), cb);
         }
 
         public void EndProcessRequest(IAsyncResult result)
         {
+        }
+    }
+
+    internal class TaskAsyncResult : AsyncResult
+    {
+        public TaskAsyncResult(Task task, AsyncCallback callback)
+        {
+            task.ContinueWith(t => callback(this));
         }
     }
 }

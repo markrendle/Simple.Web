@@ -47,7 +47,7 @@ namespace Simple.Web.Razor
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal virtual void SetHandler(object handler)
         {
-            
+            Handler = handler;
         }
 
         protected dynamic Handler { get; private set; }
@@ -55,7 +55,7 @@ namespace Simple.Web.Razor
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal virtual void SetModel(object model)
         {
-            
+            Model = model;
         }
 
         protected dynamic Model { get; private set; }

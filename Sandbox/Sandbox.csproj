@@ -103,6 +103,7 @@
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\SubmitData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup\AppStart.cs" />
     <Compile Include="Startup\SetPublicFolders.cs" />
     <Compile Include="PostForm.cs" />
   </ItemGroup>

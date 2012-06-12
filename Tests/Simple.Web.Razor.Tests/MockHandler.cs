@@ -14,6 +14,7 @@ namespace Simple.Web.Razor.Tests
         public object Model { get; set; }
 
         public IEnumerable<KeyValuePair<string, object>> Variables { get; set; }
+        public string Title { get; set; }
 
         public string ViewPath
         {

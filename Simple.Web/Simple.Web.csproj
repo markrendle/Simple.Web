@@ -47,6 +47,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Application.cs" />
     <Compile Include="Authentication\AnonymousUser.cs" />
     <Compile Include="Behaviors\BehaviorAttribute.cs" />
     <Compile Include="Behaviors\CookieAttribute.cs" />

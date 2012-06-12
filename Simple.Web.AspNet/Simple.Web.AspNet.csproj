@@ -55,11 +55,7 @@
     <Compile Include="RequestWrapper.cs" />
     <Compile Include="ResponseWrapper.cs" />
     <Compile Include="SimpleHttpAsyncHandler.cs" />
-    <Compile Include="SimpleAsyncHandlerResult.cs" />
     <Compile Include="CookieWrapper.cs" />
-    <Compile Include="SimpleHttpHandler.cs" />
-    <Compile Include="SimpleHttpHandlerFactory.cs" />
-    <Compile Include="HttpMethodHandlerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
