@@ -22,7 +22,7 @@ namespace Simple.Web.Http
         /// <summary>
         /// Gets the query string.
         /// </summary>
-        ILookup<string,string> QueryString { get; }
+        IDictionary<string,string> QueryString { get; }
         /// <summary>
         /// Gets the input stream.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Simple.Web.Http
         /// <summary>
         /// Gets the request headers.
         /// </summary>
-        ILookup<string,string> Headers { get; }
+        NameValueCollection Headers { get; }
         /// <summary>
         /// Gets the list of uploaded files.
         /// </summary>

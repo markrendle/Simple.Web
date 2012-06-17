@@ -199,9 +199,16 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildAsyncRunBlock()
         {
-            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
-            var run = _type.GetMethod(httpMethodAttribute.Method);
+            var method = GetRunMethod();
+            var run = method;
             return Expression.Assign(_task, Expression.Call(_handler, run));
+        }
+
+        private MethodInfo GetRunMethod()
+        {
+            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
+            var method = _type.GetMethod(httpMethodAttribute.Method);
+            return method;
         }
     }
 }

@@ -28,11 +28,17 @@
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
-            foreach (var key in context.Request.QueryString.Select(g => g.Key))
+            foreach (var key in context.Request.QueryString.Keys)
             {
-                handlerInfo.Variables.Add(key, context.Request.QueryString[key].FirstOrDefault());
+                handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
             }
 
+            var task = PipelineFunctionFactory.Get(handlerInfo)(context);
+            return task;
+        }
+
+        private Task OldRunImpl(IContext context, HandlerInfo handlerInfo)
+        {
             if (handlerInfo.IsAsync)
             {
                 var handler = HandlerFactory.Instance.GetHandler(handlerInfo);

@@ -32,7 +32,7 @@
         {
             return
                 FindBehaviorTypes<RequestBehaviorAttribute, RequestBehaviorInfo>(
-                    (t, i, p) => new RequestBehaviorInfo(t, i, p));
+                    (behaviorType, implementingType, priority) => new RequestBehaviorInfo(behaviorType, implementingType, priority));
         }
     }
 }

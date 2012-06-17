@@ -17,7 +17,7 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns></returns>
         public static void Impl(IETag handler, IContext context)
         {
-            var etag = context.Request.Headers["ETag"].FirstOrDefault();
+            var etag = context.Request.Headers["ETag"];
             if (!string.IsNullOrWhiteSpace(etag))
             {
                 handler.InputETag = etag;

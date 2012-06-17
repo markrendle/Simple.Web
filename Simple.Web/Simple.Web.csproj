@@ -33,6 +33,10 @@
     <DocumentationFile>bin\Release\Simple.Web.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Owin, Version=0.8.0.0, Culture=neutral, PublicKeyToken=f585506a2da1fef4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Owin.0.8-ctp1\lib\net40\Owin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -58,12 +62,16 @@
     <Compile Include="Behaviors\OutputBehaviorAttribute.cs" />
     <Compile Include="Behaviors\RequestBehaviorAttribute.cs" />
     <Compile Include="Behaviors\ResponseBehaviorAttribute.cs" />
+    <Compile Include="CodeGeneration\AsyncPipeline.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
     <Compile Include="CodeGeneration\CookiePropertySetter.cs" />
+    <Compile Include="CodeGeneration\HandlerBlock.cs" />
     <Compile Include="CodeGeneration\IScopedHandler.cs" />
     <Compile Include="CodeGeneration\ObjectEx.cs" />
     <Compile Include="CodeGeneration\OutputBehaviorInfo.cs" />
+    <Compile Include="CodeGeneration\PipelineBlock.cs" />
+    <Compile Include="CodeGeneration\PipelineFunctionFactory.cs" />
     <Compile Include="CodeGeneration\PropertyCookieSetter.cs" />
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />
@@ -172,6 +180,9 @@
     <Compile Include="UriTemplateAttribute.cs" />
     <Compile Include="User.cs" />
     <Compile Include="WebEnvironment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

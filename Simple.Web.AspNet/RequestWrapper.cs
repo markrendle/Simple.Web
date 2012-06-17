@@ -2,6 +2,7 @@ namespace Simple.Web.AspNet
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.IO;
     using System.Linq;
     using System.Web;
@@ -28,9 +29,9 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.AcceptTypes; }
         }
 
-        public ILookup<string, string> QueryString
+        public IDictionary<string, string> QueryString
         {
-            get { return _httpRequest.QueryString.ToLookup(); }
+            get { return _httpRequest.QueryString.ToDictionary(); }
         }
 
         public Stream InputStream
@@ -48,11 +49,11 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.HttpMethod; }
         }
 
-        public ILookup<string, string> Headers
+        public NameValueCollection Headers
         {
             get
             {
-                return _httpRequest.Headers.ToLookup();
+                return _httpRequest.Headers;
             }
         }
 
@@ -70,6 +71,14 @@ namespace Simple.Web.AspNet
         public IDictionary<string, ICookie> Cookies
         {
             get { return _cookies ?? (_cookies = CookieWrapper.Wrap(_httpRequest.Cookies).ToDictionary(c => c.Name, c => c)); }
+        }
+    }
+
+    static class NameValueCollectionEx
+    {
+        public static IDictionary<string,string> ToDictionary(this NameValueCollection collection)
+        {
+            return collection.AllKeys.ToDictionary(k => k, k => collection[k]);
         }
     }
 }

@@ -13,12 +13,11 @@ namespace Simple.Web.CodeGeneration
 
         private static void WriteUsingContentTypeHandler(object handler, IContext context)
         {
+            if (context.Request.HttpMethod.Equals("HEAD")) return;
             IContentTypeHandler contentTypeHandler;
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
             {
                 context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
-
-                if (context.Request.HttpMethod.Equals("HEAD")) return;
 
                 var content = new Content(handler, null);
                 contentTypeHandler.Write(content, context.Response.OutputStream);

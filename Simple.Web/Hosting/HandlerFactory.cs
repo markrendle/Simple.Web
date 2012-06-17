@@ -3,14 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Concurrent;
+    using System.Reflection;
     using System.Web;
     using Simple.Web.CodeGeneration;
 
     /// <summary>
     /// Builds handlers. To be used by Hosting plug-ins.
     /// </summary>
-    public sealed class HandlerFactory
+    internal sealed class HandlerFactory
     {
+        public static readonly MethodInfo GetHandlerMethod = typeof (HandlerFactory).GetMethod("GetHandler");
         private static HandlerFactory _instance;
 
         /// <summary>
@@ -50,7 +52,8 @@
                                                            <Type, Func<IDictionary<string, string>, IScopedHandler>>());
 
             var builder = builderDictionary.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
-            return builder(handlerInfo.Variables);
+            var handler = builder(handlerInfo.Variables);
+            return handler;
         }
     }
 }
