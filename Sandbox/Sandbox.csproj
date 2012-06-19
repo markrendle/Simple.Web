@@ -14,7 +14,7 @@
     <RootNamespace>Sandbox</RootNamespace>
     <AssemblyName>Sandbox</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -151,7 +151,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>80</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://sandbox.simpleweb.local/</IISUrl>
+          <IISUrl>http://localhost:2502/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

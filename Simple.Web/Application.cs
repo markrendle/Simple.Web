@@ -18,7 +18,7 @@
     public class Application
     {
         private static readonly object StartupLock = new object();
-        private static StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
+        private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
 
         public Task Run(IContext context)
         {
@@ -34,45 +34,14 @@
             }
 
             var task = PipelineFunctionFactory.Get(handlerInfo)(context);
-            return task;
+            return task ?? MakeCompletedTask();
         }
 
-        private Task OldRunImpl(IContext context, HandlerInfo handlerInfo)
+        private Task MakeCompletedTask()
         {
-            if (handlerInfo.IsAsync)
-            {
-                var handler = HandlerFactory.Instance.GetHandler(handlerInfo);
-
-                if (handler != null)
-                {
-                    var runner = HandlerRunnerFactory.Instance.GetAsync(handlerInfo.HandlerType, context.Request.HttpMethod);
-                    return runner.Start(handler.Handler, context).ContinueWith(t => RunContinuation(t, handler, context, runner));
-                }
-                throw new InvalidOperationException("Could not create handler.");
-            }
-            else
-            {
-                var tcs = new TaskCompletionSource<object>();
-                try
-                {
-                    using (var handler = HandlerFactory.Instance.GetHandler(handlerInfo))
-                    {
-                        if (handler == null)
-                        {
-                            throw new InvalidOperationException("Could not create handler.");
-                        }
-                        var run = HandlerRunnerFactory.Instance.Get(handler.Handler.GetType(),
-                                                                    context.Request.HttpMethod);
-                        run(handler.Handler, context);
-                    }
-                    tcs.SetResult(null);
-                }
-                catch (Exception ex)
-                {
-                    tcs.SetException(ex);
-                }
-                return tcs.Task;
-            }
+            var tcs = new TaskCompletionSource<object>();
+            tcs.SetResult(null);
+            return tcs.Task;
         }
 
         private static void Startup()
@@ -87,32 +56,6 @@
                         _startupTaskRunner = null;
                     }
                 }
-            }
-        }
-
-        private void RunContinuation(Task<Status> t, IScopedHandler handler, IContext context, AsyncRunner runner)
-        {
-            try
-            {
-                if (t.IsFaulted && t.Exception != null)
-                {
-                    new ErrorHelper(context).WriteError(t.Exception.InnerException);
-                }
-                else
-                {
-                    try
-                    {
-                        runner.End(handler.Handler, context, t.Result);
-                    }
-                    catch (Exception ex)
-                    {
-                        new ErrorHelper(context).WriteError(ex);
-                    }
-                }
-            }
-            finally
-            {
-                handler.Dispose();
             }
         }
 
