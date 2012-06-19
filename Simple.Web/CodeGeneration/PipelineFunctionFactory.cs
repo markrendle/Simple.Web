@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -38,7 +37,6 @@
         /// <summary>
         /// Generates a compiled method to run a Handler.
         /// </summary>
-        /// <param name="handlerType">The type of the Handler.</param>
         /// <returns>A compiled delegate to run the Handler asynchronously.</returns>
         public Func<IContext, Task> BuildAsyncRunMethod()
         {
@@ -70,7 +68,7 @@
 
             var createHandler = BuildCreateHandlerExpression();
 
-            var lambdaBlock = Expression.Block(new[] { _handler }, new Expression[] { createHandler, call });
+            var lambdaBlock = Expression.Block(new[] { _handler }, new[] { createHandler, call });
 
             var lambda = Expression.Lambda(lambdaBlock, _context);
             return (Func<IContext, Task>) lambda.Compile();
