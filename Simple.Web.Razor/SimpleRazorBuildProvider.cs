@@ -21,21 +21,19 @@
                                                                            "System", "System.Text", "System.Linq",
                                                                            "System.Collections.Generic", "Simple.Web", "Simple.Web.Razor"
                                                                        };
-        private CodeCompileUnit _generatedCode = null;
-        private RazorEngineHost _host = null;
-        private IList _virtualPathDependencies;
+        private CodeCompileUnit _generatedCode;
+        private RazorEngineHost _host;
+        private readonly IList _virtualPathDependencies;
 
-        internal RazorEngineHost Host
+    	public SimpleRazorBuildProvider()
+    	{
+    		_virtualPathDependencies = null;
+    	}
+
+    	internal RazorEngineHost Host
         {
-            get
-            {
-                if (_host == null)
-                {
-                    _host = CreateHost();
-                }
-                return _host;
-            }
-            set { _host = value; }
+            get { return _host ?? (_host = CreateHost()); }
+    		set { _host = value; }
         }
 
         // Returns the base dependencies and any dependencies added via AddVirtualPathDependencies
@@ -43,15 +41,9 @@
         {
             get
             {
-                if (_virtualPathDependencies != null)
-                {
-                    // Return a readonly wrapper so as to prevent users from modifying the collection directly.
-                    return ArrayList.ReadOnly(_virtualPathDependencies);
-                }
-                else
-                {
-                    return base.VirtualPathDependencies;
-                }
+            	return _virtualPathDependencies != null 
+					? ArrayList.ReadOnly(_virtualPathDependencies) 
+					: base.VirtualPathDependencies;
             }
         }
 
@@ -119,7 +111,7 @@
             if (_generatedCode == null)
             {
                 var engine = new RazorTemplateEngine(Host);
-                GeneratorResults results = null;
+                GeneratorResults results;
                 using (TextReader reader = InternalOpenReader())
                 {
                     results = engine.GenerateCode(reader);//, className: null, rootNamespace: null, sourceFileName: Host.PhysicalPath);
