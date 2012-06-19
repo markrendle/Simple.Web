@@ -4,8 +4,6 @@ namespace Simple.Web.Mocks
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.IO;
-    using System.Linq;
-    using Helpers;
     using Http;
 
     public class MockRequest : IRequest
@@ -13,6 +11,7 @@ namespace Simple.Web.Mocks
         public MockRequest()
         {
             QueryString = new Dictionary<string, string>();
+			HttpMethod = "GET";
         }
         public Uri Url { get; set; }
 

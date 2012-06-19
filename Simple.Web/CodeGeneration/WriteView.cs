@@ -1,10 +1,11 @@
+using System;
+
 namespace Simple.Web.CodeGeneration
 {
     using ContentTypeHandling;
     using Http;
-    using Links;
 
-    static class WriteView
+	static class WriteView
     {
         public static void Impl(object handler, IContext context)
         {
@@ -13,6 +14,7 @@ namespace Simple.Web.CodeGeneration
 
         private static void WriteUsingContentTypeHandler(object handler, IContext context)
         {
+			if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
             IContentTypeHandler contentTypeHandler;
             if (TryGetContentTypeHandler(context, out contentTypeHandler))
