@@ -35,7 +35,10 @@ namespace Simple.Web.AspNet
     {
         public TaskAsyncResult(Task task, AsyncCallback callback)
         {
-            task.ContinueWith(t => callback(this));
+            if (task != null)
+            {
+                task.ContinueWith(t => callback(this));
+            }
         }
     }
 }

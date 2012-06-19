@@ -18,7 +18,7 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns></returns>
         public static void Impl(IModified handler, IContext context)
         {
-            var header = context.Request.Headers["If-Modified-Since"].FirstOrDefault();
+            var header = context.Request.Headers["If-Modified-Since"];
             if (!string.IsNullOrWhiteSpace(header))
             {
                 DateTime time;

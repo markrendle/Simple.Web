@@ -12,13 +12,13 @@ namespace Simple.Web.Mocks
     {
         public MockRequest()
         {
-            QueryString = new NameValueCollection().ToLookup();
+            QueryString = new Dictionary<string, string>();
         }
         public Uri Url { get; set; }
 
         public IList<string> AcceptTypes { get; set; }
 
-        public ILookup<string, string> QueryString { get; set; }
+        public IDictionary<string, string> QueryString { get; set; }
 
         public Stream InputStream { get; set; }
 
@@ -26,7 +26,7 @@ namespace Simple.Web.Mocks
 
         public string HttpMethod { get; set; }
 
-        public ILookup<string,string> Headers { get; set; }
+        public NameValueCollection Headers { get; set; }
 
         public IEnumerable<IPostedFile> Files
         {

@@ -40,13 +40,20 @@ namespace Simple.Web.CodeGeneration
             foreach (var methodInfo in ImplementingType.GetMethods(BindingFlags.Public | BindingFlags.Static))
             {
                 var parameters = methodInfo.GetParameters();
-                if (parameters.Length == 2 && parameters[0].ParameterType == BehaviorType && parameters[1].ParameterType == typeof(IContext))
+                if (parameters.Length == 2 && parameters[1].ParameterType == typeof(IContext))
                 {
-                    return methodInfo;
-                }
-                if (parameters.Length == 3 && parameters[0].ParameterType == BehaviorType && parameters[1].ParameterType == typeof(IContext) && parameters[2].ParameterType == typeof(Status))
-                {
-                    return methodInfo;
+                    if (parameters[0].ParameterType == BehaviorType)
+                    {
+                        return methodInfo;
+                    }
+
+                    if (parameters[0].ParameterType.IsGenericType && BehaviorType.IsGenericType)
+                    {
+                        if (parameters[0].ParameterType.GetGenericTypeDefinition() == BehaviorType.GetGenericTypeDefinition())
+                        {
+                            return methodInfo;
+                        }
+                    }
                 }
             }
 

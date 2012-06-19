@@ -15,9 +15,9 @@
         /// <param name="context">The context.</param>
         /// <param name="status">The <see cref="Status"/> returned by the Handler.</param>
         /// <returns></returns>
-        public static bool Impl(IMayRedirect handler, IContext context, Status status)
+        public static bool Impl(IMayRedirect handler, IContext context)
         {
-            if ((status.Code >= 301 && status.Code <= 303) || status.Code == 307)
+            if ((context.Response.StatusCode >= 301 && context.Response.StatusCode <= 303) || context.Response.StatusCode == 307)
             {
                 context.Response.SetHeader("Location", handler.Location);
                 return false;
