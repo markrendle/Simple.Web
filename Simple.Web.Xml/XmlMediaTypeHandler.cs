@@ -11,10 +11,10 @@ namespace Simple.Web.Xml
     using System.Runtime.Serialization;
     using System.Xml;
     using System.Xml.Linq;
-    using ContentTypeHandling;
     using Links;
+    using MediaTypeHandling;
 
-    public class XmlContentTypeHandler : IContentTypeHandler
+    public class XmlMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
         {
@@ -132,7 +132,7 @@ namespace Simple.Web.Xml
 
         private static string EnsureXml(string type)
         {
-            if (string.IsNullOrWhiteSpace(type)) return ContentType.Xml;
+            if (string.IsNullOrWhiteSpace(type)) return MediaType.Xml;
             if (type.EndsWith("xml")) return type;
             return type + "+xml";
         }

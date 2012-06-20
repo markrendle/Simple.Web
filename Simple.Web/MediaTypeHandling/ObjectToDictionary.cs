@@ -1,4 +1,4 @@
-﻿namespace Simple.Web.ContentTypeHandling
+﻿namespace Simple.Web.MediaTypeHandling
 {
     using System;
     using System.Collections.Concurrent;

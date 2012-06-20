@@ -6,10 +6,10 @@
     using System.Dynamic;
     using System.IO;
     using System.Reflection;
-    using ContentTypeHandling;
+    using MediaTypeHandling;
 
-    [ContentTypes(ContentType.Html, ContentType.XHtml)]
-    public class RazorHtmlContentTypeHandler : IContentTypeHandler
+    [MediaTypes(MediaType.Html, MediaType.XHtml)]
+    public class RazorHtmlMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
         {

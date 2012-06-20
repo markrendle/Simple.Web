@@ -6,16 +6,16 @@ using System.Text;
 namespace Simple.Web.JsonFx
 {
     using System.IO;
-    using ContentTypeHandling;
     using Links;
+    using MediaTypeHandling;
     using global::JsonFx.Json;
     using global::JsonFx.Json.Resolvers;
     using global::JsonFx.Serialization;
     using global::JsonFx.Serialization.Resolvers;
     using global::JsonFx.Xml.Resolvers;
 
-    [ContentTypes(ContentType.Json, "application/*+json")]
-    public class JsonContentTypeHandler : IContentTypeHandler
+    [MediaTypes(MediaType.Json, "application/*+json")]
+    public class JsonMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
         {
@@ -112,7 +112,7 @@ namespace Simple.Web.JsonFx
                 }
                 return new Link(source.GetHandlerType(), source.Href, source.Rel, source.Type + "+json", source.Title);
             }
-            return new Link(source.GetHandlerType(), source.Href, source.Rel, ContentType.Json, source.Title);
+            return new Link(source.GetHandlerType(), source.Href, source.Rel, MediaType.Json, source.Title);
         }
     }
 }

@@ -1,11 +1,11 @@
-namespace Simple.Web.ContentTypeHandling
+namespace Simple.Web.MediaTypeHandling
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    [ContentTypes("application/x-www-form-urlencoded")]
-    sealed class FormDeserializer : IContentTypeHandler
+    [MediaTypes("application/x-www-form-urlencoded")]
+    sealed class FormDeserializer : IMediaTypeHandler
     {
         private static readonly char[] SplitTokens = new[] {'\n', '&'};
 

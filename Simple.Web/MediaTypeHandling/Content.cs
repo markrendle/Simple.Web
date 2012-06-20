@@ -1,8 +1,8 @@
-namespace Simple.Web.ContentTypeHandling
+namespace Simple.Web.MediaTypeHandling
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Links;
+    using Simple.Web.Links;
 
     /// <summary>
     /// Default implementation of the <see cref="IContent"/> interface.

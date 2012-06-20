@@ -6,7 +6,7 @@
     using System.IO;
     using System.Text;
     using Behaviors;
-    using ContentTypeHandling;
+    using MediaTypeHandling;
     using Mocks;
     using Xunit;
 
@@ -21,7 +21,7 @@
     
 
     [UriTemplate("/")]
-    [RespondsWith(ContentType.Html)]
+    [RespondsWith(MediaType.Html)]
     public class RootHandler : IGet, IOutput<RawHtml>
     {
         public Status Get()

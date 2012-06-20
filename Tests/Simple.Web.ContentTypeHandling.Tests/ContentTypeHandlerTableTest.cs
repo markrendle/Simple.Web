@@ -6,6 +6,7 @@ using System.Text;
 namespace Simple.Web.ContentTypeHandling.Tests
 {
     using System.IO;
+    using MediaTypeHandling;
     using Xunit;
 
     public class ContentTypeHandlerTableTest
@@ -13,47 +14,47 @@ namespace Simple.Web.ContentTypeHandling.Tests
         [Fact]
         public void FindsHandlerForDirectType()
         {
-            var table = new ContentTypeHandlerTable();
-            var actual = table.GetContentTypeHandler(ContentType.Json);
+            var table = new MediaTypeHandlerTable();
+            var actual = table.GetMediaTypeHandler(MediaType.Json);
             Assert.NotNull(actual);
-            Assert.IsType<TestContentTypeHandler>(actual);
+            Assert.IsType<TestMediaTypeHandler>(actual);
         }
 
         [Fact]
         public void FindsHandlerForCustomType()
         {
-            var table = new ContentTypeHandlerTable();
-            var actual = table.GetContentTypeHandler("application/vnd.test.towel+json");
+            var table = new MediaTypeHandlerTable();
+            var actual = table.GetMediaTypeHandler("application/vnd.test.towel+json");
             Assert.NotNull(actual);
-            Assert.IsType<TestContentTypeHandler>(actual);
+            Assert.IsType<TestMediaTypeHandler>(actual);
         }
         
         [Fact]
         public void FindsHandlerForDirectTypeList()
         {
-            var table = new ContentTypeHandlerTable();
+            var table = new MediaTypeHandlerTable();
             string matchedType;
-            var actual = table.GetContentTypeHandler(new[] {"application/foo", ContentType.Json}, out matchedType);
+            var actual = table.GetMediaTypeHandler(new[] {"application/foo", MediaType.Json}, out matchedType);
             Assert.NotNull(actual);
-            Assert.IsType<TestContentTypeHandler>(actual);
-            Assert.Equal(ContentType.Json, matchedType);
+            Assert.IsType<TestMediaTypeHandler>(actual);
+            Assert.Equal(MediaType.Json, matchedType);
         }
 
         [Fact]
         public void FindsHandlerForCustomTypeList()
         {
-            var table = new ContentTypeHandlerTable();
+            var table = new MediaTypeHandlerTable();
             string matchedType;
             const string customType = "application/vnd.test.towel+json";
-            var actual = table.GetContentTypeHandler(new[] {"application/foo", customType}, out matchedType);
+            var actual = table.GetMediaTypeHandler(new[] {"application/foo", customType}, out matchedType);
             Assert.NotNull(actual);
-            Assert.IsType<TestContentTypeHandler>(actual);
+            Assert.IsType<TestMediaTypeHandler>(actual);
             Assert.Equal(customType, matchedType);
         }
     }
 
-    [ContentTypes(ContentType.Json, "application/*+json")]
-    public class TestContentTypeHandler : IContentTypeHandler
+    [MediaTypes(MediaType.Json, "application/*+json")]
+    public class TestMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
         {

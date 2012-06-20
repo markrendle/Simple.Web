@@ -1,9 +1,9 @@
-namespace Simple.Web.ContentTypeHandling
+namespace Simple.Web.MediaTypeHandling
 {
     /// <summary>
     /// Constants for common hypermedia content types
     /// </summary>
-    public static class ContentType
+    public static class MediaType
     {
         /// <summary>
         /// application/json

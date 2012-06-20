@@ -25,7 +25,7 @@ namespace Simple.Web.Razor.Tests
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = new HandlerStub { Title = "Foo" } };
 
             var writer = new StringWriter();
-            RazorHtmlContentTypeHandler.RenderView(output, writer, type);
+            RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
             Assert.Equal(expected, writer.ToString().Trim());
         }
 

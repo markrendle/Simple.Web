@@ -4,8 +4,8 @@ namespace Simple.Web.Razor.Tests
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
-    using ContentTypeHandling;
     using Links;
+    using MediaTypeHandling;
 
     public class MockHandler : IContent
     {

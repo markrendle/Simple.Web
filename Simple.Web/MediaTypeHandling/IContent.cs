@@ -1,7 +1,7 @@
-namespace Simple.Web.ContentTypeHandling
+namespace Simple.Web.MediaTypeHandling
 {
     using System.Collections.Generic;
-    using Links;
+    using Simple.Web.Links;
 
     /// <summary>
     /// Represents content to be returned to the client.

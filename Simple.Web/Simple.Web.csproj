@@ -83,8 +83,8 @@
     <Compile Include="Behaviors\Implementations\SetLastModified.cs" />
     <Compile Include="Behaviors\Implementations\SetOutputETag.cs" />
     <Compile Include="Behaviors\Implementations\SetUserCookie.cs" />
-    <Compile Include="ContentTypeHandling\IContent.cs" />
-    <Compile Include="ContentTypeHandling\ObjectToDictionary.cs" />
+    <Compile Include="MediaTypeHandling\IContent.cs" />
+    <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -105,10 +105,10 @@
     <Compile Include="CodeGeneration\WriteView.cs" />
     <Compile Include="Helpers\Comparer.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="ContentTypeHandling\ContentType.cs" />
-    <Compile Include="ContentTypeHandling\ContentTypeHandlerEx.cs" />
-    <Compile Include="ContentTypeHandling\ContentTypeHandlerTable.cs" />
-    <Compile Include="ContentTypeHandling\ContentTypesAttribute.cs" />
+    <Compile Include="MediaTypeHandling\MediaType.cs" />
+    <Compile Include="MediaTypeHandling\MediaTypeHandlerEx.cs" />
+    <Compile Include="MediaTypeHandling\MediaTypeHandlerTable.cs" />
+    <Compile Include="MediaTypeHandling\MediaTypesAttribute.cs" />
     <Compile Include="DependencyInjection\DefaultSimpleContainer.cs" />
     <Compile Include="CodeGeneration\HandlerBuilderFactory.cs" />
     <Compile Include="Hosting\HandlerInfo.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="Helpers\ExportedTypeHelper.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\FileUtility.cs" />
-    <Compile Include="ContentTypeHandling\FormDeserializer.cs" />
+    <Compile Include="MediaTypeHandling\FormDeserializer.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="IDelete.cs" />
     <Compile Include="IHead.cs" />
@@ -135,7 +135,7 @@
     <Compile Include="Http\HttpMethodAttribute.cs" />
     <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="IConfiguration.cs" />
-    <Compile Include="ContentTypeHandling\IContentTypeHandler.cs" />
+    <Compile Include="MediaTypeHandling\IMediaTypeHandler.cs" />
     <Compile Include="Http\IContext.cs" />
     <Compile Include="Http\ICookie.cs" />
     <Compile Include="Http\ICookieCollection.cs" />
@@ -157,7 +157,7 @@
     <Compile Include="Behaviors\IUploadFiles.cs" />
     <Compile Include="Authentication\IUser.cs" />
     <Compile Include="IWebEnvironment.cs" />
-    <Compile Include="ContentTypeHandling\Content.cs" />
+    <Compile Include="MediaTypeHandling\Content.cs" />
     <Compile Include="CodeGeneration\PropertySetterBuilder.cs" />
     <Compile Include="Links\Link.cs" />
     <Compile Include="Links\LinksFromAttribute.cs" />

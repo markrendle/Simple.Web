@@ -1,14 +1,12 @@
 ﻿namespace Simple.Web.AspNet
 {
     using System;
-    using System.Collections.Concurrent;
     using System.IO;
     using System.Linq;
     using System.Web;
 
     sealed class PublicFileHandler : IHttpHandler
     {
-        private readonly ConcurrentDictionary<string,string> _knownStaticFiles = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly IConfiguration _configuration;
         private readonly IWebEnvironment _environment;
 
@@ -20,29 +18,6 @@
         {
             _configuration = configuration ?? SimpleWeb.Configuration;
             _environment = environment ?? SimpleWeb.Environment;
-        }
-
-        public bool TryHandleAsFile(Uri uri, HttpResponse response)
-        {
-            //string file;
-            //if (!_knownStaticFiles.TryGetValue(uri.AbsolutePath, out file))
-            //{
-            //    if (!TryMapFilePath(uri.AbsolutePath, out file)) return false;
-            //}
-
-            //try
-            //{
-            //    response.StatusCode = 200;
-            //    response.ContentType = _environment.GetContentTypeFromFileExtension(file, request.AcceptTypes) ?? "text/plain";
-            //    response.TransmitFile(file);
-            //    _knownStaticFiles.TryAdd(request.Url.AbsolutePath, file);
-            //    return true;
-            //}
-            //catch (FileNotFoundException)
-            //{
-            //    _knownStaticFiles.TryRemove(request.Url.AbsolutePath, out file);
-            //}
-            return false;
         }
 
         private bool TryMapFilePath(string absolutePath, out string file)

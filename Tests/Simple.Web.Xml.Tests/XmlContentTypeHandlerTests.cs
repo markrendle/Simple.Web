@@ -7,8 +7,8 @@ namespace Simple.Web.Xml.Tests
 {
     using System.IO;
     using System.Xml.Linq;
-    using ContentTypeHandling;
     using Links;
+    using MediaTypeHandling;
     using TestHelpers;
     using Xunit;
 
@@ -18,7 +18,7 @@ namespace Simple.Web.Xml.Tests
         public void SerializesOrder()
         {
             var content = new Content(new OrderHandler(), new Order {Id = 54, CustomerId = 42});
-            var target = new XmlContentTypeHandler();
+            var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
@@ -47,7 +47,7 @@ namespace Simple.Web.Xml.Tests
         public void PicksUpOrdersLinkFromCustomer()
         {
             var content = new Content(new CustomerHandler(), new Customer { Id = 42 });
-            var target = new XmlContentTypeHandler();
+            var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
@@ -74,7 +74,7 @@ namespace Simple.Web.Xml.Tests
         public void PicksUpOrdersLinkFromCustomers()
         {
             var content = new Content(new CustomerHandler(), new[] {new Customer {Id = 42}});
-            var target = new XmlContentTypeHandler();
+            var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
