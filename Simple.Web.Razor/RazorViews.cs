@@ -5,7 +5,6 @@ namespace Simple.Web.Razor
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Text.RegularExpressions;
 
     internal class RazorViews
@@ -21,10 +20,14 @@ namespace Simple.Web.Razor
         private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>();
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
 
-        private static readonly string AppRoot =
-            Path.GetDirectoryName(typeof(RazorViews).Assembly.GetPath()).Regex(@"\\bin\\?$", string.Empty);
+        private static readonly string AppRoot = AssemblyAppRoot(typeof(RazorViews).Assembly.GetPath());
 
-        public static void Initialize()
+    	public static string AssemblyAppRoot(string typePath)
+    	{
+    		return Path.GetDirectoryName(typePath).Regex(@"\\bin\\?([Dd]ebug|[Rr]elease)?$", string.Empty);
+    	}
+
+    	public static void Initialize()
         {
             ClearCaches();
 
