@@ -29,6 +29,6 @@ namespace Simple.Web
         /// <param name="file">The file.</param>
         /// <param name="acceptedTypes">The accepted types.</param>
         /// <returns>The acceptable type for the file.</returns>
-        string GetContentTypeFromFileExtension(string file, IList<string> acceptedTypes);
+        string GetMediaTypeFromFileExtension(string file, IList<string> acceptedTypes);
     }
 }

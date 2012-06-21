@@ -1,4 +1,4 @@
-namespace Simple.Web.ContentTypeHandling
+namespace Simple.Web.MediaTypeHandling
 {
     using System;
     using System.IO;
@@ -6,7 +6,7 @@ namespace Simple.Web.ContentTypeHandling
     /// <summary>
     /// Represents a handler for a specific content type.
     /// </summary>
-    public interface IContentTypeHandler
+    public interface IMediaTypeHandler
     {
         /// <summary>
         /// Reads content from the specified input stream.

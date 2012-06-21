@@ -1,7 +1,7 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
+    using MediaTypeHandling;
     using Simple.Web.Behaviors;
-    using Simple.Web.ContentTypeHandling;
     using Simple.Web.Http;
 
     /// <summary>
@@ -19,9 +19,9 @@
         {
             if (context.Request.InputStream.Length == 0) return;
 
-            var contentTypeHandlerTable = new ContentTypeHandlerTable();
-            var contentTypeHandler = contentTypeHandlerTable.GetContentTypeHandler(context.Request.ContentType);
-            handler.Input = (T)contentTypeHandler.Read(context.Request.InputStream, typeof(T));
+            var mediaTypeHandlerTable = new MediaTypeHandlerTable();
+            var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.ContentType);
+            handler.Input = (T)mediaTypeHandler.Read(context.Request.InputStream, typeof(T));
         }
     }
 }

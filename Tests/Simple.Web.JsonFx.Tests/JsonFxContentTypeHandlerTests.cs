@@ -6,8 +6,8 @@ using System.Text;
 namespace Simple.Web.JsonFx.Tests
 {
     using System.IO;
-    using ContentTypeHandling;
     using Links;
+    using MediaTypeHandling;
     using TestHelpers;
     using Xunit;
 
@@ -23,7 +23,7 @@ namespace Simple.Web.JsonFx.Tests
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
 
             var content = new Content(new CustomerHandler(), new Customer {Id = 42});
-            var target = new JsonContentTypeHandler();
+            var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
@@ -51,7 +51,7 @@ namespace Simple.Web.JsonFx.Tests
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
 
             var content = new Content(new CustomerHandler(), new[] {new Customer { Id = 42 }});
-            var target = new JsonContentTypeHandler();
+            var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {

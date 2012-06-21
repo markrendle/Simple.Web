@@ -2,42 +2,42 @@ using System;
 
 namespace Simple.Web.CodeGeneration
 {
-    using ContentTypeHandling;
     using Http;
+    using MediaTypeHandling;
 
-	static class WriteView
+    static class WriteView
     {
         public static void Impl(object handler, IContext context)
         {
-            WriteUsingContentTypeHandler(handler, context);
+            WriteUsingMediaTypeHandler(handler, context);
         }
 
-        private static void WriteUsingContentTypeHandler(object handler, IContext context)
+        private static void WriteUsingMediaTypeHandler(object handler, IContext context)
         {
 			if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            IContentTypeHandler contentTypeHandler;
-            if (TryGetContentTypeHandler(context, out contentTypeHandler))
+            IMediaTypeHandler mediaTypeHandler;
+            if (TryGetMediaTypeHandler(context, out mediaTypeHandler))
             {
-                context.Response.ContentType = contentTypeHandler.GetContentType(context.Request.AcceptTypes);
+                context.Response.ContentType = mediaTypeHandler.GetContentType(context.Request.AcceptTypes);
 
                 var content = new Content(handler, null);
-                contentTypeHandler.Write(content, context.Response.OutputStream);
+                mediaTypeHandler.Write(content, context.Response.OutputStream);
             }
         }
 
-        private static bool TryGetContentTypeHandler(IContext context, out IContentTypeHandler contentTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, out IMediaTypeHandler mediaTypeHandler)
         {
             try
             {
                 string matchedType;
-                contentTypeHandler = new ContentTypeHandlerTable().GetContentTypeHandler(context.Request.AcceptTypes, out matchedType);
+                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.AcceptTypes, out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {
                 context.Response.StatusCode = 415;
                 context.Response.StatusDescription = "Unsupported media type requested.";
-                contentTypeHandler = null;
+                mediaTypeHandler = null;
                 return false;
             }
             return true;

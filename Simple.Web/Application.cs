@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web;
@@ -23,6 +24,12 @@
         public Task Run(IContext context)
         {
             Startup();
+
+            if (TryHandleAsStaticContent(context))
+            {
+                return MakeCompletedTask();
+            }
+
             IDictionary<string, string> variables;
             var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.ContentType, context.Request.AcceptTypes, out variables);
             if (handlerType == null) return null;
@@ -44,6 +51,39 @@
             return tcs.Task;
         }
 
+        private static bool TryHandleAsStaticContent(IContext context)
+        {
+            var absolutePath = context.Request.Url.AbsolutePath;
+            string file;
+            if (SimpleWeb.Configuration.PublicFileMappings.ContainsKey(absolutePath))
+            {
+                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.PublicFileMappings[absolutePath]);
+            }
+            else if (
+                SimpleWeb.Configuration.PublicFolders.Any(
+                    folder => absolutePath.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
+            {
+                file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+            }
+            else
+            {
+                file = null;
+                return false;
+            }
+
+            if (!File.Exists(file)) return false;
+
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = GetContentType(file, context.Request.AcceptTypes);
+            context.Response.TransmitFile(file);
+
+            return true;
+        }
+        private static string GetContentType(string file, IEnumerable<string> acceptTypes)
+        {
+            if (acceptTypes == null) return "text/text";
+            return acceptTypes.FirstOrDefault() ?? "text/text";
+        }
         private static void Startup()
         {
             if (_startupTaskRunner != null)

@@ -63,7 +63,7 @@ namespace Simple.Web
         /// <returns>
         /// The acceptable type for the file.
         /// </returns>
-        public string GetContentTypeFromFileExtension(string file, IList<string> acceptedTypes)
+        public string GetMediaTypeFromFileExtension(string file, IList<string> acceptedTypes)
         {
             var extension = Path.GetExtension(file);
             if (string.IsNullOrWhiteSpace(extension)) return null;
