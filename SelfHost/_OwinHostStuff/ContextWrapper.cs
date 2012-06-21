@@ -7,12 +7,12 @@ namespace SelfHost
 	class ContextWrapper :  IContext
 	{
 		readonly IDictionary<string, object> env;
-		readonly ResultDelegate result;
+		readonly ResponseWrapper reponseWrapper;
 
 		public ContextWrapper(IDictionary<string, object> env, ResultDelegate result)
 		{
 			this.env = env;
-			this.result = result;
+			reponseWrapper = new ResponseWrapper(result);
 		}
 
 		public IRequest Request
@@ -22,7 +22,9 @@ namespace SelfHost
 
 		public IResponse Response
 		{
-			get { return new ResponseWrapper(result); }
+			get {
+				return reponseWrapper;
+			}
 		}
 
 		public IDictionary<string, object> Variables

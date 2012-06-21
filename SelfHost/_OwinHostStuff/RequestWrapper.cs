@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Owin;
 using Simple.Web;
 using Simple.Web.Http;
@@ -14,11 +13,13 @@ namespace SelfHost
 	{
 		readonly IDictionary<string, object> env;
 		readonly IDictionary<string, IEnumerable<string>> headers;
+		//readonly BodyDelegate body;
 
-		public RequestWrapper(IDictionary<string, object> env)
+		public RequestWrapper(IDictionary<string, object> environment)
 		{
-			this.env = env;
-			headers = (IDictionary<string, IEnumerable<string>>)env[OwinConstants.RequestHeaders];
+			env = environment;
+			headers = (IDictionary<string, IEnumerable<string>>)environment[OwinConstants.RequestHeaders];
+			//body = (BodyDelegate)environment[OwinConstants.RequestBody];
 		}
 
 		public Uri Url
@@ -51,15 +52,23 @@ namespace SelfHost
 		public Stream InputStream
 		{
 			get {
-				return new MemoryStream(UTF8Encoding.Default.GetBytes(env[OwinConstants.RequestBody].ToString()));
+				// TODO: determine encoding properly?
+				return null;
+				//return new MemoryStream(UTF8Encoding.Default.GetBytes(env[OwinConstants.RequestBody].ToString()));
 			}
 		}
 
 		public string ContentType
 		{
-			get { 
-				return ""; //TODO: Post only?
+			get {
+				return GetSingleHeaderValue("Content-Type") ?? "text/html"; // POST, HEAD; Get == ""?
 			}
+		}
+
+		string GetSingleHeaderValue(string headerKey)
+		{
+			if (!headers.ContainsKey(headerKey)) return null;
+			return headers[headerKey].Single();
 		}
 
 		public string HttpMethod

@@ -9,24 +9,31 @@ namespace SelfHost
 	class ResponseWrapper : IResponse
 	{
 		readonly ResultDelegate result;
+		readonly MemoryStream buffer;
 
 		public ResponseWrapper(ResultDelegate result)
 		{
 			this.result = result;
+			buffer = new MemoryStream();
 		}
 
-		public int StatusCode {get;set;}
+		public int StatusCode {get; set; }
 
-		public string StatusDescription {get;set;}
+		public string StatusDescription { get; set; }
 
 		public Stream OutputStream
 		{
-			get { 
-				throw new NotImplementedException(); 
+			get {
+				return Buffer;
 			}
 		}
 
-		public string ContentType{get;set;}
+		public string ContentType { get; set; }
+
+		public MemoryStream Buffer
+		{
+			get { return buffer; }
+		}
 
 		public void SetHeader(string headerName, string value)
 		{
