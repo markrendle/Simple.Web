@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Simple.Web.Helpers;
 
 namespace Simple.Web.Owin.AutoLoadedUtils {
     public sealed class PathUtility : IPathUtility{
-
 		private static readonly string AppRoot = AssemblyAppRoot(Assembly.GetExecutingAssembly().GetPath());
 
     	public static string AssemblyAppRoot(string typePath)
@@ -15,7 +13,7 @@ namespace Simple.Web.Owin.AutoLoadedUtils {
     	}
 
     	public string MapPath(string virtualPath) {
-			return Path.Combine(AppRoot, virtualPath);
+			return Path.Combine(AppRoot, virtualPath.TrimStart('~','/'));
     	}
     }
 	

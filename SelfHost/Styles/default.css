@@ -1,8 +1,13 @@
 ﻿body {
 	background-color: #eee;
 	font-family: Sans-Serif;
-	font-size: 12pt;
+	font-size: 9pt;
 }
+
+@media (min-width: 800px) { body{font-size: 20pt;} }
+@media (max-width: 800px) { body{font-size: 18pt;} }
+@media (max-width: 600px) { body{font-size: 16pt;} }
+@media (max-width: 480px) { body{font-size: 12pt;} }
 
 h1 {
 	font-size: 120%;

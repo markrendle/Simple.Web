@@ -24,24 +24,27 @@ namespace Simple.Web.Owin
 			}
 		}
 
-		static AsyncCallback CallCompleted(IContext context, ResultDelegate result)
-		{
-			return ar => result(
+		static AsyncCallback CallCompleted(IContext context, ResultDelegate result) {
+			return ar => {
+				var response = (ResponseWrapper)context.Response;
+				result(
 				// Status:
-			             	context.Response.StatusCode + " " +context.Response.StatusDescription,
+				response.StatusCode + " " + response.StatusDescription,
 
-			             	// Headers:
-			             	new HeaderDictionary {
-			             	                     	{"Content-Type", new[] {"text/html"}}
-			             	                     }, 
-				
-			             	// Output
-			             	(write,flush,end,cancel)=> {
-			             		var response = (ResponseWrapper)context.Response;
-			             		var bytes = response.Buffer.ToArray();
-			             		write(new ArraySegment<byte>(bytes));
-			             		end(null);
-			             	});
+				// Headers:
+				new HeaderDictionary {
+									  {"Content-Type", new[] {response.ContentType ?? ""}}
+								   },
+
+				// Output
+				(write, flush, end, cancel) => {
+					var bytes = response.Buffer.ToArray();
+					if (bytes.LongLength > 0) {
+						write(new ArraySegment<byte>(bytes));
+					}
+					end(null);
+				});
+			};
 		}
 	}
 }

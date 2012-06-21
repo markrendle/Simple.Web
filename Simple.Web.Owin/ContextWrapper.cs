@@ -12,7 +12,7 @@ namespace Simple.Web.Owin
 		public ContextWrapper(IDictionary<string, object> env, ResultDelegate result)
 		{
 			this.env = env;
-			reponseWrapper = new ResponseWrapper(result);
+			reponseWrapper = new ResponseWrapper();
 		}
 
 		public IRequest Request

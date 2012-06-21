@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Owin;
 using Simple.Web.Http;
 
 namespace Simple.Web.Owin
 {
 	class ResponseWrapper : IResponse
 	{
-		readonly ResultDelegate result;
-		readonly MemoryStream buffer;
+		MemoryStream buffer;
 
-		public ResponseWrapper(ResultDelegate result)
+		public ResponseWrapper()
 		{
-			this.result = result;
 			buffer = new MemoryStream();
 		}
 
@@ -57,7 +54,7 @@ namespace Simple.Web.Owin
 
 		public void TransmitFile(string file)
 		{
-			throw new NotImplementedException();
+			buffer = new MemoryStream(File.ReadAllBytes(file));
 		}
 
 		public void DisableCache()
