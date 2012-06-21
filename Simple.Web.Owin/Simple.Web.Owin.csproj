@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoLoadedUtils\PathUtility.cs" />
     <Compile Include="ContextWrapper.cs" />
     <Compile Include="HeaderDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

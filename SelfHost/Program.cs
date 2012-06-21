@@ -9,7 +9,7 @@ namespace SelfHost
 		static void Main()
 		{
 			// TODO: fix this!
-			var x = new Simple.Web.Razor.RazorHtmlMediaTypeHandler(); // Force load the Razor dll.
+			new Simple.Web.Razor.RazorHtmlMediaTypeHandler(); // Force load the Razor dll.
 
 
 			var server = new ServerFactory();

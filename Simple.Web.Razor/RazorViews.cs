@@ -1,3 +1,5 @@
+using Simple.Web.Helpers;
+
 namespace Simple.Web.Razor
 {
     using System;
