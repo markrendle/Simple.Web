@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Owin;
-using Simple.Web;
 using Simple.Web.Http;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	public static class SelfHostingApp
 	{
@@ -17,10 +16,6 @@ namespace SelfHost
 			AsyncCallback cb = CallCompleted(wrapper, result);
             
 			var appTask = new Application().Run(wrapper).ToApm(cb,null);
-			
-			// TODO: fix this!
-			var x = new Simple.Web.Razor.RazorHtmlMediaTypeHandler(); // to load the dll (temp)
-
 
 			try {
 				appTask.Wait();

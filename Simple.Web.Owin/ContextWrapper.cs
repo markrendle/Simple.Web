@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Owin;
 using Simple.Web.Http;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	class ContextWrapper :  IContext
 	{

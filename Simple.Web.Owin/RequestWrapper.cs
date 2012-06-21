@@ -4,10 +4,9 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using Owin;
-using Simple.Web;
 using Simple.Web.Http;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	public class RequestWrapper : IRequest
 	{

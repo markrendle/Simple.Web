@@ -8,8 +8,8 @@
     <ProjectGuid>{A191A409-CFE9-4C6C-A949-EA3AAEA99282}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SelfHost.Unit.Tests</RootNamespace>
-    <AssemblyName>SelfHost.Unit.Tests</AssemblyName>
+    <RootNamespace>Simple.Web.Owin.Tests</RootNamespace>
+    <AssemblyName>Simple.Web.Owin.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,6 +53,10 @@
     <ProjectReference Include="..\SelfHost\SelfHost.csproj">
       <Project>{E76944B2-2587-4505-AA5F-57D93298CFC2}</Project>
       <Name>SelfHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.Owin\Simple.Web.Owin.csproj">
+      <Project>{DB2D5BA6-BED1-4403-82ED-6D385FFCE9AB}</Project>
+      <Name>Simple.Web.Owin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

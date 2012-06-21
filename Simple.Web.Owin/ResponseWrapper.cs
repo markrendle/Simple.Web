@@ -4,7 +4,7 @@ using System.IO;
 using Owin;
 using Simple.Web.Http;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	class ResponseWrapper : IResponse
 	{

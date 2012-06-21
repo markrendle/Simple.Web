@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	public class HeaderDictionary : Dictionary<string, IEnumerable<string>>
 	{

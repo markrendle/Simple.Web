@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;// ReSharper disable ReturnTypeCanBeEnumerable.Local
 using NUnit.Framework;
+using Simple.Web.Owin;
 
 namespace SelfHost.Unit.Tests
 {

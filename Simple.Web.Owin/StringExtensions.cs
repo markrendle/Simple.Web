@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	public static class StringExtensions
 	{

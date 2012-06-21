@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	internal static class TaskEx
 	{

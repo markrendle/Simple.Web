@@ -1,6 +1,6 @@
 using System;
 
-namespace SelfHost
+namespace Simple.Web.Owin
 {
 	// Owin delegates break if you don't declare this. Stupid C#!
 	static class wtf
