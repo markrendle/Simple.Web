@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoLoadedUtils\PathUtility.cs" />
+    <Compile Include="FileHandling\MultipartParser.cs" />
+    <Compile Include="FileHandling\PostedFile.cs" />
+    <Compile Include="FileHandling\TempFileStream.cs" />
     <Compile Include="ContextWrapper.cs" />
     <Compile Include="HeaderDictionary.cs" />
     <Compile Include="OwinOutput.cs" />

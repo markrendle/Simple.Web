@@ -38,5 +38,10 @@ namespace Simple.Web.Owin
 				}
 			};
 		}
+
+		public static void Use<T>() where T:new()
+		{
+			new T();
+		}
 	}
 }

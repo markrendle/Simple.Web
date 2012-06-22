@@ -1,6 +1,7 @@
 ﻿using System;
 using Firefly.Http;
 using Simple.Web.Owin;
+using Simple.Web.Razor;
 
 namespace SelfHost
 {
@@ -9,8 +10,7 @@ namespace SelfHost
 		static void Main()
 		{
 			// TODO: fix this!
-			new Simple.Web.Razor.RazorHtmlMediaTypeHandler(); // Force load the Razor dll.
-
+			SelfHostingApp.Use<RazorHtmlMediaTypeHandler>();
 
 			var server = new ServerFactory();
 			using (server.Create(SelfHostingApp.App, port: 81))

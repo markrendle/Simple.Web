@@ -1,0 +1,21 @@
+﻿@handler SelfHost.GetMd5Upload
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload a file</title>
+</head>
+<body>
+    <h1> Upload a file</h1>
+    <div>
+        <form action="/md5" method="POST" enctype="multipart/form-data">
+        <fieldset>
+            <div>
+                <label for="datafile">File:</label>
+				<input type="file" id="datafile" name="datafile" size="40" />
+            </div>
+            <input type="submit" value="Upload" />
+        </fieldset>
+        </form>
+    </div>
+</body>
+</html>

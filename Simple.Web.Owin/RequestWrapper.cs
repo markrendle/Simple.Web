@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Owin;
+using Simple.Web.Helpers;
 using Simple.Web.Http;
+using Simple.Web.Owin.FileHandling;
 
 namespace Simple.Web.Owin
 {
@@ -33,7 +33,7 @@ namespace Simple.Web.Owin
 			{
 				bodyStream.Write(data.Array, data.Offset, data.Count);
 			}
-			return false;
+			return true;
 		}
 
 		public Uri Url
@@ -99,9 +99,19 @@ namespace Simple.Web.Owin
 
 		public IEnumerable<IPostedFile> Files
 		{
-			get { 
-				return new List<IPostedFile>(); //TODO
+			get {
+				bodyStream.Seek(0, SeekOrigin.Begin);
+				var mpp = new MultipartParser(bodyStream, GetMultipartBoundary());
+				return mpp.Parse();
 			}
+		}
+
+		string GetMultipartBoundary()
+		{
+			var boundsLine = headers["Content-Type"].First().Trim();
+
+			if (!boundsLine.StartsWith("")) throw new Exception("Can't receive files until post is multipart/form-data; Try adding  enctype=\"multipart/form-data\" to your <form> tag.");
+			return boundsLine.SubstringAfterLast('=');
 		}
 
 		public IDictionary<string, ICookie> Cookies
