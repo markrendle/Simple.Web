@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Simple.Web.Behaviors.Implementations
+﻿namespace Simple.Web.Behaviors.Implementations
 {
     using MediaTypeHandling;
     using Behaviors;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,8 +29,10 @@ namespace Simple.Web.Owin
 
 		bool reader(ArraySegment<byte> data)
 		{
-			bodyStream.Seek(0, SeekOrigin.Begin);
-			bodyStream.Write(data.Array, 0, data.Array.Length);
+			if (data.Count > 0)
+			{
+				bodyStream.Write(data.Array, data.Offset, data.Count);
+			}
 			return false;
 		}
 
@@ -64,7 +67,6 @@ namespace Simple.Web.Owin
 		{
 			get
 			{
-				// TODO: skip past head
 				bodyStream.Seek(0, SeekOrigin.Begin);
 				return bodyStream;
 			}
