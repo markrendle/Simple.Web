@@ -3,7 +3,7 @@ namespace Sandbox
     using Simple.Web;
     using Simple.Web.Behaviors;
 
-    [UriTemplate("/hello/{Title}")]
+    [UriTemplate("/hello/{Name}")]
     public class GetHello : IGet, IOutput<RawHtml>
     {
         public string Name { get; set; }
