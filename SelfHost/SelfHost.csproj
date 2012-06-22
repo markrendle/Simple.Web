@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="Scripts\Test.js" />
     <Content Include="Styles\default.css" />
     <Content Include="Views\Index.cshtml" />
   </ItemGroup>

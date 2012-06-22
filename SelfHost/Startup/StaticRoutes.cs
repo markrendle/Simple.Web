@@ -4,6 +4,7 @@
 	public class SetPublicFolders : IStartupTask {
 		public void Run (IConfiguration configuration, IWebEnvironment environment) {
 			configuration.PublicFolders.Add("/Styles");
+			configuration.PublicFolders.Add("/Scripts");
 		}
 	}
 }
