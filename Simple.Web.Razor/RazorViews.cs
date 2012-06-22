@@ -1,3 +1,4 @@
+using System.Text;
 using Simple.Web.Helpers;
 
 namespace Simple.Web.Razor
@@ -65,20 +66,12 @@ namespace Simple.Web.Razor
                     try
                     {
                         var type = RazorTypeBuilder.CreateType(reader);
-                        if (type != null)
-                        {
-                            var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
-                            ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
-                            if (!CacheViewTypeByHandlerAndModelType(type))
-                            {
-                                CacheViewTypeByModelType(type);
-                                CacheViewTypeByHandlerType(type);
-                            }
-                        }
+                    	if (type == null) throw new Exception("Type returned was null (internal server error?)");
+                    	CachePageType(type, file);
                     }
                     catch (RazorCompilerException ex)
                     {
-						// TODO: better information here -- likely to be a problem for web developers!!
+						Debug.WriteLine("*** View compile failed for "+file+": "+ex.Message);
                         Trace.TraceError(ex.Message);
                     }
                 }
@@ -90,7 +83,18 @@ namespace Simple.Web.Razor
             }
         }
 
-        private static void CacheViewTypeByModelType(Type type)
+    	static void CachePageType(Type type, string file)
+    	{
+    		var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
+    		ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
+    		if (!CacheViewTypeByHandlerAndModelType(type))
+    		{
+    			CacheViewTypeByModelType(type);
+    			CacheViewTypeByHandlerType(type);
+    		}
+    	}
+
+    	private static void CacheViewTypeByModelType(Type type)
         {
             var baseType = type.BaseType;
 
