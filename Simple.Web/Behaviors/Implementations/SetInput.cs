@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.Behaviors.Implementations
+﻿using System.IO;
+
+namespace Simple.Web.Behaviors.Implementations
 {
     using MediaTypeHandling;
     using Behaviors;
@@ -17,7 +19,7 @@
         /// <returns></returns>
         public static void Impl<T>(IInput<T> handler, IContext context)
         {
-            if (context.Request.InputStream.Length == 0) return;
+        	if (context.Request.InputStream.Length == 0) return;
 
             var mediaTypeHandlerTable = new MediaTypeHandlerTable();
             var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.ContentType);

@@ -8,10 +8,12 @@ namespace Simple.Web.Owin
 	class ResponseWrapper : IResponse
 	{
 		MemoryStream buffer;
+		readonly HeaderDictionary headers;
 
 		public ResponseWrapper()
 		{
 			buffer = new MemoryStream();
+			headers = new HeaderDictionary();
 		}
 
 		public int StatusCode {get; set; }
@@ -32,9 +34,14 @@ namespace Simple.Web.Owin
 			get { return buffer; }
 		}
 
+		public HeaderDictionary Headers
+		{
+			get { return headers; }
+		}
+
 		public void SetHeader(string headerName, string value)
 		{
-			throw new NotImplementedException();
+			headers.Include(headerName, value);
 		}
 
 		public void SetCookie(string name, string value, DateTime? expires = new DateTime?(), bool httpOnly = false, bool secure = false, string domain = null, string path = null)

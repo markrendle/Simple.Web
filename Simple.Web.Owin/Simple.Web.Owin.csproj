@@ -46,6 +46,7 @@
     <Compile Include="AutoLoadedUtils\PathUtility.cs" />
     <Compile Include="ContextWrapper.cs" />
     <Compile Include="HeaderDictionary.cs" />
+    <Compile Include="OwinOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestWrapper.cs" />
     <Compile Include="ResponseWrapper.cs" />

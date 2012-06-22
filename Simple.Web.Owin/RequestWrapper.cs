@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using Owin;
 using Simple.Web.Http;
 
@@ -12,13 +14,23 @@ namespace Simple.Web.Owin
 	{
 		readonly IDictionary<string, object> env;
 		readonly IDictionary<string, IEnumerable<string>> headers;
-		//readonly BodyDelegate body;
+		readonly BodyDelegate bodyDelegate;
+		readonly MemoryStream bodyStream = new MemoryStream();
 
 		public RequestWrapper(IDictionary<string, object> environment)
 		{
 			env = environment;
 			headers = (IDictionary<string, IEnumerable<string>>)environment[OwinConstants.RequestHeaders];
-			//body = (BodyDelegate)environment[OwinConstants.RequestBody];
+			bodyDelegate = (BodyDelegate)environment[OwinConstants.RequestBody];
+
+			bodyDelegate(reader, flush => false, ex=> { }, CancellationToken.None);
+		}
+
+		bool reader(ArraySegment<byte> data)
+		{
+			bodyStream.Seek(0, SeekOrigin.Begin);
+			bodyStream.Write(data.Array, 0, data.Array.Length);
+			return false;
 		}
 
 		public Uri Url
@@ -50,10 +62,11 @@ namespace Simple.Web.Owin
 
 		public Stream InputStream
 		{
-			get {
-				// TODO: determine encoding properly?
-				return null;
-				//return new MemoryStream(UTF8Encoding.Default.GetBytes(env[OwinConstants.RequestBody].ToString()));
+			get
+			{
+				// TODO: skip past head
+				bodyStream.Seek(0, SeekOrigin.Begin);
+				return bodyStream;
 			}
 		}
 
