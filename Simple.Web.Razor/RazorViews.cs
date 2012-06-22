@@ -78,6 +78,7 @@ namespace Simple.Web.Razor
                     }
                     catch (RazorCompilerException ex)
                     {
+						// TODO: better information here -- likely to be a problem for web developers!!
                         Trace.TraceError(ex.Message);
                     }
                 }

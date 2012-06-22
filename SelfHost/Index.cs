@@ -1,8 +1,8 @@
-﻿namespace SimplestWeb
-{
-	using Simple.Web;
+﻿using Simple.Web;
 
-    [UriTemplate("/")]
+namespace SelfHost
+{
+	[UriTemplate("/")]
     public class Index : IGet
     {
         public Status Get()

@@ -1,10 +1,9 @@
 ﻿using Simple.Web.Behaviors;
+using Simple.Web;
 
-namespace SimplestWeb
+namespace SelfHost
 {
-	using Simple.Web;
-
-    [UriTemplate("/raw/{Message}")]
+	[UriTemplate("/raw/{Message}")]
     public class RawTest : IGet, IOutput<RawHtml>
     {
         public Status Get()

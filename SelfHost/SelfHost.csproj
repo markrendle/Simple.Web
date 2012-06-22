@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FailureTest.cs" />
+    <Compile Include="SampleForm.cs" />
     <Compile Include="RawTest.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="Program.cs" />
@@ -101,6 +102,7 @@
     <Content Include="Scripts\Test.js" />
     <Content Include="Styles\default.css" />
     <Content Include="Views\Index.cshtml" />
+    <Content Include="Views\SampleForm.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
