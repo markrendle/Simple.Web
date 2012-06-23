@@ -19,7 +19,7 @@ namespace Simple.Web.Owin
 
 				appTask.Wait();
 				if (appTask.Exception != null) throw appTask.Exception;
-			} catch (Exception ex) {
+			} catch (Exception) {
 				OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
 			}
 		}
