@@ -17,6 +17,7 @@ namespace Simple.Web.Owin
 		readonly IDictionary<string, IEnumerable<string>> headers;
 		readonly BodyDelegate bodyDelegate;
 		readonly MemoryStream bodyStream = new MemoryStream();
+		IEnumerable<PostedFile> postedFiles;
 
 		public RequestWrapper(IDictionary<string, object> environment)
 		{
@@ -100,9 +101,12 @@ namespace Simple.Web.Owin
 		public IEnumerable<IPostedFile> Files
 		{
 			get {
-				bodyStream.Seek(0, SeekOrigin.Begin);
-				var mpp = new MultipartParser(bodyStream, GetMultipartBoundary());
-				return mpp.Parse();
+				if (postedFiles == null) {
+					bodyStream.Seek(0, SeekOrigin.Begin);
+					var mpp = new MultipartParser(bodyStream, GetMultipartBoundary());
+					postedFiles = mpp.Parse().ToArray();
+				}
+				return postedFiles;
 			}
 		}
 
