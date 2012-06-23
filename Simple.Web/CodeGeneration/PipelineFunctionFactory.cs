@@ -1,7 +1,6 @@
 ﻿namespace Simple.Web.CodeGeneration
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -12,7 +11,6 @@
 
     internal class PipelineFunctionFactory
     {
-        private static readonly ConcurrentDictionary<string,Func<IContext, Task>> Cache = new ConcurrentDictionary<string, Func<IContext, Task>>(); 
         private readonly HandlerInfo _handlerInfo;
         private readonly Type _handlerType;
         private readonly ParameterExpression _context;
@@ -21,8 +19,7 @@
 
         public static Func<IContext, Task> Get(HandlerInfo handlerInfo)
         {
-            string key = handlerInfo.HandlerType.FullName + "/" + handlerInfo.HttpMethod;
-            return Cache.GetOrAdd(key, _ => new PipelineFunctionFactory(handlerInfo).BuildAsyncRunMethod());
+			return new PipelineFunctionFactory(handlerInfo).BuildAsyncRunMethod();
         }
 
         public PipelineFunctionFactory(HandlerInfo handlerInfo)

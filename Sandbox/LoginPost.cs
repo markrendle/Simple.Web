@@ -26,9 +26,9 @@
             return Status.SeeOther;
         }
 
-        public Login Input { get; set; }
+    	public Login Input { get; set; }
 
-        public string Location { get; private set; }
+    	public string Location { get; private set; }
 
         public IUser LoggedInUser { get; private set; }
     }

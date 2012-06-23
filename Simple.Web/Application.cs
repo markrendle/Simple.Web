@@ -6,7 +6,6 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Web;
     using CodeGeneration;
     using Helpers;
     using Hosting;
@@ -79,12 +78,36 @@
 
             return true;
         }
-        private static string GetContentType(string file, IEnumerable<string> acceptTypes)
+
+        internal static string GetContentType(string file, IEnumerable<string> acceptTypes)
         {
-            if (acceptTypes == null) return "text/text";
-            return acceptTypes.FirstOrDefault() ?? "text/text";
+            if (acceptTypes == null) return "text/plain";
+
+			var types = acceptTypes.ToArray();
+
+			if (types.All(r=>r == "*/*")) return GuessType(file);
+            return types.FirstOrDefault() ?? "text/plain";
         }
-        private static void Startup()
+
+    	static string GuessType(string file)
+    	{
+    		switch (file.ToLower().SubstringAfterLast('.'))
+    		{
+				case "js":
+				case "javascript": return "text/javascript";
+
+				case "css": return "text/css";
+
+				case "jpg":
+				case "jpeg": return "image/jpeg";
+				case "png": return "image/png";
+				case "gif": return "image/gif";
+
+				default: return "text/plain";
+    		}
+    	}
+
+    	private static void Startup()
         {
             if (_startupTaskRunner != null)
             {

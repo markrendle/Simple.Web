@@ -1,11 +1,7 @@
 ﻿namespace Simple.Web.Razor
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Dynamic;
     using System.IO;
-    using System.Reflection;
     using MediaTypeHandling;
 
     [MediaTypes(MediaType.Html, MediaType.XHtml)]
