@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.Razor
+﻿using Simple.Web.Helpers;
+
+namespace Simple.Web.Razor
 {
     using System;
     using System.CodeDom.Compiler;
@@ -89,9 +91,8 @@
             }
         }
 
-        private static IEnumerable<string> CreateAssembliesList()
-        {
-            var assemblies = new List<string>
+        private static IEnumerable<string> CreateAssembliesList() {
+			var assemblies = new List<string>
                                  {
                                      typeof(SimpleWeb).Assembly.GetPath(),
                                      Assembly.GetExecutingAssembly().GetPath(),

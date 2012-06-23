@@ -5,7 +5,7 @@ namespace Simple.Web.MediaTypeHandling
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Simple.Web.Helpers;
+    using Helpers;
 
     internal class MediaTypeHandlerTable
     {

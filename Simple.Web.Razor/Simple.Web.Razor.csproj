@@ -69,7 +69,6 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AmbiguousViewException.cs" />
-    <Compile Include="AssemblyEx.cs" />
     <Compile Include="AttributePart.cs" />
     <Compile Include="AttributeValue.cs" />
     <Compile Include="Engine\SetModelTypeCodeGenerator.cs" />

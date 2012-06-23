@@ -4,11 +4,8 @@ namespace Simple.Web.AspNet
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
-    using Authentication;
-    using Hosting;
-    using Http;
 
-    internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
+	internal class SimpleHttpAsyncHandler : IHttpAsyncHandler
     {
         public void ProcessRequest(HttpContext context)
         {

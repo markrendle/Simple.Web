@@ -9,7 +9,28 @@ namespace Simple.Web.Razor.Tests
             RazorViews.Initialize();
         }
 
-        [Fact]
+		[Fact]
+		public void FindsCorrectViewPathInBinFolder()
+		{
+			Assert.Equal(@"C:\temp\example",RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\me.dll"));
+		}
+		[Fact]
+		public void FindsCorrectViewPathInBinDebugFolder()
+		{
+			Assert.Equal( @"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\Debug\me.dll"));
+		}
+		[Fact]
+		public void FindsCorrectViewPathInBinReleaseFolder()
+		{
+			Assert.Equal(@"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\Release\me.dll"));
+		}
+		[Fact]
+		public void FindsCorrectViewPathInNonBinFolder()
+		{
+			Assert.Equal(@"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\me.dll"));
+		}
+
+    	[Fact]
         public void FindsViewForModelType()
         {
             Assert.Equal(typeof(SimpleTemplateModelBase<TestJustModel>),

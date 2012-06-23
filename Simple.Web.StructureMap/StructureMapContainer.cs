@@ -1,5 +1,4 @@
-﻿using System;
-using Simple.Web.DependencyInjection;
+﻿using Simple.Web.DependencyInjection;
 using StructureMap;
 
 namespace Simple.Web.StructureMap
@@ -30,17 +29,15 @@ namespace Simple.Web.StructureMap
 
         public T Get<T>()
         {
-            if (typeof(T).IsAbstract || typeof(T).IsInterface)
-            {
-                return _container.TryGetInstance<T>();
-            }
-            else
-            {
-                return _container.GetInstance<T>();
-            }
+        	return IsConcrete<T>() ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
         }
 
-        public void Dispose()
+    	static bool IsConcrete<T>()
+    	{
+    		return !(typeof(T).IsAbstract || typeof(T).IsInterface);
+    	}
+
+    	public void Dispose()
         {
             _container.Dispose();
         }

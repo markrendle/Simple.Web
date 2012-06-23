@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sandbox.Startup
+﻿namespace Sandbox.Startup
 {
     using Simple.Web;
     using Simple.Web.Authentication;

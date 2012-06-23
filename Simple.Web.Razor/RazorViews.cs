@@ -1,3 +1,6 @@
+using System.Text;
+using Simple.Web.Helpers;
+
 namespace Simple.Web.Razor
 {
     using System;
@@ -5,7 +8,6 @@ namespace Simple.Web.Razor
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Text.RegularExpressions;
 
     internal class RazorViews
@@ -21,10 +23,14 @@ namespace Simple.Web.Razor
         private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>();
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
 
-        private static readonly string AppRoot =
-            Path.GetDirectoryName(typeof(RazorViews).Assembly.GetPath()).Regex(@"\\bin\\?$", string.Empty);
+        private static readonly string AppRoot = AssemblyAppRoot(typeof(RazorViews).Assembly.GetPath());
 
-        public static void Initialize()
+    	public static string AssemblyAppRoot(string typePath)
+    	{
+    		return Path.GetDirectoryName(typePath).Regex(@"\\bin\\?([Dd]ebug|[Rr]elease)?$", string.Empty);
+    	}
+
+    	public static void Initialize()
         {
             ClearCaches();
 
@@ -60,19 +66,12 @@ namespace Simple.Web.Razor
                     try
                     {
                         var type = RazorTypeBuilder.CreateType(reader);
-                        if (type != null)
-                        {
-                            var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
-                            ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
-                            if (!CacheViewTypeByHandlerAndModelType(type))
-                            {
-                                CacheViewTypeByModelType(type);
-                                CacheViewTypeByHandlerType(type);
-                            }
-                        }
+                    	if (type == null) throw new Exception("Type returned was null (internal server error?)");
+                    	CachePageType(type, file);
                     }
                     catch (RazorCompilerException ex)
                     {
+						Debug.WriteLine("*** View compile failed for "+file+": "+ex.Message);
                         Trace.TraceError(ex.Message);
                     }
                 }
@@ -84,7 +83,18 @@ namespace Simple.Web.Razor
             }
         }
 
-        private static void CacheViewTypeByModelType(Type type)
+    	static void CachePageType(Type type, string file)
+    	{
+    		var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
+    		ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
+    		if (!CacheViewTypeByHandlerAndModelType(type))
+    		{
+    			CacheViewTypeByModelType(type);
+    			CacheViewTypeByHandlerType(type);
+    		}
+    	}
+
+    	private static void CacheViewTypeByModelType(Type type)
         {
             var baseType = type.BaseType;
 

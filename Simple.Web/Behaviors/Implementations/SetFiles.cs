@@ -1,8 +1,8 @@
 namespace Simple.Web.Behaviors.Implementations
 {
     using System.Linq;
-    using Simple.Web.Behaviors;
-    using Simple.Web.Http;
+    using Behaviors;
+    using Http;
 
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.

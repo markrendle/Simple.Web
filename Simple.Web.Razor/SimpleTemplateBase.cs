@@ -2,8 +2,6 @@ namespace Simple.Web.Razor
 {
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Dynamic;
     using System.IO;
 
     public abstract class SimpleTemplateBase
@@ -27,21 +25,15 @@ namespace Simple.Web.Razor
             Trace.Write(value);
         }
 
-        //public virtual void WriteAttribute(object value)
-        //{
-        //    Writer.Write(value);
-        //    Trace.Write(value);
-        //}
-
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void WriteAttribute(string attributeName, AttributePart prefix, AttributePart suffix, params AttributeValue[] values)
         {
             WriteLiteral(prefix);
-            for (int i = 0; i < values.Length; i++)
+            foreach (AttributeValue t in values)
             {
-                Write(values[i]);
+            	Write(t);
             }
-            WriteLiteral(suffix);
+        	WriteLiteral(suffix);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -61,7 +53,7 @@ namespace Simple.Web.Razor
         protected dynamic Model { get; private set; }
     }
 
-    public abstract class SimpleTemplateModelBase<TModel> : SimpleTemplateBase
+	public abstract class SimpleTemplateModelBase<TModel> : SimpleTemplateBase
     {
         private TModel _model;
 
