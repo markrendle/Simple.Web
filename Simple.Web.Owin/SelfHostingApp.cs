@@ -8,19 +8,19 @@ namespace Simple.Web.Owin
 {
 	public static class SelfHostingApp
 	{
-		public static void App(IDictionary<string, object> env, ResultDelegate result, Action<Exception> fault)
-		{
+		public static void App(IDictionary<string, object> env, ResultDelegate result, Action<Exception> fault) {
 
+			var wrapper = new ContextWrapper(env);
+
+			var appTask = new Application()
+				.Run(wrapper)
+				.ToApm(CallCompleted(wrapper, result), null);
 			try {
-				var wrapper = new ContextWrapper(env);
-
-				var appTask = new Application()
-					.Run(wrapper)
-					.ToApm(CallCompleted(wrapper, result), null);
 
 				appTask.Wait();
-			} catch (Exception ex){
-				fault(ex);
+				if (appTask.Exception != null) throw appTask.Exception;
+			} catch (Exception ex) {
+				OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
 			}
 		}
 
@@ -28,7 +28,7 @@ namespace Simple.Web.Owin
 			return ar => {
 				var response = (ResponseWrapper)context.Response;
 				var task = ar as Task<object>;
-				if (task != null && task.IsFaulted)
+				if (task != null && (task.Exception != null || task.IsFaulted))
 				{
 					OwinOutput.SendFailureResult(context, result, task);
 				}
