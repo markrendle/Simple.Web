@@ -47,7 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacContainer.cs" />
+    <Compile Include="RegisterHandlersExtension.cs" />
     <Compile Include="AutofacStartupBase.cs" />
+    <Compile Include="HandlersModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

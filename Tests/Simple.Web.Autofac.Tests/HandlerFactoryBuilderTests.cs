@@ -8,6 +8,7 @@ namespace Simple.Web.Autofac.Tests
 {
     using CodeGeneration;
     using Xunit;
+    using System.Reflection;
 
     public class HandlerFactoryBuilderTests
     {
@@ -46,11 +47,9 @@ namespace Simple.Web.Autofac.Tests
         protected override IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
-
-            //builder.RegisterType<TestHandler>()
-            //    .AsSelf()
-            //    .InstancePerLifetimeScope();
-
+                        
+            builder.RegisterHandlersInAssembly(Assembly.GetExecutingAssembly());
+            
             builder.RegisterType<OkResult>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
