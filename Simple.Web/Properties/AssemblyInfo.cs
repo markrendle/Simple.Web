@@ -11,3 +11,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Simple.Web.Xml.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.Ninject.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.StructureMap.Tests")]
+[assembly: InternalsVisibleTo("Simple.Web.Autofac.Tests")]
