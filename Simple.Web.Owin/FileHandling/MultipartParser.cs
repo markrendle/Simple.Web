@@ -32,7 +32,7 @@ namespace Simple.Web.Owin.FileHandling
             _check[0] = _boundary[0];
         }
         
-        public IEnumerable<IPostedFile> Parse()
+        public IEnumerable<PostedFile> Parse()
         {
             if (_source.Length == 0) yield break;
 
@@ -40,7 +40,7 @@ namespace Simple.Web.Owin.FileHandling
 
             while (!_atEndOfFile)
             {
-                IPostedFile file = GetNextFile();
+                PostedFile file = GetNextFile();
                 if (file == null) break;
                 yield return file;
             }

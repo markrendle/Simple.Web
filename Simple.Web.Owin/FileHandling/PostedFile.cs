@@ -23,17 +23,19 @@ namespace Simple.Web.Owin.FileHandling
 
 		public string FileName
         {
-            get { return _fileName; }
+            get { 
+				return _fileName;
+			}
         }
 
 		public string ContentType
 		{
-			get { return "???"; } //TODO
+			get { return _headers["Content-Type"]; }
 		}
 
 		public int ContentLength
 		{
-			get { return 0;} //TODO
+			get { return (int)_stream.Length;}
 		}
 
 		public Stream InputStream

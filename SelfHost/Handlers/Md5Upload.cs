@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Simple.Web;
 using Simple.Web.Behaviors;
 
@@ -21,7 +23,8 @@ namespace SelfHost
 		{
 			if (Files.Any())
 			{
-				Location = "/raw/" + Files.Single().FileName;
+				var bytes = MD5.Create().ComputeHash(Files.First().InputStream);
+				Location = "/raw/" + BitConverter.ToString(bytes).Replace("-", ""); 
 			} else
 			{
 				Location = "/md5";
