@@ -15,12 +15,12 @@ namespace Simple.Web.Owin
 			var appTask = new Application()
 				.Run(wrapper)
 				.ToApm(CallCompleted(wrapper, result), null);
-			try {
 
+			try {
 				appTask.Wait();
 				if (appTask.Exception != null) throw appTask.Exception;
 			} catch (Exception) {
-				OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
+				//OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
 			}
 		}
 

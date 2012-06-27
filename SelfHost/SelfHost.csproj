@@ -105,6 +105,10 @@
     <Content Include="Views\Index.cshtml" />
     <Content Include="Views\SampleForm.cshtml" />
     <Content Include="Views\md5Upload.cshtml" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Cookies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
