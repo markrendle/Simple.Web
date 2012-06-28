@@ -119,10 +119,11 @@ namespace Simple.Web.Owin
 			return boundsLine.SubstringAfterLast('=');
 		}
 
+		Dictionary<string, ICookie> cookieCache = new Dictionary<string, ICookie>();
 		public IDictionary<string, ICookie> Cookies
 		{
 			get {
-				return new Dictionary<string, ICookie>(); //TODO
+				return cookieCache; //TODO
 			}
 		}
 	}

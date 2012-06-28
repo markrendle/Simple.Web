@@ -20,6 +20,7 @@ namespace Simple.Web.CodeGeneration
         public MethodInfo Redirect { get { return Get(typeof (Redirect)); } }
         public MethodInfo WriteStreamResponse { get { return Get(typeof (WriteStreamResponse)); } }
         public MethodInfo WriteRawHtml { get { return Get(typeof (WriteRawHtml)); } }
+		public MethodInfo WriteResponseCookies { get { return Get(typeof(WriteResponseCookies)); } }
         public MethodInfo WriteOutput { get { return Get(typeof (WriteOutput)); } }
         public MethodInfo WriteView { get { return Get(typeof (WriteView)); } }
         public MethodInfo SetUserCookie { get { return Get(typeof (SetUserCookie)); } }

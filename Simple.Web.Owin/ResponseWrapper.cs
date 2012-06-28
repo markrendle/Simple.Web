@@ -46,17 +46,18 @@ namespace Simple.Web.Owin
 
 		public void SetCookie(string name, string value, DateTime? expires = new DateTime?(), bool httpOnly = false, bool secure = false, string domain = null, string path = null)
 		{
-			throw new NotImplementedException();
+			Headers.Include("Set-Cookie", name + "=" + value); // todo: finish this!
 		}
 
 		public void SetCookie(string name, IDictionary<string, string> values, DateTime? expires = new DateTime?(), bool httpOnly = false, bool secure = false, string domain = null, string path = null)
 		{
-			throw new NotImplementedException();
+			foreach (var key in values.Keys) {
+				SetCookie(key, values[key], expires, httpOnly, secure, domain, path);
+			}
 		}
 
 		public void RemoveCookie(string name)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void TransmitFile(string file)
@@ -66,42 +67,34 @@ namespace Simple.Web.Owin
 
 		public void DisableCache()
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetCacheAbsoluteExpiry(DateTime expiresAt)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetCacheSlidingExpiry(TimeSpan expiresIn)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetETag(string etag)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetLastModified(DateTime lastModified)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetCacheVaryByContentEncodings(ICollection<string> varyByContentEncodings)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetCacheVaryByParams(ICollection<string> varyByParams)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetCacheVaryByHeaders(ICollection<string> varyByHeaders)
 		{
-			throw new NotImplementedException();
 		}
 	}
 }

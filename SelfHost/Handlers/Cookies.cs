@@ -42,18 +42,24 @@ namespace SelfHost
 	}
 
 	[UriTemplate("/addcookie")]
-	public class AddCookie : IPost, IMayRedirect, ISetCookies {
+	public class AddCookie : IPost, IMayRedirect, ISetCookies, IInput<CookieText> {
 		public Status Post() {
-			var name = "Cookie"+DateTime.Now.ToString("HH:mm:ss");
-			ResponseCookies.Add(name, new SimpleCookie(name, CookieValue));
+			var name = "Cookie" + DateTime.Now.ToString("HH:mm:ss");
+
+			ResponseCookies.Add(name, new SimpleCookie(name, Input.CookieValue));
+
 			Location = "/cookies";
 			return Status.SeeOther;
 		}
 
-		public string CookieValue { get; set; }
-
 		public IDictionary<string, ICookie> ResponseCookies { get; set; }
 
-		public string Location { get; set; } 
+		public string Location { get; set; }
+
+		public CookieText Input { get; set; } 
+	}
+
+	public class CookieText {
+		public string CookieValue { get; set; }
 	}
 }
