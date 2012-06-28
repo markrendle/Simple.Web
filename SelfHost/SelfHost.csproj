@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\Cookies.cs" />
     <Compile Include="Handlers\Md5Upload.cs" />
     <Compile Include="Handlers\FailureTest.cs" />
     <Compile Include="Handlers\SampleForm.cs" />
@@ -106,10 +107,9 @@
     <Content Include="Views\SampleForm.cshtml" />
     <Content Include="Views\md5Upload.cshtml" />
     <Content Include="Web.config" />
+    <Content Include="Views\Cookies\ListCookies.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Cookies\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,21 @@
+﻿@handler SelfHost.GetCookies
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cookies</title>
+		<link rel="Stylesheet" href="Styles/default.css" type="text/css" />
+    </head>
+    <body>
+		<h1>Cookies in this request</h1>
+		<div>
+		@foreach (var cookie in Handler.Cookies) {
+			<p>@cookie</p>
+		}
+		<form action="/addcookie" method="post">
+			<input id="cookievalue" name="cookievalue" value="my_cookie" type="text" />
+			<input type="submit" value="Add" />
+		</form>
+		</div>
+    </body>
+</html>
