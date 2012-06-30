@@ -131,7 +131,7 @@ namespace Simple.Web.Owin
 						var p = cookie.Split('=');
 						var k = p[0];
 						var v = p.Length > 1 ? p[1] : p[0];
-						cookies.Add(k, new SimpleCookie(k, v));
+						//cookies.Add(k, new SimpleCookie(k, v));
 					}
 				}
 				return cookies;

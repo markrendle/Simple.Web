@@ -59,7 +59,6 @@
     <Compile Include="Behaviors\OutputBehaviorAttribute.cs" />
     <Compile Include="Behaviors\RequestBehaviorAttribute.cs" />
     <Compile Include="Behaviors\ResponseBehaviorAttribute.cs" />
-    <Compile Include="Behaviors\Implementations\WriteResponseCookies.cs" />
     <Compile Include="CodeGeneration\AsyncPipeline.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />

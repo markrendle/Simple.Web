@@ -19,7 +19,8 @@
             if ((context.Response.StatusCode >= 301 && context.Response.StatusCode <= 303) || context.Response.StatusCode == 307)
             {
                 context.Response.SetHeader("Location", handler.Location);
-                return false;
+				context.Response.SetCookie("Test", "Cookie");
+                return false; // this cancels the responder task, so doesn't require a view. Cookie task MUST come before this!
             }
             return true;
         }

@@ -14,13 +14,6 @@ namespace Simple.Web.Owin
 			var appTask = new Application()
 				.Run(wrapper)
 				.ToApm(CallCompleted(wrapper, result), null);
-
-			try {
-				appTask.Wait();
-				if (appTask.Exception != null) throw appTask.Exception;
-			} catch (Exception) {
-				OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
-			}
 		}
 
 		static AsyncCallback CallCompleted(IContext context, ResultDelegate result) {
@@ -37,7 +30,7 @@ namespace Simple.Web.Owin
 				}
 			};
 		}
-
+		
 		/// <summary>
 		/// Catch all otherwise missed exceptions.
 		/// Failing to do this will cause the host to die.
