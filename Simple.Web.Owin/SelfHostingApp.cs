@@ -9,19 +9,11 @@ namespace Simple.Web.Owin
 	public static class SelfHostingApp
 	{
 		public static void App(IDictionary<string, object> env, ResultDelegate result, Action<Exception> fault) {
-
 			var wrapper = new ContextWrapper(env);
 
 			var appTask = new Application()
 				.Run(wrapper)
 				.ToApm(CallCompleted(wrapper, result), null);
-			try {
-
-				appTask.Wait();
-				if (appTask.Exception != null) throw appTask.Exception;
-			} catch (Exception) {
-				OwinOutput.SendFailureResult(wrapper, result, (Task<object>)appTask);
-			}
 		}
 
 		static AsyncCallback CallCompleted(IContext context, ResultDelegate result) {
@@ -38,8 +30,20 @@ namespace Simple.Web.Owin
 				}
 			};
 		}
+		
+		/// <summary>
+		/// Catch all otherwise missed exceptions.
+		/// Failing to do this will cause the host to die.
+		/// This should get handled better!
+		/// </summary>
+		static SelfHostingApp() {
+			TaskScheduler.UnobservedTaskException += (sender, args) => {
+					Console.WriteLine(args.Exception.Message);
+					args.SetObserved();
+				};
+		}
 
-		public static void Use<T>() where T:new()
+		public static void Use<T>() where T : new()
 		{
 			new T();
 		}

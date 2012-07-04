@@ -8,8 +8,6 @@ namespace Simple.Web.CodeGeneration
     {
         public MethodInfo CheckAuthentication { get { return Get(typeof (CheckAuthentication)); } }
         public MethodInfo SetFiles { get { return Get(typeof (SetFiles)); } }
-        public MethodInfo SetRequestCookies { get { return Get(typeof (SetRequestCookies)); } }
-        public MethodInfo SetResponseCookies { get { return Get(typeof (SetResponseCookies)); } }
         public MethodInfo SetInput { get { return Get(typeof (SetInput)); } }
         public MethodInfo SetInputETag { get { return Get(typeof (SetInputETag)); } } 
         public MethodInfo SetOutputETag { get { return Get(typeof (SetOutputETag)); } }

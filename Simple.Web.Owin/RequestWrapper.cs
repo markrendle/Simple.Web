@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Owin;
 using Simple.Web.Helpers;
@@ -118,10 +119,22 @@ namespace Simple.Web.Owin
 			return boundsLine.SubstringAfterLast('=');
 		}
 
+		Dictionary<string, ICookie> cookies;
 		public IDictionary<string, ICookie> Cookies
 		{
 			get {
-				return new Dictionary<string, ICookie>(); //TODO
+				if (cookies == null) {
+					cookies = new Dictionary<string, ICookie>();
+					if (!headers.ContainsKey("Cookie")) return cookies;
+					var cookieStrings = headers["Cookie"].First().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+					foreach (var cookie in cookieStrings) {
+						var p = cookie.Split('=');
+						var k = p[0];
+						var v = p.Length > 1 ? p[1] : p[0];
+						//cookies.Add(k, new SimpleCookie(k, v));
+					}
+				}
+				return cookies;
 			}
 		}
 	}

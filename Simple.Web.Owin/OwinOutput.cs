@@ -81,6 +81,10 @@ namespace Simple.Web.Owin
 
 		static void BuildExceptionTrace(Exception ex, StringBuilder sb)
 		{
+			if (ex == null) {
+				sb.AppendLine("No exception!");
+				return;
+			}
 			sb.AppendLine(ex.Message);
 			sb.AppendLine(ex.StackTrace);
 			sb.AppendLine("-------------------------");

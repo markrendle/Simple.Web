@@ -53,9 +53,7 @@
     <Compile Include="Behaviors\BehaviorAttribute.cs" />
     <Compile Include="Behaviors\CookieAttribute.cs" />
     <Compile Include="Behaviors\IETag.cs" />
-    <Compile Include="Behaviors\Implementations\SetResponseCookies.cs" />
     <Compile Include="Behaviors\IOutputStream.cs" />
-    <Compile Include="Behaviors\IReadCookies.cs" />
     <Compile Include="Behaviors\OutputBehaviorAttribute.cs" />
     <Compile Include="Behaviors\RequestBehaviorAttribute.cs" />
     <Compile Include="Behaviors\ResponseBehaviorAttribute.cs" />
@@ -96,7 +94,6 @@
     <Compile Include="CodeGeneration\IMethodLookup.cs" />
     <Compile Include="CodeGeneration\MethodLookup.cs" />
     <Compile Include="Behaviors\Implementations\Redirect.cs" />
-    <Compile Include="Behaviors\Implementations\SetRequestCookies.cs" />
     <Compile Include="Behaviors\Implementations\SetFiles.cs" />
     <Compile Include="Behaviors\Implementations\SetInput.cs" />
     <Compile Include="Behaviors\Implementations\WriteOutput.cs" />
@@ -153,7 +150,6 @@
     <Compile Include="Behaviors\IRequireAuthentication.cs" />
     <Compile Include="Http\IResponse.cs" />
     <Compile Include="DependencyInjection\ISimpleContainer.cs" />
-    <Compile Include="Behaviors\ISetCookies.cs" />
     <Compile Include="IStartupTask.cs" />
     <Compile Include="Behaviors\IUploadFiles.cs" />
     <Compile Include="Authentication\IUser.cs" />
