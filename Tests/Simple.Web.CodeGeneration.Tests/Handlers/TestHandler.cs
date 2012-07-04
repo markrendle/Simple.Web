@@ -8,7 +8,7 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
     using Behaviors;
     using Http;
 
-    abstract class TestHandlerBase : IRequireAuthentication, IInput<string>, ISetCookies, ICacheability, IETag, IModified
+    abstract class TestHandlerBase : IRequireAuthentication, IInput<string>, ICacheability, IETag, IModified
     {
         public IUser CurrentUser { get; set; }
 

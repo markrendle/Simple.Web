@@ -6,11 +6,6 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
     {
         public MethodInfo CheckAuthentication { get { return typeof (StubCheckAuthentication).GetMethod("Impl"); } }
 
-        public MethodInfo SetResponseCookies
-        {
-            get { return typeof (StubSetResponseCookies).GetMethod("Impl"); }
-        }
-
         public MethodInfo SetInput { get { return typeof (StubSetInput).GetMethod("Impl"); } }
 
         public MethodInfo SetInputETag
@@ -34,13 +29,7 @@ namespace Simple.Web.CodeGeneration.Tests.Stubs
         }
 
         public MethodInfo WriteStatusCode { get { return typeof (StubWriteStatusCode).GetMethod("Impl"); } }
-        public MethodInfo SetCookies { get { return typeof (StubSetResponseCookies).GetMethod("Impl"); } }
         public MethodInfo SetFiles { get { return typeof(StubSetFiles).GetMethod("Impl"); } }
-
-        public MethodInfo SetRequestCookies
-        {
-            get { return typeof(StubSetRequestCookies).GetMethod("Impl"); }
-        }
 
         public MethodInfo SetCache { get { return typeof(StubSetCache).GetMethod("Impl"); } }
         public MethodInfo Redirect { get { return typeof(StubRedirect).GetMethod("Impl"); } }

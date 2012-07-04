@@ -9,7 +9,6 @@ namespace SelfHost
 	{
 		static void Main()
 		{
-			// TODO: fix this!
 			SelfHostingApp.Use<RazorHtmlMediaTypeHandler>();
 
 			var server = new ServerFactory();

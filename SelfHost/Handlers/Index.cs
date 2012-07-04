@@ -9,5 +9,7 @@ namespace SelfHost
         {
             return 200;
         }
+
+		public string Title { get { return "Title"; } }
     }
 }
