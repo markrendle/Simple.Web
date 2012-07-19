@@ -1,3 +1,4 @@
+#if OWIN
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -49,3 +50,4 @@ namespace Simple.Web.Owin
 		}
 	}
 }
+#endif

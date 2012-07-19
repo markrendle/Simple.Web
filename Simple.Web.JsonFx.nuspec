@@ -13,7 +13,7 @@
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="JsonFx" version="2.0" />
-      <dependency id="Simple.Web" version="0.1.0" />
+      <dependency id="Simple.Web" version="0.3.1" />
     </dependencies>
   </metadata>
   <files>

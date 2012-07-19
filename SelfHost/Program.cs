@@ -9,15 +9,17 @@ namespace SelfHost
 	{
 		static void Main()
 		{
-			SelfHostingApp.Use<RazorHtmlMediaTypeHandler>();
+#if OWIN
+            SelfHostingApp.Use<RazorHtmlMediaTypeHandler>();
 
-			var server = new ServerFactory();
-			using (server.Create(SelfHostingApp.App, port: 81))
-			{
-				Console.WriteLine("Running server on http://localhost:81/");
-				Console.WriteLine("Press enter to exit");
-				Console.ReadLine();
-			}
+            var server = new ServerFactory();
+            using (server.Create(SelfHostingApp.App, port: 81))
+            {
+                Console.WriteLine("Running server on http://localhost:81/");
+                Console.WriteLine("Press enter to exit");
+                Console.ReadLine();
+            }
+#endif
 		}
 	}
 }

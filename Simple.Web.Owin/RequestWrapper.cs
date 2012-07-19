@@ -1,3 +1,4 @@
+#if OWIN
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -139,3 +140,4 @@ namespace Simple.Web.Owin
 		}
 	}
 }
+#endif

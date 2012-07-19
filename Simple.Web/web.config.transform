@@ -20,12 +20,12 @@
       </buildProviders>
     </compilation>
     <httpHandlers>
-      <add verb="*" path="*" type="Simple.Web.AspNet.SimpleHttpHandlerFactory"/>
+      <add verb="*" path="*" type="Simple.Web.AspNet.SimpleHttpAsyncHandler"/>
     </httpHandlers>
   </system.web>
   <system.webServer>
     <handlers>
-      <add name="Simple.Web" path="*" verb="*" type="Simple.Web.AspNet.SimpleHttpHandlerFactory"/>
+      <add name="Simple.Web" path="*" verb="*" type="Simple.Web.AspNet.SimpleHttpAsyncHandler"/>
     </handlers>
   </system.webServer>
   <system.web.webPages.razor>

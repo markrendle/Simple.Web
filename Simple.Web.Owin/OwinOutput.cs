@@ -1,3 +1,4 @@
+#if OWIN
 using System;
 using System.Collections.Specialized;
 using System.Text;
@@ -109,3 +110,4 @@ namespace Simple.Web.Owin
 		#endregion
 	}
 }
+#endif

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
     <id>Simple.Web</id>
-    <version>0.3.0</version>
+    <version>0.3.1.1</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
     <copyright>Mark Rendle</copyright>
