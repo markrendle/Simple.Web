@@ -27,7 +27,7 @@ namespace Simple.Web.JsonFx.Tests
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream);
+                target.Write(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
