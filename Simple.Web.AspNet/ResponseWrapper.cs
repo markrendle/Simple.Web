@@ -4,6 +4,8 @@ namespace Simple.Web.AspNet
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Web;
     using Http;
 
@@ -53,6 +55,10 @@ namespace Simple.Web.AspNet
         {
             get { return _httpResponse.OutputStream; }
         }
+
+        public string Status { get; set; }
+        public Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
+        public IDictionary<string, string[]> Headers { get; set; }
 
         public string ContentType
         {

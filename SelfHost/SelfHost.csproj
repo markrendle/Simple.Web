@@ -86,10 +86,6 @@
     <Compile Include="Startup\StaticRoutes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simple.Web.Owin\Simple.Web.Owin.csproj">
-      <Project>{DB2D5BA6-BED1-4403-82ED-6D385FFCE9AB}</Project>
-      <Name>Simple.Web.Owin</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>

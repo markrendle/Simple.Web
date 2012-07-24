@@ -18,7 +18,7 @@ namespace Simple.Web.AspNet
             var allowed = new List<string>();
             foreach (var method in _routingTables.Keys)
             {
-                IDictionary<string, string> _;
+                IDictionary<string, string[]> _;
                 if (_routingTables[method].Get(context.Request.Url.AbsolutePath, out _) != null)
                 {
                     allowed.Add(method);

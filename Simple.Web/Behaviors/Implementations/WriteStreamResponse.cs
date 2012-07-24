@@ -1,5 +1,6 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
+    using Helpers;
     using Simple.Web.Behaviors;
     using Simple.Web.Http;
 
@@ -16,18 +17,22 @@
         /// <returns></returns>
         public static void Impl(IOutputStream handler, IContext context)
         {
-            context.Response.ContentType = handler.ContentType;
+            context.Response.SetContentType(handler.ContentType);
             if (!string.IsNullOrWhiteSpace(handler.ContentDisposition))
             {
                 context.Response.SetHeader("Content-Disposition", handler.ContentDisposition);
             }
             if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-            using (var stream = handler.Output)
-            {
-                stream.Position = 0;
-                stream.CopyTo(context.Response.OutputStream);
-            }
+            context.Response.WriteFunction = (stream, token) =>
+                {
+                    using (var outputStream = handler.Output)
+                    {
+                        outputStream.Position = 0;
+                        outputStream.CopyTo(stream);
+                    }
+                    return TaskHelper.Completed();
+                };
         }
     }
 }

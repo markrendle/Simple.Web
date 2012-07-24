@@ -1,5 +1,6 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
+    using System.Collections.Generic;
     using Behaviors;
     using Http;
     using Mocks;
@@ -11,7 +12,7 @@
         public void CallsFooImplementation()
         {
             var target = new HandlerRunnerBuilder(typeof(StringFoo), "GET").BuildRunner();
-            var context = new Mocks.MockContext {Request = new MockRequest {AcceptTypes = new[] {"text/html"}}};
+            var context = new Mocks.MockContext { Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } } };
             var foo = new StringFoo();
             target(foo, context);
             Assert.True(foo.Called);

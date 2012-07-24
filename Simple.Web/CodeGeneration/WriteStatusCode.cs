@@ -11,8 +11,7 @@ namespace Simple.Web.CodeGeneration
     {
         internal static void Impl(Status status, IContext context)
         {
-            context.Response.StatusCode = status.Code;
-            context.Response.StatusDescription = status.Description;
+            context.Response.Status = status.ToString();
         }
     }
 }

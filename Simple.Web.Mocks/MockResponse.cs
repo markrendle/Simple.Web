@@ -4,24 +4,26 @@ namespace Simple.Web.Mocks
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Http;
 
     public class MockResponse : IResponse
     {
-        public readonly Dictionary<string,object> Cookies = new Dictionary<string, object>(); 
+        public readonly Dictionary<string,object> Cookies = new Dictionary<string, object>();
+
+        public string Status { get; set; }
+        public Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
+        public IDictionary<string, string[]> Headers { get; set; }
+
         public int StatusCode { get; set; }
 
         public string StatusDescription { get; set; }
 
         public TextWriter Output { get; set; }
 
-        public Stream OutputStream { get; set; }
 
         public string ContentType { get; set; }
-
-        public void SetHeader(string headerName, string value)
-        {
-        }
 
         public void SetCookie(string name, string value, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
         {
@@ -104,11 +106,6 @@ namespace Simple.Web.Mocks
 
         public void SetCacheVaryByHeaders(ICollection<string> varyByHeaders)
         {
-        }
-
-        private void Write(byte[] bytes)
-        {
-            OutputStream.Write(bytes, 0, bytes.Length);
         }
     }
 }

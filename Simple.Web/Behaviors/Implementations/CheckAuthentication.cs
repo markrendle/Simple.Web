@@ -32,12 +32,11 @@ namespace Simple.Web.Behaviors.Implementations
                         context.Response.SetHeader("Location",
                                                      uriTemplateAttribute.Template + "?returnUrl=" +
                                                      Uri.EscapeDataString(context.Request.Url.ToString()));
-                        context.Response.SetStatus(Status.TemporaryRedirect);
+                        context.Response.Status = Status.TemporaryRedirect.ToString();
                         return false;
                     }
                 }
-                context.Response.StatusCode = 401;
-                context.Response.StatusDescription = "Unauthorized";
+                context.Response.Status = "401 Unauthorized";
                 return false;
             }
 

@@ -2,6 +2,7 @@ using System;
 
 namespace Simple.Web.CodeGeneration
 {
+    using Helpers;
     using Http;
     using MediaTypeHandling;
 
@@ -19,10 +20,13 @@ namespace Simple.Web.CodeGeneration
             IMediaTypeHandler mediaTypeHandler;
             if (TryGetMediaTypeHandler(context, out mediaTypeHandler))
             {
-                context.Response.ContentType = mediaTypeHandler.GetContentType(context.Request.AcceptTypes);
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(context.Request.Headers[HeaderKeys.Accept]));
 
-                var content = new Content(handler, null);
-                mediaTypeHandler.Write(content, context.Response.OutputStream);
+                context.Response.WriteFunction = (stream, token) =>
+                    {
+                        var content = new Content(handler, null);
+                        return mediaTypeHandler.Write(content, stream);
+                    };
             }
         }
 
@@ -31,12 +35,11 @@ namespace Simple.Web.CodeGeneration
             try
             {
                 string matchedType;
-                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.AcceptTypes, out matchedType);
+                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.GetAccept(), out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {
-                context.Response.StatusCode = 415;
-                context.Response.StatusDescription = "Unsupported media type requested.";
+                context.Response.Status = "415 Unsupported media type requested.";
                 mediaTypeHandler = null;
                 return false;
             }

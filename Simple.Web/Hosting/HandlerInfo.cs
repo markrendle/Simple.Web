@@ -14,7 +14,7 @@ namespace Simple.Web.Hosting
     {
         private readonly Type _handlerType;
         private readonly string _httpMethod;
-        private readonly IDictionary<string, string> _variables;
+        private readonly IDictionary<string, string[]> _variables;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerInfo"/> class.
@@ -22,7 +22,7 @@ namespace Simple.Web.Hosting
         /// <param name="handlerType">Type of the handler.</param>
         /// <param name="httpMethod">The HTTP method.</param>
         public HandlerInfo(Type handlerType, string httpMethod)
-            : this(handlerType, new Dictionary<string, string>(), httpMethod)
+            : this(handlerType, new Dictionary<string, string[]>(), httpMethod)
         {
         }
 
@@ -32,12 +32,12 @@ namespace Simple.Web.Hosting
         /// <param name="handlerType">Type of the handler.</param>
         /// <param name="variables">The variables.</param>
         /// <param name="httpMethod">The HTTP method.</param>
-        public HandlerInfo(Type handlerType, IDictionary<string, string> variables, string httpMethod)
+        public HandlerInfo(Type handlerType, IDictionary<string, string[]> variables, string httpMethod)
         {
             if (handlerType == null) throw new ArgumentNullException("handlerType");
             if (httpMethod == null) throw new ArgumentNullException("httpMethod");
             _handlerType = handlerType;
-            _variables = variables ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            _variables = variables ?? new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
             _httpMethod = httpMethod;
         }
 
@@ -52,7 +52,7 @@ namespace Simple.Web.Hosting
         /// <summary>
         /// Gets the variables.
         /// </summary>
-        public IDictionary<string, string> Variables
+        public IDictionary<string, string[]> Variables
         {
             get { return _variables; }
         }

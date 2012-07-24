@@ -10,14 +10,12 @@ namespace Simple.Web.Mocks
     {
         public MockRequest()
         {
-            QueryString = new Dictionary<string, string>();
+            QueryString = new Dictionary<string, string[]>();
 			HttpMethod = "GET";
         }
         public Uri Url { get; set; }
 
-        public IList<string> AcceptTypes { get; set; }
-
-        public IDictionary<string, string> QueryString { get; set; }
+        public IDictionary<string, string[]> QueryString { get; set; }
 
         public Stream InputStream { get; set; }
 
@@ -25,7 +23,7 @@ namespace Simple.Web.Mocks
 
         public string HttpMethod { get; set; }
 
-        public NameValueCollection Headers { get; set; }
+        public IDictionary<string, string[]> Headers { get; set; }
 
         public IEnumerable<IPostedFile> Files
         {

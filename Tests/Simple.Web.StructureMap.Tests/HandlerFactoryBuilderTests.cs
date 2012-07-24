@@ -19,7 +19,7 @@ namespace Simple.Web.StructureMap.Tests
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
             var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
-            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo" } }).Handler;
+            var actual = (TestHandler)actualFunc(new Dictionary<string, string[]> { { "TestProperty", new[] {"Foo"} } }).Handler;
             Assert.Equal(Status.OK, actual.Get());
             Assert.Equal("Foo", actual.TestProperty);
         }
@@ -33,7 +33,7 @@ namespace Simple.Web.StructureMap.Tests
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
 
             TestHandler handler;
-            using (var scopedHandler = actualFunc(new Dictionary<string, string>()))
+            using (var scopedHandler = actualFunc(new Dictionary<string, string[]>()))
             {
                 handler = (TestHandler) scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);

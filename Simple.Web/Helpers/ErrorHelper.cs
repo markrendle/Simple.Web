@@ -31,15 +31,13 @@
             var httpException = exception as HttpException;
             if (httpException != null)
             {
-                _context.Response.StatusCode = httpException.ErrorCode;
-                _context.Response.StatusDescription = httpException.Message;
+                _context.Response.Status = string.Format("{0} {1}", httpException.ErrorCode, httpException.Message);
             }
             else
             {
-                _context.Response.StatusCode = 500;
-                _context.Response.StatusDescription = "Internal server error.";
+                _context.Response.Status = "500 Internal server error.";
             }
-            _context.Response.ContentType = "text/html";
+            _context.Response.SetContentType("text/html");
             _context.Response.Write(exception.ToString());
         }
     }

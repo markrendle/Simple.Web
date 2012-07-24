@@ -20,7 +20,7 @@
         	if (context.Request.InputStream.Length == 0) return;
 
             var mediaTypeHandlerTable = new MediaTypeHandlerTable();
-            var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.ContentType);
+            var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.GetContentType());
             handler.Input = (T)mediaTypeHandler.Read(context.Request.InputStream, typeof(T));
         }
     }

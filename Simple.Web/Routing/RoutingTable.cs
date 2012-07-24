@@ -28,7 +28,7 @@
         /// <param name="url">The URL.</param>
         /// <param name="variables">The values of the variables from the URI template.</param>
         /// <returns></returns>
-        public Type Get(string url, out IDictionary<string,string> variables)
+        public Type Get(string url, out IDictionary<string,string[]> variables)
         {
             variables = null;
             var types = GetTypesForStatic(url) ??
@@ -45,7 +45,7 @@
         /// <param name="acceptTypes">Values of the Accepts header from the Request.</param>
         /// <param name="variables">The variables.</param>
         /// <returns></returns>
-        public Type Get(string url, string contentType, IList<string> acceptTypes, out IDictionary<string, string> variables)
+        public Type Get(string url, string contentType, IList<string> acceptTypes, out IDictionary<string, string[]> variables)
         {
             variables = null;
             var types = GetTypesForStatic(url) ??
@@ -66,7 +66,7 @@
             return null;
         }
 
-        private IEnumerable<HandlerTypeInfo> GetTypesForDynamic(string url, out IDictionary<string, string> variables)
+        private IEnumerable<HandlerTypeInfo> GetTypesForDynamic(string url, out IDictionary<string, string[]> variables)
         {
             for (int i = 0; i < MaximumGroupCount; i++)
             {
@@ -78,12 +78,12 @@
                     continue;
                 }
 
-                variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                variables = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
                 var match = entry.Key.Match(url);
                 foreach (var groupName in entry.Key.GetGroupNames())
                 {
                     if (groupName == "0") continue;
-                    variables.Add(groupName, match.Groups[groupName].Value);
+                    variables.Add(groupName, new[] {match.Groups[groupName].Value});
                 }
                 return entry.Value;
             }

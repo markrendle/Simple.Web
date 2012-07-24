@@ -5,6 +5,8 @@ namespace Simple.Web.Http
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Abstraction for an HTTP response, to be implemented by hosting.
@@ -17,31 +19,32 @@ namespace Simple.Web.Http
         /// <value>
         /// The status code.
         /// </value>
-        int StatusCode { get; set; }
-        /// <summary>
-        /// Gets or sets the status description.
-        /// </summary>
-        /// <value>
-        /// The status description.
-        /// </value>
-        string StatusDescription { get; set; }
+        string Status { get; set; }
+
         /// <summary>
         /// Gets the output stream.
         /// </summary>
-        Stream OutputStream { get; }
+        //Stream OutputStream { get; }
+
+        Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
+
+            /// <summary>
+        /// The response headers.
+        /// </summary>
+        IDictionary<string, string[]> Headers { get; set; }
         /// <summary>
         /// Gets or sets the type of the content.
         /// </summary>
         /// <value>
         /// The type of the content.
         /// </value>
-        string ContentType { get; set; }
+        //string ContentType { get; set; }
         /// <summary>
         /// Sets a header value.
         /// </summary>
         /// <param name="headerName">Name of the header.</param>
         /// <param name="value">The value.</param>
-        void SetHeader(string headerName, string value);
+        //void SetHeader(string headerName, string value);
 
         /// <summary>
         /// Sets a cookie.
@@ -77,7 +80,7 @@ namespace Simple.Web.Http
         /// Transmits a file to the client using whatever optimizations are available.
         /// </summary>
         /// <param name="file">The file path.</param>
-        void TransmitFile(string file);
+        //void TransmitFile(string file);
         /// <summary>
         /// Disables caching of the resource.
         /// </summary>

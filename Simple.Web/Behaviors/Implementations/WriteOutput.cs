@@ -35,11 +35,14 @@
             IMediaTypeHandler mediaTypeHandler;
             if (TryGetMediaTypeHandler(context, out mediaTypeHandler))
             {
-                context.Response.ContentType = mediaTypeHandler.GetContentType(context.Request.AcceptTypes);
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(context.Request.Headers[HeaderKeys.Accept]));
                 if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-                var content = new Content(handler, handler.Output);
-                mediaTypeHandler.Write(content, context.Response.OutputStream);
+                context.Response.WriteFunction = (stream, token) =>
+                    {
+                        var content = new Content(handler, handler.Output);
+                        return mediaTypeHandler.Write(content, stream);
+                    };
             }
         }
 
@@ -48,12 +51,11 @@
             try
             {
                 string matchedType;
-                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.AcceptTypes, out matchedType);
+                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.Headers[HeaderKeys.Accept], out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {
-                context.Response.StatusCode = 415;
-                context.Response.StatusDescription = "Unsupported media type requested.";
+                context.Response.Status = "415 Unsupported media type requested.";
                 mediaTypeHandler = null;
                 return false;
             }
@@ -62,12 +64,15 @@
 
         internal static void WriteRawHtml(IOutput<RawHtml> handler, IContext context)
         {
-            context.Response.ContentType =
-                context.Request.AcceptTypes.FirstOrDefault(
-                    at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+            context.Response.SetContentType(
+                context.Request.Headers[HeaderKeys.Accept].FirstOrDefault(
+                    at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
-            context.Response.OutputStream.Write(bytes, 0, bytes.Length);
+            context.Response.WriteFunction = (stream, token) =>
+                {
+                    var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+                    return stream.WriteAsync(bytes, 0, bytes.Length);
+                };
         }
     }
     
@@ -96,11 +101,14 @@
             IMediaTypeHandler mediaTypeHandler;
             if (TryGetMediaTypeHandler(context, out mediaTypeHandler))
             {
-                context.Response.ContentType = mediaTypeHandler.GetContentType(context.Request.AcceptTypes);
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(context.Request.Headers[HeaderKeys.Accept]));
                 if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
-                var content = new Content(handler, handler.Output);
-                return mediaTypeHandler.Write(content, context.Response.OutputStream);
+                context.Response.WriteFunction = (stream, token) =>
+                    {
+                        var content = new Content(handler, handler.Output);
+                        return mediaTypeHandler.Write(content, stream);
+                    };
             }
             return TaskHelper.Completed();
         }
@@ -110,12 +118,11 @@
             try
             {
                 string matchedType;
-                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.AcceptTypes, out matchedType);
+                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.Headers[HeaderKeys.Accept], out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {
-                context.Response.StatusCode = 415;
-                context.Response.StatusDescription = "Unsupported media type requested.";
+                context.Response.Status = "415 Unsupported media type requested.";
                 mediaTypeHandler = null;
                 return false;
             }
@@ -124,14 +131,17 @@
 
         internal static Task WriteRawHtml(IOutputAsync<RawHtml> handler, IContext context)
         {
-            context.Response.ContentType =
-                context.Request.AcceptTypes.FirstOrDefault(
-                    at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+            context.Response.SetContentType(
+                context.Request.Headers[HeaderKeys.Accept].FirstOrDefault(
+                    at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html");
             if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
-            var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
-            var stream = context.Response.OutputStream;
-            return Task.Factory.FromAsync(stream.BeginWrite, stream.EndWrite, bytes, 0, bytes.Length, null);
+            context.Response.WriteFunction = (stream, token) =>
+                {
+                    var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+                    return stream.WriteAsync(bytes, 0, bytes.Length);
+                };
+            return TaskHelper.Completed();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
+    using System.Collections.Generic;
     using Behaviors;
     using Http;
     using Mocks;
@@ -12,7 +13,7 @@
         {
             var target = new HandlerRunnerBuilder(typeof (Foo), "GET").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
             var foo = new Foo();
             target(foo, context);
             Assert.True(foo.Called);
@@ -23,7 +24,7 @@
         {
             var target = new HandlerRunnerBuilder(typeof (Bar), "GET").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest {AcceptTypes = new[] {"text/html"}};
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
             var bar = new Bar();
             target(bar, context);
             Assert.True(((IBar)bar).Called);

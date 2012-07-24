@@ -18,11 +18,11 @@ namespace Simple.Web.Http
         /// <summary>
         /// Gets the content types accepted by the client making the request.
         /// </summary>
-        IList<string> AcceptTypes { get; }
+        //IList<string> AcceptTypes { get; }
         /// <summary>
         /// Gets the query string.
         /// </summary>
-        IDictionary<string,string> QueryString { get; }
+        IDictionary<string,string[]> QueryString { get; }
         /// <summary>
         /// Gets the input stream.
         /// </summary>
@@ -33,7 +33,7 @@ namespace Simple.Web.Http
         /// <value>
         /// The type of the content.
         /// </value>
-        string ContentType { get; }
+        //string ContentType { get; }
         /// <summary>
         /// Gets the HTTP method.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Simple.Web.Http
         /// <summary>
         /// Gets the request headers.
         /// </summary>
-        NameValueCollection Headers { get; }
+        IDictionary<string,string[]> Headers { get; }
         /// <summary>
         /// Gets the list of uploaded files.
         /// </summary>

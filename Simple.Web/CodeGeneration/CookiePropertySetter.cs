@@ -23,8 +23,8 @@ namespace Simple.Web.CodeGeneration
                 var property = Expression.Property(handler, cookieProperty);
                 var name = Expression.Constant(attribute.Name ?? cookieProperty.Name, typeof(string));
 
-                var assignment = CreateAssignment(cookieProperty, property, Expression.Call(GetCookieValueMethod, context, name))
-                    ?? CreateComplexAssignment(cookieProperty, property, Expression.Call(GetCookieValuesMethod, context, name));
+                var assignment = CreateAssignment(cookieProperty, property, Expression.Call(GetCookieValueMethod, context, name));
+//                    ?? CreateComplexAssignment(cookieProperty, property, Expression.Call(GetCookieValuesMethod, context, name));
 
                 if (assignment != null)
                 {
@@ -53,15 +53,15 @@ namespace Simple.Web.CodeGeneration
             return assignment;
         }
 
-        private static Expression CreateComplexAssignment(PropertyInfo cookieProperty, MemberExpression property, MethodCallExpression getCookieValues)
-        {
-            var ctor = cookieProperty.PropertyType.GetConstructor(new Type[0]);
-            if (ctor == null) return null;
-            var instance = Expression.Variable(cookieProperty.PropertyType);
-            var construct = Expression.Assign(instance, Expression.New(ctor));
-            var setterBlock = PropertySetterBuilder.MakePropertySetterBlock(cookieProperty.PropertyType, getCookieValues, instance, construct);
-            return Expression.IfThen(Expression.NotEqual(getCookieValues, Expression.Constant(null, typeof(IDictionary<string,string>))),  Expression.Assign(property, setterBlock));
-        }
+        //private static Expression CreateComplexAssignment(PropertyInfo cookieProperty, MemberExpression property, MethodCallExpression getCookieValues)
+        //{
+        //    var ctor = cookieProperty.PropertyType.GetConstructor(new Type[0]);
+        //    if (ctor == null) return null;
+        //    var instance = Expression.Variable(cookieProperty.PropertyType);
+        //    var construct = Expression.Assign(instance, Expression.New(ctor));
+        //    var setterBlock = PropertySetterBuilder.MakePropertySetterBlock(cookieProperty.PropertyType, getCookieValues, instance, construct);
+        //    return Expression.IfThen(Expression.NotEqual(getCookieValues, Expression.Constant(null, typeof(IDictionary<string,string>))),  Expression.Assign(property, setterBlock));
+        //}
 
         private static Expression CreateParseAssignment(PropertyInfo cookieProperty, MemberExpression property,
                                                         MethodCallExpression getCookieValue, MethodInfo parseMethod)

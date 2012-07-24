@@ -91,28 +91,28 @@ namespace Simple.Web.Tests
             Assert.False(target.Test.HasValue);
         }
 
-        [Fact]
-        public void LoadsComplexCookieUsingPropertyName()
-        {
-            var cookie = new MockCookie {Name = "Test", Values = new Dictionary<string, string>()};
-            cookie.Values["Name"] = "Pass";
-            cookie.Values["Age"] = "42";
-            var request = new MockRequest { Cookies = new Dictionary<string, ICookie> { { "Test", cookie}} };
-            var context = new MockContext { Request = request };
+        //[Fact]
+        //public void LoadsComplexCookieUsingPropertyName()
+        //{
+        //    var cookie = new MockCookie {Name = "Test", Values = new Dictionary<string, string>()};
+        //    cookie.Values["Name"] = "Pass";
+        //    cookie.Values["Age"] = "42";
+        //    var request = new MockRequest { Cookies = new Dictionary<string, ICookie> { { "Test", cookie}} };
+        //    var context = new MockContext { Request = request };
 
-            var runner = new HandlerRunnerBuilder(typeof(ComplexCookieHandler), "GET").BuildRunner();
-            var target = new ComplexCookieHandler();
-            try
-            {
-                runner(target, context);
-            }
-            catch (ArgumentNullException)
-            {
-                // Content-type handling is going to throw an exception here.
-            }
-            Assert.Equal("Pass", target.Test.Name);
-            Assert.Equal(42, target.Test.Age);
-        }
+        //    var runner = new HandlerRunnerBuilder(typeof(ComplexCookieHandler), "GET").BuildRunner();
+        //    var target = new ComplexCookieHandler();
+        //    try
+        //    {
+        //        runner(target, context);
+        //    }
+        //    catch (ArgumentNullException)
+        //    {
+        //        // Content-type handling is going to throw an exception here.
+        //    }
+        //    Assert.Equal("Pass", target.Test.Name);
+        //    Assert.Equal(42, target.Test.Age);
+        //}
 
         [Fact]
         public void SetsCookieFromSingleValueProperty()

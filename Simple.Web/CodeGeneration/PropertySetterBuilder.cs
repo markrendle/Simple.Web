@@ -10,14 +10,14 @@ namespace Simple.Web.CodeGeneration
 
     sealed class PropertySetterBuilder
     {
-        private static readonly MethodInfo DictionaryContainsKeyMethod = typeof(IDictionary<string, string>).GetMethod("ContainsKey", new[] { typeof(string) });
-        private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string>).GetProperty("Item");
+        private static readonly MethodInfo DictionaryContainsKeyMethod = typeof(IDictionary<string, string[]>).GetMethod("ContainsKey", new[] { typeof(string) });
+        private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string[]>).GetProperty("Item");
 
         private readonly ParameterExpression _param;
         private readonly Expression _obj;
         private readonly PropertyInfo _property;
         private MemberExpression _nameProperty;
-        private IndexExpression _itemProperty;
+        private Expression _itemProperty;
         private MethodCallExpression _containsKey;
 
         public PropertySetterBuilder(ParameterExpression param, Expression obj, PropertyInfo property)
@@ -58,7 +58,7 @@ namespace Simple.Web.CodeGeneration
             var name = Expression.Constant(_property.Name, typeof(string));
             _containsKey = Expression.Call(_param, DictionaryContainsKeyMethod, name);
             _nameProperty = Expression.Property(_obj, _property);
-            _itemProperty = Expression.Property(_param, DictionaryIndexerProperty, name);
+            _itemProperty = Expression.ArrayIndex(Expression.Property(_param, DictionaryIndexerProperty, name), Expression.Constant(0));
         }
 
         private CatchBlock CreateCatchBlock()
@@ -132,7 +132,7 @@ namespace Simple.Web.CodeGeneration
         public static BlockExpression MakePropertySetterBlock(Type type, MethodCallExpression getVariables,
                                                                ParameterExpression instance, BinaryExpression construct)
         {
-            var variables = Expression.Variable(typeof (IDictionary<string, string>));
+            var variables = Expression.Variable(typeof (IDictionary<string, string[]>));
             var lines = new List<Expression> { construct };
             lines.Add(Expression.Assign(variables, getVariables));
 

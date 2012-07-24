@@ -29,7 +29,7 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.AcceptTypes; }
         }
 
-        public IDictionary<string, string> QueryString
+        public IDictionary<string, string[]> QueryString
         {
             get { return _httpRequest.QueryString.ToDictionary(); }
         }
@@ -49,11 +49,11 @@ namespace Simple.Web.AspNet
             get { return _httpRequest.HttpMethod; }
         }
 
-        public NameValueCollection Headers
+        public IDictionary<string, string[]> Headers
         {
             get
             {
-                return _httpRequest.Headers;
+                return _httpRequest.Headers.ToDictionary();
             }
         }
 
@@ -76,9 +76,9 @@ namespace Simple.Web.AspNet
 
     static class NameValueCollectionEx
     {
-        public static IDictionary<string,string> ToDictionary(this NameValueCollection collection)
+        public static IDictionary<string,string[]> ToDictionary(this NameValueCollection collection)
         {
-            return collection.AllKeys.ToDictionary(k => k, k => collection[k]);
+            return collection.AllKeys.ToDictionary(k => k, collection.GetValues);
         }
     }
 }

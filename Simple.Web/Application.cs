@@ -29,8 +29,8 @@
                 return MakeCompletedTask();
             }
 
-            IDictionary<string, string> variables;
-            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.ContentType, context.Request.AcceptTypes, out variables);
+            IDictionary<string, string[]> variables;
+            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.GetContentType(), context.Request.Headers[HeaderKeys.Accept], out variables);
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
@@ -72,9 +72,16 @@
 
             if (!File.Exists(file)) return false;
 
-            context.Response.StatusCode = 200;
-            context.Response.ContentType = GetContentType(file, context.Request.AcceptTypes);
-            context.Response.TransmitFile(file);
+            context.Response.Status = "200 OK";
+            context.Response.SetContentType(GetContentType(file, context.Request.Headers[HeaderKeys.Accept]));
+            context.Response.WriteFunction = (stream, token) =>
+                {
+                    using (var fileStream = File.OpenRead(file))
+                    {
+                        fileStream.CopyTo(stream);
+                        return TaskHelper.Completed();
+                    }
+                };
 
             return true;
         }

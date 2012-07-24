@@ -84,6 +84,8 @@
     <Compile Include="Behaviors\Implementations\SetLastModified.cs" />
     <Compile Include="Behaviors\Implementations\SetOutputETag.cs" />
     <Compile Include="Behaviors\Implementations\SetUserCookie.cs" />
+    <Compile Include="Http\HeaderKeys.cs" />
+    <Compile Include="Http\RequestExtensions.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">

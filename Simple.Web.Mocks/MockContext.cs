@@ -13,10 +13,7 @@ namespace Simple.Web.Mocks
         public MockContext()
         {
             Request = new MockRequest();
-            Response = new MockResponse
-                           {
-                               OutputStream = new MockStream(),
-                           };
+            Response = new MockResponse();
         }
         public IRequest Request { get; set; }
 

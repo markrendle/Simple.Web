@@ -67,7 +67,7 @@
                 {
                     if (t.Result)
                     {
-                        context.Response.StatusCode = continuation(handler, context).Code;
+                        context.Response.Status = continuation(handler, context).Code.ToString();
                         return true;
                     }
                     return false;
@@ -83,7 +83,7 @@
                         return continuation(handler, context)
                             .ContinueWith(ht =>
                                 {
-                                    context.Response.StatusCode = ht.Result.Code;
+                                    context.Response.Status = ht.Result.Code.ToString();
                                     return true;
                                 });
                     }
