@@ -3,6 +3,7 @@ namespace Simple.Web.MediaTypeHandling
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     [MediaTypes("application/x-www-form-urlencoded")]
     sealed class FormDeserializer : IMediaTypeHandler
@@ -43,9 +44,11 @@ namespace Simple.Web.MediaTypeHandling
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="outputStream">The output stream.</param>
-        public void Write(IContent content, Stream outputStream)
+        public Task Write(IContent content, Stream outputStream)
         {
-            throw new NotImplementedException();
+            var tcs = new TaskCompletionSource<object>();
+            tcs.SetException(new NotImplementedException());
+            return tcs.Task;
         }
     }
 }

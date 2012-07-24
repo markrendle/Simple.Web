@@ -6,6 +6,7 @@ using System.Text;
 namespace Simple.Web.ContentTypeHandling.Tests
 {
     using System.IO;
+    using System.Threading.Tasks;
     using MediaTypeHandling;
     using Xunit;
 
@@ -61,7 +62,7 @@ namespace Simple.Web.ContentTypeHandling.Tests
             throw new NotImplementedException();
         }
 
-        public void Write(IContent content, Stream outputStream)
+        public Task Write(IContent content, Stream outputStream)
         {
             throw new NotImplementedException();
         }

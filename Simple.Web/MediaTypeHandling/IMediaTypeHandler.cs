@@ -2,6 +2,7 @@ namespace Simple.Web.MediaTypeHandling
 {
     using System;
     using System.IO;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Represents a handler for a specific content type.
@@ -21,6 +22,6 @@ namespace Simple.Web.MediaTypeHandling
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="outputStream">The output stream.</param>
-        void Write(IContent content, Stream outputStream);
+        Task Write(IContent content, Stream outputStream);
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Helpers;
     using Simple.Web;
     using Simple.Web.Http;
 
@@ -56,7 +57,7 @@
                     {
                         return continuation(handler, context);
                     }
-                    return Completed(false);
+                    return TaskHelper.Completed(false);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion).Unwrap();
         }
 
@@ -86,15 +87,10 @@
                                     return true;
                                 });
                     }
-                    return Completed(false);
+                    return TaskHelper.Completed(false);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion).Unwrap();
         }
         
-        private static Task<T> Completed<T>(T value)
-        {
-            var tcs = new TaskCompletionSource<T>();
-            tcs.SetResult(value);
-            return tcs.Task;
-        }
+       
     }
 }

@@ -2,6 +2,9 @@
 {
     using System;
     using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Helpers;
     using MediaTypeHandling;
 
     [MediaTypes(MediaType.Html, MediaType.XHtml)]
@@ -12,7 +15,7 @@
             throw new NotImplementedException();
         }
 
-        public void Write(IContent content, Stream outputStream)
+        public Task Write(IContent content, Stream outputStream)
         {
             var razorViews = new RazorViews();
             var handlerType = content.Handler != null ? content.Handler.GetType() : null;
@@ -24,10 +27,14 @@
                 throw new ViewNotFoundException();
             }
 
-            using (var streamWriter = new StreamWriter(outputStream))
+            byte[] buffer;
+            using (var writer = new StringWriter())
             {
-                RenderView(content, streamWriter, viewType);
+                RenderView(content, writer, viewType);
+                buffer = Encoding.Default.GetBytes(writer.ToString());
             }
+
+            return outputStream.WriteAsync(buffer, 0, buffer.Length);
         }
 
         internal static void RenderView(IContent content, TextWriter textWriter, Type viewType)

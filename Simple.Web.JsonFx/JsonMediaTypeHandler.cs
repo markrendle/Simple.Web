@@ -6,6 +6,8 @@ using System.Text;
 namespace Simple.Web.JsonFx
 {
     using System.IO;
+    using System.Threading.Tasks;
+    using Helpers;
     using Links;
     using MediaTypeHandling;
     using global::JsonFx.Json;
@@ -42,7 +44,7 @@ namespace Simple.Web.JsonFx
                 new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_")); // CONST_STYLE
         }
 
-        public void Write(IContent content, Stream outputStream)
+        public Task Write(IContent content, Stream outputStream)
         {
             if (content.Model != null)
             {
@@ -57,11 +59,16 @@ namespace Simple.Web.JsonFx
                 {
                     output = ProcessContent(content);
                 }
-                using (var streamWriter = new StreamWriter(outputStream))
+                byte[] buffer;
+                using (var writer = new StringWriter())
                 {
-                    new JsonWriter().Write(output, streamWriter);
+                    new JsonWriter().Write(output, writer);
+                    buffer = Encoding.Default.GetBytes(writer.ToString());
                 }
+                return outputStream.WriteAsync(buffer, 0, buffer.Length);
             }
+
+            return TaskHelper.Completed();
         }
 
         private static object ProcessContent(IContent content)

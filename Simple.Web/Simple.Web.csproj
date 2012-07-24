@@ -73,9 +73,11 @@
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
+    <Compile Include="Helpers\AsyncExtensions.cs" />
     <Compile Include="Helpers\IFileUtility.cs" />
     <Compile Include="Helpers\NameValueCollectionEx.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Helpers\TaskHelper.cs" />
     <Compile Include="Http\CacheOptions.cs" />
     <Compile Include="Behaviors\Implementations\SetIfModifiedSince.cs" />
     <Compile Include="Behaviors\Implementations\SetInputETag.cs" />
