@@ -5,7 +5,7 @@ namespace Simple.Web.Behaviors
     /// <summary>
     /// Indicates that a handler exposes caching information.
     /// </summary>
-    [ResponseBehavior(typeof(Implementations.SetCache))]
+    [ResponseBehavior(typeof(Implementations.SetCacheOptions))]
     public interface ICacheability
     {
         /// <summary>

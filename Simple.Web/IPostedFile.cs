@@ -8,12 +8,6 @@ namespace Simple.Web
     public interface IPostedFile
     {
         /// <summary>
-        /// Saves the contents of an uploaded file.
-        /// </summary>
-        /// <param name="filename">The name of the saved file. </param><exception cref="T:System.Web.HttpException">The <see cref="P:System.Web.Configuration.HttpRuntimeSection.RequireRootedSaveAsPath"/> property of the <see cref="T:System.Web.Configuration.HttpRuntimeSection"/> object is set to true, but <paramref name="filename"/> is not an absolute path.</exception>
-        void SaveAs(string filename);
-
-        /// <summary>
         /// Gets the fully qualified name of the file on the client.
         /// </summary>
         /// <returns>

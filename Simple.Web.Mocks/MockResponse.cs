@@ -10,9 +10,7 @@ namespace Simple.Web.Mocks
 
     public class MockResponse : IResponse
     {
-        public readonly Dictionary<string,object> Cookies = new Dictionary<string, object>();
-
-        public string Status { get; set; }
+        public Status Status { get; set; }
         public Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
         public IDictionary<string, string[]> Headers { get; set; }
 
@@ -24,21 +22,6 @@ namespace Simple.Web.Mocks
 
 
         public string ContentType { get; set; }
-
-        public void SetCookie(string name, string value, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
-        {
-            Cookies[name] = value;
-        }
-
-        public void SetCookie(string name, IDictionary<string, string> values, DateTime? expires, bool httpOnly = false, bool secure = false, string domain = null, string path = null)
-        {
-            Cookies[name] = values;
-        }
-
-        public void RemoveCookie(string name)
-        {
-            
-        }
 
         public void Close()
         {

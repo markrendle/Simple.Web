@@ -91,6 +91,11 @@
         public const string ContentType = "Content-Type";
 
         /// <summary>
+        /// The <c>Cookie</c> request-header field.
+        /// </summary>
+        public const string Cookie = "Cookie";
+
+        /// <summary>
         /// The <c>Date</c> general-header field.
         /// </summary>
         public const string Date = "Date";
@@ -195,6 +200,11 @@
         /// </summary>
         /// <remarks>Don't use this, it's a relic of information-addicted academicians who never had to worry about people hacking their web site.</remarks>
         public const string Server = "Server";
+
+        /// <summary>
+        /// The <c>Set-Cookie</c> response-header field.
+        /// </summary>
+        public const string SetCookie = "Set-Cookie";
 
 // ReSharper disable InconsistentNaming
         /// <summary>

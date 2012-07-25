@@ -5,12 +5,14 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using CodeGeneration;
     using Helpers;
     using Hosting;
     using Http;
     using Routing;
+    using App = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IDictionary<string, string[]>, System.IO.Stream, System.Threading.CancellationToken, System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>, System.Delegate, System.Threading.Tasks.Task>;
 
     /// <summary>
     /// The running application.
@@ -19,6 +21,11 @@
     {
         private static readonly object StartupLock = new object();
         private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
+
+        public Task Run(IDictionary<string,object> env, IDictionary<string,string[]> requestHeaders, Stream inputStream, CancellationToken cancellationToken, Func<int, IDictionary<string,string[]>, Func<Stream,CancellationToken,Task>,Task> respond, Delegate nextApp)
+        {
+            return null;
+        }
 
         public Task Run(IContext context)
         {

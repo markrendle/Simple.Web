@@ -46,9 +46,5 @@ namespace Simple.Web.Http
         /// Gets the list of uploaded files.
         /// </summary>
         IEnumerable<IPostedFile> Files { get; }
-        /// <summary>
-        /// Gets the cookies.
-        /// </summary>
-        IDictionary<string, ICookie> Cookies { get; }
     }
 }

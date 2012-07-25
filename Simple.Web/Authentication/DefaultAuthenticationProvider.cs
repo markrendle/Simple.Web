@@ -20,11 +20,11 @@ namespace Simple.Web.Authentication
         public IUser GetLoggedInUser(IContext context)
         {
             Guid userGuid;
-            ICookie cookie;
-            if (context.Request.Cookies.TryGetValue(UserCookieName, out cookie))
+            string cookie;
+            if (context.Request.TryGetCookieValue(UserCookieName, out cookie))
             {
-                if (cookie != null && (!string.IsNullOrWhiteSpace(cookie.Value)) &&
-                    Guid.TryParse(cookie.Value, out userGuid))
+                if (cookie != null && (!string.IsNullOrWhiteSpace(cookie)) &&
+                    Guid.TryParse(cookie, out userGuid))
                 {
                     return new User(userGuid, string.Empty);
                 }

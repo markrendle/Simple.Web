@@ -14,7 +14,7 @@ namespace Simple.Web.CodeGeneration
         public MethodInfo SetLastModified { get { return Get(typeof (SetLastModified)); } }
         public MethodInfo SetIfModifiedSince { get { return Get(typeof (SetIfModifiedSince)); } }
         public MethodInfo WriteStatusCode { get { return Get(typeof(WriteStatusCode)); } }
-        public MethodInfo SetCache { get { return Get(typeof (SetCache)); } }
+        public MethodInfo SetCache { get { return Get(typeof (SetCacheOptions)); } }
         public MethodInfo Redirect { get { return Get(typeof (Redirect)); } }
         public MethodInfo WriteStreamResponse { get { return Get(typeof (WriteStreamResponse)); } }
         public MethodInfo WriteRawHtml { get { return Get(typeof (WriteRawHtml)); } }

@@ -12,8 +12,6 @@ namespace Simple.Web.CodeGeneration
     {
         private static readonly MethodInfo GetCookieValueMethod =
             typeof (CookiePropertySetter).GetMethod("GetCookieValue", BindingFlags.Static | BindingFlags.NonPublic);
-        private static readonly MethodInfo GetCookieValuesMethod =
-            typeof (CookiePropertySetter).GetMethod("GetCookieValues", BindingFlags.Static | BindingFlags.NonPublic);
 
         internal static IEnumerable<Expression> GetCookiePropertySetters(Type type, ParameterExpression handler, ParameterExpression context)
         {
@@ -92,16 +90,9 @@ namespace Simple.Web.CodeGeneration
 
         private static string GetCookieValue(IContext context, string name)
         {
-            if (context.Request.Cookies == null) return null;
-            if (!context.Request.Cookies.ContainsKey(name)) return null;
-            return context.Request.Cookies[name].Value;
-        }
-
-        private static IDictionary<string,string> GetCookieValues(IContext context, string name)
-        {
-            if (context.Request.Cookies == null) return null;
-            if (!context.Request.Cookies.ContainsKey(name)) return null;
-            return context.Request.Cookies[name].Values;
+            string value;
+            context.Request.TryGetCookieValue(name, out value);
+            return value;
         }
     }
 }

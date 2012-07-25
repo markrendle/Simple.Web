@@ -8,13 +8,14 @@ using Xunit;
 
 namespace Simple.Web.Tests
 {
+    using System.Linq;
+
     public class CookieTests
     {
         [Fact]
         public void LoadsSingleStringCookieUsingPropertyName()
         {
-            var request = new MockRequest
-                {Cookies = new Dictionary<string, ICookie> {{"Test", new MockCookie {Name = "Test", Value = "Pass"}}}};
+            var request = new MockRequest {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=Pass"}}}};
             var context = new MockContext {Request = request};
 
             var runner = new HandlerRunnerBuilder(typeof (SingleStringCookieHandler), "GET").BuildRunner();
@@ -35,7 +36,7 @@ namespace Simple.Web.Tests
         {
             var expected = new Guid("{6B6CB3A7-CFD7-4479-90C8-440D9F1B9F33}");
             var request = new MockRequest
-                {Cookies = new Dictionary<string, ICookie> {{"Test", new MockCookie {Name = "Test", Value = expected.ToString()}}}};
+                {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
             var context = new MockContext {Request = request};
 
             var runner = new HandlerRunnerBuilder(typeof (SingleGuidCookieHandler), "GET").BuildRunner();
@@ -56,7 +57,7 @@ namespace Simple.Web.Tests
         {
             var expected = new Guid("{6B6CB3A7-CFD7-4479-90C8-440D9F1B9F33}");
             var request = new MockRequest
-                {Cookies = new Dictionary<string, ICookie> {{"Test", new MockCookie {Name = "Test", Value = expected.ToString()}}}};
+                {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
             var context = new MockContext {Request = request};
 
             var runner = new HandlerRunnerBuilder(typeof (SingleNullableGuidCookieHandler), "GET").BuildRunner();
@@ -75,7 +76,7 @@ namespace Simple.Web.Tests
         [Fact]
         public void LoadsSingleNullGuidCookieUsingPropertyName()
         {
-            var request = new MockRequest {Cookies = new Dictionary<string, ICookie>()};
+            var request = new MockRequest();
             var context = new MockContext {Request = request};
 
             var runner = new HandlerRunnerBuilder(typeof (SingleNullableGuidCookieHandler), "GET").BuildRunner();
@@ -122,24 +123,19 @@ namespace Simple.Web.Tests
             var context = new MockContext {Request = request, Response = response};
             var handler = new SingleStringCookieHandler {Test = "Pass"};
             Run(handler, context);
-            Assert.True(response.Cookies.ContainsKey("Test"));
-            Assert.Equal("Pass", response.Cookies["Test"]);
-        }
-        
-        [Fact]
-        public void SetsCookieFromComplexProperty()
-        {
-            var request = new MockRequest();
-            var response = new MockResponse();
-            var context = new MockContext {Request = request, Response = response};
-            var handler = new ComplexCookieHandler() { Test = new ComplexCookie { Name = "Pass", Age = 42 } };
-            Run(handler, context);
-            Assert.True(response.Cookies.ContainsKey("Test"));
-            var dict = response.Cookies["Test"] as IDictionary<string, string>;
-            Assert.NotNull(dict);
-            Assert.Equal("Pass", dict["Name"]);
+            string[] cookies;
+            Assert.True(response.Headers.TryGetValue(HeaderKeys.SetCookie, out cookies));
+            Assert.True(cookies.Any(c => c.StartsWith("Test=Pass;")));
         }
 
+        [Fact]
+        public void ParsesCookieValue()
+        {
+            const string cookie = "foo=bar";
+            var value = RequestExtensions.GetCookieValue(cookie);
+            Assert.Equal("bar", value);
+        }
+        
         private static void Run<T>(T handler, IContext context)
         {
             var runner = new HandlerRunnerBuilder(typeof(T), "GET").BuildRunner();

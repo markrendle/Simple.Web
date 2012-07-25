@@ -14,6 +14,8 @@ namespace Simple.Web.AspNet
         private readonly HttpResponse _httpResponse;
         private ICookieCollection _cookies;
 
+        public Status Status { get; set; }
+
         public void Write(string s)
         {
             _httpResponse.Write(s);
@@ -56,7 +58,6 @@ namespace Simple.Web.AspNet
             get { return _httpResponse.OutputStream; }
         }
 
-        public string Status { get; set; }
         public Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
         public IDictionary<string, string[]> Headers { get; set; }
 

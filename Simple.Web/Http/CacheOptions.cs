@@ -2,6 +2,7 @@ namespace Simple.Web.Http
 {
     using System;
     using System.Collections.Generic;
+    using System.Text;
 
     /// <summary>
     /// Carries information on how to cache a resource.
@@ -68,6 +69,12 @@ namespace Simple.Web.Http
         }
 
         /// <summary>
+        /// Gets or sets a value indicating the level at which the response may be cached.
+        /// </summary>
+        /// <value>A <see cref="CacheLevel"/> value.</value>
+        public CacheLevel Level { get; set; }
+
+        /// <summary>
         /// Gets or sets names of headers which should be considered by the caching systems.
         /// </summary>
         /// <value>
@@ -76,19 +83,29 @@ namespace Simple.Web.Http
         public ICollection<string> VaryByHeaders { get; set; }
 
         /// <summary>
-        /// Gets or sets names of query parameters which should be considered by the caching systems.
+        /// Formats the options as a Cache-Control header value.
         /// </summary>
-        /// <value>
-        /// The query parameters to vary by.
-        /// </value>
-        public ICollection<string> VaryByParams { get; set; }
+        /// <returns>The Cache-Control header string.</returns>
+        public string ToHeaderString()
+        {
+            var builder = new StringBuilder(CacheLevelToString(Level));
+            if (SlidingExpiry.HasValue)
+            {
+                builder.AppendFormat(", max-age={0}", SlidingExpiry.Value.TotalSeconds);
+            }
+            return builder.ToString();
+        }
 
-        /// <summary>
-        /// Gets or sets names of content encodings which should be considered by the caching systems.
-        /// </summary>
-        /// <value>
-        /// The content encodings to vary by.
-        /// </value>
-        public ICollection<string> VaryByContentEncodings { get; set; } 
+        private static string CacheLevelToString(CacheLevel cacheLevel)
+        {
+            switch (cacheLevel)
+            {
+                case CacheLevel.Public:
+                    return "public";
+                case CacheLevel.Private:
+                    return "private";
+            }
+            return "no-cache";
+        }
     }
 }

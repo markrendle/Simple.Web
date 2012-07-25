@@ -19,18 +19,10 @@ namespace Simple.Web.Mocks
 
         public Stream InputStream { get; set; }
 
-        public string ContentType { get; set; }
-
         public string HttpMethod { get; set; }
 
         public IDictionary<string, string[]> Headers { get; set; }
-
-        public IEnumerable<IPostedFile> Files
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IDictionary<string, ICookie> Cookies { get; set; }
+        public IEnumerable<IPostedFile> Files { get; private set; }
     }
 
     public class MockCookie : ICookie

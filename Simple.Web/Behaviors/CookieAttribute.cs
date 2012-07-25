@@ -10,8 +10,6 @@ namespace Simple.Web.Behaviors
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class CookieAttribute : Attribute
     {
-        private TimeSpan _timeOut = TimeSpan.Zero;
-
         /// <summary>
         /// Gets or sets the name of the HTTP cookie.
         /// </summary>
@@ -21,14 +19,10 @@ namespace Simple.Web.Behaviors
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the time the cookie is valid for.
+        /// Gets or sets the time in seconds the cookie is valid for.
         /// </summary>
-        /// <value>The time out. Set to <see cref="TimeSpan.Zero"/> (the default) for a session-only cookie.</value>
-        public TimeSpan TimeOut
-        {
-            get { return _timeOut; }
-            set { _timeOut = value; }
-        }
+        /// <value>The time out. Set to 0 (the default) for a session-only cookie.</value>
+        public int TimeOut { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the cookie is HTTP only, that is, cannot be read by client-side script.
@@ -45,5 +39,10 @@ namespace Simple.Web.Behaviors
         /// <c>true</c> if secure, <c>false</c> if not. Default is <c>false</c>.
         /// </value>
         public bool Secure { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value specifying the path below which the cooki
+        /// </summary>
+        public string Path { get; set; }
     }
 }

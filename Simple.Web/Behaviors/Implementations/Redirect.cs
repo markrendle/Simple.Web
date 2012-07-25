@@ -17,16 +17,13 @@
         /// <returns></returns>
         public static bool Impl(IMayRedirect handler, IContext context)
         {
-            int code;
-            if (int.TryParse(context.Response.Status.Substring(0, 3), NumberStyles.Integer, CultureInfo.InvariantCulture, out code))
+            int code = context.Response.Status.Code;
+            if ((code >= 301 && code <= 303) || code == 307)
             {
-                if ((code >= 301 && code <= 303) || code == 307)
-                {
-                    context.Response.SetHeader("Location", handler.Location);
-                    context.Response.SetCookie("Test", "Cookie");
-                    return false;
-                        // this cancels the responder task, so doesn't require a view. Cookie task MUST come before this!
-                }
+                context.Response.SetHeader("Location", handler.Location);
+                context.Response.SetCookie("Test", "Cookie");
+                return false;
+                // this cancels the responder task, so doesn't require a view. Cookie task MUST come before this!
             }
             return true;
         }

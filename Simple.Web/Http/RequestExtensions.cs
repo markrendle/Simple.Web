@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web;
 
     /// <summary>
     /// Extension methods for the <see cref="IRequest"/> interface.
@@ -40,43 +41,28 @@
             }
             return contentType.FirstOrDefault();
         }
-    }
 
-    /// <summary>
-    /// Extension methods for the <see cref="IResponse"/> interface.
-    /// </summary>
-    public static class ResponseExtensions
-    {
-        private static readonly string[] MediaTypeWildcard = new[] {"*/*"};
-
-        /// <summary>
-        /// Sets the response Content-Type header.
-        /// </summary>
-        /// <param name="response">The <see cref="IResponse"/> instance.</param>
-        /// <param name="contentType">The content type. This should be a valid media type.</param>
-        public static void SetContentType(this IResponse response, string contentType)
+        public static bool TryGetCookieValue(this IRequest request, string name, out string value)
         {
-            response.SetHeader(HeaderKeys.ContentType, contentType);
-        }
-
-        /// <summary>
-        /// Sets a response header.
-        /// </summary>
-        /// <param name="response">The <see cref="IResponse"/> instance.</param>
-        /// <param name="header">The header key.</param>
-        /// <param name="value">The header value.</param>
-        public static void SetHeader(this IResponse response, string header, string value)
-        {
-            EnsureHeaders(response);
-            response.Headers[header] = new[] {value};
-        }
-
-        private static void EnsureHeaders(IResponse response)
-        {
-            if (response.Headers == null)
+            string[] cookies;
+            if (request.Headers != null && request.Headers.TryGetValue(HeaderKeys.Cookie, out cookies))
             {
-                response.Headers = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+                var cookie =
+                    cookies.FirstOrDefault(c => c.StartsWith(name + "=", StringComparison.InvariantCultureIgnoreCase));
+                if (cookie != null)
+                {
+                    value = GetCookieValue(cookie);
+                    return true;
+                }
             }
+            value = null;
+            return false;
+        }
+
+        internal static string GetCookieValue(string cookie)
+        {
+            int from = cookie.IndexOf('=');
+            return HttpUtility.UrlDecode(cookie.Substring(from + 1));
         }
     }
 }
