@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fix">
+      <HintPath>..\packages\Fix.0.1\lib\net40\Fix.dll</HintPath>
+    </Reference>
+    <Reference Include="Fix.AspNet">
+      <HintPath>..\packages\Fix.AspNet.0.1\lib\net40\Fix.AspNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -44,24 +50,17 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AsyncResult.cs" />
-    <Compile Include="ContextWrapper.cs" />
-    <Compile Include="CookieWrapperCollection.cs" />
-    <Compile Include="OptionsHandler.cs" />
     <Compile Include="PathUtility.cs" />
-    <Compile Include="PostedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublicFileHandler.cs" />
-    <Compile Include="RequestWrapper.cs" />
-    <Compile Include="ResponseWrapper.cs" />
-    <Compile Include="SimpleHttpAsyncHandler.cs" />
-    <Compile Include="CookieWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
       <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
       <Name>Simple.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

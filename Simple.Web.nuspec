@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Simple.Web</id>
-    <version>0.3.1.1</version>
+    <version>0.4</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
     <copyright>Mark Rendle</copyright>
@@ -14,6 +14,7 @@
     <dependencies>
       <dependency id="AspNetWebPages.Core" version="2.0" />
       <dependency id="JsonFx" version="2.0" />
+      <dependency id="Fix.AspNet" version="0.1" />
     </dependencies>
   </metadata>
 

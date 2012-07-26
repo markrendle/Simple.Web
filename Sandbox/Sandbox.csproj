@@ -43,11 +43,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix">
-      <HintPath>..\..\Fix\Fix.AspNet\bin\Debug\Fix.dll</HintPath>
+    <Reference Include="Fix, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Fix.0.1\lib\net40\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet">
-      <HintPath>..\..\Fix\Fix.AspNet\bin\Debug\Fix.AspNet.dll</HintPath>
+    <Reference Include="Fix.AspNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Fix.AspNet.0.1\lib\net40\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
@@ -114,6 +116,10 @@
     <Compile Include="PostForm.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
+      <Project>{266d3482-c95c-4b2f-b7ea-f08f849084d3}</Project>
+      <Name>Simple.Web.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>

@@ -86,14 +86,13 @@
             }
             else
             {
-                file = null;
                 return false;
             }
 
             if (!File.Exists(file)) return false;
 
             context.Response.Status = "200 OK";
-            context.Response.SetContentType(GetContentType(file, context.Request.Headers[HeaderKeys.Accept]));
+            context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));
             context.Response.WriteFunction = (stream, token) =>
                 {
                     using (var fileStream = File.OpenRead(file))

@@ -8,7 +8,7 @@ namespace Simple.Web.Owin
 
     internal class OwinRequest : IRequest
     {
-        private HttpContext _context;
+        private readonly HttpContext _context;
 
         public OwinRequest(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders, Stream inputStream)
         {

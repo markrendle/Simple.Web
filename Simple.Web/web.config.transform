@@ -25,7 +25,7 @@
   </system.web>
   <system.webServer>
     <handlers>
-      <add name="Simple.Web" path="*" verb="*" type="Simple.Web.AspNet.SimpleHttpAsyncHandler"/>
+      <add name="Simple.Web" path="*" verb="*" type="Fix.AspNet.FixHttpHandler"/>
     </handlers>
   </system.webServer>
   <system.web.webPages.razor>

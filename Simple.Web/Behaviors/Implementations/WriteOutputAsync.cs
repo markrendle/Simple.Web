@@ -65,7 +65,7 @@ namespace Simple.Web.Behaviors.Implementations
         internal static Task WriteRawHtml(IOutputAsync<RawHtml> handler, IContext context)
         {
             context.Response.SetContentType(
-                context.Request.Headers[HeaderKeys.Accept].FirstOrDefault(
+                context.Request.GetAccept().FirstOrDefault(
                     at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html");
             if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
