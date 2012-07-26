@@ -19,10 +19,10 @@ namespace Simple.Web.Authentication
         /// </returns>
         public IUser GetLoggedInUser(IContext context)
         {
-            Guid userGuid;
             string cookie;
             if (context.Request.TryGetCookieValue(UserCookieName, out cookie))
             {
+                Guid userGuid;
                 if (cookie != null && (!string.IsNullOrWhiteSpace(cookie)) &&
                     Guid.TryParse(cookie, out userGuid))
                 {

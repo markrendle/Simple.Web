@@ -101,14 +101,7 @@
         private static Task<bool> CompleteBooleanTask(bool @continue)
         {
             var tcs = new TaskCompletionSource<bool>();
-            if (@continue)
-            {
-                tcs.SetResult(true);
-            }
-            else
-            {
-                tcs.SetCanceled();
-            }
+            tcs.SetResult(@continue);
             return tcs.Task;
         }
 

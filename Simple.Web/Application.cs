@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -11,8 +12,12 @@
     using Helpers;
     using Hosting;
     using Http;
+    using Owin;
     using Routing;
+    using BodyDelegate = System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>;
+    using ResponseHandler = System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>;
     using App = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IDictionary<string, string[]>, System.IO.Stream, System.Threading.CancellationToken, System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>, System.Delegate, System.Threading.Tasks.Task>;
+
 
     /// <summary>
     /// The running application.
@@ -22,9 +27,17 @@
         private static readonly object StartupLock = new object();
         private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
 
-        public Task Run(IDictionary<string,object> env, IDictionary<string,string[]> requestHeaders, Stream inputStream, CancellationToken cancellationToken, Func<int, IDictionary<string,string[]>, Func<Stream,CancellationToken,Task>,Task> respond, Delegate nextApp)
+        [Export("Owin.Application")]
+        public Task Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken, ResponseHandler responseHandler, Delegate next)
         {
-            return null;
+            var context = new OwinContext(env, headers, body);
+            var task = Run(context);
+            if (task == null) return MakeCompletedTask();
+            return task
+                .ContinueWith(
+                    t =>
+                    responseHandler(context.Response.Status.Code, context.Response.Headers ?? new Dictionary<string, string[]>(),
+                                    context.Response.WriteFunction));
         }
 
         public Task Run(IContext context)
@@ -37,7 +50,7 @@
             }
 
             IDictionary<string, string[]> variables;
-            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.GetContentType(), context.Request.Headers[HeaderKeys.Accept], out variables);
+            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.GetContentType(), context.Request.GetAccept(), out variables);
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 

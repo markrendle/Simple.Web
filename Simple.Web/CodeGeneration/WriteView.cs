@@ -2,6 +2,7 @@ using System;
 
 namespace Simple.Web.CodeGeneration
 {
+    using System.Collections.Generic;
     using Helpers;
     using Http;
     using MediaTypeHandling;
@@ -18,9 +19,10 @@ namespace Simple.Web.CodeGeneration
 			if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
             IMediaTypeHandler mediaTypeHandler;
-            if (TryGetMediaTypeHandler(context, out mediaTypeHandler))
+            var acceptedTypes = context.Request.GetAccept();
+            if (TryGetMediaTypeHandler(context, acceptedTypes, out mediaTypeHandler))
             {
-                context.Response.SetContentType(mediaTypeHandler.GetContentType(context.Request.Headers[HeaderKeys.Accept]));
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
 
                 context.Response.WriteFunction = (stream, token) =>
                     {
@@ -30,12 +32,17 @@ namespace Simple.Web.CodeGeneration
             }
         }
 
-        private static bool TryGetMediaTypeHandler(IContext context, out IMediaTypeHandler mediaTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
         {
+            if (acceptedTypes.Count == 1 && acceptedTypes[0].StartsWith("*/*"))
+            {
+                mediaTypeHandler = null;
+                return false;
+            }
             try
             {
                 string matchedType;
-                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(context.Request.GetAccept(), out matchedType);
+                mediaTypeHandler = new MediaTypeHandlerTable().GetMediaTypeHandler(acceptedTypes, out matchedType);
             }
             catch (UnsupportedMediaTypeException)
             {

@@ -43,6 +43,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fix">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Debug\Fix.dll</HintPath>
+    </Reference>
+    <Reference Include="Fix.AspNet">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Debug\Fix.AspNet.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
     </Reference>
@@ -108,10 +114,6 @@
     <Compile Include="PostForm.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
-      <Project>{266D3482-C95C-4B2F-B7EA-F08F849084D3}</Project>
-      <Name>Simple.Web.AspNet</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>

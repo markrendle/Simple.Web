@@ -25,7 +25,7 @@ namespace Simple.Web.Razor
 
         public override string ToString()
         {
-            return _value.ToString();
+            return _value == null ? string.Empty : _value.ToString();
         }
 
         public string ToString(IFormatProvider formatProvider)

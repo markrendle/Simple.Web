@@ -24,6 +24,10 @@
             {
                 accept = MediaTypeWildcard;
             }
+            else
+            {
+                accept = accept.SelectMany(line => line.Split(',').Select(s => s.Trim())).ToArray();
+            }
             return accept;
         }
 
@@ -47,6 +51,7 @@
             string[] cookies;
             if (request.Headers != null && request.Headers.TryGetValue(HeaderKeys.Cookie, out cookies))
             {
+                cookies = cookies.SelectMany(c => c.Split(';').Select(s => s.Trim())).ToArray();
                 var cookie =
                     cookies.FirstOrDefault(c => c.StartsWith(name + "=", StringComparison.InvariantCultureIgnoreCase));
                 if (cookie != null)
