@@ -2,6 +2,7 @@ obj
 bin
 deploy
 *.csproj.user
+*.csproj.*.user
 *.suo
 *.cache
 *.nupkg
