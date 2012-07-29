@@ -2,6 +2,7 @@ namespace Simple.Web.Http
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// Extension methods for the <see cref="IResponse"/> interface.
@@ -19,6 +20,16 @@ namespace Simple.Web.Http
         public static void SetContentType(this IResponse response, string contentType)
         {
             response.SetHeader(HeaderKeys.ContentType, contentType);
+        }
+
+        /// <summary>
+        /// Sets the response Content-Length header.
+        /// </summary>
+        /// <param name="response">The <see cref="IResponse"/> instance.</param>
+        /// <param name="contentLength">The content length.</param>
+        public static void SetContentLength(this IResponse response, long contentLength)
+        {
+            response.SetHeader(HeaderKeys.ContentLength, contentLength.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>

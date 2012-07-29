@@ -116,8 +116,9 @@
 
             if (!File.Exists(file)) return false;
 
-            context.Response.Status = "200 OK";
+            context.Response.Status = Status.OK;
             context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));
+            context.Response.SetContentLength(new FileInfo(file).Length);
             context.Response.WriteFunction = (stream, token) =>
                 {
                     using (var fileStream = File.OpenRead(file))
