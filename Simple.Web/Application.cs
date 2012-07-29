@@ -155,6 +155,10 @@
 				case "png": return "image/png";
 				case "gif": return "image/gif";
 
+                case "html":
+                case "htm":
+                case "xhtml": return "text/html";
+
 				default: return "text/plain";
     		}
     	}
@@ -178,7 +182,6 @@
 
         private static RoutingTable BuildRoutingTable(string httpMethod)
         {
-            var debug = ExportedTypeHelper.FromCurrentAppDomain(t => true).ToList();
             var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler)
                 .Where(i => HttpMethodAttribute.Get(i).HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
