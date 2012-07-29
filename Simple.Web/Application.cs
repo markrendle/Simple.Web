@@ -14,10 +14,11 @@
     using Http;
     using Owin;
     using Routing;
+#pragma warning disable 811
     using BodyDelegate = System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>;
     using ResponseHandler = System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>;
     using App = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IDictionary<string, string[]>, System.IO.Stream, System.Threading.CancellationToken, System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>, System.Delegate, System.Threading.Tasks.Task>;
-
+#pragma warning restore 811
 
     /// <summary>
     /// The running application.
@@ -27,12 +28,25 @@
         private static readonly object StartupLock = new object();
         private static volatile StartupTaskRunner _startupTaskRunner = new StartupTaskRunner();
 
+        /// <summary>
+        /// The OWIN standard application method.
+        /// </summary>
+        /// <param name="env">The OWIN Environment dictionary.</param>
+        /// <param name="headers">The headers.</param>
+        /// <param name="body">The request input <see cref="Stream"/>.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="responseHandler">The OWIN response handler delegate.</param>
+        /// <param name="next">The next OWIN App in the chain.</param>
+        /// <returns>A <see cref="Task"/> which will complete the request.</returns>
         [Export("Owin.Application")]
-        public Task Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken, ResponseHandler responseHandler, Delegate next)
+        public static Task Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken, ResponseHandler responseHandler, Delegate next)
         {
             var context = new OwinContext(env, headers, body);
             var task = Run(context);
-            if (task == null) return MakeCompletedTask();
+            if (task == null)
+            {
+                return InvokeNextApp(env, headers, body, cancellationToken, responseHandler, next);
+            }
             return task
                 .ContinueWith(
                     t =>
@@ -40,7 +54,18 @@
                                     context.Response.WriteFunction));
         }
 
-        public Task Run(IContext context)
+        private static Task InvokeNextApp(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken,
+                                          ResponseHandler responseHandler, Delegate next)
+        {
+            var nextApp = next as App;
+            if (nextApp != null)
+            {
+                return nextApp(env, headers, body, cancellationToken, responseHandler, null);
+            }
+            return TaskHelper.Completed();
+        }
+
+        internal static Task Run(IContext context)
         {
             Startup();
 
@@ -63,7 +88,7 @@
             return task ?? MakeCompletedTask();
         }
 
-        private Task MakeCompletedTask()
+        private static Task MakeCompletedTask()
         {
             var tcs = new TaskCompletionSource<object>();
             tcs.SetResult(null);
@@ -152,6 +177,7 @@
 
         private static RoutingTable BuildRoutingTable(string httpMethod)
         {
+            var debug = ExportedTypeHelper.FromCurrentAppDomain(t => true).ToList();
             var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler)
                 .Where(i => HttpMethodAttribute.Get(i).HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
@@ -161,7 +187,7 @@
 
         private static bool IsHttpMethodHandler(Type type)
         {
-            return HttpMethodAttribute.IsAppliedTo(type);
+            return (!type.IsInterface) && HttpMethodAttribute.IsAppliedTo(type);
         }
 
         private static RoutingTable TableFor(string httpMethod)

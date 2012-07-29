@@ -11,17 +11,11 @@ namespace Simple.Web.MediaTypeHandling
     {
         private readonly object _handler;
         private readonly object _model;
-        private readonly string _viewPath;
 
-        internal Content(object handler, object model) : this(handler, model, null)
-        {
-        }
-
-        internal Content(object handler, object model, string viewPath)
+        internal Content(object handler, object model)
         {
             _handler = handler;
             _model = model;
-            _viewPath = viewPath;
         }
 
         /// <summary>

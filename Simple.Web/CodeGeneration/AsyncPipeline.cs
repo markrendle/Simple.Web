@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web.CodeGeneration
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
     using System.Threading.Tasks;
     using Helpers;
@@ -67,7 +68,7 @@
                 {
                     if (t.Result)
                     {
-                        context.Response.Status = continuation(handler, context).Code.ToString();
+                        context.Response.Status = continuation(handler, context).Code.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                     return false;
@@ -83,7 +84,7 @@
                         return continuation(handler, context)
                             .ContinueWith(ht =>
                                 {
-                                    context.Response.Status = ht.Result.Code.ToString();
+                                    context.Response.Status = ht.Result.Code.ToString(CultureInfo.InvariantCulture);
                                     return true;
                                 });
                     }

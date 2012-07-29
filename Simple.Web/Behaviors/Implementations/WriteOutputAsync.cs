@@ -16,9 +16,10 @@ namespace Simple.Web.Behaviors.Implementations
         /// <summary>
         /// This method supports the framework directly and should not be used from your code
         /// </summary>
+        /// <typeparam name="T">The output type.</typeparam>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> which will complete when the output has been written.</returns>
         public static Task Impl<T>(IOutputAsync<T> handler, IContext context)
         {
             if (typeof(T) == typeof(RawHtml))

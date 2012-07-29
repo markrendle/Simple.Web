@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Simple.Web.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -76,6 +77,7 @@
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
+    <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\IFileUtility.cs" />
     <Compile Include="Helpers\NameValueCollectionEx.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
@@ -97,7 +99,7 @@
     <Compile Include="Hosting\HandlerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\AssemblyEx.cs" />
+    <Compile Include="Helpers\AssemblyExtensions.cs" />
     <Compile Include="Behaviors\Implementations\CheckAuthentication.cs" />
     <Compile Include="Behaviors\Implementations\SetCacheOptions.cs" />
     <Compile Include="CodeGeneration\HandlerRunnerBuilder.cs" />
@@ -145,8 +147,6 @@
     <Compile Include="IConfiguration.cs" />
     <Compile Include="MediaTypeHandling\IMediaTypeHandler.cs" />
     <Compile Include="Http\IContext.cs" />
-    <Compile Include="Http\ICookie.cs" />
-    <Compile Include="Http\ICookieCollection.cs" />
     <Compile Include="IGet.cs" />
     <Compile Include="Behaviors\IInput.cs" />
     <Compile Include="Behaviors\ILoginPage.cs" />

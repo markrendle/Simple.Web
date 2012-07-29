@@ -12,9 +12,9 @@
         /// <summary>
         /// This method supports the framework directly and should not be used from your code
         /// </summary>
+        /// <typeparam name="T">The input model type.</typeparam>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
         public static void Impl<T>(IInput<T> handler, IContext context)
         {
         	if (context.Request.InputStream.Length == 0) return;

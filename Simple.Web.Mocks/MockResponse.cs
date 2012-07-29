@@ -55,10 +55,6 @@ namespace Simple.Web.Mocks
         {
         }
 
-        public void SetCookie(ICookie cookie)
-        {
-        }
-
         public void DisableCache()
         {
         }

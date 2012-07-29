@@ -9,7 +9,7 @@ namespace Simple.Web.Helpers
         /// Maps a virtual path to its internal file-system representation.
         /// </summary>
         /// <param name="virtualPath">The virtual path.</param>
-        /// <returns></returns>
+        /// <returns>The local file-system path.</returns>
         string MapPath(string virtualPath);
     }
 }

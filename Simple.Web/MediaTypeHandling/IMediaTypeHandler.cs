@@ -22,6 +22,7 @@ namespace Simple.Web.MediaTypeHandling
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="outputStream">The output stream.</param>
+        /// <returns>A <see cref="Task"/> that completes when the output has been written.</returns>
         Task Write(IContent content, Stream outputStream);
     }
 }

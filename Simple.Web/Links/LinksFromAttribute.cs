@@ -21,8 +21,9 @@
         /// <summary>
         /// Gets the rel: the relationship of the linked resource to the current one.
         /// </summary>
-        /// <returns></returns>
-        public override string GetRel()
+        /// <returns>The value of the <see cref="Rel"/> property.</returns>
+        /// <remarks>This method is used by Simple.Web</remarks>
+        internal override string GetRel()
         {
             return Rel;
         }

@@ -47,7 +47,7 @@
         /// <summary>
         /// Gets the type of the handler.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The type of the handler.</returns>
         public Type GetHandlerType()
         {
             return _handlerType;

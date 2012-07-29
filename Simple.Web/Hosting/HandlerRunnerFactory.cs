@@ -8,7 +8,7 @@
     /// <summary>
     /// Factory class for building runners.
     /// </summary>
-    public class HandlerRunnerFactory
+    internal class HandlerRunnerFactory
     {
         private readonly ConcurrentDictionary<Type, Action<object, IContext>> _cache =
             new ConcurrentDictionary<Type, Action<object, IContext>>();

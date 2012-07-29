@@ -9,7 +9,7 @@
     /// <summary>
     /// Handles routing for hosts.
     /// </summary>
-    public class RoutingTable
+    internal class RoutingTable
     {
         private const int MaximumGroupCount = 64;
         private readonly Dictionary<string, IList<HandlerTypeInfo>> _staticPaths =

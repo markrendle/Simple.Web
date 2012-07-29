@@ -88,13 +88,14 @@ namespace Simple.Web
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
+        /// Performs an implicit conversion from <see cref="System.Int32" /> to <see cref="Simple.Web.Status" />.
         /// </summary>
         /// <param name="source">The string source.</param>
+        /// <returns>A <see cref="Status"/> object for the specified status.</returns>
         /// <example>
         /// Status status = 404 + "Not Found";
         /// </example>
-        /// <exception cref="InvalidCastException">Thrown when an object cannot be cast to a required type.</exception>
+        /// <exception cref="System.InvalidCastException"></exception>
         public static implicit operator Status(string source)
         {
             try
@@ -205,6 +206,12 @@ namespace Simple.Web
             }
         }
 
+        /// <summary>
+        /// Returns an HTTP formatted representation of the <see cref="Status"/>.
+        /// </summary>
+        /// <returns>
+        /// E.g. <c>200 OK</c> or <c>404 Not Found</c>.
+        /// </returns>
         public override string ToString()
         {
             return string.Format("{0} {1}", Code, Description);

@@ -84,7 +84,7 @@ namespace Simple.Web.Http
         /// Removes a cookie (by setting its Expiry one year in the past).
         /// </summary>
         /// <param name="response">The <see cref="IResponse"/> instance.</param>
-        /// <param name="name"></param>
+        /// <param name="name">The name of the cookie to remove.</param>
         public static void RemoveCookie(this IResponse response, string name)
         {
             EnsureHeaders(response);
@@ -115,8 +115,8 @@ namespace Simple.Web.Http
         /// <summary>
         /// Sets the Cache-Control header and optionally the Expires and Vary headers.
         /// </summary>
-        /// <param name="response"></param>
-        /// <param name="cacheOptions"></param>
+        /// <param name="response">The <see cref="IResponse"/> instance.</param>
+        /// <param name="cacheOptions">A <see cref="CacheOptions"/> object to specify the cache settings.</param>
         public static void SetCacheOptions(this IResponse response, CacheOptions cacheOptions)
         {
             if (cacheOptions == null) return;

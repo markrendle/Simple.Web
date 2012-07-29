@@ -40,8 +40,9 @@ namespace Simple.Web.Links
         /// <summary>
         /// Gets the rel: the relationship of the linked resource to the current one.
         /// </summary>
-        /// <returns></returns>
-        public abstract string GetRel();
+        /// <returns>The <c>rel</c> type, e.g. <c>self</c> for canonical links.</returns>
+        internal abstract string GetRel();
+
         /// <summary>
         /// Gets or sets the Content-Type.
         /// </summary>
@@ -61,7 +62,7 @@ namespace Simple.Web.Links
         /// Checks to see if the attribute exists on a type.
         /// </summary>
         /// <param name="type">The handler.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the attribute is applied to the type; otherwise, <c>false</c>.</returns>
         public static bool Exists(Type type)
         {
             return GetCustomAttributes(type, typeof(LinkAttributeBase)).Length > 0;

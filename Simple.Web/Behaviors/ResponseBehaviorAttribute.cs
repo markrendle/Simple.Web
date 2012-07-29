@@ -21,7 +21,7 @@ namespace Simple.Web.Behaviors
         /// Gets the <see cref="ResponseBehaviorAttribute"/> for the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="ResponseBehaviorAttribute"/>, or <c>null</c> if it is not applied to the type.</returns>
         public static ResponseBehaviorAttribute Get(Type type)
         {
             return GetCustomAttribute(type, typeof(ResponseBehaviorAttribute)) as ResponseBehaviorAttribute;

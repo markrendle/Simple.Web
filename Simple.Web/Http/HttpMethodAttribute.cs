@@ -55,14 +55,14 @@ namespace Simple.Web.Http
         /// <returns><c>null</c> if the attribute does not exist.</returns>
         public static HttpMethodAttribute Get(Type type)
         {
-            return GetCustomAttribute(type, typeof (HttpMethodAttribute)) as HttpMethodAttribute;
+            return (GetCustomAttribute(type, typeof(HttpMethodAttribute)) ?? type.GetInterfaces().Select(Get).FirstOrDefault()) as HttpMethodAttribute;
         }
 
         /// <summary>
         /// Gets the entry-point method name for a handler type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>The value of the <see cref="Method"/> property, or <c>null</c> if the attribute is not applied to the type.</returns>
         public static MethodInfo GetMethod(Type type)
         {
             var attr = type.GetInterfaces().Select(Get).FirstOrDefault(a => a != null);
@@ -78,7 +78,8 @@ namespace Simple.Web.Http
         /// </returns>
         public static bool IsAppliedTo(Type type)
         {
-            return GetCustomAttribute(type, typeof (HttpMethodAttribute)) != null;
+            var isAppliedTo = GetCustomAttribute(type, typeof (HttpMethodAttribute), true) != null || type.GetInterfaces().Select(Get).FirstOrDefault() != null;
+            return isAppliedTo;
         }
     }
 }

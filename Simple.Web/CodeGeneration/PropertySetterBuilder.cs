@@ -69,7 +69,6 @@ namespace Simple.Web.CodeGeneration
 
         private TryExpression CreateTrySimpleAssign()
         {
-            Expression assign;
             var changeTypeMethod = typeof(PropertySetterBuilder).GetMethod("SafeConvert",
                                                                            BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -90,7 +89,7 @@ namespace Simple.Web.CodeGeneration
                                               Expression.Constant(_property.PropertyType));
             }
 
-            assign = Expression.Assign(_nameProperty, Expression.Convert(callConvert, _property.PropertyType));
+            var assign = Expression.Assign(_nameProperty, Expression.Convert(callConvert, _property.PropertyType));
             if (_property.PropertyType.IsEnum)
             {
                 return Expression.TryCatch( // try {

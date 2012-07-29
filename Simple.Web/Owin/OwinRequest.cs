@@ -57,7 +57,12 @@ namespace Simple.Web.Owin
 
         private static string MakeUriString(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders)
         {
-            var uri = string.Format("{0}://{1}{2}{3}", env[OwinKeys.Scheme], requestHeaders["Host"][0], env[OwinKeys.PathBase], env[OwinKeys.Path]);
+            var host = requestHeaders["Host"][0];
+            if (string.IsNullOrWhiteSpace(host)) host = "localhost";
+            var scheme = env[OwinKeys.Scheme];
+            var pathBase = env[OwinKeys.PathBase];
+            var path = env[OwinKeys.Path];
+            var uri = string.Format("{0}://{1}{2}{3}", scheme, host, pathBase, path);
             object queryString;
             if (env.TryGetValue(OwinKeys.QueryString, out queryString))
             {

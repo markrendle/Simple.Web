@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns><c>false</c> (to prevent response output) if the status is a redirect code; otherwise, <c>true</c>.</returns>
         public static bool Impl(IMayRedirect handler, IContext context)
         {
             int code = context.Response.Status.Code;

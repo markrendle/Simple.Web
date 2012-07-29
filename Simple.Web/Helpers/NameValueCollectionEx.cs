@@ -14,13 +14,13 @@ namespace Simple.Web.Helpers
         /// Converts a <see cref="NameValueCollection"/> to an ILookup.
         /// </summary>
         /// <param name="nameValueCollection">The name value collection.</param>
-        /// <returns></returns>
+        /// <returns>An <see cref="ILookup{TKey,TValue}"/> representation of the <see cref="NameValueCollection"/>.</returns>
         public static ILookup<string,string> ToLookup(this NameValueCollection nameValueCollection)
         {
             if (nameValueCollection == null) throw new ArgumentNullException("nameValueCollection");
 
             return nameValueCollection.AllKeys.SelectMany(
-                k => nameValueCollection.GetValues(k).Select(v => new KeyValuePair<string, string>(k, v)))
+                k => nameValueCollection.GetValues(k).EmptyIfNull().Select(v => new KeyValuePair<string, string>(k, v)))
                 .ToLookup(kvp => kvp.Key, kvp => kvp.Value);
         }
     }

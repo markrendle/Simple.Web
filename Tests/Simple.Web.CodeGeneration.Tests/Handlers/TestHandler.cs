@@ -14,8 +14,6 @@ namespace Simple.Web.CodeGeneration.Tests.Handlers
 
         public string Input { get; set; }
 
-        public IDictionary<string, ICookie> ResponseCookies { get; set; }
-
         public CacheOptions CacheOptions
         {
             get { return CacheOptions.DisableCaching; }

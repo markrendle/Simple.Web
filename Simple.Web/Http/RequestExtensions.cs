@@ -46,6 +46,13 @@
             return contentType.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Tries to get the value of a Cookie.
+        /// </summary>
+        /// <param name="request">The <see cref="IRequest"/> instance.</param>
+        /// <param name="name">The name of the cookie.</param>
+        /// <param name="value">The value of the cookie if found; otherwise, <c>null</c>.</param>
+        /// <returns><c>true</c> if the cookie is found in the request; otherwise, <c>false</c>.</returns>
         public static bool TryGetCookieValue(this IRequest request, string name, out string value)
         {
             string[] cookies;

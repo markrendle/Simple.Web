@@ -10,7 +10,7 @@
     /// <summary>
     /// Factory class for building routing tables.
     /// </summary>
-    public sealed class RoutingTableBuilder
+    internal sealed class RoutingTableBuilder
     {
         private readonly IList<Type> _handlerBaseTypes;
 

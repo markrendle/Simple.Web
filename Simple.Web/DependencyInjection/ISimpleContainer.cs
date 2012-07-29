@@ -15,6 +15,9 @@ namespace Simple.Web.DependencyInjection
         ISimpleContainerScope BeginScope();
     }
 
+    /// <summary>
+    /// Interface to implement for scoped objects created by IoC containers.
+    /// </summary>
     public interface ISimpleContainerScope: IDisposable
     {
         /// <summary>

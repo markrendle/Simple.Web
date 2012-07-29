@@ -20,7 +20,7 @@
         /// Gets the <see cref="RequestBehaviorAttribute"/> for the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="RequestBehaviorAttribute"/>, or <c>null</c> if it is not applied to the type.</returns>
         public static RequestBehaviorAttribute Get(Type type)
         {
             return GetCustomAttribute(type, typeof (RequestBehaviorAttribute)) as RequestBehaviorAttribute;

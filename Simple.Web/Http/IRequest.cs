@@ -16,10 +16,6 @@ namespace Simple.Web.Http
         /// </summary>
         Uri Url { get; }
         /// <summary>
-        /// Gets the content types accepted by the client making the request.
-        /// </summary>
-        //IList<string> AcceptTypes { get; }
-        /// <summary>
         /// Gets the query string.
         /// </summary>
         IDictionary<string,string[]> QueryString { get; }
@@ -27,13 +23,6 @@ namespace Simple.Web.Http
         /// Gets the input stream.
         /// </summary>
         Stream InputStream { get; }
-        /// <summary>
-        /// Gets the type of the content.
-        /// </summary>
-        /// <value>
-        /// The type of the content.
-        /// </value>
-        //string ContentType { get; }
         /// <summary>
         /// Gets the HTTP method.
         /// </summary>

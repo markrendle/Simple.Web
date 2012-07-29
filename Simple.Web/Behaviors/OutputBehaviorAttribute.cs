@@ -22,7 +22,7 @@ namespace Simple.Web.Behaviors
         /// Gets the <see cref="OutputBehaviorAttribute"/> for the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="OutputBehaviorAttribute"/>, or <c>null</c> if it is not applied to the type.</returns>
         public static OutputBehaviorAttribute Get(Type type)
         {
             return GetCustomAttribute(type, typeof(OutputBehaviorAttribute)) as OutputBehaviorAttribute;

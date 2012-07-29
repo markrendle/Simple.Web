@@ -17,7 +17,7 @@ namespace Simple.Web.Behaviors.Implementations
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
         public static bool Impl(IRequireAuthentication handler, IContext context)
         {
             var authenticationProvider = SimpleWeb.Configuration.AuthenticationProvider ?? new DefaultAuthenticationProvider();

@@ -24,7 +24,7 @@ namespace Simple.Web.Links
         /// Gets the "rel" attribute for the link; for canonical links, this is always "self".
         /// </summary>
         /// <returns>"self"</returns>
-        public override string GetRel()
+        internal override string GetRel()
         {
             return "self";
         }

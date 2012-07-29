@@ -15,12 +15,12 @@
     <Namespace name="Simple.Web.Behaviors">Contains interfaces for specifying requirements and actions for a Handler.</Namespace>
     <Namespace name="Simple.Web.Behaviors.Implementations">Contains the static classes which implement the back-end code for the Behaviors.</Namespace>
     <Namespace name="Simple.Web.CodeGeneration">Contains classes for generating methods at runtime to handle request lifeycles.</Namespace>
-    <Namespace name="Simple.Web.ContentTypeHandling">Contains classes and interfaces relating to content-type negotiation, serialization and deserialization of type, and rendering of responses.</Namespace>
     <Namespace name="Simple.Web.DependencyInjection">Contains interfaces relating to IoC containers.</Namespace>
     <Namespace name="Simple.Web.Helpers">Contains helper classes useful to the framework and to application developers.</Namespace>
     <Namespace name="Simple.Web.Hosting">Contains classes and interfaces related to hosting Simple.Web applications on different servers.</Namespace>
     <Namespace name="Simple.Web.Http">Contains interfaces and classes for handling HTTP requests and responses.</Namespace>
     <Namespace name="Simple.Web.Links">Contains interfaces, classes and attributes for building link-heavy RESTful systems.</Namespace>
+    <Namespace name="Simple.Web.MediaTypeHandling">Contains interfaces and classes for handling different media types.</Namespace>
     <Namespace name="Simple.Web.Routing">Contains classes relating to request routing.</Namespace>
   </NamespaceSummaries>
   <Settings>
@@ -33,9 +33,9 @@
     <ShowMissingSummaries>true</ShowMissingSummaries>
     <ShowMissingTypeParams>true</ShowMissingTypeParams>
     <ShowMissingParams>true</ShowMissingParams>
-    <ShowMissingReturns>true</ShowMissingReturns>
-    <ShowMissingValues>true</ShowMissingValues>
-    <WarnForMissingValues>true</WarnForMissingValues>
+    <ShowMissingReturns>false</ShowMissingReturns>
+    <ShowMissingValues>false</ShowMissingValues>
+    <WarnForMissingValues>false</WarnForMissingValues>
     <DocumentInternals>false</DocumentInternals>
     <DocumentPrivatesAndSealedProtecteds>false</DocumentPrivatesAndSealedProtecteds>
     <DocumentExplicitInterfaceImplementations>true</DocumentExplicitInterfaceImplementations>
