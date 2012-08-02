@@ -19,7 +19,7 @@ namespace Simple.Web.Helpers
         /// <param name="text">The text.</param>
         public static void Write(this IResponse response, string text)
         {
-            response.WriteFunction = (stream, token) =>
+            response.WriteFunction = (stream) =>
                 {
                     var bytes = Encoding.UTF8.GetBytes(text);
                     return stream.WriteAsync(bytes, 0, bytes.Length);

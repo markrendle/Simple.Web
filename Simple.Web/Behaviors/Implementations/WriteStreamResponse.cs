@@ -24,7 +24,7 @@
             }
             if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-            context.Response.WriteFunction = (stream, token) =>
+            context.Response.WriteFunction = (stream) =>
                 {
                     using (var outputStream = handler.Output)
                     {

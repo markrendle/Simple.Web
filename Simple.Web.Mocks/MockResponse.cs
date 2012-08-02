@@ -11,7 +11,7 @@ namespace Simple.Web.Mocks
     public class MockResponse : IResponse
     {
         public Status Status { get; set; }
-        public Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
+        public Func<Stream, Task> WriteFunction { get; set; }
         public IDictionary<string, string[]> Headers { get; set; }
 
         public int StatusCode { get; set; }

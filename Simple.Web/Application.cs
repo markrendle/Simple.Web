@@ -6,7 +6,6 @@
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using CodeGeneration;
     using Helpers;
@@ -16,8 +15,7 @@
     using Routing;
 #pragma warning disable 811
     using BodyDelegate = System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>;
-    using ResponseHandler = System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>;
-    using App = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IDictionary<string, string[]>, System.IO.Stream, System.Threading.CancellationToken, System.Func<int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.Tasks.Task>, System.Delegate, System.Threading.Tasks.Task>;
+    using Result = System.Tuple<System.Collections.Generic.IDictionary<string, object>, int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.Tasks.Task>>;
 #pragma warning restore 811
 
     /// <summary>
@@ -31,38 +29,22 @@
         /// <summary>
         /// The OWIN standard application method.
         /// </summary>
-        /// <param name="env">The OWIN Environment dictionary.</param>
-        /// <param name="headers">The headers.</param>
-        /// <param name="body">The request input <see cref="Stream"/>.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="responseHandler">The OWIN response handler delegate.</param>
-        /// <param name="next">The next OWIN App in the chain.</param>
+        /// <param name="request">The OWIN request.</param>
         /// <returns>A <see cref="Task"/> which will complete the request.</returns>
         [Export("Owin.Application")]
-        public static Task Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken, ResponseHandler responseHandler, Delegate next)
+        public static Task<Result> Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body)
         {
             var context = new OwinContext(env, headers, body);
             var task = Run(context);
             if (task == null)
             {
-                return InvokeNextApp(env, headers, body, cancellationToken, responseHandler, next);
+                return TaskHelper.Completed(new Result(null, 404, null, null));
             }
             return task
                 .ContinueWith(
                     t =>
-                    responseHandler(context.Response.Status.Code, context.Response.Headers ?? new Dictionary<string, string[]>(),
-                                    context.Response.WriteFunction));
-        }
-
-        private static Task InvokeNextApp(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body, CancellationToken cancellationToken,
-                                          ResponseHandler responseHandler, Delegate next)
-        {
-            var nextApp = next as App;
-            if (nextApp != null)
-            {
-                return nextApp(env, headers, body, cancellationToken, responseHandler, null);
-            }
-            return TaskHelper.Completed();
+                    new Result(null, context.Response.Status.Code, context.Response.Headers,
+                               context.Response.WriteFunction));
         }
 
         internal static Task Run(IContext context)
@@ -119,7 +101,7 @@
             context.Response.Status = Status.OK;
             context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));
             context.Response.SetContentLength(new FileInfo(file).Length);
-            context.Response.WriteFunction = (stream, token) =>
+            context.Response.WriteFunction = (stream) =>
                 {
                     using (var fileStream = File.OpenRead(file))
                     {

@@ -26,7 +26,7 @@ namespace Simple.Web.Http
         /// </summary>
         //Stream OutputStream { get; }
 
-        Func<Stream, CancellationToken, Task> WriteFunction { get; set; }
+        Func<Stream, Task> WriteFunction { get; set; }
 
         /// <summary>
         /// The response headers.

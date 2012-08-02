@@ -16,7 +16,7 @@ namespace Simple.Web.CodeGeneration
                     at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-            context.Response.WriteFunction = (stream, token) =>
+            context.Response.WriteFunction = (stream) =>
                 {
                     var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
                     return stream.WriteAsync(bytes, 0, bytes.Length);

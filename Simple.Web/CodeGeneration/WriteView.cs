@@ -24,7 +24,7 @@ namespace Simple.Web.CodeGeneration
             {
                 context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
 
-                context.Response.WriteFunction = (stream, token) =>
+                context.Response.WriteFunction = (stream) =>
                     {
                         var content = new Content(handler, null);
                         return mediaTypeHandler.Write(content, stream);

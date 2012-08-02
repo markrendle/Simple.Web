@@ -38,7 +38,7 @@ namespace Simple.Web.Behaviors.Implementations
                 context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
                 if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
-                context.Response.WriteFunction = (stream, token) =>
+                context.Response.WriteFunction = (stream) =>
                     {
                         var content = new Content(handler, handler.Output);
                         return mediaTypeHandler.Write(content, stream);
@@ -70,7 +70,7 @@ namespace Simple.Web.Behaviors.Implementations
                     at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html");
             if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
-            context.Response.WriteFunction = (stream, token) =>
+            context.Response.WriteFunction = (stream) =>
                 {
                     var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
                     return stream.WriteAsync(bytes, 0, bytes.Length);

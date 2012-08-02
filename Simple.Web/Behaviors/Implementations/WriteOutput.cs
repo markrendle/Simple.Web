@@ -39,7 +39,7 @@
                 context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
                 if (context.Request.HttpMethod.Equals("HEAD")) return;
 
-                context.Response.WriteFunction = (stream, token) =>
+                context.Response.WriteFunction = (stream) =>
                     {
                         var content = new Content(handler, handler.Output);
                         return mediaTypeHandler.Write(content, stream);
@@ -67,7 +67,7 @@
         {
             context.Response.SetContentType(GetHtmlContentType(context));
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            context.Response.WriteFunction = (stream, token) =>
+            context.Response.WriteFunction = (stream) =>
                 {
                     var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
                     return stream.WriteAsync(bytes, 0, bytes.Length);
