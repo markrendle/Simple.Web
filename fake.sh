@@ -1,5 +1,5 @@
 #!/bin/bash
-TARGET=$1
+TARGET=$1 
 BUILDTARGETS=$2
 
 if [ -z "$BUILDTARGETS" ]
