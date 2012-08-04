@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #I @"packages/FAKE.1.64.7/tools"
-=======
-#I @"packages/FAKE.1.64.6/tools"
->>>>>>> Build.fsx shouldn't point to local build.
 #r "FakeLib.dll"
 open Fake
 
