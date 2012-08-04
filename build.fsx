@@ -2,18 +2,19 @@
 #r "FakeLib.dll"
 open Fake
 
-let buildDir = @".\build\"
-let testDir = @".\test"
+let buildDir = @"./build/"
+let testDir = @"./test"
 
-let fxReferences = !! @"*\*.csproj"
-let testReferences = !! @"Tests\**\*.csproj"
+let fxReferences = !! @"*/*.csproj"
+let testReferences = !! @"Tests/**/*.csproj"
+let buildTargets = environVarOrDefault "BUILDTARGETS" ""
 
 Target "Clean" (fun _ ->
     CleanDirs [buildDir; testDir]
 )
 
 Target "Build" (fun _ ->
-    MSBuildRelease buildDir "Build" fxReferences
+    MSBuild buildDir "Build" ["Configuration","Debug"; "VSToolsPath",buildTargets] fxReferences
         |> Log "Build-Output: "
 )
 
@@ -23,7 +24,7 @@ Target "BuildTest" (fun _ ->
 )
 
 Target "Test" (fun _ ->
-    !! (testDir + @"\*.Tests.dll")
+    !! (testDir + @"/*.Tests.dll")
         |> xUnit (fun p ->
             { p with
                 ShadowCopy = true;
@@ -31,6 +32,12 @@ Target "Test" (fun _ ->
                 XmlOutput = true;
                 OutputDir = testDir })
 )
+
+"Clean"
+  ==> "Build"
+
+"Build"
+  ==> "BuildTest"
 
 Target "Default" DoNothing
 
