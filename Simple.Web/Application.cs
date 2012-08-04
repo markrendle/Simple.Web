@@ -14,7 +14,6 @@
     using Owin;
     using Routing;
 #pragma warning disable 811
-    using BodyDelegate = System.Func<System.IO.Stream, System.Threading.CancellationToken, System.Threading.Tasks.Task>;
     using Result = System.Tuple<System.Collections.Generic.IDictionary<string, object>, int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.Tasks.Task>>;
 #pragma warning restore 811
 

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <id>Simple.Web.NInject</id>
-    <version>0.4</version>
+    <id>Simple.Web.Ninject</id>
+    <version>0.4.2.0</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
     <copyright>Mark Rendle</copyright>
@@ -12,11 +12,11 @@
     <description>Ninject support for Simple.Web, a REST-focused, object-oriented Web Framework for .NET 4.</description>
     <tags>simple.web</tags>
     <dependencies>
-      <dependency id="Simple.Web" version="0.4" />
-      <dependency id="NInject" version="3.0" />
+      <dependency id="Simple.Web" version="0.4.2.0" />
+      <dependency id="Ninject" version="3.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="build\Simple.Web.NInject.dll" target="lib\net40" />
+    <file src="build\Simple.Web.Ninject.dll" target="lib\net40" />
   </files>
 </package>
