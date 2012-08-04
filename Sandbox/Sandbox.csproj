@@ -43,13 +43,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Fix, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.0.1\lib\net40\Fix.dll</HintPath>
+      <HintPath>..\packages\Fix.0.2\lib\net40\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Fix.AspNet, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.AspNet.0.1\lib\net40\Fix.AspNet.dll</HintPath>
+      <HintPath>..\packages\Fix.AspNet.0.2\lib\net40\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>

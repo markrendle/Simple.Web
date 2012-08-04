@@ -31,9 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.ContentTypeHandling.Tests", "Tests\Simple.Web.ContentTypeHandling.Tests\Simple.Web.ContentTypeHandling.Tests.csproj", "{730BBC21-8495-4825-988B-FCF4D2AE5742}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{215E4826-D3DF-4981-B3D6-9DD6AB393F26}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Xml", "Simple.Web.Xml\Simple.Web.Xml.csproj", "{432A3064-7F99-4822-A896-18C7A2014FBA}"
 EndProject
