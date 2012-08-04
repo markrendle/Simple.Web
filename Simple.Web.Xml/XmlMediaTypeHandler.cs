@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Simple.Web.Xml
 {
-    using System.Data.Entity.Design.PluralizationServices;
     using System.Globalization;
     using System.IO;
     using System.Runtime.Serialization;
