@@ -24,4 +24,4 @@ fi
 
 echo "Executing command: $CTARGET"
 
-mono packages/FAKE.1.64.6/tools/Fake.exe build.fsx target=$CTARGET
+mono packages/FAKE.1.64.6/tools/Fake.exe build.fsx target=$CTARGET verbose #details
