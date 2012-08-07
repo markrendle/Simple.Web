@@ -1,5 +1,6 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
+    using System;
     using Helpers;
     using Simple.Web.Behaviors;
     using Simple.Web.Http;
@@ -24,6 +25,7 @@
             }
             if (context.Request.HttpMethod.Equals("HEAD")) return;
 
+            if (!handler.Output.CanSeek) throw new InvalidOperationException("Output stream must support Seek operations.");
             context.Response.WriteFunction = (stream) =>
                 {
                     using (var outputStream = handler.Output)

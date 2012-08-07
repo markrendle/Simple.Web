@@ -6,7 +6,7 @@ namespace Simple.Web.Behaviors
     /// Adds functionality for handlers which return raw streams.
     /// </summary>
     [OutputBehavior(typeof(Implementations.WriteStreamResponse), Priority = Priority.Highest)]
-    public interface IOutputStream : IOutput<Stream>
+    public interface IOutputStream
     {
         /// <summary>
         /// Gets the text to use as the <c>Content-Type</c> header.
@@ -20,5 +20,10 @@ namespace Simple.Web.Behaviors
         /// Use a string like &quot;attachment; filename=myfile.txt&quot; to force the browser to download
         /// the content as a file instead of displaying it.</remarks>
         string ContentDisposition { get; }
+
+        /// <summary>
+        /// Gets the output.
+        /// </summary>
+        Stream Output { get; }
     }
 }
