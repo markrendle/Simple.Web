@@ -29,10 +29,9 @@ namespace Simple.Web.Behaviors.Implementations
                     var uriTemplateAttribute = UriTemplateAttribute.Get(SimpleWeb.Configuration.LoginPage).FirstOrDefault();
                     if (uriTemplateAttribute != null)
                     {
-                        context.Response.SetHeader("Location",
-                                                     uriTemplateAttribute.Template + "?returnUrl=" +
-                                                     Uri.EscapeDataString(context.Request.Url.ToString()));
-                        context.Response.Status = Status.TemporaryRedirect.ToString();
+                        var redirect = uriTemplateAttribute.Template + "?returnUrl=" + Uri.EscapeDataString(context.Request.Url.ToString());
+                        context.Response.SetHeader("Location", redirect);
+                        context.Response.Status = Status.TemporaryRedirect(redirect);
                         return false;
                     }
                 }

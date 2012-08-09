@@ -20,19 +20,51 @@ namespace Simple.Web
         public static readonly Status Created = new Status(201, "Created");
 
         /// <summary>
+        /// Indicates that a request was processed successfully and a new resource was created.
+        /// </summary>
+        /// <param name="redirectLocation">The redirect location.</param>
+        /// <returns></returns>
+        public static Status CreatedRedirect(string redirectLocation)
+        {
+            return new Status(201, "Created", redirectLocation);
+        }
+
+        /// <summary>
         /// Nothing to see here.
         /// </summary>
         public static readonly Status NoContent = new Status(204, "No Content");
 
         /// <summary>
+        /// A redirect to another resource, telling the client to use the new URI for all future requests.
+        /// </summary>
+        public static Status MovedPermanently(string redirectLocation)
+        {
+            return new Status(301, "Moved Permanently", redirectLocation);
+        }
+
+        /// <summary>
+        /// A redirect to another resource, but telling the client to continue to use this URI for future requests.
+        /// </summary>
+        public static Status Found(string redirectLocation)
+        {
+            return new Status(302, "Found", redirectLocation);
+        }
+
+        /// <summary>
         /// A redirect to another resource, commonly used after a POST operation to prevent refreshes.
         /// </summary>
-        public static readonly Status SeeOther = new Status(303, "See Other");
+        public static Status SeeOther(string redirectLocation)
+        {
+            return new Status(303, "See Other", redirectLocation);
+        }
 
         /// <summary>
         /// A Temporary redirect, e.g. for a login page.
         /// </summary>
-        public static readonly Status TemporaryRedirect = new Status(307, "Temporary Redirect");
+        public static Status TemporaryRedirect(string redirectLocation)
+        {
+            return new Status(307, "Temporary Redirect", redirectLocation);
+        }
 
         /// <summary>
         /// Indicates that everything is horrible, and you should hide in a cupboard until it's all over.
@@ -47,14 +79,13 @@ namespace Simple.Web
                                    OK,
                                    Created,
                                    NoContent,
-                                   SeeOther,
-                                   TemporaryRedirect,
                                    InternalServerError,
                                };
         }
 
         private readonly int _httpStatusCode;
         private readonly string _httpStatusDescription;
+        private readonly string _redirectLocation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Status"/> struct.
@@ -69,10 +100,20 @@ namespace Simple.Web
         /// </summary>
         /// <param name="httpStatusCode">The HTTP status code.</param>
         /// <param name="httpStatusDescription">The HTTP status description.</param>
-        public Status(int httpStatusCode, string httpStatusDescription) : this()
+        public Status(int httpStatusCode, string httpStatusDescription) : this(httpStatusCode, httpStatusDescription, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Status"/> struct.
+        /// </summary>
+        /// <param name="httpStatusCode">The HTTP status code.</param>
+        /// <param name="httpStatusDescription">The HTTP status description.</param>
+        public Status(int httpStatusCode, string httpStatusDescription, string redirectLocation) : this()
         {
             _httpStatusCode = httpStatusCode;
             _httpStatusDescription = httpStatusDescription;
+            _redirectLocation = redirectLocation;
         }
 
         /// <summary>
@@ -133,6 +174,11 @@ namespace Simple.Web
         public bool IsSuccess
         {
             get { return _httpStatusCode >= 200 && _httpStatusCode <= 299; }
+        }
+
+        public string RedirectLocation
+        {
+            get { return _redirectLocation; }
         }
 
         /// <summary>

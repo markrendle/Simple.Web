@@ -100,6 +100,9 @@ namespace Simple.Web.CodeGeneration
             CreateWriteStatusBlock();
             _blocks.AddRange(PropertyCookieSetter.GetPropertyCookieSetters(_type, _handler, _context));
 
+            var redirectBehaviorInfo = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High);
+            AddBehaviorBlock(redirectBehaviorInfo);
+
             foreach (var behaviorInfo in ResponseBehaviorInfo.GetInPriorityOrder())
             {
                 AddBehaviorBlock(behaviorInfo);

@@ -26,6 +26,18 @@
         }
 
         [Fact]
+        public void RedirectFooRedirects()
+        {
+            var target = new HandlerRunnerBuilder(typeof (RedirectFoo), "GET").BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
+            context.Response = new MockResponse();
+            var foo = new RedirectFoo();
+            target(foo, context);
+            Assert.True(context.Response.Headers.ContainsKey("Location"));
+        }
+
+        [Fact]
         public void CallsPostWithParameter()
         {
             var target = new HandlerRunnerBuilder(typeof (PostFoo), "POST").BuildRunner();
@@ -130,6 +142,14 @@
         public Status Get()
         {
             return new Status();
+        }
+    }
+
+    class RedirectFoo : IGet
+    {
+        public Status Get()
+        {
+            return Status.SeeOther("http://pass");
         }
     }
 
