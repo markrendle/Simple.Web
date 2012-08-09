@@ -1,13 +1,19 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
     using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
     using Behaviors;
     using Http;
+    using JsonFx;
     using Mocks;
     using Xunit;
 
     public class HandlerRunnerBuilderTest
     {
+        static readonly JsonFx.JsonMediaTypeHandler _ = new JsonMediaTypeHandler();
+        private static readonly byte[] TestJson = Encoding.UTF8.GetBytes("{\"Called\": true, \"Test\":\"Pass\"}\r\n");
+
         [Fact]
         public void CallsFooImplementation()
         {
@@ -17,6 +23,45 @@
             var foo = new Foo();
             target(foo, context);
             Assert.True(foo.Called);
+        }
+
+        [Fact]
+        public void CallsPostWithParameter()
+        {
+            var target = new HandlerRunnerBuilder(typeof (PostFoo), "POST").BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
+                InputStream = new MemoryStream(TestJson)};
+            var postFoo = new PostFoo();
+            target(postFoo, context);
+            Assert.True(postFoo.Called);
+            Assert.Equal("Pass", postFoo.Test);
+        }
+
+        [Fact]
+        public void CallsPutWithParameter()
+        {
+            var target = new HandlerRunnerBuilder(typeof (PutFoo), "PUT").BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
+                InputStream = new MemoryStream(TestJson)};
+            var postFoo = new PutFoo();
+            target(postFoo, context);
+            Assert.True(postFoo.Called);
+            Assert.Equal("Pass", postFoo.Test);
+        }
+        
+        [Fact]
+        public void CallsPatchWithParameter()
+        {
+            var target = new HandlerRunnerBuilder(typeof (PatchFoo), "PATCH").BuildRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
+                InputStream = new MemoryStream(TestJson)};
+            var postFoo = new PatchFoo();
+            target(postFoo, context);
+            Assert.True(postFoo.Called);
+            Assert.Equal("Pass", postFoo.Test);
         }
         
         [Fact]
@@ -40,6 +85,42 @@
         public Status Get()
         {
             return new Status();
+        }
+    }
+
+    public class PostFoo : IPost<FooModel>
+    {
+        public string Test;
+        public bool Called;
+        public Status Post(FooModel input)
+        {
+            Called = input.Called;
+            Test = input.Test;
+            return 200;
+        }
+    }
+
+    public class PutFoo : IPut<FooModel>
+    {
+        public string Test;
+        public bool Called;
+        public Status Put(FooModel input)
+        {
+            Called = input.Called;
+            Test = input.Test;
+            return 200;
+        }
+    }
+
+    public class PatchFoo : IPatch<FooModel>
+    {
+        public string Test;
+        public bool Called;
+        public Status Patch(FooModel input)
+        {
+            Called = input.Called;
+            Test = input.Test;
+            return 200;
         }
     }
 
@@ -81,5 +162,11 @@
             bar.Called = true;
             return false;
         }
+    }
+
+    public class FooModel
+    {
+        public string Test { get; set; }
+        public bool Called { get; set; }
     }
 }

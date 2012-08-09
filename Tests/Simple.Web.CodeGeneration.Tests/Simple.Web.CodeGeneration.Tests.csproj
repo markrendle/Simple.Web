@@ -67,6 +67,10 @@
     <Compile Include="Handlers\TestRedirectHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Simple.Web.JsonFx\Simple.Web.JsonFx.csproj">
+      <Project>{a1e30ac1-2765-4e4f-8155-682a64d8b204}</Project>
+      <Name>Simple.Web.JsonFx</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Simple.Web.Mocks\Simple.Web.Mocks.csproj">
       <Project>{D50161E6-44C7-4527-825F-9EC3755ED2BD}</Project>
       <Name>Simple.Web.Mocks</Name>

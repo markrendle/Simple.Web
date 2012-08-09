@@ -9,6 +9,7 @@ namespace Simple.Web.CodeGeneration
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading.Tasks;
+    using Behaviors.Implementations;
     using Helpers;
     using Http;
 
@@ -192,9 +193,18 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildRunBlock()
         {
-            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
+            var methodInterface = _type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo);
+            var httpMethodAttribute = HttpMethodAttribute.Get(methodInterface);
             var run = _type.GetMethod(httpMethodAttribute.Method);
-            return Expression.Assign(_status, Expression.Call(_handler, run));
+            var parameters = run.GetParameters();
+            if (parameters.Length == 0)
+            {
+                return Expression.Assign(_status, Expression.Call(_handler, run));
+            }
+
+            var genericType = methodInterface.GetGenericArguments().Single();
+            var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(genericType);
+            return Expression.Assign(_status, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
         }
 
         private Expression BuildAsyncRunBlock()
