@@ -29,6 +29,15 @@ namespace Simple.Web.ContentTypeHandling.Tests
             Assert.NotNull(actual);
             Assert.IsType<TestMediaTypeHandler>(actual);
         }
+
+        [Fact]
+        public void FindsHandlerForCustomTypeWithCharset()
+        {
+            var table = new MediaTypeHandlerTable();
+            var actual = table.GetMediaTypeHandler("application/vnd.test.towel+json; charset=utf-8");
+            Assert.NotNull(actual);
+            Assert.IsType<TestMediaTypeHandler>(actual);
+        }
         
         [Fact]
         public void FindsHandlerForDirectTypeList()
