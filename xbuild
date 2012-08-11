@@ -1,0 +1,10 @@
+#!/bin/bash
+
+## This is a temporary solution to ensure that when building Simple.Web on Mono via FAKE that 
+## the tools/XBuild/ version of xbuild.exe is used. This is because XBuild (Mono 2.11) currently 
+## has a bug (bz6389) that causes FAKE builds to error.
+##
+## Upon release of Mono 2.13 the fake.sh script will advise you to upgrade instead.
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+exec mono $MONO_OPTIONS "$SCRIPT_DIR/tools/XBuild/xbuild.exe" "$@"
