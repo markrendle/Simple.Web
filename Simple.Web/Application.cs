@@ -28,7 +28,9 @@
         /// <summary>
         /// The OWIN standard application method.
         /// </summary>
-        /// <param name="request">The OWIN request.</param>
+        /// <param name="env"> Request life-time general variable storage </param>
+        /// <param name="headers"> HTTP headers present in the request (the request header dictionary) </param>
+        /// <param name="body"> Body of the request </param>
         /// <returns>A <see cref="Task"/> which will complete the request.</returns>
         [Export("Owin.Application")]
         public static Task<Result> Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body)
