@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Simple.Web.Xml
 {
-    using System.Data.Entity.Design.PluralizationServices;
     using System.Globalization;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Xml;
     using System.Xml.Linq;
+    using Inflector;
     using Helpers;
     using Links;
     using MediaTypeHandling;
@@ -57,9 +57,7 @@ namespace Simple.Web.Xml
             {
                 if (collection == null)
                 {
-                    // This gives us a nice collection name instead of the hideous ArrayOfXyz
-                    var plural = PluralizationService.CreateService(CultureInfo.CurrentCulture);
-                    collection = new XElement(plural.Pluralize(element.Name.LocalName));
+                    collection = new XElement(element.Name.LocalName.Pluralize());
                 }
                 collection.Add(element);
             }
