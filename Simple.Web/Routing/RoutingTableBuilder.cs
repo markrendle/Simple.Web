@@ -47,6 +47,28 @@
                 var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.ContentTypes).ToList();
                 foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
                 {
+                    if (exportedType.IsGenericTypeDefinition)
+                    {
+                        var genericArgument = exportedType.GetGenericArguments().Single();
+                        string templatePart = "{" + genericArgument.Name + "}";
+                        if (uriTemplate.Contains(templatePart))
+                        {
+                            var genericResolver =
+                                Attribute.GetCustomAttribute(exportedType, typeof (RegexGenericResolverAttribute)) as
+                                RegexGenericResolverAttribute;
+                            if (genericResolver != null)
+                            {
+                                foreach (var validType in genericResolver.GetTypes())
+                                {
+                                    foreach (var templateName in genericResolver.GetNames(validType))
+                                    {
+                                        var withTemplate = uriTemplate.Replace(templatePart, templateName);
+                                        routingTable.Add(withTemplate, new HandlerTypeInfo(exportedType.MakeGenericType(validType), respondsToTypes, respondsWithTypes));
+                                    }
+                                }
+                            }
+                        }
+                    }
                     routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes, respondsWithTypes));
                 }
 

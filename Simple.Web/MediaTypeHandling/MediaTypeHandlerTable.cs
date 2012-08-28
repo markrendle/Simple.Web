@@ -9,7 +9,7 @@ namespace Simple.Web.MediaTypeHandling
 
     internal class MediaTypeHandlerTable
     {
-        private static volatile bool _initialized;
+        private static bool _initialized;
         private static readonly object InitLock = new object();
         private static readonly HashSet<string> UnsupportedMediaTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private static readonly List<Tuple<Regex, Func<IMediaTypeHandler>>> WildcardMediaTypeHandlerFunctions =
@@ -83,8 +83,8 @@ namespace Simple.Web.MediaTypeHandling
                     if (!_initialized)
                     {
                         PopulateContentTypeHandlerFunctions();
+                        _initialized = true;
                     }
-                    _initialized = true;
                 }
             }
         }

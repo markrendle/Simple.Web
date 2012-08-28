@@ -26,6 +26,14 @@ namespace Simple.Web.Tests
             var table = builder.BuildRoutingTable();
             Assert.Contains(typeof(Bar), table.GetAllTypes());
         }
+
+        [Fact]
+        public void FindsGenericHandler()
+        {
+            var builder = new RoutingTableBuilder(typeof (IGet));
+            var table = builder.BuildRoutingTable();
+            Assert.Contains(typeof(GetThing<Entity>), table.GetAllTypes());
+        }
     }
 
     [UriTemplate("/foo")]
@@ -40,6 +48,18 @@ namespace Simple.Web.Tests
         {
             get { throw new NotImplementedException(); }
         }
+    }
+
+    [UriTemplate("/{T}/{Id}")]
+    [RegexGenericResolver("T", "^Simple\\.Web\\.Tests\\.")]
+    public class GetThing<T> : IGet, IOutput<T>
+    {
+        public Status Get()
+        {
+            return Status.OK;
+        }
+
+        public T Output { get; private set; }
     }
 
     public class GetGenericFoo : IGet, IOutput<object>
@@ -65,6 +85,11 @@ namespace Simple.Web.Tests
 
     [UriTemplate(("/bar"))]
     public class Bar : BaseBar
+    {
+        
+    }
+
+    public class Entity
     {
         
     }

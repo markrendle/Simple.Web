@@ -76,6 +76,7 @@
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
+    <Compile Include="GenericResolverAttribute.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
     <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\IFileUtility.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Priority.cs" />
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
+    <Compile Include="RegexGenericResolverAttribute.cs" />
     <Compile Include="RespondsToAttribute.cs" />
     <Compile Include="RespondsWithAttribute.cs" />
     <Compile Include="Routing\RoutingException.cs" />
