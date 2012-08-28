@@ -48,6 +48,12 @@ namespace Simple.Web.MediaTypeHandling
 
         private static IMediaTypeHandler GetMediaTypeHandlerImpl(string mediaType)
         {
+            int semiColon = mediaType.IndexOf(';');
+            if (semiColon > -1)
+            {
+                mediaType = mediaType.Substring(0, semiColon);
+            }
+
             if (UnsupportedMediaTypes.Contains(mediaType)) return null;
 
             Func<IMediaTypeHandler> func;
