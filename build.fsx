@@ -3,7 +3,7 @@
 open Fake
 
 let buildDir = @"./build/"
-let testDir = @"./test"
+let testDir = @"./test/"
 
 let fxReferences = !! @"*/*.csproj"
 let testReferences = !! @"Tests/**/*.csproj"
