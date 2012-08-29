@@ -14,7 +14,7 @@ Target "Clean" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    MSBuild buildDir "Build" ["Configuration","Debug"; "VSToolsPath",buildTargets] fxReferences
+    MSBuild buildDir "Build" ["Configuration","Release"; "VSToolsPath",buildTargets] fxReferences
         |> Log "Build-Output: "
 )
 

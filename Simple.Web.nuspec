@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Simple.Web</id>
-    <version>0.4.2.2</version>
+    <version>0.5</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
     <copyright>Mark Rendle</copyright>
@@ -22,6 +22,5 @@
     <file src="build\Simple.Web.Razor.dll" target="lib\net40" />
     <file src="build\Simple.Web.JsonFx.dll" target="lib\net40" />
     <file src="build\Simple.Web.Xml.dll" target="lib\net40" />
-    <file src="NugetContent\Index.cs.pp" target="content" />
   </files>
-</package>
+</package> 
