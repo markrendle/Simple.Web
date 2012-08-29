@@ -28,11 +28,30 @@ namespace Simple.Web.Tests
         }
 
         [Fact]
-        public void FindsGenericHandler()
+        public void FindsGenericHandlerUsingRegexResolver()
         {
             var builder = new RoutingTableBuilder(typeof (IGet));
             var table = builder.BuildRoutingTable();
-            Assert.Contains(typeof(GetThing<Entity>), table.GetAllTypes());
+            Assert.Contains(typeof(GetThingRegex<Entity>), table.GetAllTypes());
+            Assert.Contains(typeof(GetThingRegex<Exorcist>), table.GetAllTypes());
+        }
+        
+        [Fact]
+        public void FindsGenericHandlerUsingExplicitResolver()
+        {
+            var builder = new RoutingTableBuilder(typeof (IGet));
+            var table = builder.BuildRoutingTable();
+            Assert.Contains(typeof(GetThingExplicit<Entity>), table.GetAllTypes());
+            Assert.Contains(typeof(GetThingExplicit<Exorcist>), table.GetAllTypes());
+        }
+        
+        [Fact]
+        public void FindsGenericHandlerUsingConstraints()
+        {
+            var builder = new RoutingTableBuilder(typeof (IGet));
+            var table = builder.BuildRoutingTable();
+            Assert.Contains(typeof(GetThingConstraint<Entity>), table.GetAllTypes());
+            Assert.Contains(typeof(GetThingConstraint<Exorcist>), table.GetAllTypes());
         }
     }
 
@@ -50,9 +69,32 @@ namespace Simple.Web.Tests
         }
     }
 
-    [UriTemplate("/{T}/{Id}")]
+    [UriTemplate("/regex/{T}/{Id}")]
     [RegexGenericResolver("T", "^Simple\\.Web\\.Tests\\.")]
-    public class GetThing<T> : IGet, IOutput<T>
+    public class GetThingRegex<T> : IGet, IOutput<T>
+    {
+        public Status Get()
+        {
+            return Status.OK;
+        }
+
+        public T Output { get; private set; }
+    }
+    
+    [UriTemplate("/explicit/{T}/{Id}")]
+    [ExplicitGenericResolver("T", typeof(Entity), typeof(Exorcist))]
+    public class GetThingExplicit<T> : IGet, IOutput<T>
+    {
+        public Status Get()
+        {
+            return Status.OK;
+        }
+
+        public T Output { get; private set; }
+    }
+
+    [UriTemplate("/constraint/{T}/{Id}")]
+    public class GetThingConstraint<T> : IGet, IOutput<T> where T : IHorror
     {
         public Status Get()
         {
@@ -89,7 +131,17 @@ namespace Simple.Web.Tests
         
     }
 
-    public class Entity
+    public class Entity : IHorror
+    {
+        
+    }
+    
+    public class Exorcist : IHorror
+    {
+        
+    }
+
+    public interface IHorror
     {
         
     }

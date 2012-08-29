@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Simple.Web.Helpers;
+using System.Linq;
 
 namespace Simple.Web
 {
@@ -9,18 +8,19 @@ namespace Simple.Web
     /// Provides a list of Generic URI types from a regular expression.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
-    public sealed class RegexGenericResolverAttribute : GenericResolverAttribute
+    public sealed class ExplicitGenericResolverAttribute : GenericResolverAttribute
     {
-        private readonly Regex _regex;
+        private readonly Type[] _types;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexGenericResolverAttribute" /> class.
         /// </summary>
         /// <param name="uriTemplateName">Name of the URI template part.</param>
-        /// <param name="regex">A regular expression to check all exported types' full names.</param>
-        public RegexGenericResolverAttribute(string uriTemplateName, string regex) : base(uriTemplateName)
+        /// <param name="types">All the types for which the UriTemplate is valid.</param>
+        public ExplicitGenericResolverAttribute(string uriTemplateName, params Type[] types)
+            : base(uriTemplateName)
         {
-            _regex = new Regex(regex);
+            _types = types;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Simple.Web
         /// </returns>
         public override IEnumerable<Type> GetTypes()
         {
-            return ExportedTypeHelper.FromCurrentAppDomain(t => _regex.IsMatch(t.FullName ?? string.Empty));
+            return _types.AsEnumerable();
         }
     }
 }

@@ -76,6 +76,7 @@
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
+    <Compile Include="ExplicitGenericResolverAttribute.cs" />
     <Compile Include="GenericResolverAttribute.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
     <Compile Include="Helpers\EnumerableExtensions.cs" />

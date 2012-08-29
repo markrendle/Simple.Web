@@ -1,4 +1,7 @@
-﻿namespace Simple.Web.Routing
+﻿using System.Reflection;
+using Simple.Web.CodeGeneration;
+
+namespace Simple.Web.Routing
 {
     using System;
     using System.Collections.Generic;
@@ -49,27 +52,12 @@
                 {
                     if (exportedType.IsGenericTypeDefinition)
                     {
-                        var genericArgument = exportedType.GetGenericArguments().Single();
-                        string templatePart = "{" + genericArgument.Name + "}";
-                        if (uriTemplate.Contains(templatePart))
-                        {
-                            var genericResolver =
-                                Attribute.GetCustomAttribute(exportedType, typeof (RegexGenericResolverAttribute)) as
-                                RegexGenericResolverAttribute;
-                            if (genericResolver != null)
-                            {
-                                foreach (var validType in genericResolver.GetTypes())
-                                {
-                                    foreach (var templateName in genericResolver.GetNames(validType))
-                                    {
-                                        var withTemplate = uriTemplate.Replace(templatePart, templateName);
-                                        routingTable.Add(withTemplate, new HandlerTypeInfo(exportedType.MakeGenericType(validType), respondsToTypes, respondsWithTypes));
-                                    }
-                                }
-                            }
-                        }
+                        BuildRoutesForGenericHandlerType(routingTable, exportedType, uriTemplate, respondsToTypes, respondsWithTypes);
                     }
-                    routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes, respondsWithTypes));
+                    else
+                    {
+                        routingTable.Add(uriTemplate, new HandlerTypeInfo(exportedType, respondsToTypes, respondsWithTypes));
+                    }
                 }
 
                 // If it's the LoginPage, set it to the configuration
@@ -78,6 +66,76 @@
                     SimpleWeb.Configuration.LoginPage = exportedType;
                 }
             }
+        }
+
+        private static void BuildRoutesForGenericHandlerType(RoutingTable routingTable, Type exportedType, string uriTemplate,
+                                                      List<string> respondsToTypes, List<string> respondsWithTypes)
+        {
+            var genericArgument = exportedType.GetGenericArguments().Single();
+            var genericParameterAttributes = genericArgument.GenericParameterAttributes &
+                                             GenericParameterAttributes.SpecialConstraintMask;
+            var constraints = genericArgument.GetGenericParameterConstraints();
+            string templatePart = "{" + genericArgument.Name + "}";
+            if (uriTemplate.Contains(templatePart))
+            {
+                var genericResolver =
+                    Attribute.GetCustomAttribute(exportedType, typeof (GenericResolverAttribute)) as
+                    GenericResolverAttribute;
+                IEnumerable<Type> candidateTypes;
+                Func<Type, IEnumerable<string>> getNames;
+                if (genericResolver != null)
+                {
+                    candidateTypes = genericResolver.GetTypes();
+                    getNames = genericResolver.GetNames;
+                }
+                else
+                {
+                    candidateTypes = ExportedTypeHelper.FromCurrentAppDomain(t => true);
+                    getNames = t => new[] {t.Name};
+                }
+                foreach (var validType in candidateTypes)
+                {
+                    if (!MatchesConstraints(genericParameterAttributes, constraints, validType))
+                    {
+                        continue;
+                    }
+                    foreach (var templateName in getNames(validType))
+                    {
+                        var withTemplate = uriTemplate.Replace(templatePart, templateName);
+                        routingTable.Add(withTemplate,
+                                         new HandlerTypeInfo(exportedType.MakeGenericType(validType), respondsToTypes,
+                                                             respondsWithTypes));
+                    }
+                }
+            }
+        }
+
+        private static bool MatchesConstraints(GenericParameterAttributes attributes, Type[] constraints, Type target)
+        {
+            if (constraints.Length == 0 && attributes == GenericParameterAttributes.None)
+            {
+                return true;
+            }
+            for (int i = 0; i < constraints.Length; i++)
+            {
+                if (!constraints[i].IsAssignableFrom(target))
+                {
+                    return false;
+                }
+            }
+            if (attributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
+            {
+                if (target.GetConstructor(new Type[0]) == null) return false;
+            }
+            if (attributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
+            {
+                if (!(target.IsClass || target.IsInterface)) return false;
+            }
+            if (attributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
+            {
+                if (!(target.IsValueType && !target.IsNullable())) return false;
+            }
+            return true;
         }
 
         private bool TypeIsHandler(Type type)
