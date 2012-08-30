@@ -1,4 +1,4 @@
-#I @"packages/FAKE.1.64.7/tools"
+#I @"tools/FAKE"
 #r "FakeLib.dll"
 open Fake
 
@@ -36,8 +36,8 @@ Target "Test" (fun _ ->
 "Clean"
   ==> "Build"
 
-"Build"
-  ==> "BuildTest"
+"BuildTest"
+  ==> "Test"
 
 Target "Default" DoNothing
 
