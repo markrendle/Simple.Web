@@ -68,7 +68,7 @@
                 {
                     if (t.Result)
                     {
-                        context.Response.Status = continuation(handler, context).Code.ToString(CultureInfo.InvariantCulture);
+                        context.Response.Status = continuation(handler, context);
                         return true;
                     }
                     return false;
@@ -83,10 +83,10 @@
                     {
                         return continuation(handler, context)
                             .ContinueWith(ht =>
-                                {
-                                    context.Response.Status = ht.Result.Code.ToString(CultureInfo.InvariantCulture);
-                                    return true;
-                                });
+                                              {
+                                                  context.Response.Status = ht.Result;
+                                                  return true;
+                                              });
                     }
                     return TaskHelper.Completed(false);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion).Unwrap();

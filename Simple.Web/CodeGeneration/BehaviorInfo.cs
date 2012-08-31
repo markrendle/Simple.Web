@@ -35,6 +35,8 @@ namespace Simple.Web.CodeGeneration
             get { return _behaviorType; }
         }
 
+        public bool Universal { get; set; }
+
         public MethodInfo GetMethod()
         {
             foreach (var methodInfo in ImplementingType.GetMethods(BindingFlags.Public | BindingFlags.Static))

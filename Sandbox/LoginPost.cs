@@ -8,26 +8,24 @@
     using Simple.Web.Helpers;
 
     [UriTemplate("/login")]
-    public class LoginPost : IPost, IInput<Login>, ILogin
+    public class LoginPost : IPost<Login>, ILogin
     {
         private static readonly Guid MarkGuid = new Guid("B3EDB5DEFECD42779FBE0D7771D13AD2");
-        public Status Post()
+        public Status Post(Login login)
         {
             string redirectLocation;
-            if (Input.UserName == "mark" && Input.Password == "password")
+            if (login.UserName == "mark" && login.Password == "password")
             {
-                redirectLocation = Input.ReturnUrl;
+                redirectLocation = login.ReturnUrl;
                 LoggedInUser = new User(MarkGuid, "Mark");
             }
             else
             {
-                redirectLocation = UriFromType.Get(() => new LoginForm {ReturnUrl = Input.ReturnUrl}).ToString();
+                redirectLocation = UriFromType.Get(() => new LoginForm {ReturnUrl = login.ReturnUrl}).ToString();
             }
 
             return Status.SeeOther(redirectLocation);
         }
-
-    	public Login Input { get; set; }
 
         public IUser LoggedInUser { get; private set; }
     }

@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.CodeGeneration
+﻿using Simple.Web.Behaviors.Implementations;
+
+namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Collections.Generic;
@@ -40,11 +42,17 @@
             var blocks = new List<object>();
 
             blocks.AddRange(CreateBlocks(GetSetupBehaviorInfos()));
+            var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context);
+            blocks.AddRange(setCookieProperties);
 
             var second = new HandlerBlock(_handlerType, GetRunMethod());
             blocks.Add(second);
+            var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context);
+            blocks.AddRange(setPropertyCookies);
 
-            blocks.AddRange(CreateBlocks(GetResponseBehaviorInfos()));
+            var redirectBehavior = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High) { Universal = true };
+
+            blocks.AddRange(CreateBlocks(GetResponseBehaviorInfos(redirectBehavior)));
 
             var outputs = GetOutputBehaviorInfos().ToList();
             if (outputs.Count > 0)
@@ -60,8 +68,6 @@
 
             var call = BuildCallExpression(blocks);
 
-            var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context);
-            var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context);
 
             var createHandler = BuildCreateHandlerExpression();
 
@@ -160,9 +166,9 @@
             return RequestBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
         }
 
-        private IEnumerable<BehaviorInfo> GetResponseBehaviorInfos()
+        private IEnumerable<BehaviorInfo> GetResponseBehaviorInfos(params ResponseBehaviorInfo[] defaults)
         {
-            return ResponseBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
+            return ResponseBehaviorInfo.GetInPriorityOrder(defaults).Where(b => b.Universal || HandlerHasBehavior(b));
         }
 
         private IEnumerable<BehaviorInfo> GetOutputBehaviorInfos()

@@ -97,6 +97,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetModel.cs" />
     <Compile Include="Models\Form.cs" />
     <Compile Include="GetForm.cs" />
     <Compile Include="GetHello.cs" />
@@ -138,6 +139,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\LoginForm.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Model.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

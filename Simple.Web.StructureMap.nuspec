@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Simple.Web.StructureMap</id>
-    <version>0.5</version>
+    <version>0.5.2</version>
     <authors>Mark Rendle, Roy Jacobs</authors>
     <owners>Mark Rendle, Roy Jacobs</owners>
     <copyright>Mark Rendle, Roy Jacobs</copyright>
@@ -12,7 +12,7 @@
     <description>StructureMap support for Simple.Web, a REST-focused, object-oriented Web Framework for .NET 4.</description>
     <tags>simple.web</tags>
     <dependencies>
-      <dependency id="Simple.Web" version="0.5" />
+      <dependency id="Simple.Web" version="0.5.2" />
       <dependency id="structuremap" version="2.6.3" />
     </dependencies>
   </metadata>

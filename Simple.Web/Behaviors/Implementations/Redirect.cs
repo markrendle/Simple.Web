@@ -42,7 +42,6 @@
         /// <returns><c>false</c> (to prevent response output) if the status is a redirect code; otherwise, <c>true</c>.</returns>
         public static bool Impl(object handler, IContext context)
         {
-            int code = context.Response.Status.Code;
             if (!(string.IsNullOrWhiteSpace(context.Response.Status.RedirectLocation)))
             {
                 context.Response.SetHeader("Location", context.Response.Status.RedirectLocation);

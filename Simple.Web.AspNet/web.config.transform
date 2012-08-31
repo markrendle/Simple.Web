@@ -1,0 +1,16 @@
+<configuration>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0">
+    </compilation>
+    <!-- Uncomment this for running in VS2010 Dev Server -->
+    <!--<httpHandlers>
+      <add verb="*" path="*" type="Fix.AspNet.FixHttpHandler"/>
+    </httpHandlers>-->
+  </system.web>
+  <system.webServer>
+    <!-- Comment this for running in VS2010 Dev Server -->
+    <handlers>
+      <add name="Simple.Web" path="*" verb="*" type="Fix.AspNet.FixHttpHandler"/>
+    </handlers>
+  </system.webServer>
+</configuration>

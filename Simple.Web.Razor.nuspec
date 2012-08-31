@@ -1,22 +1,24 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Simple.Web.Autofac</id>
+    <id>Simple.Web.Razor</id>
     <version>0.5.2</version>
-    <authors>Mark Rendle, Kevin Stout</authors>
-    <owners>Mark Rendle, Kevin Stout</owners>
-    <copyright>Mark Rendle, Kevin Stout</copyright>
+    <authors>Mark Rendle</authors>
+    <owners>Mark Rendle</owners>
+    <copyright>Mark Rendle</copyright>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Autofac support for Simple.Web, a REST-focused, object-oriented Web Framework for .NET 4.</description>
+    <description>A REST-focused, object-oriented Web Framework for .NET 4.</description>
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="Simple.Web" version="0.5.2" />
-      <dependency id="Autofac" version="2.6.2.859" />
+      <dependency id="AspNetWebPages.Core" version="2.0" />
     </dependencies>
   </metadata>
+
   <files>
-    <file src="build\Simple.Web.Autofac.dll" target="lib\net40" />
+    <file src="build\Simple.Web.Razor.dll" target="lib\net40" />
+    <file src="Simple.Web.Razor\web.config.transform" target="content" />
   </files>
-</package>
+</package> 

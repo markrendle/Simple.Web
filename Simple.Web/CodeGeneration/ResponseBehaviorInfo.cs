@@ -14,11 +14,11 @@ namespace Simple.Web.CodeGeneration
         {
         }
 
-        public static IEnumerable<ResponseBehaviorInfo> GetInPriorityOrder()
+        public static IEnumerable<ResponseBehaviorInfo> GetInPriorityOrder(params ResponseBehaviorInfo[] defaults)
         {
             if (_cache == null)
             {
-                var list = FindResponseBehaviorTypes().OrderBy(t => t.Priority).ToList();
+                var list = FindResponseBehaviorTypes().Concat(defaults).OrderBy(r => r.Priority).ToList();
                 Interlocked.CompareExchange(ref _cache, list, null);
             }
 

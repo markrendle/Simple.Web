@@ -1,3 +1,5 @@
+using Simple.Web.Behaviors.Implementations;
+
 namespace Simple.Web.CodeGeneration
 {
     using System;
@@ -27,9 +29,24 @@ namespace Simple.Web.CodeGeneration
             var context = Expression.Parameter(typeof(IContext));
             var handler = Expression.Parameter(_handlerType);
 
-            var call = Expression.Call(handler, _method);
-
-            return Expression.Lambda(call, handler, context).Compile();
+            var parameters = _method.GetParameters();
+            if (parameters.Length == 0)
+            {
+                var call = Expression.Call(handler, _method);
+                return Expression.Lambda(call, handler, context).Compile();
+            }
+            else if (parameters.Length == 1)
+            {
+                var getInput =
+                    typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static)
+                    .MakeGenericMethod(parameters[0].ParameterType);
+                var call = Expression.Call(handler, _method, Expression.Call(getInput, context));
+                return Expression.Lambda(call, handler, context).Compile();
+            }
+            else
+            {
+                throw new InvalidOperationException("Handler methods may only take 0 or 1 parameters.");
+            }
         }
         
         public Delegate GenerateAsync()
