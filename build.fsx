@@ -9,6 +9,8 @@ let fxReferences = !! @"*/*.csproj"
 let testReferences = !! @"Tests/**/*.csproj"
 let buildTargets = environVarOrDefault "BUILDTARGETS" ""
 
+let isMono = System.Environment.OSVersion.Platform = System.PlatformID.Unix
+
 Target "Clean" (fun _ ->
     CleanDirs [buildDir; testDir]
 )
@@ -28,8 +30,8 @@ Target "Test" (fun _ ->
         |> xUnit (fun p ->
             { p with
                 ShadowCopy = true;
-                HtmlOutput = true;
-                XmlOutput = true;
+                HtmlOutput = not isMono;
+                XmlOutput = not isMono;
                 OutputDir = testDir })
 )
 
