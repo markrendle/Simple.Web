@@ -1,17 +1,20 @@
 ﻿namespace Simple.Web.CodeGeneration.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
+    using System.Threading.Tasks;
     using Behaviors;
+    using Helpers;
     using Http;
-    using JsonFx;
+    using MediaTypeHandling;
     using Mocks;
     using Xunit;
 
     public class HandlerRunnerBuilderTest
     {
-        static readonly JsonFx.JsonMediaTypeHandler _ = new JsonMediaTypeHandler();
+        static readonly IMediaTypeHandler JsonMediaTypeHandler = new TestJsonMediaTypeHandler();
         private static readonly byte[] TestJson = Encoding.UTF8.GetBytes("{\"Called\": true, \"Test\":\"Pass\"}\r\n");
 
         [Fact]
@@ -188,5 +191,23 @@
     {
         public string Test { get; set; }
         public bool Called { get; set; }
+    }
+
+    [MediaTypes(MediaType.Json, "application/*+json")]
+    public class TestJsonMediaTypeHandler : IMediaTypeHandler
+    {
+        public object Read(Stream inputStream, Type inputType)
+        {
+            return new FooModel()
+            {
+                Test = "Pass",
+                Called = true
+            };
+        }
+
+        public Task Write(IContent content, Stream outputStream)
+        {
+            return TaskHelper.Completed();
+        }
     }
 }
