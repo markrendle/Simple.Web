@@ -1,3 +1,5 @@
+using System.Web;
+
 namespace Simple.Web.MediaTypeHandling
 {
     using System;
@@ -33,7 +35,7 @@ namespace Simple.Web.MediaTypeHandling
                 var property = inputType.GetProperty(pair.Item1) ?? inputType.GetProperties().FirstOrDefault(p => p.Name.Equals(pair.Item1, StringComparison.OrdinalIgnoreCase));
                 if (property != null)
                 {
-                    property.SetValue(obj, Convert.ChangeType(pair.Item2, property.PropertyType), null);
+                    property.SetValue(obj, Convert.ChangeType(HttpUtility.UrlDecode(pair.Item2), property.PropertyType), null);
                 }
             }
             return obj;

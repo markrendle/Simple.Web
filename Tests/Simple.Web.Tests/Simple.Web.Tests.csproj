@@ -46,6 +46,7 @@
     <Compile Include="ApplicationTests\ContentTypeTests.cs" />
     <Compile Include="CookieTests.cs" />
     <Compile Include="ExpressionHelperTests.cs" />
+    <Compile Include="FormDeserializerTests.cs" />
     <Compile Include="HandlerBuilderFactoryTests.cs" />
     <Compile Include="HandlerInfoTests.cs" />
     <Compile Include="GetHandlerTests.cs" />
