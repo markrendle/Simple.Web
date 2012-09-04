@@ -13,7 +13,7 @@ if [ -z "$TARGET" ]
 	CTARGET="Default"
 	echo -e "No build action specified, assuming '${CTARGET}'.\nAvailable actions are \"Clean\", \"Build\", \"BuildTest\", or \"Test\".\n"
 else
-	CTARGET=`echo ${TARGET:0:1} | tr "[:lower:]" "[:upper:]"``echo ${TARGET:1} | tr "[:upper:]" "[:lower:]"`
+	CTARGET=`echo ${TARGET:0:1} | tr "[:lower:]" "[:upper:]"``echo ${TARGET:1}`
 fi
 
 if [ ! -d "$BUILDTARGETS" ]
@@ -32,4 +32,4 @@ fi
 
 echo "Executing command: $CTARGET"
 
-mono packages/FAKE.1.64.7/tools/Fake.exe build.fsx target=$CTARGET verbose #details
+mono tools/FAKE/Fake.exe build.fsx target=$CTARGET #verbose details

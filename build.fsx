@@ -1,13 +1,15 @@
-#I @"packages/FAKE.1.64.7/tools"
+#I @"tools/FAKE"
 #r "FakeLib.dll"
 open Fake
 
 let buildDir = @"./build/"
-let testDir = @"./test"
+let testDir = @"./test/"
 
 let fxReferences = !! @"*/*.csproj"
 let testReferences = !! @"Tests/**/*.csproj"
 let buildTargets = environVarOrDefault "BUILDTARGETS" ""
+
+let isMono = System.Environment.OSVersion.Platform = System.PlatformID.Unix
 
 Target "Clean" (fun _ ->
     CleanDirs [buildDir; testDir]
@@ -28,16 +30,16 @@ Target "Test" (fun _ ->
         |> xUnit (fun p ->
             { p with
                 ShadowCopy = true;
-                HtmlOutput = true;
-                XmlOutput = true;
+                HtmlOutput = not isMono;
+                XmlOutput = not isMono;
                 OutputDir = testDir })
 )
 
 "Clean"
   ==> "Build"
 
-"Build"
-  ==> "BuildTest"
+"BuildTest"
+  ==> "Test"
 
 Target "Default" DoNothing
 
