@@ -40,6 +40,30 @@
         }
 
         [Fact]
+        public void MatchesVanityUrlWithoutTrailingSlash()
+        {
+            var target = new RoutingTable();
+            var expected = typeof (RoutingTableTests);
+            target.Add("/{Name}", expected);
+            IDictionary<string, string[]> variables;
+            var actual = target.Get("/test", out variables);
+            Assert.Equal(expected, actual);
+            Assert.Equal("test", variables["Name"][0]);
+        }
+        
+        [Fact]
+        public void MatchesVanityUrlWithTrailingSlash()
+        {
+            var target = new RoutingTable();
+            var expected = typeof (RoutingTableTests);
+            target.Add("/{Name}", expected);
+            IDictionary<string, string[]> variables;
+            var actual = target.Get("/test/", out variables);
+            Assert.Equal(expected, actual);
+            Assert.Equal("test", variables["Name"][0]);
+        }
+        
+        [Fact]
         public void MatchesDynamicUrlWithOneVariable()
         {
             var target = new RoutingTable();
