@@ -10,6 +10,7 @@ namespace Simple.Web.JsonFx
     using Helpers;
     using Links;
     using MediaTypeHandling;
+    using global::JsonFx.Model.Filters;
     using global::JsonFx.Json;
     using global::JsonFx.Json.Resolvers;
     using global::JsonFx.Serialization;
@@ -53,7 +54,7 @@ namespace Simple.Web.JsonFx
                 var enumerable = content.Model as IEnumerable<object>;
                 if (enumerable != null)
                 {
-                    output = ProcessList(enumerable);
+                    output = ProcessList(enumerable.ToList());
                 }
                 else
                 {
@@ -62,7 +63,10 @@ namespace Simple.Web.JsonFx
                 byte[] buffer;
                 using (var writer = new StringWriter())
                 {
-                    new JsonWriter().Write(output, writer);
+                    var dataWriterSettings = new DataWriterSettings(new MonoCompatResolverStrategy(),
+                                                                    new Iso8601DateFilter());
+
+                    new JsonWriter(dataWriterSettings).Write(output, writer);
                     buffer = Encoding.Default.GetBytes(writer.ToString());
                 }
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);
@@ -102,7 +106,7 @@ namespace Simple.Web.JsonFx
                         yield return dictionary;
                         continue;
                     }
-                    
+
                 }
 
                 yield return o;

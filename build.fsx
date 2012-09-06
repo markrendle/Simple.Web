@@ -2,9 +2,8 @@
 #r "FakeLib.dll"
 open Fake
 
-let buildDir = @"./build/"
+let mutable buildDir = @"./build/"
 let testDir = @"./test/"
-
 let fxReferences = !! @"*/*.csproj"
 let testReferences = !! @"Tests/**/*.csproj"
 let buildTargets = environVarOrDefault "BUILDTARGETS" ""
@@ -12,7 +11,7 @@ let buildTargets = environVarOrDefault "BUILDTARGETS" ""
 let isMono = System.Environment.OSVersion.Platform = System.PlatformID.Unix
 
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir]
+    CleanDirs [buildDir]
 )
 
 Target "Build" (fun _ ->
@@ -20,8 +19,12 @@ Target "Build" (fun _ ->
         |> Log "Build-Output: "
 )
 
+Target "OutputToTest" (fun _ ->
+    buildDir <- testDir
+)
+
 Target "BuildTest" (fun _ ->
-    MSBuildRelease testDir "Build" testReferences
+    MSBuild buildDir "Build" ["Configuration","Release"; "VSToolsPath",buildTargets] testReferences
         |> Log "Test-Output: "
 )
 
@@ -32,11 +35,20 @@ Target "Test" (fun _ ->
                 ShadowCopy = true;
                 HtmlOutput = not isMono;
                 XmlOutput = not isMono;
-                OutputDir = testDir })
+                OutputDir = buildDir })
 )
+
+"OutputToTest"
+  ==> "BuildTest"
 
 "Clean"
   ==> "Build"
+
+"Clean"
+  ==> "BuildTest"
+
+"Build"
+  =?> ("BuildTest", isMono)
 
 "BuildTest"
   ==> "Test"

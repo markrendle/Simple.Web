@@ -47,6 +47,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="JsonMediaTypeHandler.cs" />
+    <Compile Include="MonoCompatResolverStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
