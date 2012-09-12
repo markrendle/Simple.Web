@@ -24,9 +24,9 @@ else
 	export BUILDTARGETS="$BUILDTARGETS"
 fi
 
-if [[ ! "$MONOVERSION" =~ "version "[2-9]"."[1-9][1-9]"." ]]
+if [[ ! "$MONOVERSION" =~ "version "[2-9]"."[1-9][1-9]"."[4-9] ]]
 	then
-	echo -e "You must have Mono version 2.11+ installed to compile Simple.Web.\nVisit http://www.go-mono.com/mono-downloads/download.html for the latest version."
+	echo -e "You must have Mono version 2.11.4+ installed to compile Simple.Web.\nVisit http://www.go-mono.com/mono-downloads/download.html for the latest version."
 	exit 1
 fi
 
