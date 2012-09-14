@@ -23,14 +23,16 @@ namespace Simple.Web.Razor
                                                                            "System.Collections.Generic", "Simple.Web"
                                                                        };
 
-        internal static readonly string[] ExcludeReferences = new[]
+        private static readonly IDictionary<String, String> CompilerProperties = new Dictionary<String, String>
+                                                                                {{ "CompilerVersion","v4.0" }};
+
+        private static readonly bool IsMono = Type.GetType("Mono.Runtime") != null;
+
+        private static readonly string[] ExcludeReferencesForMono = new[]
                                                                        {
                                                                            "System", "System.Core", "Microsoft.CSharp",
                                                                            "mscorlib"
                                                                        };
-
-        private static readonly IDictionary<String, String> CompilerProperties = new Dictionary<String, String>
-                                                                                {{ "CompilerVersion","v4.0" }};
 
         private static readonly TypeResolver TypeResolver = new TypeResolver();
 
@@ -97,7 +99,11 @@ namespace Simple.Web.Razor
 
         private static void CheckForErrors(CompilerResults compilerResults)
         {
-            var errors = compilerResults.Errors.Cast<CompilerError>().ToList();
+            var errors = compilerResults
+                .Errors
+                .Cast<CompilerError>()
+                .Where(x => !x.IsWarning)
+                .ToList();
 
             if (errors.Count > 0)
             {
@@ -126,9 +132,13 @@ namespace Simple.Web.Razor
                         && an.EscapedCodeBase != null)
                     .Select(an => an.Location));
 
+            if (IsMono)
+            {
+                assemblies.RemoveAll(an => ExcludeReferencesForMono.Any(ea => an.Contains(ea)));
+            }
+
             return assemblies
-                    .Distinct()
-                    .Where(an => (!ExcludeReferences.Any(ea => an.Contains(ea))));
+                .Distinct();
         }
 
         internal static Type ExtractType(ref TextReader reader, string directive)
