@@ -1,9 +1,13 @@
 namespace Simple.Web.Razor.Tests
 {
+    using System;
+    using System.IO;
     using Xunit;
 
     public class RazorViewsTests
     {
+        private readonly string ExamplePathPrefix = String.Format("{0}{1}temp{1}example", Path.DirectorySeparatorChar.ToString() != @"\" ? String.Empty : "C:", Path.DirectorySeparatorChar.ToString());
+
         public RazorViewsTests()
         {
             RazorViews.Initialize();
@@ -12,22 +16,22 @@ namespace Simple.Web.Razor.Tests
 		[Fact]
 		public void FindsCorrectViewPathInBinFolder()
 		{
-			Assert.Equal(@"C:\temp\example",RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\me.dll"));
+			Assert.Equal(ExamplePathPrefix,RazorViews.AssemblyAppRoot(String.Format("{0}{1}bin{1}me.dll", ExamplePathPrefix, Path.DirectorySeparatorChar)));
 		}
 		[Fact]
 		public void FindsCorrectViewPathInBinDebugFolder()
 		{
-			Assert.Equal( @"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\Debug\me.dll"));
+			Assert.Equal(ExamplePathPrefix, RazorViews.AssemblyAppRoot(String.Format("{0}{1}bin{1}Debug{1}me.dll", ExamplePathPrefix, Path.DirectorySeparatorChar)));
 		}
 		[Fact]
 		public void FindsCorrectViewPathInBinReleaseFolder()
 		{
-			Assert.Equal(@"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\bin\Release\me.dll"));
+			Assert.Equal(ExamplePathPrefix, RazorViews.AssemblyAppRoot(String.Format("{0}{1}bin{1}Release{1}me.dll", ExamplePathPrefix, Path.DirectorySeparatorChar)));
 		}
 		[Fact]
 		public void FindsCorrectViewPathInNonBinFolder()
 		{
-			Assert.Equal(@"C:\temp\example", RazorViews.AssemblyAppRoot(@"C:\temp\example\me.dll"));
+			Assert.Equal(ExamplePathPrefix, RazorViews.AssemblyAppRoot(String.Format("{0}{1}me.dll", ExamplePathPrefix, Path.DirectorySeparatorChar)));
 		}
 
     	[Fact]
