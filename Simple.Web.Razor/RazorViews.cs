@@ -27,7 +27,7 @@ namespace Simple.Web.Razor
 
     	public static string AssemblyAppRoot(string typePath)
     	{
-    		return Path.GetDirectoryName(typePath).Regex(@"\\bin\\?([Dd]ebug|[Rr]elease)?$", string.Empty);
+            return Path.GetDirectoryName(typePath).Regex(@"(\\|/)bin(\\|/)?([Dd]ebug|[Rr]elease)?$", string.Empty);
     	}
 
     	public static void Initialize()
