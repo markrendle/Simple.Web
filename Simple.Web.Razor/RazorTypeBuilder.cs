@@ -23,6 +23,15 @@ namespace Simple.Web.Razor
                                                                            "System.Collections.Generic", "Simple.Web"
                                                                        };
 
+        internal static readonly string[] ExcludeReferences = new[]
+                                                                       {
+                                                                           "System", "System.Core", "Microsoft.CSharp",
+                                                                           "mscorlib"
+                                                                       };
+
+        private static readonly IDictionary<String, String> CompilerProperties = new Dictionary<String, String>
+                                                                                {{ "CompilerVersion","v4.0" }};
+
         private static readonly TypeResolver TypeResolver = new TypeResolver();
 
         public Type CreateType(TextReader reader)
@@ -67,16 +76,21 @@ namespace Simple.Web.Razor
         {
             var assemblies = CreateAssembliesList();
 
-            var compilerParameters = new CompilerParameters(assemblies.ToArray())
-                                         {
-                                             GenerateInMemory = true,
-                                         };
+            var compilerParameters = new CompilerParameters()
+                                        {
+                                            GenerateExecutable = false,
+                                            GenerateInMemory = true,
+                                            TreatWarningsAsErrors = false
+                                        };
+
+            compilerParameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
+
             return compilerParameters;
         }
 
         private static CompilerResults CompileView(GeneratorResults razorResult, CompilerParameters compilerParameters)
         {
-            var codeProvider = new CSharpCodeProvider();
+            var codeProvider = new CSharpCodeProvider(CompilerProperties);
 
             return codeProvider.CompileAssemblyFromDom(compilerParameters, razorResult.GeneratedCode);
         }
@@ -94,20 +108,27 @@ namespace Simple.Web.Razor
         private static IEnumerable<string> CreateAssembliesList() {
 			var assemblies = new List<string>
                                  {
-                                     typeof(SimpleWeb).Assembly.GetPath(),
-                                     Assembly.GetExecutingAssembly().GetPath(),
-                                     Assembly.GetCallingAssembly().GetPath(),
-                                     typeof (Enumerable).Assembly.GetPath(),
-                                     typeof (Uri).Assembly.GetPath(),
-                                     typeof (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.GetPath()
+                                     typeof(SimpleWeb).Assembly.Location,
+                                     Assembly.GetExecutingAssembly().Location,
+                                     Assembly.GetCallingAssembly().Location,
+                                     typeof (Enumerable).Assembly.Location,
+                                     typeof (Uri).Assembly.Location,
+                                     typeof (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.Location
                                  };
 
-            assemblies.AddRange(TypeResolver.KnownGoodAssemblies.Select(knownGoodAssembly => knownGoodAssembly.GetPath()));
+            assemblies.AddRange(TypeResolver.KnownGoodAssemblies.Select(knownGoodAssembly => knownGoodAssembly.Location));
 
             assemblies.AddRange(
-                AppDomain.CurrentDomain.GetAssemblies().Where(an => (!an.GlobalAssemblyCache) && (!an.IsDynamic) && an.EscapedCodeBase != null).Select(
-                    an => an.GetPath()));
-            return assemblies.Distinct();
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(an =>
+                        (!an.GlobalAssemblyCache) 
+                        && (!an.IsDynamic) 
+                        && an.EscapedCodeBase != null)
+                    .Select(an => an.Location));
+
+            return assemblies
+                    .Distinct()
+                    .Where(an => (!ExcludeReferences.Any(ea => an.Contains(ea))));
         }
 
         internal static Type ExtractType(ref TextReader reader, string directive)
