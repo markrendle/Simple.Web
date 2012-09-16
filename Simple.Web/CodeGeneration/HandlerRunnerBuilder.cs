@@ -78,6 +78,9 @@ namespace Simple.Web.CodeGeneration
             _status = Expression.Parameter(typeof(Status), "status");
 
             CreateResponseBlocks();
+            CreateDisposeBlock();
+
+            _blocks.Add(Expression.Label(_end));
             block = Expression.Block(new[] {_handler}, _blocks);
 
             var end = Expression.Lambda<Action<object, IContext, Status>>(block, _handlerParameter, _context, _status).Compile();
@@ -212,9 +215,14 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildAsyncRunBlock()
         {
-            var method = GetRunMethod();
-            var run = method;
-            return Expression.Assign(_task, Expression.Call(_handler, run));
+            var run = GetRunMethod();
+            var parameters = run.GetParameters();
+            if (parameters.Length == 0)
+            {
+                return Expression.Assign(_task, Expression.Call(_handler, run));
+            }
+            var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(parameters[0].ParameterType);
+            return Expression.Assign(_task, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
         }
 
         private MethodInfo GetRunMethod()

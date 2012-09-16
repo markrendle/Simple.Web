@@ -54,6 +54,19 @@
         }
 
         [Fact]
+        public void CallsPostAsyncWithParameter()
+        {
+            var target = new HandlerRunnerBuilder(typeof (PostAsyncFoo), "POST").BuildAsyncRunner();
+            var context = new Mocks.MockContext();
+            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
+                InputStream = new MemoryStream(TestJson)};
+            var postFoo = new PostAsyncFoo();
+            target.Start(postFoo, context);
+            Assert.True(postFoo.Called);
+            Assert.Equal("Pass", postFoo.Test);
+        }
+
+        [Fact]
         public void CallsPutWithParameter()
         {
             var target = new HandlerRunnerBuilder(typeof (PutFoo), "PUT").BuildRunner();
@@ -112,6 +125,20 @@
             Called = input.Called;
             Test = input.Test;
             return 200;
+        }
+    }
+
+    public class PostAsyncFoo : IPostAsync<FooModel>
+    {
+        public string Test;
+        public bool Called;
+        public Task<Status> Post(FooModel input)
+        {
+            Called = input.Called;
+            Test = input.Test;
+            var tcs = new TaskCompletionSource<Status>();
+            tcs.SetResult(200);
+            return tcs.Task;
         }
     }
 
