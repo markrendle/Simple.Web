@@ -28,7 +28,7 @@ namespace Simple.Web.MediaTypeHandling
                 text = streamReader.ReadToEnd();
             }
             var pairs = text.Split(SplitTokens, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => Tuple.Create(s.Split('=')[0], Uri.UnescapeDataString(s.Split('=')[1])));
+                .Select(s => Tuple.Create(s.Split('=')[0], s.Split('=')[1]));
             var obj = Activator.CreateInstance(inputType);
             foreach (var pair in pairs)
             {
