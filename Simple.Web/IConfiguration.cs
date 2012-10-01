@@ -21,6 +21,11 @@ namespace Simple.Web
         IDictionary<string, string> PublicFileMappings { get; }
 
         /// <summary>
+        /// Gets a dictionary representing URLs which map to files but are only for authenticated users.
+        /// </summary>
+        IDictionary<string, string> AuthenticatedFileMappings { get; }
+        
+        /// <summary>
         /// Gets or sets the IoC container.
         /// </summary>
         /// <value>

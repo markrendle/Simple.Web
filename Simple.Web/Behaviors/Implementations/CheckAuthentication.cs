@@ -3,6 +3,7 @@ namespace Simple.Web.Behaviors.Implementations
     using System;
     using System.Linq;
     using Authentication;
+    using MediaTypeHandling;
     using Simple.Web.Behaviors;
     using Simple.Web.Helpers;
     using Simple.Web.Http;
@@ -24,23 +25,34 @@ namespace Simple.Web.Behaviors.Implementations
             var user = authenticationProvider.GetLoggedInUser(context);
             if (user == null || !user.IsAuthenticated)
             {
-                if (SimpleWeb.Configuration.LoginPage != null)
-                {
-                    var uriTemplateAttribute = UriTemplateAttribute.Get(SimpleWeb.Configuration.LoginPage).FirstOrDefault();
-                    if (uriTemplateAttribute != null)
-                    {
-                        var redirect = uriTemplateAttribute.Template + "?returnUrl=" + Uri.EscapeDataString(context.Request.Url.ToString());
-                        context.Response.SetHeader("Location", redirect);
-                        context.Response.Status = Status.TemporaryRedirect(redirect);
-                        return false;
-                    }
-                }
-                context.Response.Status = "401 Unauthorized";
+                Redirect(context);
                 return false;
             }
 
             handler.CurrentUser = user;
             return true;
+        }
+
+        internal static void Redirect(IContext context)
+        {
+            var accept = context.Request.GetAccept();
+            if (accept.Contains(MediaType.Html) || accept.Contains(MediaType.XHtml))
+            {
+                if (SimpleWeb.Configuration.LoginPage != null)
+                {
+                    var uriTemplateAttribute =
+                        UriTemplateAttribute.Get(SimpleWeb.Configuration.LoginPage).FirstOrDefault();
+                    if (uriTemplateAttribute != null)
+                    {
+                        var redirect = uriTemplateAttribute.Template + "?returnUrl=" +
+                                       Uri.EscapeDataString(context.Request.Url.ToString());
+                        context.Response.SetHeader("Location", redirect);
+                        context.Response.Status = Status.TemporaryRedirect(redirect);
+                        return;
+                    }
+                }
+            }
+            context.Response.Status = "401 Unauthorized";
         }
     }
 }

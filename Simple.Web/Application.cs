@@ -7,6 +7,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using Behaviors.Implementations;
     using CodeGeneration;
     using Helpers;
     using Hosting;
@@ -86,6 +87,16 @@
             {
                 file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.PublicFileMappings[absolutePath]);
             }
+            else if (SimpleWeb.Configuration.AuthenticatedFileMappings.ContainsKey(absolutePath))
+            {
+                var user = SimpleWeb.Configuration.AuthenticationProvider.GetLoggedInUser(context);
+                if (user == null || !user.IsAuthenticated)
+                {
+                    CheckAuthentication.Redirect(context);
+                    return true;
+                }
+                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath]);
+            }
             else if (
                 SimpleWeb.Configuration.PublicFolders.Any(
                     folder => absolutePath.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
@@ -97,7 +108,7 @@
                 return false;
             }
 
-            if (!File.Exists(file)) return false;
+            if (string.IsNullOrWhiteSpace(file) || !File.Exists(file)) return false;
 
             context.Response.Status = Status.OK;
             context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));

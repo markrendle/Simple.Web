@@ -10,8 +10,19 @@ namespace Simple.Web
     /// </summary>
     public sealed class Configuration : IConfiguration
     {
+        private readonly DefaultAuthenticationProvider _defaultAuthenticationProvider = new DefaultAuthenticationProvider();
         private readonly IDictionary<string, string> _publicFileMappings =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, string> _authenticatedFileMappings =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets a dictionary representing URLs which map to files but are only for authenticated users.
+        /// </summary>
+        public IDictionary<string, string> AuthenticatedFileMappings
+        {
+            get { return _authenticatedFileMappings; }
+        }
 
         private readonly HashSet<string> _publicFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private ISimpleContainer _container = new DefaultSimpleContainer();
@@ -62,7 +73,7 @@ namespace Simple.Web
         /// </value>
         public IAuthenticationProvider AuthenticationProvider
         {
-            get { return _authenticationProvider; }
+            get { return _authenticationProvider ?? _defaultAuthenticationProvider; }
             set { _authenticationProvider = value; }
         }
     }
