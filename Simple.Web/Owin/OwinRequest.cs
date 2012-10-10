@@ -57,11 +57,16 @@ namespace Simple.Web.Owin
 
         private static string MakeUriString(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders)
         {
-            var host = requestHeaders["Host"][0];
+            string[] hostHeaders;
+            string host = "localhost";
+            if (requestHeaders.TryGetValue("Host", out hostHeaders) && hostHeaders.Length > 0)
+            {
+                host = hostHeaders[0];
+            }
             if (string.IsNullOrWhiteSpace(host)) host = "localhost";
-            var scheme = env[OwinKeys.Scheme];
-            var pathBase = env[OwinKeys.PathBase];
-            var path = env[OwinKeys.Path];
+            var scheme = env.GetValueOrDefault(OwinKeys.Scheme, "http");
+            var pathBase = env.GetValueOrDefault(OwinKeys.PathBase, string.Empty);
+            var path = env.GetValueOrDefault(OwinKeys.Path, "/");
             var uri = string.Format("{0}://{1}{2}{3}", scheme, host, pathBase, path);
             object queryString;
             if (env.TryGetValue(OwinKeys.QueryString, out queryString))
@@ -72,6 +77,15 @@ namespace Simple.Web.Owin
                 }
             }
             return uri;
+        }
+    }
+
+    internal static class DictionaryEx
+    {
+        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+        {
+            TValue value;
+            return dictionary.TryGetValue(key, out value) ? value : defaultValue;
         }
     }
 }
