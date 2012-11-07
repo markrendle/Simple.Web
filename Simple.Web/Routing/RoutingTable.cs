@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web.Routing
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -12,8 +13,8 @@
     internal class RoutingTable
     {
         private const int MaximumGroupCount = 64;
-        private readonly Dictionary<string, IList<HandlerTypeInfo>> _staticPaths =
-            new Dictionary<string, IList<HandlerTypeInfo>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, IList<HandlerTypeInfo>> _staticPaths =
+            new ConcurrentDictionary<string, IList<HandlerTypeInfo>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly List<SortedList<Regex, IList<HandlerTypeInfo>>> _dynamicPaths;
 
@@ -34,7 +35,14 @@
             var types = GetTypesForStatic(url) ??
                 GetTypesForDynamic(url, out variables);
 
-            return types == null ? null : types.Single().HandlerType;
+            try
+            {
+                return types == null ? null : types.Single().HandlerType;
+            }
+            catch (InvalidOperationException) // i.e. there's more than one...
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -52,13 +60,29 @@
                 GetTypesForDynamic(url, out variables);
 
             if (types == null) return null;
-            var typeInfo = types.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWith(acceptTypes));
+            var typeArray = types.ToArray();
+            if (typeArray.Length == 1 && CheckMediaTypes(typeArray[0], contentType, acceptTypes))
+            {
+                return typeArray[0].HandlerType;
+            }
+            var typeInfo = typeArray.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWith(acceptTypes))
+                           ?? typeArray.SingleOrDefault(t => t.RespondsToAll && t.RespondsWith(acceptTypes))
+                           ?? typeArray.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWithAll)
+                           ?? typeArray.SingleOrDefault(t => t.RespondsToAll && t.RespondsWithAll);
             if (typeInfo == null) return null;
             return typeInfo.HandlerType;
         }
 
+        private static bool CheckMediaTypes(HandlerTypeInfo typeInfo, string contentType, IEnumerable<string> acceptTypes)
+        {
+            return (typeInfo.RespondsToAll || typeInfo.RespondsTo(contentType))
+                   &&
+                   (typeInfo.RespondsWithAll || typeInfo.RespondsWith(acceptTypes));
+        }
+
         private IEnumerable<HandlerTypeInfo> GetTypesForStatic(string url)
         {
+            url = url.TrimEnd('/');
             if (_staticPaths.ContainsKey(url))
             {
                 return _staticPaths[url];
@@ -106,15 +130,8 @@
             }
             else
             {
-                _staticPaths.Add(uriTemplate, new[] {handlerType});
-                if (uriTemplate.EndsWith("/"))
-                {
-                    _staticPaths.Add(uriTemplate.TrimEnd('/'), new[] {handlerType});
-                }
-                else
-                {
-                    _staticPaths.Add(uriTemplate + '/', new[] {handlerType});
-                }
+                var list = _staticPaths.GetOrAdd(uriTemplate, _ => new List<HandlerTypeInfo>());
+                list.Add(handlerType);
             }
         }
 

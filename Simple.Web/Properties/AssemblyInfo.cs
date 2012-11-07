@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("A web framework.")]
 
 [assembly: InternalsVisibleTo("Simple.Web.Tests")]
+[assembly: InternalsVisibleTo("Simple.Web.Routing.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.ContentTypeHandling.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.CodeGeneration.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.JsonFx.Tests")]

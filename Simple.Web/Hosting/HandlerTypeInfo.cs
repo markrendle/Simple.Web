@@ -26,14 +26,24 @@ namespace Simple.Web.Hosting
             get { return _type; }
         }
 
+        public bool RespondsWithAll
+        {
+            get { return _respondsWithTypes.Count == 0; }
+        }
+
         public bool RespondsWith(IEnumerable<string> contentTypes)
         {
-            return _respondsWithTypes.Count == 0 || _respondsWithTypes.Overlaps(contentTypes);
+            return _respondsWithTypes.Overlaps(contentTypes);
+        }
+
+        public bool RespondsToAll
+        {
+            get { return _respondsToTypes.Count == 0; }
         }
 
         public bool RespondsTo(string contentType)
         {
-            return _respondsToTypes.Count == 0 || _respondsToTypes.Contains(contentType);
+            return _respondsToTypes.Contains(contentType);
         }
     }
 }
