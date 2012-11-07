@@ -1,0 +1,20 @@
+<Project DefaultTargets="Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask
+    AssemblyFile="packages\xunit.1.9.1\lib\net20\xunit.runner.msbuild.dll"
+    TaskName="Xunit.Runner.MSBuild.xunit"/>
+
+  <Target Name="Test">
+    <xunit Assembly="Tests\Simple.Web.Tests\bin\Release\Simple.Web.Tests.dll" Xml="Simple.Web.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.Autofac.Tests\bin\Release\Simple.Web.Autofac.Tests.dll" Xml="Simple.Web.Autofac.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.CodeGeneration.Tests\bin\Release\Simple.Web.CodeGeneration.Tests.dll" Xml="Simple.Web.CodeGeneration.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.ContentTypeHandling.Tests\bin\Release\Simple.Web.ContentTypeHandling.Tests.dll" Xml="Simple.Web.ContentTypeHandling.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.JsonFx.Tests\bin\Release\Simple.Web.JsonFx.Tests.dll" Xml="Simple.Web.JsonFx.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.Ninject.Tests\bin\Release\Simple.Web.Ninject.Tests.dll" Xml="Simple.Web.Ninject.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.Razor.Tests\bin\Release\Simple.Web.Razor.Tests.dll" Xml="Simple.Web.Razor.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.StructureMap.Tests\bin\Release\Simple.Web.StructureMap.Tests.dll" Xml="Simple.Web.StructureMap.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.Xml.Tests\bin\Release\Simple.Web.Xml.Tests.dll" Xml="Simple.Web.Xml.Tests.dll.xml"/>
+    <xunit Assembly="Simple.Web.Routing.Tests\bin\Release\Simple.Web.Routing.Tests.dll" Xml="Simple.Web.Routing.Tests.dll.xml"/>
+  </Target>
+
+</Project>

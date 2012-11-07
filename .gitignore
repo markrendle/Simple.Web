@@ -34,3 +34,4 @@ Simple.Web.ncrunchsolution.user
 docs
 *.ndproj
 nohup.out
+*.Tests.dll.xml
