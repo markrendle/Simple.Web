@@ -16,6 +16,7 @@ namespace Simple.Web.Xml
     using Links;
     using MediaTypeHandling;
 
+    [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class XmlMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
