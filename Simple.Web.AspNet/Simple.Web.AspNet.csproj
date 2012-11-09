@@ -33,13 +33,11 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.0.2\lib\net40\Fix.dll</HintPath>
+    <Reference Include="Fix">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.AspNet.0.2\lib\net40\Fix.AspNet.dll</HintPath>
+    <Reference Include="Fix.AspNet">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,9 +60,6 @@
       <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
       <Name>Simple.Web</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

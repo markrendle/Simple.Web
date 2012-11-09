@@ -7,10 +7,10 @@
 
     internal class OwinContext : IContext
     {
-        public OwinContext(IDictionary<string,object> env, IDictionary<string,string[]> requestHeaders, Stream inputStream)
+        public OwinContext(IDictionary<string,object> env)
         {
             Variables = env;
-            Request = new OwinRequest(env, requestHeaders, inputStream);
+            Request = new OwinRequest(env, (IDictionary<string,string[]>)env[OwinKeys.RequestHeaders], (Stream)env[OwinKeys.RequestBody]);
             Response = new OwinResponse();
         }
 

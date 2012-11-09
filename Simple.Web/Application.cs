@@ -6,6 +6,7 @@
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Behaviors.Implementations;
     using CodeGeneration;
@@ -30,23 +31,47 @@
         /// The OWIN standard application method.
         /// </summary>
         /// <param name="env"> Request life-time general variable storage </param>
-        /// <param name="headers"> HTTP headers present in the request (the request header dictionary) </param>
-        /// <param name="body"> Body of the request </param>
         /// <returns>A <see cref="Task"/> which will complete the request.</returns>
         [Export("Owin.Application")]
-        public static Task<Result> Run(IDictionary<string, object> env, IDictionary<string, string[]> headers, Stream body)
+        public static Task Run(IDictionary<string, object> env)
         {
-            var context = new OwinContext(env, headers, body);
+            var context = new OwinContext(env);
             var task = Run(context);
             if (task == null)
             {
                 return TaskHelper.Completed(new Result(null, 404, null, null));
             }
             return task
-                .ContinueWith(
-                    t =>
-                    new Result(null, context.Response.Status.Code, context.Response.Headers,
-                               context.Response.WriteFunction));
+                .ContinueWith(t => WriteResponse(context, env)).Unwrap();
+        }
+
+        private static Task WriteResponse(OwinContext context, IDictionary<string, object> env)
+        {
+            var tcs = new TaskCompletionSource<int>();
+            var cancellationToken = (CancellationToken) env[OwinKeys.CallCancelled];
+            if (cancellationToken.IsCancellationRequested)
+            {
+                tcs.SetCanceled();
+            }
+            else
+            {
+                try
+                {
+                    env[OwinKeys.StatusCode] = context.Response.Status.Code;
+                    env[OwinKeys.ReasonPhrase] = context.Response.Status.Description;
+                    env[OwinKeys.ResponseHeaders] = context.Response.Headers;
+                    if (context.Response.WriteFunction != null)
+                    {
+                        return context.Response.WriteFunction((Stream) env[OwinKeys.ResponseBody]);
+                    }
+                    tcs.SetResult(0);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }
+            return tcs.Task;
         }
 
         internal static Task Run(IContext context)

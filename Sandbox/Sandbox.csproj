@@ -43,13 +43,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.0.2\lib\net40\Fix.dll</HintPath>
+    <Reference Include="Fix">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.AspNet.0.2\lib\net40\Fix.AspNet.dll</HintPath>
+    <Reference Include="Fix.AspNet">
+      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
@@ -108,8 +106,8 @@
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\SubmitData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Startup\AppStart.cs" />
-    <Compile Include="Startup\SetPublicFolders.cs" />
+    <Compile Include="StartupTasks\AppStart.cs" />
+    <Compile Include="StartupTasks\SetPublicFolders.cs" />
     <Compile Include="PostForm.cs" />
   </ItemGroup>
   <ItemGroup>

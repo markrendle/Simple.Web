@@ -1,4 +1,4 @@
-﻿namespace Sandbox.Startup
+﻿namespace Sandbox.StartupTasks
 {
     using Simple.Web;
     using Simple.Web.Authentication;
