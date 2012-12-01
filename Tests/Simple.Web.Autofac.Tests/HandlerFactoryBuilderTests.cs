@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autofac;
 
 namespace Simple.Web.Autofac.Tests
 {
+    using System.Reflection;
     using CodeGeneration;
     using Xunit;
-    using System.Reflection;
 
     public class HandlerFactoryBuilderTests
     {
