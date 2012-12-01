@@ -22,22 +22,12 @@ namespace Simple.Web.Autofac.Tests
         public void module_should_register_generic_handlers()
         {
             Assert.True(_container.IsRegistered<GenericCustomerHandler>());
-
-            var handler = _container.Resolve<GenericCustomerHandler>();
-
-            Assert.Equal(Status.Created, handler.Post(new Customer()));
-            Assert.Equal(Status.Created, handler.Put(new Customer()));
         }
 
         [Fact]
         public void module_should_register_nongeneric_handlers()
         {
             Assert.True(_container.IsRegistered<CustomerHandler>());
-
-            var handler = _container.Resolve<CustomerHandler>();
-
-            Assert.Equal(Status.Created, handler.Post());
-            Assert.Equal(Status.Created, handler.Put());
         }
 
         public class Customer

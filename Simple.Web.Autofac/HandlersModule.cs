@@ -20,7 +20,8 @@ namespace Simple.Web.Autofac
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterAssemblyTypes(_assembly)
-                .Where(t => _typeDictionary.Any(l => l.Invoke(t) != null))
+                .Where( t => t.IsClass && !t.IsAbstract && 
+                    _typeDictionary.Any(l => l.Invoke(t) != null))
                 .AsSelf()
                 .InstancePerLifetimeScope();
         }
@@ -28,7 +29,7 @@ namespace Simple.Web.Autofac
         private static List<Func<Type, Type>> LoadTypeDictionary()
         {
             return new List<Func<Type, Type>>
-                {
+                {  
                      x => x.GetInterface(typeof (IDelete).Name)
                     ,x => x.GetInterface(typeof (IDeleteAsync).Name)
                     ,x => x.GetInterface(typeof (IGet).Name)

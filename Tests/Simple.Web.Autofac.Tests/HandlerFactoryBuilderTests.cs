@@ -14,20 +14,56 @@ namespace Simple.Web.Autofac.Tests
         public void CreatesInstanceOfType()
         {
             var startup = new TestStartup();
+
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
+
             var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
+
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
-            var actual = (TestHandler)actualFunc(new Dictionary<string, string[]> { { "TestProperty", new[] {"Foo"} } }).Handler;
+
+            var actual = (TestHandler)actualFunc(
+                new Dictionary<string, string[]>
+                    {
+                        { "TestProperty", new[] { "Foo" } }
+                    }).Handler;
+
             Assert.Equal(Status.OK, actual.Get());
             Assert.Equal("Foo", actual.TestProperty);
         }
 
         [Fact]
+        public void CreatesInstanceOfGenericType()
+        {
+            var startup = new TestStartup();
+
+            startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
+
+            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
+
+            var actualFunc = target.BuildHandlerBuilder(typeof(GenericTestHandler));
+
+            var actual = (GenericTestHandler)actualFunc(
+                new Dictionary<string, string[]>
+                    {
+                        { "TestProperty", null }
+                    }).Handler;
+
+            var status = actual.Patch(new GenericArgument() {Name = "Foo"});
+
+            Assert.Equal(Status.Created, status);
+            Assert.Equal("Foo", actual.TestProperty.Name);
+        }
+
+
+        [Fact]
         public void DisposesInstances()
         {
             var startup = new TestStartup();
+
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
+
             var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
+
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
 
             TestHandler handler;
@@ -47,6 +83,10 @@ namespace Simple.Web.Autofac.Tests
             var builder = new ContainerBuilder();
                         
             builder.RegisterHandlersInAssembly(Assembly.GetExecutingAssembly());
+
+
+            builder.Register(c => Status.Created)
+                .AsSelf();
             
             builder.RegisterType<OkResult>()
                 .AsImplementedInterfaces()
@@ -79,6 +119,24 @@ namespace Simple.Web.Autofac.Tests
         }
     }
 
+    public class GenericTestHandler : IPatch<GenericArgument>
+    {
+        private readonly Status _status;
+        public GenericArgument TestProperty { get; set; }
+
+        public GenericTestHandler(Status status)
+        {
+            _status = status;
+        }
+
+        public Status Patch(GenericArgument input)
+        {
+            TestProperty = input;
+            return _status;
+        }
+    }
+
+
     public interface IResult
     {
         Status Result { get; }
@@ -87,5 +145,11 @@ namespace Simple.Web.Autofac.Tests
     public class OkResult : IResult
     {
         public Status Result { get { return Status.OK; }}
+    }
+
+    public class GenericArgument
+    {
+        public string Name { set;  get; }
+        
     }
 }
