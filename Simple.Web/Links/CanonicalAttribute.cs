@@ -5,9 +5,11 @@ namespace Simple.Web.Links
     /// <summary>
     /// Apply this attribute to a Handler to denote that it is the canonical URI for a resource.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class CanonicalAttribute : LinkAttributeBase
     {
+        private string _rel = "self";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CanonicalAttribute"/> class.
         /// </summary>
@@ -16,7 +18,7 @@ namespace Simple.Web.Links
         /// <remarks>The URI template works in reverse here. The {X} variables will be replaced with the
         /// relevant properties from an instance of the model to create an actual URI to be returned to
         /// the client.</remarks>
-        public CanonicalAttribute(Type modelType, string uriTemplate) : base(modelType, uriTemplate)
+        public CanonicalAttribute(Type modelType, string uriTemplate = null) : base(modelType, uriTemplate)
         {
         }
 
@@ -26,7 +28,34 @@ namespace Simple.Web.Links
         /// <returns>"self"</returns>
         internal override string GetRel()
         {
-            return "self";
+            return _rel;
+        }
+
+        public string Rel
+        {
+            get { return _rel; }
+            set { _rel = value; }
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class RootAttribute : LinkAttributeBase
+    {
+        private string _rel = "self";
+
+        public RootAttribute(string uriTemplate = null) : base(null, uriTemplate)
+        {
+        }
+
+        internal override string GetRel()
+        {
+            return _rel;
+        }
+
+        public string Rel
+        {
+            get { return _rel; }
+            set { _rel = value; }
         }
     }
 }

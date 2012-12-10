@@ -12,6 +12,8 @@
     public static class LinkHelper
     {
         private static readonly ConcurrentDictionary<Type, ILinkBuilder> LinkBuilders = new ConcurrentDictionary<Type, ILinkBuilder>();
+        private static readonly object RootLinksSync = new object();
+        private static List<Link> _rootLinks = null; 
 
         /// <summary>
         /// Gets the links for a model.
@@ -44,7 +46,7 @@
             {
                 var attributesForModel = LinkAttributeBase.Get(type, modelType);
                 if (attributesForModel.Count == 0) continue;
-                linkList.AddRange(attributesForModel.Select(a => new Link(type, a.UriTemplate, a.GetRel(), a.Type, a.Title)));
+                linkList.AddRange(attributesForModel.Select(a => CreateLink(type, a)));
             }
 
             if (linkList.Count > 0)
@@ -53,6 +55,48 @@
             }
 
             return LinkBuilder.Empty;
+        }
+
+        private static Link CreateLink(Type type, LinkAttributeBase linkAttribute)
+        {
+            string uriTemplate;
+            if (string.IsNullOrWhiteSpace(linkAttribute.UriTemplate))
+            {
+                try
+                {
+                    uriTemplate = UriTemplateAttribute.Get(type).Single().Template;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException("Must specify a UriTemplate for LinkAttribute where more than one UriTemplateAttribute is used.");
+                }
+            }
+            else
+            {
+                uriTemplate = linkAttribute.UriTemplate;
+            }
+
+            return new Link(type, uriTemplate, linkAttribute.GetRel(), linkAttribute.Type, linkAttribute.Title);
+        }
+
+        public static IEnumerable<Link> GetRootLinks()
+        {
+            if (_rootLinks == null)
+            {
+                lock (RootLinksSync)
+                {
+                    if (_rootLinks == null)
+                    {
+                        var handlerTypes =
+                            ExportedTypeHelper.FromCurrentAppDomain(t => Attribute.IsDefined(t, typeof (RootAttribute)));
+                        _rootLinks = handlerTypes.Select(handlerType =>
+                            CreateLink(handlerType, (RootAttribute)Attribute.GetCustomAttribute(handlerType, typeof(RootAttribute))))
+                            .ToList();
+                    }
+                }
+            }
+
+            return _rootLinks.AsEnumerable();
         }
     }
 

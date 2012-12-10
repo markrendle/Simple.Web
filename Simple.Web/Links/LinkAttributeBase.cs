@@ -12,7 +12,7 @@ namespace Simple.Web.Links
         private readonly Type _modelType;
         private readonly string _uriTemplate;
 
-        internal LinkAttributeBase(Type modelType, string uriTemplate)
+        protected LinkAttributeBase(Type modelType, string uriTemplate)
         {
             _modelType = modelType;
             _uriTemplate = uriTemplate;
@@ -44,12 +44,13 @@ namespace Simple.Web.Links
         internal abstract string GetRel();
 
         /// <summary>
-        /// Gets or sets the Content-Type.
+        /// Gets or sets the Content-Type of the resource.
         /// </summary>
         /// <value>
-        /// The type.
+        /// The Content-Type.
         /// </value>
         public string Type { get; set; }
+
         /// <summary>
         /// Gets or sets the title: a human-readable name for the link.
         /// </summary>
@@ -65,7 +66,8 @@ namespace Simple.Web.Links
         /// <returns><c>true</c> if the attribute is applied to the type; otherwise, <c>false</c>.</returns>
         public static bool Exists(Type type)
         {
-            return GetCustomAttributes(type, typeof(LinkAttributeBase)).Length > 0;
+            return Attribute.IsDefined(type, typeof (LinkAttributeBase));
+            //return GetCustomAttributes(type, typeof(LinkAttributeBase)).Length > 0;
         }
 
         /// <summary>

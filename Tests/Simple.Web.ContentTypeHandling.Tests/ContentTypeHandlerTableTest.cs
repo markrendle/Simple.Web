@@ -61,10 +61,36 @@ namespace Simple.Web.ContentTypeHandling.Tests
             Assert.IsType<TestMediaTypeHandler>(actual);
             Assert.Equal(customType, matchedType);
         }
+
+        [Fact]
+        public void FindsHandlerForHal()
+        {
+            var table = new MediaTypeHandlerTable();
+            string matchedType;
+            const string customType = "application/hal+json";
+            var actual = table.GetMediaTypeHandler(new[] {customType}, out matchedType);
+            Assert.NotNull(actual);
+            Assert.IsType<HalMediaTypeHandler>(actual);
+            Assert.Equal(customType, matchedType);
+        }
     }
 
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class TestMediaTypeHandler : IMediaTypeHandler
+    {
+        public object Read(Stream inputStream, Type inputType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Write(IContent content, Stream outputStream)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [MediaTypes("application/hal+json")]
+    public class HalMediaTypeHandler : IMediaTypeHandler
     {
         public object Read(Stream inputStream, Type inputType)
         {

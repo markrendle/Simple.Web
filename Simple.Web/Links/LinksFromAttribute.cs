@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="modelType">Type of the model.</param>
         /// <param name="uriTemplate">The URI template.</param>
-        public LinksFromAttribute(Type modelType, string uriTemplate) : base(modelType, uriTemplate)
+        public LinksFromAttribute(Type modelType, string uriTemplate = null) : base(modelType, uriTemplate)
         {
         }
 
