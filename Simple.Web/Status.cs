@@ -109,6 +109,7 @@ namespace Simple.Web
         /// </summary>
         /// <param name="httpStatusCode">The HTTP status code.</param>
         /// <param name="httpStatusDescription">The HTTP status description.</param>
+        /// <param name="redirectLocation">Redirection Url</param>
         public Status(int httpStatusCode, string httpStatusDescription, string redirectLocation) : this()
         {
             _httpStatusCode = httpStatusCode;
