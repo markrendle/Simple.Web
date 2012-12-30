@@ -33,12 +33,6 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix">
-      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.dll</HintPath>
-    </Reference>
-    <Reference Include="Fix.AspNet">
-      <HintPath>..\..\Fix\Fix.AspNet\bin\Release\Fix.AspNet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
