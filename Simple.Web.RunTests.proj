@@ -10,6 +10,7 @@
     <xunit Assembly="Tests\Simple.Web.CodeGeneration.Tests\bin\Release\Simple.Web.CodeGeneration.Tests.dll" Xml="Simple.Web.CodeGeneration.Tests.dll.xml"/>
     <xunit Assembly="Tests\Simple.Web.ContentTypeHandling.Tests\bin\Release\Simple.Web.ContentTypeHandling.Tests.dll" Xml="Simple.Web.ContentTypeHandling.Tests.dll.xml"/>
     <xunit Assembly="Tests\Simple.Web.JsonFx.Tests\bin\Release\Simple.Web.JsonFx.Tests.dll" Xml="Simple.Web.JsonFx.Tests.dll.xml"/>
+    <xunit Assembly="Tests\Simple.Web.JsonNet.Tests\bin\Release\Simple.Web.JsonNet.Tests.dll" Xml="Simple.Web.JsonNet.Tests.dll.xml"/>
     <xunit Assembly="Tests\Simple.Web.Ninject.Tests\bin\Release\Simple.Web.Ninject.Tests.dll" Xml="Simple.Web.Ninject.Tests.dll.xml"/>
     <xunit Assembly="Tests\Simple.Web.Razor.Tests\bin\Release\Simple.Web.Razor.Tests.dll" Xml="Simple.Web.Razor.Tests.dll.xml"/>
     <xunit Assembly="Tests\Simple.Web.StructureMap.Tests\bin\Release\Simple.Web.StructureMap.Tests.dll" Xml="Simple.Web.StructureMap.Tests.dll.xml"/>

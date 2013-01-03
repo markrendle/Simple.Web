@@ -7,12 +7,12 @@ namespace Simple.Web.MediaTypeHandling
     /// <summary>
     /// Default implementation of the <see cref="IContent"/> interface.
     /// </summary>
-    class Content : IContent
+    public class Content : IContent
     {
         private readonly object _handler;
         private readonly object _model;
 
-        internal Content(object handler, object model)
+        public Content(object handler, object model)
         {
             _handler = handler;
             _model = model;

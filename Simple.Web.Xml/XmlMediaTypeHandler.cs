@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Simple.Web.Xml
 {
-    using System.Globalization;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;

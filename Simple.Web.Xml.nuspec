@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
-    <id>Simple.Web</id>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Simple.Web.JsonFx</id>
     <version>0.6</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
@@ -11,8 +11,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A REST-focused, object-oriented Web Framework for .NET 4.</description>
     <tags>simple.web</tags>
+    <dependencies>
+      <dependency id="Simple.Web" version="0.6" />
+      <dependency id="Inflector" version="1.0" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="build\Simple.Web.dll" target="lib\net40" />
-  </files>
-</package> 
+    <file src="build\Simple.Web.Xml.dll" target="lib\net40" /> </files>
+</package>
