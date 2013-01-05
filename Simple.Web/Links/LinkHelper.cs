@@ -64,9 +64,9 @@
             {
                 try
                 {
-                    uriTemplate = UriTemplateAttribute.Get(type).Single().Template;
+                    uriTemplate = UriTemplateAttribute.GetAllTemplates(type).Single();
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
                     throw new InvalidOperationException("Must specify a UriTemplate for LinkAttribute where more than one UriTemplateAttribute is used.");
                 }

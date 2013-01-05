@@ -11,7 +11,7 @@ namespace Simple.Web.JsonNet.Tests
     using TestHelpers;
     using Xunit;
 
-    public class JsonFxContentTypeHandlerTests
+    public class JsonNetContentTypeHandlerTests
     {
         [Fact]
         public void PicksUpOrdersLinkFromCustomer()
@@ -20,7 +20,7 @@ namespace Simple.Web.JsonNet.Tests
             const string ordersLink =
                 @"{""title"":null,""href"":""/customer/42/orders"",""rel"":""customer.orders"",""type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}]}";
+                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
 
             var content = new Content(new CustomerHandler(), new Customer { Id = 42 });
             var target = new JsonMediaTypeHandler();
@@ -42,13 +42,36 @@ namespace Simple.Web.JsonNet.Tests
         }
 
         [Fact]
+        public void PicksUpContactsLinkFromCustomer()
+        {
+            const string contactsLink =
+                @"{""title"":null,""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""type"":""application/json""}";
+
+            var content = new Content(new CustomerHandler(), new Customer { Id = 42 });
+            var target = new JsonMediaTypeHandler();
+            string actual;
+            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            {
+                target.Write(content, stream).Wait();
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    actual = reader.ReadToEnd();
+                }
+                stream.ForceDispose();
+            }
+            Assert.NotNull(actual);
+            Assert.Contains(contactsLink, actual);
+        }
+
+        [Fact]
         public void PicksUpOrdersLinkFromCustomers()
         {
             const string idProperty = @"""id"":42";
             const string ordersLink =
                 @"{""title"":null,""href"":""/customer/42/orders"",""rel"":""customer.orders"",""type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}]}";
+                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
 
             var content = new Content(new CustomerHandler(), new[] { new Customer { Id = 42 } });
             var target = new JsonMediaTypeHandler();
@@ -80,6 +103,19 @@ namespace Simple.Web.JsonNet.Tests
     public class CustomerHandler
     {
 
+    }
+
+    [UriTemplate("/customer")]
+    public abstract class CustomerBase
+    {
+        
+    }
+
+    [UriTemplate("/{Id}/contacts")]
+    [LinksFrom(typeof(Customer), Rel = "customer.contacts")]
+    public class CustomerContacts: CustomerBase
+    {
+        
     }
 
     [LinksFrom(typeof(IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
