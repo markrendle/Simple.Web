@@ -39,6 +39,7 @@ namespace Simple.Web.Links
 
         private static string BuildUri(object model, string uriTemplate)
         {
+            int queryStart = uriTemplate.IndexOf("?", StringComparison.Ordinal);
             var uri = new StringBuilder(uriTemplate);
             var variables = new HashSet<string>(UriTemplateHelper.ExtractVariableNames(uriTemplate),
                                                 StringComparer.OrdinalIgnoreCase);
@@ -51,8 +52,16 @@ namespace Simple.Web.Links
                     {
                         continue;
                     }
-                    var value = prop.GetValue(model, null) ?? "NULL";
-                    uri.Replace("{" + variable + "}", value.ToString());
+                    var sub = "{" + variable + "}";
+                    var value = prop.GetValue(model, null).ToString() ?? "NULL";
+                    if (queryStart >= 0)
+                    {
+                        if (uriTemplate.IndexOf(sub, StringComparison.OrdinalIgnoreCase) > queryStart)
+                        {
+                            value = Uri.EscapeDataString(value);
+                        }
+                    }
+                    uri.Replace(sub, value);
                 }
             }
             return uri.ToString();

@@ -91,6 +91,29 @@ namespace Simple.Web.JsonNet.Tests
             Assert.Contains(ordersLink, actual);
             Assert.Contains(selfLink, actual);
         }
+
+        [Fact]
+        public void PicksUpPathFromThing()
+        {
+            const string thingLink =
+                @"{""title"":null,""href"":""/things?path=%2Ffoo%2Fbar"",""rel"":""self"",""type"":""application/json""}";
+
+            var content = new Content(new ThingHandler(), new Thing { Path = "/foo/bar" });
+            var target = new JsonMediaTypeHandler();
+            string actual;
+            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            {
+                target.Write(content, stream).Wait();
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    actual = reader.ReadToEnd();
+                }
+                stream.ForceDispose();
+            }
+            Assert.NotNull(actual);
+            Assert.Contains(thingLink, actual);
+        }
     }
 
     [LinksFrom(typeof(Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
@@ -123,8 +146,19 @@ namespace Simple.Web.JsonNet.Tests
     {
     }
 
+    [LinksFrom(typeof(Thing), "/things?path={Path}", Rel = "self")]
+    public class ThingHandler
+    {
+        
+    }
+
     public class Customer
     {
         public int Id { get; set; }
+    }
+
+    public class Thing
+    {
+        public string Path { get; set; }
     }
 }
