@@ -80,7 +80,7 @@ namespace Simple.Web.Links
         {
             return GetCustomAttributes(handlerType, typeof (LinkAttributeBase))
                 .Cast<LinkAttributeBase>()
-                .Where(a => a.ModelType == modelType)
+                .Where(a => a.ModelType != null && a.ModelType.IsAssignableFrom(modelType))
                 .ToList();
         }
     }

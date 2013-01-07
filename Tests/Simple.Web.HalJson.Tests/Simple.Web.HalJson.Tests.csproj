@@ -58,15 +58,15 @@
     <Compile Include="Person.cs" />
     <Compile Include="ReadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WriteTests.cs" />
+    <Compile Include="HalWriteTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Simple.Web.HalJson\Simple.Web.HalJson.csproj">
-      <Project>{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}</Project>
-      <Name>Simple.Web.HalJson</Name>
+    <ProjectReference Include="..\..\Simple.Web.JsonNet\Simple.Web.JsonNet.csproj">
+      <Project>{6dce0964-3bf0-4185-ac6e-1f8b97908601}</Project>
+      <Name>Simple.Web.JsonNet</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Simple.Web\Simple.Web.csproj">
       <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>

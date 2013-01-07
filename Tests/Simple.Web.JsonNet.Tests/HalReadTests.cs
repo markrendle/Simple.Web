@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.HalJson.Tests
+﻿namespace Simple.Web.JsonNet.Tests
 {
+    using System.Text;
     using System.IO;
+    using HalJson.Tests;
     using JsonNet;
     using Xunit;
 
-    public class ReadTests
+    public class HalReadTests
     {
         [Fact]
         public void ReadsBasicObject()
