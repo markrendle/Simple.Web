@@ -34,7 +34,7 @@ namespace Simple.Web.JsonNet
             // pass the combined resolver strategy into the settings object
             using (var streamReader = new StreamReader(inputStream))
             {
-                return JsonConvert.DeserializeObject(streamReader.ReadToEnd(), SerializerSettings);
+                return JsonConvert.DeserializeObject(streamReader.ReadToEnd(), inputType, SerializerSettings);
             }
         }
 
