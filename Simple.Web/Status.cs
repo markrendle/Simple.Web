@@ -20,6 +20,11 @@ namespace Simple.Web
         public static readonly Status Created = new Status(201, "Created");
 
         /// <summary>
+        /// Indicates that a PUT or POST request conflicted with an existing resource.
+        /// </summary>
+        public static readonly Status Conflict = new Status(409, "Conflict");
+
+        /// <summary>
         /// Indicates that a request was processed successfully and a new resource was created.
         /// </summary>
         /// <param name="redirectLocation">The redirect location.</param>

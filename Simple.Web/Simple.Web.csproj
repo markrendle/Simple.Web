@@ -55,6 +55,7 @@
     <Compile Include="Behaviors\BehaviorAttribute.cs" />
     <Compile Include="Behaviors\CookieAttribute.cs" />
     <Compile Include="Behaviors\IETag.cs" />
+    <Compile Include="Behaviors\Implementations\GetInput.cs" />
     <Compile Include="Behaviors\Implementations\OptionalAuthentication.cs" />
     <Compile Include="Behaviors\Implementations\WriteOutputAsync.cs" />
     <Compile Include="Behaviors\IOptionalAuthentication.cs" />
