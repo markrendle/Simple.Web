@@ -53,7 +53,7 @@ namespace Simple.Web.Links
                         continue;
                     }
                     var sub = "{" + variable + "}";
-                    var value = prop.GetValue(model, null).ToString() ?? "NULL";
+                    var value = (prop.GetValue(model, null) ?? "NULL").ToString();
                     if (queryStart >= 0)
                     {
                         if (uriTemplate.IndexOf(sub, StringComparison.OrdinalIgnoreCase) > queryStart)
