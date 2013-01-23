@@ -35,3 +35,5 @@ docs
 *.ndproj
 nohup.out
 *.Tests.dll.xml
+*.DotSettings
+src/CommonAssemblyInfo.cs
