@@ -7,7 +7,7 @@ CONFIG = ENV["config"] || "Release"
 PLATFORM = ENV["platform"] || "x86"
 BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%H%M'))}"
 MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
-TEAMCITY = !ENV["BUILD_NUMBER"].nil?
+TEAMCITY = (!ENV["BUILD_NUMBER"].nil? or !ENV["TEAMCITY_BUILD_PROPERTIES_FILE"].nil?)
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -15,7 +15,7 @@ SOURCE_PATH = "#{BASE_PATH}/src"
 TESTS_PATH = "#{BASE_PATH}/src"
 SPECS_PATH = "#{BASE_PATH}/specs"
 BUILD_PATH = "#{BASE_PATH}/build"
-RESULTS_PATH = "#{BUILD_PATH}/results"
+RESULTS_PATH = "#{BASE_PATH}/results"
 ARTIFACTS_PATH = "#{BASE_PATH}/artifacts"
 NUSPEC_PATH = "#{BASE_PATH}/packaging/nuget"
 NUGET_PATH = "#{BUILD_PATH}/nuget"
@@ -61,6 +61,7 @@ Albacore.configure do |config|
     CLEAN.include(FileList["#{SOURCE_PATH}/**/obj"])
 	CLOBBER.include(FileList["#{SOURCE_PATH}/**/bin"])
 	CLOBBER.include(BUILD_PATH)
+	CLOBBER.include(RESULTS_PATH)
 end
 
 # Tasks
@@ -124,7 +125,7 @@ end
 task :runtests, [:boundary] do |t, args|
 	args.with_default(:boundary => "*")
 	
-	runner = XUnitTestRunner.new(MONO ? 'mono' : XUNIT_COMMAND)
+	runner = XUnitTestRunnerCustom.new(MONO ? 'mono' : XUNIT_COMMAND)
 	runner.html_output = RESULTS_PATH
 
 	assemblies = Array.new
@@ -141,6 +142,14 @@ task :runtests, [:boundary] do |t, args|
 
 		runner.assemblies = assemblies
 		runner.execute
+	end
+end
+
+# XUnitTestRunner needs some Mono help
+class XUnitTestRunnerCustom < XUnitTestRunner
+    def build_html_output
+	    fail_with_message 'Directory is required for html_output' if !File.directory?(File.expand_path(@html_output))
+	    "/nunit \"@#{File.join(File.expand_path(@html_output),"%s.html")}\""
 	end
 end
 
