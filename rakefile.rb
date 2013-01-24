@@ -7,6 +7,7 @@ CONFIG = ENV["config"] || "Release"
 PLATFORM = ENV["platform"] || "x86"
 BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%H%M'))}"
 MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
+TEAMCITY = !ENV["BUILD_NUMBER"].nil?
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -41,7 +42,7 @@ MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
 
 # Configure albacore
 Albacore.configure do |config|
-    # config.log_level = :verbose
+    config.log_level = (TEAMCITY ? :verbose : :normal)
 
     config.msbuild.solution = SOLUTION_FILE
     config.msbuild.properties = { :configuration => CONFIG }
@@ -123,7 +124,7 @@ end
 task :runtests, [:boundary] do |t, args|
 	args.with_default(:boundary => "*")
 	
-	runner = XUnitTestRunnerMono.new(MONO ? 'mono' : XUNIT_COMMAND)
+	runner = XUnitTestRunner.new(MONO ? 'mono' : XUNIT_COMMAND)
 	runner.html_output = RESULTS_PATH
 
 	assemblies = Array.new
@@ -144,13 +145,3 @@ task :runtests, [:boundary] do |t, args|
 end
 
 mspec :mspec
-
-# XUnitTestRunner needs some Mono help
-class XUnitTestRunnerMono < XUnitTestRunner
-    def build_html_output
-		relativepath = Pathname.new(File.expand_path(@html_output)).relative_path_from(Pathname.new(File.expand_path(File.dirname(__FILE__))))
-
-		fail_with_message 'Directory is required for html_output' if !File.directory?(relativepath)
-		"/html \"#{File.join(relativepath,"%s.html")}\""
-	end
-end
