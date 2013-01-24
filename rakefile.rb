@@ -70,9 +70,7 @@ task :quick => [:build] do
 end
 
 desc "Build + Tests + Specs"
-task :full => [:test] do
-	Rake::Task[:runspecs].invoke(SPEC_ASSEMBLY_PATTERN)
-end
+task :full => [:test] #[:test, :mspec]
 
 # Hidden tasks
 task :init => [:clobber] do
@@ -80,6 +78,8 @@ task :init => [:clobber] do
 	Dir.mkdir RESULTS_PATH unless File.exists?(RESULTS_PATH)
 	Dir.mkdir ARTIFACTS_PATH unless File.exists?(ARTIFACTS_PATH)
 end
+
+task :ci => [:full]
 
 assemblyinfo :assemblyinfo do |asm|
 	asm_version = BUILD_NUMBER
