@@ -37,3 +37,4 @@ nohup.out
 *.Tests.dll.xml
 *.DotSettings
 src/CommonAssemblyInfo.cs
+Gemfile.lock
