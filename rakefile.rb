@@ -46,7 +46,7 @@ Albacore.configure do |config|
     config.msbuild.verbosity = "normal"
 
     config.xbuild.solution = SOLUTION_FILE
-    config.xbuild.properties = { :configuration => CONFIG }
+    config.xbuild.properties = { :configuration => CONFIG, :vstoolspath => (RUBY_PLATFORM.downcase.include?('darwin') ? '/Library/Frameworks/Mono.framework/Libraries' : '/usr/lib') + '/mono/xbuild/Microsoft/VisualStudio/v9.0' }
     config.xbuild.targets = [ :Clean, :Build ]
     config.xbuild.verbosity = "normal"
 
