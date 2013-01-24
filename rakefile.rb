@@ -34,6 +34,10 @@ SPEC_ASSEMBLY_PATTERN = ".Specs"
 # Set up our build system
 require 'albacore'
 require 'rake/clean'
+require 'pathname'
+
+XUNIT_COMMAND = "#{TOOLS_PATH}/xUnit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
+MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
 
 # Configure albacore
 Albacore.configure do |config|
@@ -47,11 +51,11 @@ Albacore.configure do |config|
 
     config.xbuild.solution = SOLUTION_FILE
     config.xbuild.properties = { :configuration => CONFIG, :vstoolspath => (RUBY_PLATFORM.downcase.include?('darwin') ? '/Library/Frameworks/Mono.framework/Libraries' : '/usr/lib') + '/mono/xbuild/Microsoft/VisualStudio/v9.0' }
-    config.xbuild.targets = [ :Clean, :Build ]
+    config.xbuild.targets = [ :Build ] #:Clean upsets xbuild
     config.xbuild.verbosity = "normal"
 
-    config.mspec.command = "#{(MONO ? '' : 'mono ')}#{TOOLS_PATH}/mspec/mspec.exe"
-    config.mspec.assemblies = FileList.new("#{SPECS_PATH}/**/*#{SPEC_ASSEMBLY_PATTERN}.dll").exclude(/obj\//)
+    config.mspec.command = (MONO ? 'mono' : XUNIT_COMMAND)
+    config.mspec.assemblies = FileList.new("#{SPECS_PATH}/**/*#{SPEC_ASSEMBLY_PATTERN}.dll").exclude(/obj\//).collect! { |element| ((MONO ? "#{MSPEC_COMMAND} " : '') + element) }
 
     CLEAN.include(FileList["#{SOURCE_PATH}/**/obj"])
 	CLOBBER.include(FileList["#{SOURCE_PATH}/**/bin"])
@@ -119,7 +123,7 @@ end
 task :runtests, [:boundary] do |t, args|
 	args.with_default(:boundary => "*")
 	
-	runner = XUnitTestRunner.new("#{(MONO ? 'mono ' : '')}#{TOOLS_PATH}/xUnit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe")
+	runner = XUnitTestRunnerMono.new(MONO ? 'mono' : XUNIT_COMMAND)
 	runner.html_output = RESULTS_PATH
 
 	assemblies = Array.new
@@ -130,8 +134,8 @@ task :runtests, [:boundary] do |t, args|
 					FileList.new("#{element}/**/*#{this_boundary}.dll")
 						.exclude(/obj\//)
 						.each do |this_file|
-						assemblies.push this_file
-					end
+							assemblies.push (MONO ? "#{XUNIT_COMMAND} " : '') + this_file
+						end
 				}
 
 		runner.assemblies = assemblies
@@ -140,3 +144,13 @@ task :runtests, [:boundary] do |t, args|
 end
 
 mspec :mspec
+
+# XUnitTestRunner needs some Mono help
+class XUnitTestRunnerMono < XUnitTestRunner
+    def build_html_output
+		relativepath = Pathname.new(File.expand_path(@html_output)).relative_path_from(Pathname.new(File.expand_path(File.dirname(__FILE__))))
+
+		fail_with_message 'Directory is required for html_output' if !File.directory?(relativepath)
+		"/html \"#{File.join(relativepath,"%s.html")}\""
+	end
+end
