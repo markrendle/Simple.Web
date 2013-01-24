@@ -6,7 +6,7 @@ load "VERSION.txt"
 CONFIG = ENV["config"] || "Release"
 PLATFORM = ENV["platform"] || "x86"
 BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%H%M'))}"
-MONO = RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin')
+MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -45,6 +45,11 @@ Albacore.configure do |config|
     config.msbuild.targets = [ :Clean, :Build ]
     config.msbuild.verbosity = "normal"
 
+    config.xbuild.solution = SOLUTION_FILE
+    config.xbuild.properties = { :configuration => CONFIG }
+    config.xbuild.targets = [ :Clean, :Build ]
+    config.xbuild.verbosity = "normal"
+
     config.mspec.command = "#{(MONO ? '' : 'mono ')}#{TOOLS_PATH}/mspec/mspec.exe"
     config.mspec.assemblies = FileList.new("#{SPECS_PATH}/**/*#{SPEC_ASSEMBLY_PATTERN}.dll").exclude(/obj\//)
 
@@ -57,7 +62,13 @@ end
 task :default => [:test]
 
 desc "Build"
-msbuild :build => [:init, :assemblyinfo]
+task :build => [:init, :assemblyinfo] do
+	if MONO
+		Rake::Task[:xbuild].invoke
+	else
+		Rake::Task[:msbuild].invoke
+	end
+end
 
 desc "Build + Tests (default)"
 task :test => [:build] do
@@ -80,6 +91,10 @@ task :init => [:clobber] do
 end
 
 task :ci => [:full]
+
+msbuild :msbuild
+
+xbuild :xbuild
 
 assemblyinfo :assemblyinfo do |asm|
 	asm_version = BUILD_NUMBER
