@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Simple.Web</id>
-    <version>0.6</version>
+    <version>0.0.0.0</version>
     <authors>Mark Rendle</authors>
     <owners>Mark Rendle</owners>
     <copyright>Mark Rendle</copyright>
@@ -10,6 +10,7 @@
     <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A REST-focused, object-oriented Web Framework for .NET 4.</description>
+    <summary>A REST-focused, object-oriented Web Framework for .NET 4.</summary>
     <tags>simple.web</tags>
   </metadata>
   <files>

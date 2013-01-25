@@ -39,3 +39,4 @@ nohup.out
 src/CommonAssemblyInfo.cs
 Gemfile.lock
 results
+nuget

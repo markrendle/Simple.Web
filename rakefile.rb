@@ -1,5 +1,13 @@
 include FileTest
 
+# Build information
+SOLUTION_NAME = "Simple.Web"
+SOLUTION_DESC = "A REST-focused, object-oriented Web Framework for .NET 4."
+SOLUTION_LICENSE = "http://www.opensource.org/licenses/mit-license.php"
+SOLUTION_URL = "http://github.com/markrendle/Simple.Web"
+SOLUTION_COMPANY = "Mark Rendle"
+SOLUTION_COPYRIGHT = "Copyright (C) #{SOLUTION_COMPANY} 2012"
+
 # Build configuration
 load "VERSION.txt"
 
@@ -9,6 +17,12 @@ BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%
 MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
 TEAMCITY = (!ENV["BUILD_NUMBER"].nil? or !ENV["TEAMCITY_BUILD_PROPERTIES_FILE"].nil?)
 
+# NuGet configuration
+NUGET_APIKEY_LOCAL = ENV["apikey_local"]
+NUGET_APIURL_LOCAL = ENV["apiurl_local"]
+NUGET_APIKEY_REMOTE = ENV["apikey_remote"]
+NUGET_APIURL_REMOTE = ENV["apiurl_remote"]
+
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
 SOURCE_PATH = "#{BASE_PATH}/src"
@@ -17,7 +31,7 @@ SPECS_PATH = "#{BASE_PATH}/specs"
 BUILD_PATH = "#{BASE_PATH}/build"
 RESULTS_PATH = "#{BASE_PATH}/results"
 ARTIFACTS_PATH = "#{BASE_PATH}/artifacts"
-NUSPEC_PATH = "#{BASE_PATH}/packaging/nuget"
+NUSPEC_PATH = "#{BASE_PATH}/packaging/nuspec"
 NUGET_PATH = "#{BUILD_PATH}/nuget"
 TOOLS_PATH = "#{BASE_PATH}/tools"
 
@@ -32,13 +46,16 @@ TEST_ASSEMBLY_PATTERN_UNIT = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Unit"
 TEST_ASSEMBLY_PATTERN_INTEGRATION = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Integration"
 SPEC_ASSEMBLY_PATTERN = ".Specs"
 
-# Set up our build system
-require 'albacore'
-require 'rake/clean'
-require 'pathname'
-
+# Commands
 XUNIT_COMMAND = "#{TOOLS_PATH}/xUnit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
 MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
+NUGET_COMMAND = "#{TOOLS_PATH}/nuget/nuget.exe"
+
+# Set up our build system
+require 'albacore'
+require 'pathname'
+require 'rake/clean'
+require 'rexml/document'
 
 # Configure albacore
 Albacore.configure do |config|
@@ -59,6 +76,7 @@ Albacore.configure do |config|
     config.mspec.assemblies = FileList.new("#{SPECS_PATH}/**/*#{SPEC_ASSEMBLY_PATTERN}.dll").exclude(/obj\//).collect! { |element| ((MONO ? "#{MSPEC_COMMAND} " : '') + element) }
 
     CLEAN.include(FileList["#{SOURCE_PATH}/**/obj"])
+    CLEAN.include(NUGET_PATH)
 	CLOBBER.include(FileList["#{SOURCE_PATH}/**/bin"])
 	CLOBBER.include(BUILD_PATH)
 	CLOBBER.include(RESULTS_PATH)
@@ -89,6 +107,29 @@ end
 desc "Build + Tests + Specs"
 task :full => [:test] #[:test, :mspec]
 
+desc "Build + Tests + Specs + Publish (local)"
+task :publocal => [:full] do
+	raise "Environment variable \"APIURL_LOCAL\" must be a valid nuget server url." unless !NUGET_APIURL_LOCAL.nil?
+	raise "Environment variable \"APIKEY_LOCAL\" must be that of your nuget api key." unless !NUGET_APIKEY_LOCAL.nil?
+
+	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL
+end
+
+desc "Build + Tests + Specs + Publish (remote)"
+task :publish => [:full] do
+	raise "Environment variable \"APIURL_REMOTE\" must be a valid nuget server url." unless !NUGET_APIURL_REMOTE.nil?
+	raise "Environment variable \"APIKEY_REMOTE\" must be that of your nuget api key." unless !NUGET_APIKEY_REMOTE.nil?
+
+	if not TEAMCITY
+		puts "\n\nThis will publish your local build to the remote nuget feed. Are you sure (y/n)?"
+		response = $stdin.gets.chomp
+
+		raise "Publish aborted." unless response.downcase.eql?("y")
+	end
+
+	PublishNugets BUILD_NUMBER, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE
+end
+
 # Hidden tasks
 task :init => [:clobber] do
 	Dir.mkdir BUILD_PATH unless File.exists?(BUILD_PATH)
@@ -114,9 +155,9 @@ assemblyinfo :assemblyinfo do |asm|
 	asm.language = "C#"
 	asm.version = BUILD_NUMBER
 	asm.file_version = BUILD_NUMBER
-	asm.company_name = "Mark Rendle"
-	asm.product_name = "Simple.Web"
-	asm.copyright = "Copyright (C) Mark Rendle 2012"
+	asm.company_name = SOLUTION_COMPANY
+	asm.product_name = SOLUTION_NAME
+	asm.copyright = SOLUTION_COPYRIGHT
 	asm.custom_attributes :AssemblyConfiguration => CONFIG, :AssemblyInformationalVersion => asm_version
 	asm.output_file = ASSEMBLY_INFO
 	asm.com_visible = false
@@ -145,6 +186,8 @@ task :runtests, [:boundary] do |t, args|
 	end
 end
 
+mspec :mspec
+
 # XUnitTestRunner needs some Mono help
 class XUnitTestRunnerCustom < XUnitTestRunner
     def build_html_output
@@ -153,4 +196,72 @@ class XUnitTestRunnerCustom < XUnitTestRunner
 	end
 end
 
-mspec :mspec
+# Helper methods
+def PublishNugets(version, apiurl, apikey)
+	PackageNugets(version)
+
+	nupkgs = FileList["#{NUGET_PATH}/*#{$version}.nupkg"]
+    nupkgs.each do |nupkg| 
+        puts "Pushing #{Pathname.new(nupkg).basename}"
+        nuget_push = NuGetPush.new
+        nuget_push.source = "\"" + apiurl + "\""
+		nuget_push.apikey = apikey
+        nuget_push.command = (MONO ? 'mono ' : '') + NUGET_COMMAND
+        nuget_push.package = (MONO ? nupkg : nupkg.gsub('/','\\'))
+        nuget_push.create_only = false
+        nuget_push.execute
+    end
+end
+
+def PackageNugets(nuspec_version)
+	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
+
+	Dir.mkdir NUGET_PATH unless File.exists?(NUGET_PATH)
+
+    FileUtils.cp_r FileList["#{NUSPEC_PATH}/**/*.nuspec"], "#{NUGET_PATH}"
+
+    nuspecs = FileList["#{NUGET_PATH}/**/*.nuspec"]
+
+	UpdateNuSpecVersions nuspecs, nuspec_version
+
+    nuspecs.each do |nuspec|      
+        nuget = NuGetPack.new
+        nuget.command = NUGET_COMMAND
+        nuget.nuspec = "\"#{nuspec}\""
+        nuget.output = NUGET_PATH
+        nuget.parameters = "-BasePath \"#{NUSPEC_PATH}\""
+        nuget.execute
+    end
+end
+
+def UpdateNuSpecVersions(nuspecs, nuspec_version)
+	raise "No nuspecs to update." unless !nuspecs.nil?
+	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
+
+    nuspecs.each do |nuspec|
+        puts "Updating #{Pathname.new(nuspec).basename}"
+        update_xml nuspec do |xml|
+            xml.root.elements["metadata/version"].text = nuspec_version
+            local_dependencies = xml.root.elements["metadata/dependencies/dependency[contains(@id,'#{SOLUTION_NAME}')]"]
+            local_dependencies.attributes["version"] = "[#{nuspec_version}]" unless local_dependencies.nil?
+            xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
+            xml.root.elements["metadata/summary"].text = SOLUTION_DESC
+            xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE
+            xml.root.elements["metadata/projectUrl"].text = SOLUTION_URL
+        end
+    end
+end
+
+def update_xml(xml_path)
+    xml_file = File.new(xml_path)
+    xml = REXML::Document.new xml_file
+ 
+    yield xml
+ 
+    xml_file.close
+         
+    xml_file = File.open(xml_path, "w")
+    formatter = REXML::Formatters::Default.new(5)
+    formatter.write(xml, xml_file)
+    xml_file.close 
+end
