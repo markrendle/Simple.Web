@@ -22,6 +22,7 @@ NUGET_APIKEY_LOCAL = ENV["apikey_local"]
 NUGET_APIURL_LOCAL = ENV["apiurl_local"]
 NUGET_APIKEY_REMOTE = ENV["apikey_remote"]
 NUGET_APIURL_REMOTE = ENV["apiurl_remote"]
+ENV["EnableNuGetPackageRestore"] = "true"
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -49,7 +50,7 @@ SPEC_ASSEMBLY_PATTERN = ".Specs"
 # Commands
 XUNIT_COMMAND = "#{TOOLS_PATH}/xUnit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
 MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
-NUGET_COMMAND = "#{TOOLS_PATH}/nuget/nuget.exe"
+NUGET_COMMAND = "#{SOURCE_PATH}/.nuget/NuGet.exe"
 
 # Set up our build system
 require 'albacore'

@@ -40,3 +40,5 @@ src/CommonAssemblyInfo.cs
 Gemfile.lock
 results
 nuget
+src/packages/*
+!src/packages/repositories.config
