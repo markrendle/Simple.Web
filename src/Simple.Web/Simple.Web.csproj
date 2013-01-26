@@ -212,7 +212,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>ruby $(ProjectDir)../../tools/project-prebuild.rb</PreBuildEvent>
+    <PreBuildEvent>touch $(ProjectDir)../CommonAssemblyInfo.cs</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir).nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
