@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Simple.Web.Autofac</id>
+    <version>0.0.0.0</version>
+    <authors>Mark Rendle, Kevin Stout</authors>
+    <owners>Mark Rendle, Kevin Stout</owners>
+    <copyright>Mark Rendle, Kevin Stout</copyright>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AutoFac IoC container support for Simple.Web.</description>
+    <summary>A REST-focused, object-oriented Web Framework for .NET 4.</summary>
+    <tags>simple.web</tags>
+    <dependencies>
+      <dependency id="Simple.Web" version="0.0.0.0" />
+      <dependency id="Autofac" version="2.6.2.859" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\build\Simple.Web.Autofac.dll" target="lib\net40" />
+  </files>
+</package>

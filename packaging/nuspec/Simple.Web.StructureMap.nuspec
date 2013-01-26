@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Simple.Web.StructureMap</id>
+    <version>0.0.0.0</version>
+    <authors>Mark Rendle, Roy Jacobs</authors>
+    <owners>Mark Rendle, Roy Jacobs</owners>
+    <copyright>Mark Rendle, Roy Jacobs</copyright>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>StructureMap IoC container support for Simple.Web.</description>
+    <summary>A REST-focused, object-oriented Web Framework for .NET 4.</summary>
+    <tags>simple.web</tags>
+    <dependencies>
+      <dependency id="Simple.Web" version="0.0.0.0" />
+      <dependency id="structuremap" version="2.6.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\build\Simple.Web.StructureMap.dll" target="lib\net40" />
+  </files>
+</package>
