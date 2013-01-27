@@ -33,7 +33,7 @@ BUILD_PATH = "#{BASE_PATH}/build"
 RESULTS_PATH = "#{BASE_PATH}/results"
 ARTIFACTS_PATH = "#{BASE_PATH}/artifacts"
 NUSPEC_PATH = "#{BASE_PATH}/packaging/nuspec"
-NUGET_PATH = "#{BUILD_PATH}/nuget"
+NUGET_PATH = "#{ARTIFACTS_PATH}/nuget"
 TOOLS_PATH = "#{BASE_PATH}/tools"
 
 # Files
@@ -79,6 +79,7 @@ Albacore.configure do |config|
     CLEAN.include(FileList["#{SOURCE_PATH}/**/obj"])
     CLEAN.include(NUGET_PATH)
 	CLOBBER.include(FileList["#{SOURCE_PATH}/**/bin"])
+    CLOBBER.include(ARTIFACTS_PATH)
 	CLOBBER.include(BUILD_PATH)
 	CLOBBER.include(RESULTS_PATH)
 end
@@ -116,6 +117,11 @@ task :publocal => [:full] do
 	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL
 end
 
+desc "Build + Tests + Specs + Package"
+task :package => [:full] do
+	PackageNugets BUILD_NUMBER
+end
+
 desc "Build + Tests + Specs + Publish (remote)"
 task :publish => [:full] do
 	raise "Environment variable \"APIURL_REMOTE\" must be a valid nuget server url." unless !NUGET_APIURL_REMOTE.nil?
@@ -133,13 +139,15 @@ end
 
 # Hidden tasks
 task :init => [:clobber] do
-	indexupdate = `git update-index --assume-unchanged #{BASE_PATH}/src/CommonAssemblyInfo.cs`
+	if not TEAMCITY
+		indexupdate = `git update-index --assume-unchanged #{BASE_PATH}/src/CommonAssemblyInfo.cs`
+		raise "Unable to perform git index operation, cannot continue (#{indexupdate})." unless indexupdate.empty?
+	end
 
-	raise "Unable to perform git index operation, cannot continue (#{indexupdate})." unless indexupdate.empty?
-	
 	Dir.mkdir BUILD_PATH unless File.exists?(BUILD_PATH)
 	Dir.mkdir RESULTS_PATH unless File.exists?(RESULTS_PATH)
 	Dir.mkdir ARTIFACTS_PATH unless File.exists?(ARTIFACTS_PATH)
+	Dir.mkdir NUGET_PATH unless File.exists?(NUGET_PATH)
 end
 
 task :ci => [:full]
@@ -229,20 +237,20 @@ end
 def PackageNugets(nuspec_version)
 	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
 
-	Dir.mkdir NUGET_PATH unless File.exists?(NUGET_PATH)
+	Dir.mkdir "#{ARTIFACTS_PATH}/nuspec" unless File.exists?("#{ARTIFACTS_PATH}/nuspec}")
 
-    FileUtils.cp_r FileList["#{NUSPEC_PATH}/**/*.nuspec"], "#{NUGET_PATH}"
+    FileUtils.cp_r FileList["#{NUSPEC_PATH}/**/*.nuspec"], "#{ARTIFACTS_PATH}/nuspec"
 
-    nuspecs = FileList["#{NUGET_PATH}/**/*.nuspec"]
+    nuspecs = FileList["#{ARTIFACTS_PATH}/nuspec/**/*.nuspec"]
 
 	UpdateNuSpecVersions nuspecs, nuspec_version
 
     nuspecs.each do |nuspec|      
         nuget = NuGetPack.new
-        nuget.command = NUGET_COMMAND
+        nuget.command = (MONO ? 'mono ' : '') + NUGET_COMMAND
         nuget.nuspec = "\"#{nuspec}\""
         nuget.output = NUGET_PATH
-        nuget.parameters = "-BasePath \"#{NUSPEC_PATH}\""
+        nuget.parameters = "-BasePath \"#{ARTIFACTS_PATH}/nuspec\""
         nuget.execute
     end
 end
