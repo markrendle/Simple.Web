@@ -211,7 +211,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>touch $(ProjectDir)../CommonAssemblyInfo.cs</PreBuildEvent>
+    <PreBuildEvent></PreBuildEvent>
   </PropertyGroup>
   <Import Condition="$(MSBuildProgramFiles32) == ''" Project="$(SolutionDir).nuget\nuget.targets" />
   <Import Condition="$(MSBuildProgramFiles32) != ''" Project="$(SolutionDir)\.nuget\nuget.targets" />

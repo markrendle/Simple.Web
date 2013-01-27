@@ -43,7 +43,7 @@ namespace Simple.Web.Ninject.Tests
 
     public class TestStartup : NinjectStartupBase
     {
-        protected override IEnumerable<INinjectModule> CreateModules()
+        protected internal override IEnumerable<INinjectModule> CreateModules()
         {
             yield return new TestModule();
         }
