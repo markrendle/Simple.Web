@@ -78,7 +78,7 @@ namespace Simple.Web.Autofac.Tests
 
     public class TestStartup : AutofacStartupBase
     {
-        protected override IContainer BuildContainer()
+        protected internal override IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
                         

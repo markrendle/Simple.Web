@@ -133,6 +133,10 @@ end
 
 # Hidden tasks
 task :init => [:clobber] do
+	indexupdate = `git update-index --assume-unchanged #{BASE_PATH}/src/CommonAssemblyInfo.cs`
+
+	raise "Unable to perform git index operation, cannot continue (#{indexupdate})." unless indexupdate.empty?
+	
 	Dir.mkdir BUILD_PATH unless File.exists?(BUILD_PATH)
 	Dir.mkdir RESULTS_PATH unless File.exists?(RESULTS_PATH)
 	Dir.mkdir ARTIFACTS_PATH unless File.exists?(ARTIFACTS_PATH)
@@ -153,13 +157,21 @@ assemblyinfo :assemblyinfo do |asm|
 		commit = "git unavailable"
 	end
 
+	testassemblies = FileList.new("#{TESTS_PATH}/*#{TEST_ASSEMBLY_PATTERN_PREFIX}/")
+		.pathmap("%f")
+		.collect! { |assemblyname|
+			"[assembly: InternalsVisibleTo(\"#{assemblyname}\")]"
+		}
+
 	asm.language = "C#"
 	asm.version = BUILD_NUMBER
 	asm.file_version = BUILD_NUMBER
 	asm.company_name = SOLUTION_COMPANY
 	asm.product_name = SOLUTION_NAME
 	asm.copyright = SOLUTION_COPYRIGHT
+	asm.namespaces 'System.Runtime.CompilerServices'
 	asm.custom_attributes :AssemblyConfiguration => CONFIG, :AssemblyInformationalVersion => asm_version
+	asm.custom_data testassemblies
 	asm.output_file = ASSEMBLY_INFO
 	asm.com_visible = false
 end

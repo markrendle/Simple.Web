@@ -55,7 +55,9 @@
   <ItemGroup>
     <Compile Include="HandlerFactoryBuilderTests.cs" />
     <Compile Include="HandlersModuleTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web.Autofac\Simple.Web.Autofac.csproj">

@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AmbiguousViewException.cs" />
     <Compile Include="AttributePart.cs" />
@@ -76,7 +76,6 @@
     <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="RazorHtmlMediaTypeHandler.cs" />
     <Compile Include="RazorTypeBuilder.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RazorViews.cs" />
     <Compile Include="SimpleRazorBuildProvider.cs" />
     <Compile Include="SimpleTemplateBase.cs" />

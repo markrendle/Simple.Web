@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="JsonFxContentTypeHandlerTests.cs" />
     <Compile Include="MonoCompatResolverStrategyTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web.JsonFx\Simple.Web.JsonFx.csproj">
