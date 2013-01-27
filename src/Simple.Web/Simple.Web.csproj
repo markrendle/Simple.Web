@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Application.cs" />
     <Compile Include="Authentication\AnonymousUser.cs" />
@@ -196,7 +196,6 @@
     <Compile Include="Routing\RoutingTable.cs" />
     <Compile Include="Routing\RoutingTableBuilder.cs" />
     <Compile Include="SimpleWeb.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Hosting\StartupTaskRunner.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="UnsupportedMediaTypeException.cs" />

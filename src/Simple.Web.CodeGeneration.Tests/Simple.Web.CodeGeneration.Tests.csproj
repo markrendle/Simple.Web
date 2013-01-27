@@ -48,7 +48,9 @@
     <Compile Include="GenericTest.cs" />
     <Compile Include="HandlerRunnerBuilderTest.cs" />
     <Compile Include="Handlers\TestUploadHandler.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Stubs\StubCheckAuthentication.cs" />
     <Compile Include="Stubs\StubSetCache.cs" />
     <Compile Include="Stubs\StubMethodLookup.cs" />
