@@ -55,7 +55,9 @@
     <Compile Include="LinkHelperTests.cs" />
     <Compile Include="RoutingTableBuilderTests.cs" />
     <Compile Include="RoutingTableTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="UriFromTypeTests.cs" />
     <Compile Include="UriTemplateAttributeTests.cs" />
   </ItemGroup>

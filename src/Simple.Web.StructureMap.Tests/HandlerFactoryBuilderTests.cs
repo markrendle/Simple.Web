@@ -44,7 +44,7 @@ namespace Simple.Web.StructureMap.Tests
 
     public class TestStartup : StructureMapStartupBase
     {
-        protected override void Configure(ConfigurationExpression cfg)
+        protected internal override void Configure(ConfigurationExpression cfg)
         {
             cfg.Scan(x =>
                          {
