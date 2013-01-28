@@ -1,6 +1,4 @@
-﻿using Simple.Web.Helpers;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
     using System;
     using System.CodeDom.Compiler;
@@ -9,7 +7,6 @@ namespace Simple.Web.Razor
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
     using System.Threading;
     using System.Web.Razor;
     using Engine;

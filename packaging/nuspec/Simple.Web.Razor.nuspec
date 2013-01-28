@@ -14,7 +14,7 @@
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="Simple.Web" version="0.0.0.0" />
-      <dependency id="AspNetWebPages.Core" version="2.0" />
+      <dependency id="System.Web.Razor.Unofficial" version="2.0" />
     </dependencies>
   </metadata>
 

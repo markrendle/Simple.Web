@@ -1,13 +1,14 @@
 ﻿namespace Simple.Web.Razor
 {
+    using System.Web.Razor;
     using System.Web.Razor.Generator;
     using System.Web.Razor.Parser;
-    using System.Web.WebPages.Razor;
     using Engine;
 
-    public class SimpleWebPageRazorHost : WebPageRazorHost
+    public class SimpleWebPageRazorHost : RazorEngineHost
     {
-        public SimpleWebPageRazorHost(string virtualPath, string physicalPath) : base(virtualPath, physicalPath)
+        public SimpleWebPageRazorHost(RazorCodeLanguage language)
+            : base(language)
         {
             DefaultBaseClass = "SimpleTemplateModelBase<dynamic>";
         }
