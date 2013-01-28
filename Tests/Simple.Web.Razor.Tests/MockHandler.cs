@@ -9,6 +9,7 @@ namespace Simple.Web.Razor.Tests
 
     public class MockHandler : IContent
     {
+        public Uri Uri { get; private set; }
         public object Handler { get; set; }
 
         public object Model { get; set; }

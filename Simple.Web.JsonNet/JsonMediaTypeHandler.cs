@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Simple.Web.JsonNet
 {
     using System.IO;
+    using System.Linq;
     using Helpers;
     using Links;
     using MediaTypeHandling;
@@ -16,13 +16,26 @@ namespace Simple.Web.JsonNet
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandler : IMediaTypeHandler
     {
+        private static readonly Lazy<HashSet<Type>> KnownTypes = new Lazy<HashSet<Type>>(GetKnownTypes);
+
+        private static HashSet<Type> GetKnownTypes()
+        {
+            var q = ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists)
+                              .SelectMany(LinkAttributeBase.Get)
+                              .Select(l => l.ModelType);
+            return new HashSet<Type>(q);
+        }
+
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
-                                                                      {
-                                                                          DateFormatHandling =
-                                                                              DateFormatHandling.IsoDateFormat,
-                                                                          ContractResolver =
-                                                                              new CamelCasePropertyNamesContractResolver()
-                                                                      };
+                                                                                {
+                                                                                    DateFormatHandling =
+                                                                                        DateFormatHandling.IsoDateFormat,
+                                                                                    ReferenceLoopHandling =
+                                                                                        ReferenceLoopHandling.Ignore,
+                                                                                    ContractResolver =
+                                                                                        new CamelCasePropertyNamesContractResolver
+                                                                                        ()
+                                                                                };
 
         public static JsonSerializerSettings Settings
         {
@@ -42,74 +55,21 @@ namespace Simple.Web.JsonNet
         {
             if (content.Model != null)
             {
-                object output;
-
-                var enumerable = content.Model as IEnumerable<object>;
-                if (enumerable != null)
-                {
-                    output = ProcessList(enumerable.ToList());
-                }
-                else
-                {
-                    output = ProcessContent(content);
-                }
-                var json = JsonConvert.SerializeObject(output, SerializerSettings);
+                var linkConverters = LinkConverter.CreateForGraph(content.Model.GetType(), KnownTypes.Value,
+                                                                 LinkHelper.GetLinksForModel, Settings.ContractResolver);
+                var settings = new JsonSerializerSettings
+                                   {
+                                       Converters = linkConverters,
+                                       ContractResolver = Settings.ContractResolver,
+                                       DateFormatHandling = Settings.DateFormatHandling,
+                                       ReferenceLoopHandling = Settings.ReferenceLoopHandling,
+                                   };
+                var json = JsonConvert.SerializeObject(content.Model, settings);
                 var buffer = Encoding.Default.GetBytes(json);
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);
             }
 
             return TaskHelper.Completed();
-        }
-
-        private static object ProcessContent(IContent content)
-        {
-            var links = content.Links.Select(EnsureJson).ToList();
-            if (links.Count == 0)
-            {
-                return content.Model;
-            }
-            var dictionary = content.Model.ToDictionary();
-            dictionary.Add("links", links);
-            return dictionary;
-        }
-
-        private static IEnumerable<object> ProcessList(IEnumerable<object> source)
-        {
-            bool skipLinkCheck = false;
-            foreach (var o in source)
-            {
-                if (!skipLinkCheck)
-                {
-                    var links = LinkHelper.GetLinksForModel(o).Select(EnsureJson).ToList();
-                    if (links.Count == 0)
-                    {
-                        skipLinkCheck = true;
-                    }
-                    else
-                    {
-                        var dictionary = o.ToDictionary();
-                        dictionary.Add("links", links);
-                        yield return dictionary;
-                        continue;
-                    }
-
-                }
-
-                yield return o;
-            }
-        }
-
-        private static Link EnsureJson(Link source)
-        {
-            if (!string.IsNullOrWhiteSpace(source.Type))
-            {
-                if (source.Type.EndsWith("json"))
-                {
-                    return source;
-                }
-                return new Link(source.GetHandlerType(), source.Href, source.Rel, source.Type + "+json", source.Title);
-            }
-            return new Link(source.GetHandlerType(), source.Href, source.Rel, MediaType.Json, source.Title);
         }
     }
 }

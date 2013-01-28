@@ -1,5 +1,6 @@
 namespace Simple.Web.MediaTypeHandling
 {
+    using System;
     using System.Collections.Generic;
     using Simple.Web.Links;
 
@@ -8,6 +9,11 @@ namespace Simple.Web.MediaTypeHandling
     /// </summary>
     public interface IContent
     {
+        /// <summary>
+        /// Gets the URI used to request the resource.
+        /// </summary>
+        Uri Uri { get; }
+
         /// <summary>
         /// Gets the handler which generated the model.
         /// </summary>

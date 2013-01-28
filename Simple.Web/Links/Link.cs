@@ -12,7 +12,7 @@
         private readonly Type _handlerType;
         private readonly string _href;
         private readonly string _rel;
-        private readonly string _type;
+        private string _type;
         private readonly string _title;
 
         /// <summary>
@@ -84,9 +84,7 @@
         public string Type
         {
             get { return _type; }
-// ReSharper disable ValueParameterNotUsed (required by DataContractSerializer)
-            private set { }
-// ReSharper restore ValueParameterNotUsed
+            set { _type = value; }
         }
     }
 }

@@ -88,7 +88,7 @@
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
-            foreach (var key in context.Request.QueryString.Keys)
+            foreach (var key in context.Request.QueryString.Keys.Where(k => !string.IsNullOrWhiteSpace(k)))
             {
                 handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
             }

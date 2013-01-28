@@ -1,5 +1,6 @@
 namespace Simple.Web.MediaTypeHandling
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Simple.Web.Links;
@@ -9,11 +10,13 @@ namespace Simple.Web.MediaTypeHandling
     /// </summary>
     public class Content : IContent
     {
+        private readonly Uri _uri;
         private readonly object _handler;
         private readonly object _model;
 
-        public Content(object handler, object model)
+        public Content(Uri uri, object handler, object model)
         {
+            _uri = uri;
             _handler = handler;
             _model = model;
         }
@@ -51,5 +54,13 @@ namespace Simple.Web.MediaTypeHandling
         /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
         /// </summary>
         public IEnumerable<Link> Links { get { return LinkHelper.GetLinksForModel(_model); } }
+
+        /// <summary>
+        /// Gets the URI used to retrieve the resource.
+        /// </summary>
+        public Uri Uri
+        {
+            get { return _uri; }
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace Simple.Web.Links
         public ICollection<Link> LinksForModel(object model)
         {
             var actuals =
-                _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).ToList();
+                _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).Where(l => l.Href != null).ToList();
             return new ReadOnlyCollection<Link>(actuals);
         }
         
@@ -34,7 +34,7 @@ namespace Simple.Web.Links
         {
             return
                 _templates.Where(t => t.Rel == "self").Select(
-                    l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).FirstOrDefault();
+                    l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).FirstOrDefault(l => l.Href != null);
         }
 
         private static string BuildUri(object model, string uriTemplate)
@@ -50,10 +50,15 @@ namespace Simple.Web.Links
                     var prop = model.GetType().GetProperty(variable);
                     if (prop == null)
                     {
-                        continue;
+                        return null;
                     }
                     var sub = "{" + variable + "}";
-                    var value = (prop.GetValue(model, null) ?? "NULL").ToString();
+                    var v = prop.GetValue(model, null);
+                    if (v == null)
+                    {
+                        return null;
+                    }
+                    var value = v.ToString();
                     if (queryStart >= 0)
                     {
                         if (uriTemplate.IndexOf(sub, StringComparison.OrdinalIgnoreCase) > queryStart)

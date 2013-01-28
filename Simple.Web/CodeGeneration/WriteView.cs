@@ -26,7 +26,7 @@ namespace Simple.Web.CodeGeneration
 
                 context.Response.WriteFunction = (stream) =>
                     {
-                        var content = new Content(handler, null);
+                        var content = new Content(context.Request.Url, handler, null);
                         return mediaTypeHandler.Write(content, stream);
                     };
             }

@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="HalJsonMediaTypeHandler.cs" />
     <Compile Include="JsonMediaTypeHandler.cs" />
+    <Compile Include="LinkConverter.cs" />
+    <Compile Include="LinkConverter`1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

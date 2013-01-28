@@ -1,5 +1,6 @@
 ﻿namespace Simple.Web.JsonNet.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using HalJson.Tests;
@@ -17,7 +18,7 @@
             JObject actual;
 
             var person = new Person {Name = "Marvin", Location = "Car Park"};
-            var content = new Content(new PersonHandler(), person);
+            var content = new Content(new Uri("http://test.com/person/Marvin"), new PersonHandler(), person);
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {
@@ -43,7 +44,7 @@
                                  new Person {Name = "Marvin", Location = "Car Park"},
                                  new Person {Name = "Zaphod", Location = "The Restaurant at the End of the Universe"}
                              };
-            var content = new Content(new PeopleHandler(), people);
+            var content = new Content(new Uri("http://test.com/people"), new PeopleHandler(), people);
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {

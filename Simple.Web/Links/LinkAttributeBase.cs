@@ -78,10 +78,15 @@ namespace Simple.Web.Links
         /// <returns>A list of <see cref="CanonicalAttribute"/> or <see cref="LinksFromAttribute"/> objects.</returns>
         public static IList<LinkAttributeBase> Get(Type handlerType, Type modelType)
         {
-            return GetCustomAttributes(handlerType, typeof (LinkAttributeBase))
-                .Cast<LinkAttributeBase>()
+            return Get(handlerType)
                 .Where(a => a.ModelType != null && a.ModelType.IsAssignableFrom(modelType))
                 .ToList();
+        }
+
+        public static IEnumerable<LinkAttributeBase> Get(Type handlerType)
+        {
+            return GetCustomAttributes(handlerType, typeof (LinkAttributeBase))
+                .Cast<LinkAttributeBase>();
         }
     }
 }

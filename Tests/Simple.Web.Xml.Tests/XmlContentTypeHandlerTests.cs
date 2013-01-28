@@ -17,7 +17,7 @@ namespace Simple.Web.Xml.Tests
         [Fact]
         public void SerializesOrder()
         {
-            var content = new Content(new OrderHandler(), new Order {Id = 54, CustomerId = 42});
+            var content = new Content(new Uri("http://test.com/order/42"), new OrderHandler(), new Order { Id = 54, CustomerId = 42 });
             var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
@@ -46,7 +46,7 @@ namespace Simple.Web.Xml.Tests
         [Fact]
         public void PicksUpOrdersLinkFromCustomer()
         {
-            var content = new Content(new CustomerHandler(), new Customer { Id = 42 });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
             var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
@@ -73,7 +73,7 @@ namespace Simple.Web.Xml.Tests
         [Fact]
         public void PicksUpOrdersLinkFromCustomers()
         {
-            var content = new Content(new CustomerHandler(), new[] {new Customer {Id = 42}});
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new[] { new Customer { Id = 42 } });
             var target = new XmlMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
