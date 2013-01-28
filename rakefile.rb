@@ -5,8 +5,8 @@ SOLUTION_NAME = "Simple.Web"
 SOLUTION_DESC = "A REST-focused, object-oriented Web Framework for .NET 4."
 SOLUTION_LICENSE = "http://www.opensource.org/licenses/mit-license.php"
 SOLUTION_URL = "http://github.com/markrendle/Simple.Web"
-SOLUTION_COMPANY = "Mark Rendle"
-SOLUTION_COPYRIGHT = "Copyright (C) #{SOLUTION_COMPANY} 2012"
+SOLUTION_COMPANY = "Mark Rendle, Ian Battersby, and contributors"
+SOLUTION_COPYRIGHT = "Copyright (C) Mark Rendle 2012"
 
 # Build configuration
 load "VERSION.txt"
@@ -77,7 +77,7 @@ Albacore.configure do |config|
     config.mspec.assemblies = FileList.new("#{SPECS_PATH}/**/*#{SPEC_ASSEMBLY_PATTERN}.dll").exclude(/obj\//).collect! { |element| ((MONO ? "#{MSPEC_COMMAND} " : '') + element) }
 
     CLEAN.include(FileList["#{SOURCE_PATH}/**/obj"])
-    CLEAN.include(NUGET_PATH)
+    CLOBBER.include(NUGET_PATH)
 	CLOBBER.include(FileList["#{SOURCE_PATH}/**/bin"])
     CLOBBER.include(ARTIFACTS_PATH)
 	CLOBBER.include(BUILD_PATH)
@@ -150,7 +150,7 @@ task :init => [:clobber] do
 	Dir.mkdir NUGET_PATH unless File.exists?(NUGET_PATH)
 end
 
-task :ci => [:full]
+task :ci => [:package]
 
 msbuild :msbuild
 
@@ -173,6 +173,7 @@ assemblyinfo :assemblyinfo do |asm|
 
 	asm.language = "C#"
 	asm.version = BUILD_NUMBER
+	asm.trademark = commit
 	asm.file_version = BUILD_NUMBER
 	asm.company_name = SOLUTION_COMPANY
 	asm.product_name = SOLUTION_NAME
@@ -209,14 +210,6 @@ end
 
 mspec :mspec
 
-# XUnitTestRunner needs some Mono help
-class XUnitTestRunnerCustom < XUnitTestRunner
-    def build_html_output
-	    fail_with_message 'Directory is required for html_output' if !File.directory?(File.expand_path(@html_output))
-	    "/nunit \"@#{File.join(File.expand_path(@html_output),"%s.html")}\""
-	end
-end
-
 # Helper methods
 def PublishNugets(version, apiurl, apikey)
 	PackageNugets(version)
@@ -227,7 +220,7 @@ def PublishNugets(version, apiurl, apikey)
         nuget_push = NuGetPush.new
         nuget_push.source = "\"" + apiurl + "\""
 		nuget_push.apikey = apikey
-        nuget_push.command = (MONO ? 'mono ' : '') + NUGET_COMMAND
+        nuget_push.command = NUGET_COMMAND
         nuget_push.package = (MONO ? nupkg : nupkg.gsub('/','\\'))
         nuget_push.create_only = false
         nuget_push.execute
@@ -237,7 +230,7 @@ end
 def PackageNugets(nuspec_version)
 	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
 
-	Dir.mkdir "#{ARTIFACTS_PATH}/nuspec" unless File.exists?("#{ARTIFACTS_PATH}/nuspec}")
+	Dir.mkdir "#{ARTIFACTS_PATH}/nuspec" unless File.exists?("#{ARTIFACTS_PATH}/nuspec")
 
     FileUtils.cp_r FileList["#{NUSPEC_PATH}/**/*.nuspec"], "#{ARTIFACTS_PATH}/nuspec"
 
@@ -246,11 +239,11 @@ def PackageNugets(nuspec_version)
 	UpdateNuSpecVersions nuspecs, nuspec_version
 
     nuspecs.each do |nuspec|      
-        nuget = NuGetPack.new
-        nuget.command = (MONO ? 'mono ' : '') + NUGET_COMMAND
-        nuget.nuspec = "\"#{nuspec}\""
+        nuget = NuGetPackCustom.new
+        nuget.command = NUGET_COMMAND
+        nuget.nuspec = nuspec
         nuget.output = NUGET_PATH
-        nuget.parameters = "-BasePath \"#{ARTIFACTS_PATH}/nuspec\""
+        nuget.base_folder = NUSPEC_PATH
         nuget.execute
     end
 end
@@ -264,11 +257,15 @@ def UpdateNuSpecVersions(nuspecs, nuspec_version)
         update_xml nuspec do |xml|
             xml.root.elements["metadata/version"].text = nuspec_version
             local_dependencies = xml.root.elements["metadata/dependencies/dependency[contains(@id,'#{SOLUTION_NAME}')]"]
-            local_dependencies.attributes["version"] = "[#{nuspec_version}]" unless local_dependencies.nil?
+            local_dependencies.attributes["version"] = "#{nuspec_version}" unless local_dependencies.nil?
             xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
             xml.root.elements["metadata/summary"].text = SOLUTION_DESC
             xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE
             xml.root.elements["metadata/projectUrl"].text = SOLUTION_URL
+			xml.root.get_elements("//file").each { |e| 
+				e.attributes["src"] = e.attributes["src"].gsub((MONO ? '\\' : '/'), (!MONO ? '\\' : '/')) 
+				e.attributes["target"] = e.attributes["target"].gsub((MONO ? '\\' : '/'), (!MONO ? '\\' : '/'))
+			}
         end
     end
 end
@@ -285,4 +282,73 @@ def update_xml(xml_path)
     formatter = REXML::Formatters::Default.new(5)
     formatter.write(xml, xml_file)
     xml_file.close 
+end
+
+# Albacore needs some Mono help
+class XUnitTestRunnerCustom < XUnitTestRunner
+    def build_html_output
+	    fail_with_message 'Directory is required for html_output' if !File.directory?(File.expand_path(@html_output))
+	    "/nunit \"@#{File.join(File.expand_path(@html_output),"%s.html")}\""
+	end
+end
+
+class NuGetPackCustom < NuGetPack
+  def execute  
+    fail_with_message 'nuspec must be specified.' if @nuspec.nil?
+    
+    params = []
+    params << "pack"
+    params << "-Symbols" if @symbols
+    params << nuspec
+    params << "-BasePath \"#{base_folder}\"" unless @base_folder.nil?
+    params << "-OutputDirectory \"#{output}\"" unless @output.nil?
+    params << "-NoDefaultExcludes" unless !MONO
+    params << "-Verbosity detailed" unless !TEAMCITY
+    params << build_properties unless @properties.nil? || @properties.empty?
+    
+    merged_params = params.join(' ')
+    
+    cmd = "#{MONO ? 'mono ' : ''}#{File.expand_path(@command)} #{merged_params}"
+    result = false
+
+    @logger.debug "Build NuGet pack Command Line: #{cmd}"
+
+	Dir.chdir(@working_directory) do
+      result = system(cmd)
+    end
+
+    failure_message = 'NuGet Failed. See Build Log For Detail'
+    fail_with_message failure_message if !result
+  end
+end
+
+class NuGetPublishCustom < NuGetPackCustom
+  def execute
+  
+    fail_with_message 'id must be specified.' if @id.nil?
+    fail_with_message 'version must be specified.' if @version.nil?
+    # don't validate @apikey as required, coz it might have been set in the config file using 'SetApiKey'
+    
+    puts @create_only
+    params = []
+    params << "publish"
+    params << "#{@id}"
+    params << "#{@version}"
+    params << "#{@apikey}" if @apikey
+    params << "-Source #{source}" unless @source.nil?
+    
+    merged_params = params.join(' ')
+    
+    cmd = "#{MONO ? 'mono ' : ''}#{File.expand_path(@command)} #{merged_params}"
+    result = false
+
+    @logger.debug "Build NuGet publish Command Line: #{cmd}"
+
+	Dir.chdir(@working_directory) do
+      result = system(cmd)
+    end
+    
+    failure_message = 'NuGet Publish Failed. See Build Log For Details'
+    fail_with_message failure_message if !result
+  end
 end
