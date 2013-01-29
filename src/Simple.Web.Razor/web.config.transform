@@ -15,4 +15,7 @@
       </buildProviders>
     </compilation>
   </system.web>
+  <appSettings>
+    <add key="webPages:Enabled" value="false" />
+  </appSettings>
 </configuration>
