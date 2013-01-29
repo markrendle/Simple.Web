@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Behaviors;
     using Routing;
     using Xunit;
@@ -81,6 +82,16 @@
             IDictionary<string, string[]> variables;
             var actual = table.Get("/spaceship", "", new string[0], out variables);
             Assert.Equal(typeof(GetSpaceship), actual);
+        }
+
+        [Fact]
+        public void FindsGetWithUltimateBaseClassNoInterface()
+        {
+            var builder = new RoutingTableBuilder(typeof (IGetAsync));
+            var table = builder.BuildRoutingTable();
+            IDictionary<string, string[]> variables;
+            var actual = table.Get("/top/bottom", "", new string[0], out variables);
+            Assert.Equal(typeof(Bottom), actual);
         }
     }
 
@@ -189,6 +200,25 @@
     public class GetSpaceshipImage : IGet
     {
         public Status Get()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [UriTemplate("/top")]
+    public abstract class Top
+    {
+    }
+
+    public abstract class Middle : Top, IGetAsync
+    {
+        public abstract Task<Status> Get();
+    }
+
+    [UriTemplate("/bottom")]
+    public class Bottom : Middle
+    {
+        public override Task<Status> Get()
         {
             throw new NotImplementedException();
         }

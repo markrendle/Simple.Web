@@ -55,7 +55,7 @@ namespace Simple.Web.Http
         /// <returns><c>null</c> if the attribute does not exist.</returns>
         public static HttpMethodAttribute Get(Type type)
         {
-            return (GetCustomAttribute(type, typeof(HttpMethodAttribute)) ?? type.GetInterfaces().Select(Get).FirstOrDefault()) as HttpMethodAttribute;
+            return (GetCustomAttribute(type, typeof(HttpMethodAttribute), true) ?? type.GetInterfaces().Select(Get).FirstOrDefault(a => a != null)) as HttpMethodAttribute;
         }
 
         /// <summary>
@@ -78,8 +78,16 @@ namespace Simple.Web.Http
         /// </returns>
         public static bool IsAppliedTo(Type type)
         {
-            var isAppliedTo = GetCustomAttribute(type, typeof (HttpMethodAttribute), true) != null || type.GetInterfaces().Select(Get).FirstOrDefault() != null;
+            var isAppliedTo = Attribute.IsDefined(type, typeof (HttpMethodAttribute), true) ||
+                              type.GetInterfaces().Any(i => Attribute.IsDefined(i, typeof(HttpMethodAttribute), false));
             return isAppliedTo;
+        }
+
+        public static bool Matches(Type type, string httpMethod)
+        {
+            var attribute = Get(type);
+            if (attribute == null) return false;
+            return attribute.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

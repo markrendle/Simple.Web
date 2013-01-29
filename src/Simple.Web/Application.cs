@@ -201,8 +201,9 @@
 
         private static RoutingTable BuildRoutingTable(string httpMethod)
         {
-            var handlerTypes = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler)
-                .Where(i => HttpMethodAttribute.Get(i).HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase))
+            var types = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler).ToList();
+            var handlerTypes = types
+                .Where(i => HttpMethodAttribute.Matches(i,httpMethod))
                 .ToArray();
 
             return new RoutingTableBuilder(handlerTypes).BuildRoutingTable();
@@ -210,7 +211,7 @@
 
         private static bool IsHttpMethodHandler(Type type)
         {
-            return (!type.IsInterface) && HttpMethodAttribute.IsAppliedTo(type);
+            return (!type.IsInterface || type.IsAbstract) && HttpMethodAttribute.IsAppliedTo(type);
         }
 
         private static RoutingTable TableFor(string httpMethod)

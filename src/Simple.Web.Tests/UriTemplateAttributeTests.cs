@@ -30,6 +30,13 @@
             Assert.Equal("/override", actual);
         }
 
+        [Fact]
+        public void SkipsMiddleBase()
+        {
+            var actual = UriTemplateAttribute.GetAllTemplates(typeof (Bottom)).Single();
+            Assert.Equal("/top/bottom", actual);
+        }
+
         [UriTemplate("/foo/")]
         [UriTemplate("/bar/")]
         public abstract class BaseTest
@@ -54,6 +61,21 @@
         public class OverrideBaseTest
         {
             
+        }
+
+        [UriTemplate("/top")]
+        public abstract class Top
+        {
+        }
+
+        public abstract class Middle : Top
+        {
+        }
+
+        [UriTemplate("/bottom")]
+        public class Bottom : Middle
+        {
+             
         }
     }
 }
