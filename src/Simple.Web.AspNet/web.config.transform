@@ -10,7 +10,7 @@
   <system.webServer>
     <!-- Comment this for running in VS2010 Dev Server -->
     <handlers>
-      <add name="Simple.Web" path="*" verb="*" type="Fix.AspNet.FixHttpHandler"/>
+      <add name="Fix.AspNet" path="*" verb="*" type="Fix.AspNet.FixHttpHandler"/>
     </handlers>
   </system.webServer>
 </configuration>
