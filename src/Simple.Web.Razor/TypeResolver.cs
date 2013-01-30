@@ -8,17 +8,10 @@ namespace Simple.Web.Razor
 
     internal class TypeResolver
     {
-        private static readonly string[] ExcludedReferencesOnMono =
-            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
-
-        private static readonly Func<Assembly, bool> IsValidAssembly = an =>
-            !an.IsDynamic
-                && ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
-
         internal static readonly IEnumerable<Assembly> DefaultAssemblies =
             SimpleRazorConfiguration.NamespaceImports.Where(ni => ni.Value != null)
                                     .Select(ni => ni.Value)
-                                    .Where(an => TypeResolver.IsValidAssembly(an))
+                                    .Where(an => !an.IsDynamic)
                                     .GroupBy(an => an.Location)
                                     .Select(an => an.First())
                                     .ToArray();
@@ -26,7 +19,7 @@ namespace Simple.Web.Razor
         internal static readonly IEnumerable<Assembly> KnownAssemblies =
             AppDomain.CurrentDomain.GetAssemblies()
                      .Where(an =>
-                         IsValidAssembly(an) &&
+                         !an.IsDynamic &&
                             !DefaultAssemblies.Any(
                                      da => an.Location.Equals(da.Location, StringComparison.InvariantCultureIgnoreCase)))
                                      .ToArray();

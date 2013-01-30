@@ -20,6 +20,12 @@
         private static readonly IDictionary<String, String> CompilerProperties =
             new Dictionary<String, String> { { "CompilerVersion", "v4.0" } };
 
+        private static readonly string[] ExcludedReferencesOnMono =
+            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
+
+        private static readonly Func<Assembly, bool> IsValidReference = an =>
+                ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
+
         public Type CreateType(TextReader reader)
         {
             return CreateTypeImpl(reader);
@@ -63,6 +69,7 @@
             compilerParameters.ReferencedAssemblies.AddRange(
                 TypeResolver.DefaultAssemblies
                 .Union(declarationAssemblies)
+                .Where(an => IsValidReference(an))
                 .Select(an => an.Location).ToArray());
 
             return compilerParameters;
