@@ -93,7 +93,7 @@
                 handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
             }
 
-            var task = PipelineFunctionFactory.Get(handlerInfo)(context);
+            var task = PipelineFunctionFactory.Get(handlerInfo.HandlerType, handlerInfo.HttpMethod)(context, handlerInfo);
             return task ?? MakeCompletedTask();
         }
 
