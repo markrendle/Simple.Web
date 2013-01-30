@@ -12,116 +12,79 @@
     using System.Web.Razor;
     using System.Web.Razor.Parser.SyntaxTree;
     using Engine;
+    using System.Reflection;
 
     [BuildProviderAppliesTo(BuildProviderAppliesTo.Web | BuildProviderAppliesTo.Code)]
     public class SimpleRazorBuildProvider : BuildProvider
     {
-        internal static readonly string[] DefaultNamespaceImports = new[]
-                                                                       {
-                                                                           "System", "System.Text", "System.Linq",
-                                                                           "System.Collections.Generic", "Simple.Web", "Simple.Web.Razor"
-                                                                       };
-        private CodeCompileUnit _generatedCode;
-        private RazorEngineHost _host;
+        private readonly RazorCodeLanguage _codeLanguage;
+        private readonly CompilerType _compilerType;
+        private readonly RazorEngineHost _host;
         private readonly IList _virtualPathDependencies;
+        private readonly string _typeName;
 
-    	public SimpleRazorBuildProvider()
-    	{
-    		_virtualPathDependencies = null;
-    	}
+        private CodeCompileUnit _generatedCode;
 
-    	internal RazorEngineHost Host
+        public SimpleRazorBuildProvider()
         {
-            get { return _host ?? (_host = CreateHost()); }
-    		set { _host = value; }
+            this._codeLanguage = new CSharpRazorCodeLanguage();
+            this._compilerType = GetDefaultCompilerTypeForLanguage(this._codeLanguage.LanguageName);
+            this._host = new SimpleRazorEngineHost(this._codeLanguage);
+            this._virtualPathDependencies = null;
+            this._typeName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", this._host.DefaultNamespace, "Foot");
         }
 
-        // Returns the base dependencies and any dependencies added via AddVirtualPathDependencies
         public override ICollection VirtualPathDependencies
         {
             get
             {
-            	return _virtualPathDependencies != null 
-					? ArrayList.ReadOnly(_virtualPathDependencies) 
-					: base.VirtualPathDependencies;
+                return _virtualPathDependencies != null
+                    ? ArrayList.ReadOnly(_virtualPathDependencies)
+                    : base.VirtualPathDependencies;
             }
-        }
-
-        public new string VirtualPath
-        {
-            get { return base.VirtualPath; }
         }
 
         public override CompilerType CodeCompilerType
         {
             get
             {
-                EnsureGeneratedCode();
-                CompilerType compilerType = GetDefaultCompilerTypeForLanguage(Host.CodeLanguage.LanguageName);
-                return compilerType;
+                return _compilerType;
             }
         }
 
         public override Type GetGeneratedType(CompilerResults results)
         {
-            return results.CompiledAssembly.GetType(String.Format(CultureInfo.CurrentCulture, "{0}.{1}", Host.DefaultNamespace, "Foot"));
-        }
-
-        internal CodeCompileUnit GeneratedCode
-        {
-            get
-            {
-                EnsureGeneratedCode();
-                return _generatedCode;
-            }
-            set { _generatedCode = value; }
+            return results.CompiledAssembly.GetType(this._typeName);
         }
 
         public override void GenerateCode(AssemblyBuilder assemblyBuilder)
         {
+            if (this._generatedCode == null)
+            {
+                this._generatedCode = GenerateCode();
+            }
+
             assemblyBuilder.AddAssemblyReference(typeof(SimpleWeb).Assembly);
             assemblyBuilder.AddAssemblyReference(typeof(SimpleTemplateBase).Assembly);
-            assemblyBuilder.AddCodeCompileUnit(this, GeneratedCode);
-            assemblyBuilder.GenerateTypeFactory(String.Format(CultureInfo.InvariantCulture, "{0}.{1}", Host.DefaultNamespace, "Foot"));
+            assemblyBuilder.AddCodeCompileUnit(this, this._generatedCode);
+            assemblyBuilder.GenerateTypeFactory(this._typeName);
         }
 
-        protected internal virtual TextReader InternalOpenReader()
+        private CodeCompileUnit GenerateCode()
         {
-            return OpenReader();
-        }
-
-        private RazorEngineHost CreateHost()
-        {
-            var host = new SimpleRazorEngineHost(new CSharpRazorCodeLanguage())
-                {
-                    DefaultBaseClass = "SimpleTemplateBase",
-                    DefaultClassName = "SimpleView",
-                    DefaultNamespace = "SimpleRazor",
-                };
-            foreach (string nameSpace in DefaultNamespaceImports)
+            var engine = new RazorTemplateEngine(this._host);
+            GeneratorResults results;
+            using (TextReader reader = OpenReader())
             {
-                host.NamespaceImports.Add(nameSpace);
+                results = engine.GenerateCode(reader); //, className: null, rootNamespace: null, sourceFileName: Host.PhysicalPath);
             }
 
-            return host;
-        }
-
-        private void EnsureGeneratedCode()
-        {
-            if (_generatedCode == null)
+            if (!results.Success)
             {
-                var engine = new RazorTemplateEngine(Host);
-                GeneratorResults results;
-                using (TextReader reader = InternalOpenReader())
-                {
-                    results = engine.GenerateCode(reader);//, className: null, rootNamespace: null, sourceFileName: Host.PhysicalPath);
-                }
-                if (!results.Success)
-                {
-                    throw CreateExceptionFromParserError(results.ParserErrors.Last(), VirtualPath);
-                }
-                _generatedCode = results.GeneratedCode;
+                throw CreateExceptionFromParserError(results.ParserErrors.Last(), VirtualPath);
             }
+
+            return results.GeneratedCode;
         }
 
         private static HttpParseException CreateExceptionFromParserError(RazorError error, string virtualPath)

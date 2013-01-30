@@ -8,12 +8,35 @@ namespace Simple.Web.Razor
 
     internal class TypeResolver
     {
-        public readonly HashSet<Assembly> KnownGoodAssemblies = new HashSet<Assembly>();
+        private static readonly string[] ExcludedReferencesOnMono =
+            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
+
+        private static readonly Func<Assembly, bool> IsValidAssembly = an =>
+            !an.IsDynamic
+                && ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
+
+        internal static readonly IEnumerable<Assembly> DefaultAssemblies =
+            SimpleRazorConfiguration.NamespaceImports.Where(ni => ni.Value != null)
+                                    .Select(ni => ni.Value)
+                                    .Where(an => TypeResolver.IsValidAssembly(an))
+                                    .GroupBy(an => an.Location)
+                                    .Select(an => an.First())
+                                    .ToArray();
+
+        internal static readonly IEnumerable<Assembly> KnownAssemblies =
+            AppDomain.CurrentDomain.GetAssemblies()
+                     .Where(an =>
+                         IsValidAssembly(an) &&
+                            !DefaultAssemblies.Any(
+                                     da => an.Location.Equals(da.Location, StringComparison.InvariantCultureIgnoreCase)))
+                                     .ToArray();
+
+        private readonly HashSet<Assembly> _knownGoodAssemblies = new HashSet<Assembly>();
         private readonly ConcurrentDictionary<string, Type> _typeCache = new ConcurrentDictionary<string, Type>();
 
         public Type FindType(string typeName)
         {
-            return _typeCache.GetOrAdd(typeName, FindTypeImpl);
+            return this._typeCache.GetOrAdd(typeName, FindTypeImpl);
         }
 
         private Type FindTypeImpl(string typeName)
@@ -28,28 +51,29 @@ namespace Simple.Web.Razor
 
         private Type ResolveType(Assembly startAssembly, string typeName, bool ignoreCase)
         {
-            return _typeCache.GetOrAdd(typeName, t => ResolveTypeImpl(startAssembly, t, ignoreCase));
+            return this._typeCache.GetOrAdd(typeName, t => this.ResolveTypeImpl(startAssembly, t, ignoreCase));
         }
 
         private Type ResolveTypeImpl(Assembly startAssembly, string typeName, bool ignoreCase)
         {
             Type modelType = null;
+
             if (startAssembly != null)
             {
                 modelType = startAssembly.GetType(typeName, false, ignoreCase);
                 if (modelType != null) return modelType;
             }
 
-            if (KnownGoodAssemblies.Any(assembly => (modelType = FindTypeInAssembly(assembly, typeName)) != null))
+            if (this._knownGoodAssemblies.Any(assembly => (modelType = FindTypeInAssembly(assembly, typeName)) != null))
             {
                 return modelType;
             }
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in TypeResolver.DefaultAssemblies.Union(KnownAssemblies))
             {
                 if ((modelType = FindTypeInAssembly(assembly, typeName)) != null)
                 {
-                    KnownGoodAssemblies.Add(assembly);
+                    this._knownGoodAssemblies.Add(assembly);
                     return modelType;
                 }
             }
@@ -60,12 +84,16 @@ namespace Simple.Web.Razor
         private Type FindTypeInAssembly(Assembly assembly, string typeName)
         {
             var type = assembly.GetType(typeName);
+
             if (type != null) return type;
-            for (int i = 0; i < RazorTypeBuilder.DefaultNamespaceImports.Length; i++)
+
+            foreach (var ns in SimpleRazorConfiguration.NamespaceImports.Select(x => x.Key).Distinct())
             {
-                type = assembly.GetType(RazorTypeBuilder.DefaultNamespaceImports[i] + "." + typeName);
+                type = assembly.GetType(ns + "." + typeName);
+
                 if (type != null) return type;
             }
+
             return null;
         }
     }
