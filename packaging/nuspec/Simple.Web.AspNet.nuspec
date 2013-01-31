@@ -14,7 +14,7 @@
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="Simple.Web" version="0.0.0.0" />
-      <dependency id="Fix.AspNet" version="0.2" />
+      <dependency id="Fix.AspNet" version="0.3" />
     </dependencies>
   </metadata>
   <files>

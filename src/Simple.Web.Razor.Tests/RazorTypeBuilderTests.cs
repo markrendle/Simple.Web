@@ -30,7 +30,7 @@ namespace Simple.Web.Razor.Tests
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
-            Assert.Equal(typeof (TestModel), genericArguments[0]);
+            Assert.Equal(typeof(TestModel), genericArguments[0]);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Simple.Web.Razor.Tests
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
-            Assert.Equal(typeof (TestHandler), genericArguments[0]);
+            Assert.Equal(typeof(TestHandler), genericArguments[0]);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Simple.Web.Razor.Tests
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
-            Assert.Equal(typeof (IEnumerable<TestModel>), genericArguments[0]);
+            Assert.Equal(typeof(IEnumerable<TestModel>), genericArguments[0]);
         }
     }
 
@@ -81,9 +81,9 @@ namespace Simple.Web.Razor.Tests
 
     public class SuperTestModel : TestModel
     {
-        
+
     }
-    
+
     public class TestJustHandler
     {
         public string Text { get; set; }
