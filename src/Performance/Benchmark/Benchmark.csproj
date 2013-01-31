@@ -7,24 +7,19 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358}</ProjectGuid>
+    <ProjectGuid>{152D7995-8CE2-4EDB-BD22-5349D07F63D8}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sandbox</RootNamespace>
-    <AssemblyName>Sandbox</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Benchmark</RootNamespace>
+    <AssemblyName>Benchmark</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>4.0</OldToolsVersion>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -45,33 +40,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.0.3.2.10\lib\net40\Fix.dll</HintPath>
+    <Reference Include="Fix">
+      <HintPath>..\..\packages\Fix.0.3.2.10\lib\net40\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.AspNet.0.3.2.10\lib\net40\Fix.AspNet.dll</HintPath>
-    </Reference>
-    <Reference Include="JsonFx">
-      <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
+    <Reference Include="Fix.AspNet">
+      <HintPath>..\..\packages\Fix.AspNet.0.3.2.10\lib\net40\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\AspNetRazor.Core.2.0.20126.16343\lib\net40\System.Web.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -79,74 +63,36 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.0.1566\lib\xunit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="about.html" />
-    <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.7.1.js" />
-    <Content Include="Scripts\jquery-1.7.1.min.js" />
-    <Content Include="secure.html" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
+    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GetModel.cs" />
-    <Compile Include="Models\Form.cs" />
-    <Compile Include="GetForm.cs" />
-    <Compile Include="GetHello.cs" />
-    <Compile Include="GetIndex.cs" />
-    <Compile Include="LoginForm.cs" />
-    <Compile Include="LoginPost.cs" />
-    <Compile Include="Models\Login.cs" />
-    <Compile Include="Models\SubmitData.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="StartupTasks\AppStart.cs" />
-    <Compile Include="StartupTasks\SetPublicFolders.cs" />
-    <Compile Include="PostForm.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
-      <Project>{266d3482-c95c-4b2f-b7ea-f08f849084d3}</Project>
-      <Name>Simple.Web.AspNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
-      <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
-      <Name>Simple.Web.Razor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
-      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
-      <Name>Simple.Web</Name>
-    </ProjectReference>
+    <Compile Include="GetObject.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Form.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Submit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Public\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\LoginForm.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Model.cshtml" />
+    <ProjectReference Include="..\..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
+      <Project>{266d3482-c95c-4b2f-b7ea-f08f849084d3}</Project>
+      <Name>Simple.Web.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Simple.Web.JsonNet\Simple.Web.JsonNet.csproj">
+      <Project>{6dce0964-3bf0-4185-ac6e-1f8b97908601}</Project>
+      <Name>Simple.Web.JsonNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Simple.Web\Simple.Web.csproj">
+      <Project>{903c289d-4cae-4259-80da-79d74ce06dce}</Project>
+      <Name>Simple.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -161,9 +107,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>80</DevelopmentServerPort>
+          <DevelopmentServerPort>20181</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2502/</IISUrl>
+          <IISUrl>http://localhost:18965/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -173,8 +119,7 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Condition="$(MSBuildProgramFiles32) == ''" Project="$(SolutionDir).nuget\nuget.targets" />
-  <Import Condition="$(MSBuildProgramFiles32) != ''" Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

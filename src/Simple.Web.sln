@@ -78,6 +78,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7DD7CF
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance", "{27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Performance\Benchmark\Benchmark.csproj", "{152D7995-8CE2-4EDB-BD22-5349D07F63D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -328,6 +332,16 @@ Global
 		{10C175C4-B495-4A2F-96C1-4B4B0F9181BB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{10C175C4-B495-4A2F-96C1-4B4B0F9181BB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{10C175C4-B495-4A2F-96C1-4B4B0F9181BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -348,5 +362,6 @@ Global
 		{10C175C4-B495-4A2F-96C1-4B4B0F9181BB} = {71E6E108-5645-45D1-B128-E6225253924D}
 		{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
 		{85A04371-B382-4DCE-A173-7BEF7960BD19} = {2EA3D337-D73D-4470-85E2-9AD037F202D6}
+		{152D7995-8CE2-4EDB-BD22-5349D07F63D8} = {27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}
 	EndGlobalSection
 EndGlobal

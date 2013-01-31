@@ -88,7 +88,10 @@
             if (!found) return null;
 
             variables = matchData.Variables;
-            if (matchData.Single != null) return matchData.Single.HandlerType;
+            if (matchData.Single != null)
+            {
+                return matchData.Single.HandlerType;
+            }
 
             return matchData.ResolveByMediaTypes(contentType, acceptTypes);
         }

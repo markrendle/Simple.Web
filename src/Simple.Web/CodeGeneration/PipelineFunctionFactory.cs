@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 using Simple.Web.Behaviors.Implementations;
 
 namespace Simple.Web.CodeGeneration
@@ -16,6 +17,14 @@ namespace Simple.Web.CodeGeneration
     {
         private static readonly IDictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>> RunMethodCache = 
                                     new Dictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>>();
+        private static readonly ICollection RunMethodCacheCollection;
+
+        static PipelineFunctionFactory()
+        {
+            var cache = new Dictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>>();
+            RunMethodCache = cache;
+            RunMethodCacheCollection = cache;
+        }
 
         private readonly Type _handlerType;
         private readonly ParameterExpression _context;
@@ -25,23 +34,32 @@ namespace Simple.Web.CodeGeneration
 
         public static Func<IContext, HandlerInfo, Task> Get(Type handlerType, string httpMethod)
         {
-            if (!RunMethodCache.ContainsKey(handlerType))
+            IDictionary<string, Func<IContext, HandlerInfo, Task>> handlerCache;
+            if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
             {
-                lock (RunMethodCache)
+                lock (RunMethodCacheCollection.SyncRoot)
                 {
-                    if (!RunMethodCache.ContainsKey(handlerType))
+                    if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
                     {
-                        RunMethodCache.Add(handlerType, new Dictionary<string, Func<IContext, HandlerInfo, Task>>());
-                    }
-
-                    if (!RunMethodCache[handlerType].ContainsKey(httpMethod))
-                    {
-                        RunMethodCache[handlerType].Add(httpMethod, new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod));
+                        var asyncRunMethod = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
+                        handlerCache = new Dictionary<string, Func<IContext, HandlerInfo, Task>>
+                            {
+                                {httpMethod, asyncRunMethod}
+                            };
+                        RunMethodCache.Add(handlerType, handlerCache);
+                        return asyncRunMethod;
                     }
                 }
             }
 
-            return RunMethodCache[handlerType][httpMethod];
+            // It's not really worth all the locking palaver here, worst case scenario the AsyncRunMethod gets built more than once.
+            Func<IContext, HandlerInfo, Task> method;
+            if (!handlerCache.TryGetValue(httpMethod, out method))
+            {
+                method = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
+                handlerCache[httpMethod] = method;
+            }
+            return method;
         }
 
         public PipelineFunctionFactory(Type handlerType)
