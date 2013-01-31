@@ -15,8 +15,7 @@
     Layout = ""~/Views/Layouts/SimpleLayout.cshtml"";
 }<p>@Model.Text</p>";
 
-            const string Expected = @"<!DOCTYPE html><html><head><title>Simple Layout Page</title></head><body><p>Test Text</p>
-</body></html>";
+            const string Expected = @"<!DOCTYPE html><html><head><title>Simple Layout Page</title></head><body><p>Test Text</p></body></html>";
 
             Type type;
             using (var reader = new StringReader(TemplateText))
@@ -29,7 +28,7 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, writer.ToString().Trim());
+            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
         }
 
         [Fact]
@@ -42,8 +41,7 @@
     ViewBag.Title = ""Custom Layout Title"";
 }<p>@Model.Text</p>";
 
-            const string Expected = @"<!DOCTYPE html><html><head><title>Custom Layout Title</title></head><body><p>Test Text</p>
-</body></html>";
+            const string Expected = @"<!DOCTYPE html><html><head><title>Custom Layout Title</title></head><body><p>Test Text</p></body></html>";
 
             Type type;
             using (var reader = new StringReader(TemplateText))
@@ -56,7 +54,7 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, writer.ToString().Trim());
+            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
         }
 
         [Fact]
@@ -69,8 +67,7 @@
     ViewBag.Title = @Handler.Title;
 }<p>@Model.Text</p>";
 
-            const string Expected = @"<!DOCTYPE html><html><head><title>Foo</title></head><body><p>Test Text</p>
-</body></html>";
+            const string Expected = @"<!DOCTYPE html><html><head><title>Foo</title></head><body><p>Test Text</p></body></html>";
 
             Type type;
             using (var reader = new StringReader(TemplateText))
@@ -83,12 +80,17 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, writer.ToString().Trim());
+            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
         }
 
         public class HandlerStub
         {
             public string Title { get; set; }
+        }
+
+        private string CleanseForComparison(string result)
+        {
+            return result.Trim().Replace("\n", "").Replace("\r", "");
         }
     }
 }
