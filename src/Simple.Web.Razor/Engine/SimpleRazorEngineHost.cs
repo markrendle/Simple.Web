@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Simple.Web.Razor.Engine
+﻿namespace Simple.Web.Razor.Engine
 {
     using System.Web.Razor;
     using System.Web.Razor.Generator;

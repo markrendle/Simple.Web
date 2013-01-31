@@ -6,11 +6,11 @@ namespace Simple.Web.Razor
 
     internal static class SimpleRazorConfiguration
     {
-        internal const string BaseClass = "SimpleTemplateBase";
-
         internal const string ClassName = "SimpleView";
 
         internal const string Namespace = "SimpleRazor";
+
+        internal static readonly string BaseClass = typeof(SimpleTemplateBase).FullName;
 
         internal static readonly IDictionary<string, Assembly> NamespaceImports = new Dictionary<string, Assembly>()
         {

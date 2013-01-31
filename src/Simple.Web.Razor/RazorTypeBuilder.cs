@@ -15,7 +15,7 @@
 
     internal class RazorTypeBuilder
     {
-        internal const string TempAssemblyPrefix = "SimpleView_";
+        private const string TempAssemblyPrefix = "SimpleView_";
 
         private static readonly IDictionary<String, String> CompilerProperties =
             new Dictionary<String, String> { { "CompilerVersion", "v4.0" } };
@@ -38,10 +38,9 @@
             var compilerParameters = CreateCompilerParameters(ref reader, assemblyName);
             var engine = CreateRazorTemplateEngine();
             var razorResult = engine.GenerateCode(reader);
-            var compilerResults = CompileView(razorResult, compilerParameters);
-            var assembly = compilerResults.CompiledAssembly;
+            var viewType = CompileView(razorResult, compilerParameters);
 
-            return assembly.GetExportedTypes().FirstOrDefault();
+            return viewType;
         }
 
         private static RazorTemplateEngine CreateRazorTemplateEngine()
@@ -75,7 +74,7 @@
             return compilerParameters;
         }
 
-        private static CompilerResults CompileView(GeneratorResults razorResult, CompilerParameters compilerParameters)
+        private static Type CompileView(GeneratorResults razorResult, CompilerParameters compilerParameters)
         {
             var codeProvider = new CSharpCodeProvider(CompilerProperties);
             var result = codeProvider.CompileAssemblyFromDom(compilerParameters, razorResult.GeneratedCode);
@@ -92,12 +91,14 @@
                 throw new RazorCompilerException("Unable to load template assembly.");
             }
 
-            if (assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassName) == null)
+            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassName);
+
+            if (type == null)
             {
                 throw new RazorCompilerException("Unable to load template assembly.");
             }
 
-            return result;
+            return type;
         }
 
         private static IEnumerable<Assembly> FindDeclarationAssemblies(ref TextReader reader)

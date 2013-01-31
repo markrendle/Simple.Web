@@ -12,7 +12,6 @@
     using System.Web.Razor;
     using System.Web.Razor.Parser.SyntaxTree;
     using Engine;
-    using System.Reflection;
 
     [BuildProviderAppliesTo(BuildProviderAppliesTo.Web | BuildProviderAppliesTo.Code)]
     public class SimpleRazorBuildProvider : BuildProvider
