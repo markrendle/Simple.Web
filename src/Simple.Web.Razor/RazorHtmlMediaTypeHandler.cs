@@ -10,6 +10,11 @@
     [MediaTypes(MediaType.Html, MediaType.XHtml)]
     public class RazorHtmlMediaTypeHandler : IMediaTypeHandler
     {
+        private static readonly Func<SimpleTemplateBase, bool> HasLayout = stb => !String.IsNullOrWhiteSpace(stb.Layout);
+
+        private static readonly RazorViews _razorViews = new RazorViews();
+        private static readonly DynamicDictionary<string> _viewBag = new DynamicDictionary<string>();
+
         public object Read(Stream inputStream, Type inputType)
         {
             throw new NotImplementedException();
@@ -17,10 +22,9 @@
 
         public Task Write(IContent content, Stream outputStream)
         {
-            var razorViews = new RazorViews();
             var handlerType = content.Handler != null ? content.Handler.GetType() : null;
             var modelType = content.Model != null ? content.Model.GetType() : null;
-            var viewType = razorViews.GetViewType(handlerType, modelType);
+            var viewType = _razorViews.GetViewType(handlerType, modelType);
 
             if (viewType == null)
             {
@@ -39,12 +43,38 @@
 
         internal static void RenderView(IContent content, TextWriter textWriter, Type viewType)
         {
-            var instance = (SimpleTemplateBase) Activator.CreateInstance(viewType);
-            instance.SetHandler(content.Handler);
-            instance.SetModel(content.Model);
+            var view = InflateType(viewType, content.Handler, content.Model, null);
 
-            instance.Writer = textWriter;
+            var hasLayout = HasLayout(view);
+            var output = view.Output;
+
+            while (hasLayout)
+            {
+                var parentType = _razorViews.GetViewType(view.Layout);
+                var parentView = InflateType(parentType, null, null, output);
+
+                output = parentView.Output;
+
+                if (!HasLayout(parentView))
+                {
+                    break;
+                }
+            }
+
+            textWriter.Write(output);
+        }
+
+        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model, string childOutput = null)
+        {
+            var instance = (SimpleTemplateBase)Activator.CreateInstance(viewType);
+
+            instance.SetChildOutput(childOutput);
+            instance.SetViewBag(_viewBag);
+            instance.SetHandler(handler);
+            instance.SetModel(model);
             instance.Execute();
+
+            return instance;
         }
     }
 }

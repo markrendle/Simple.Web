@@ -9,7 +9,7 @@
         public SimpleCSharpRazorCodeGenerator(string className, string rootNamespaceName, string sourceFileName, RazorEngineHost host)
             : base(className, rootNamespaceName, sourceFileName, host)
         {
-            var baseType = new CodeTypeReference("SimpleTemplateModelBase<dynamic>");
+            var baseType = new CodeTypeReference(SimpleRazorConfiguration.BaseClass);
             Context.GeneratedClass.BaseTypes.Clear();
             Context.GeneratedClass.BaseTypes.Add(baseType);
         }

@@ -1,40 +1,30 @@
-﻿using Simple.Web.Helpers;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
     using System;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
     using System.Threading;
     using System.Web.Razor;
-    using Engine;
+
     using Microsoft.CSharp;
+
+    using Simple.Web.Razor.Engine;
 
     internal class RazorTypeBuilder
     {
-        internal static readonly string[] DefaultNamespaceImports = new[]
-                                                                       {
-                                                                           "System", "System.Text", "System.Linq",
-                                                                           "System.Collections.Generic", "Simple.Web"
-                                                                       };
+        private const string TempAssemblyPrefix = "SimpleView_";
 
-        private static readonly IDictionary<String, String> CompilerProperties = new Dictionary<String, String>
-                                                                                {{ "CompilerVersion","v4.0" }};
+        private static readonly IDictionary<String, String> CompilerProperties =
+            new Dictionary<String, String> { { "CompilerVersion", "v4.0" } };
 
-        private static readonly bool IsMono = Type.GetType("Mono.Runtime") != null;
+        private static readonly string[] ExcludedReferencesOnMono =
+            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
 
-        private static readonly string[] ExcludeReferencesForMono = new[]
-                                                                       {
-                                                                           "System", "System.Core", "Microsoft.CSharp",
-                                                                           "mscorlib"
-                                                                       };
-
-        private static readonly TypeResolver TypeResolver = new TypeResolver();
+        private static readonly Func<Assembly, bool> IsValidReference = an =>
+                ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
 
         public Type CreateType(TextReader reader)
         {
@@ -43,212 +33,135 @@ namespace Simple.Web.Razor
 
         private static Type CreateTypeImpl(TextReader reader)
         {
+            var assemblyName = Path.Combine(Path.GetTempPath(), string.Format("{0}{1}.dll", RazorTypeBuilder.TempAssemblyPrefix, Guid.NewGuid().ToString("N")));
+
+            var compilerParameters = CreateCompilerParameters(ref reader, assemblyName);
             var engine = CreateRazorTemplateEngine();
-
             var razorResult = engine.GenerateCode(reader);
+            var viewType = CompileView(razorResult, compilerParameters);
 
-            var compilerParameters = CreateCompilerParameters();
-
-            var compilerResults = CompileView(razorResult, compilerParameters);
-
-            CheckForErrors(compilerResults);
-
-            var assembly = compilerResults.CompiledAssembly;
-            return assembly.GetExportedTypes().FirstOrDefault();
+            return viewType;
         }
 
         private static RazorTemplateEngine CreateRazorTemplateEngine()
         {
             var language = new CSharpRazorCodeLanguage();
-            var host = new SimpleRazorEngineHost(language)
-                           {
-                               DefaultBaseClass = "SimpleTemplateBase",
-                               DefaultClassName = "SimpleView",
-                               DefaultNamespace = "SimpleRazor",
-                           };
-            foreach (string nameSpace in DefaultNamespaceImports)
-            {
-                host.NamespaceImports.Add(nameSpace);
-            }
+            var host = new SimpleRazorEngineHost(language);
             var engine = new RazorTemplateEngine(host);
+
             return engine;
         }
 
-        private static CompilerParameters CreateCompilerParameters()
+        private static CompilerParameters CreateCompilerParameters(ref TextReader reader, string outputAssemblyName)
         {
-            var assemblies = CreateAssembliesList();
+            var compilerParameters =
+                new CompilerParameters()
+                {
+                    GenerateExecutable = false,
+                    GenerateInMemory = true,
+                    TreatWarningsAsErrors = false,
+                    OutputAssembly = outputAssemblyName
+                };
 
-            var compilerParameters = new CompilerParameters()
-                                        {
-                                            GenerateExecutable = false,
-                                            GenerateInMemory = true,
-                                            TreatWarningsAsErrors = false
-                                        };
+            var declarationAssemblies = FindDeclarationAssemblies(ref reader);
 
-            compilerParameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
+            compilerParameters.ReferencedAssemblies.AddRange(
+                TypeResolver.DefaultAssemblies
+                .Union(declarationAssemblies)
+                .Where(an => IsValidReference(an))
+                .Select(an => an.Location).ToArray());
 
             return compilerParameters;
         }
 
-        private static CompilerResults CompileView(GeneratorResults razorResult, CompilerParameters compilerParameters)
+        private static Type CompileView(GeneratorResults razorResult, CompilerParameters compilerParameters)
         {
             var codeProvider = new CSharpCodeProvider(CompilerProperties);
+            var result = codeProvider.CompileAssemblyFromDom(compilerParameters, razorResult.GeneratedCode);
 
-            return codeProvider.CompileAssemblyFromDom(compilerParameters, razorResult.GeneratedCode);
-        }
-
-        private static void CheckForErrors(CompilerResults compilerResults)
-        {
-            var errors = compilerResults
-                .Errors
-                .Cast<CompilerError>()
-                .Where(x => !x.IsWarning)
-                .ToList();
-
-            if (errors.Count > 0)
+            if (result.Errors != null && result.Errors.HasErrors)
             {
-                throw new RazorCompilerException(errors);
-            }
-        }
-
-        private static IEnumerable<string> CreateAssembliesList() {
-			var assemblies = new List<string>
-                                 {
-                                     typeof(SimpleWeb).Assembly.Location,
-                                     Assembly.GetExecutingAssembly().Location,
-                                     Assembly.GetCallingAssembly().Location,
-                                     typeof (Enumerable).Assembly.Location,
-                                     typeof (Uri).Assembly.Location,
-                                     typeof (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException).Assembly.Location
-                                 };
-
-            assemblies.AddRange(TypeResolver.KnownGoodAssemblies.Select(knownGoodAssembly => knownGoodAssembly.Location));
-
-            assemblies.AddRange(
-                AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(an =>
-                        (!an.GlobalAssemblyCache) 
-                        && (!an.IsDynamic) 
-                        && an.EscapedCodeBase != null)
-                    .Select(an => an.Location));
-
-            if (IsMono)
-            {
-                assemblies.RemoveAll(an => ExcludeReferencesForMono.Any(ea => an.Contains(ea)));
+                throw new RazorCompilerException(result.Errors.OfType<CompilerError>().Where(x => !x.IsWarning));
             }
 
-            return assemblies
-                .Distinct();
-        }
+            var assembly = Assembly.LoadFrom(compilerParameters.OutputAssembly);
 
-        internal static Type ExtractType(ref TextReader reader, string directive)
-        {
-            Type modelType = null;
-            using (var writer = new StringWriter())
+            if (assembly == null)
             {
-                while (reader.Peek() > -1)
-                {
-                    var line = reader.ReadLine();
-                    if (line != null && line.Trim().StartsWith(directive))
-                    {
-                        modelType = FindTypeFromRazorLine(line, directive);
-                    }
-                    else
-                    {
-                        writer.WriteLine(line);
-                    }
-                }
-
-                reader = new StringReader(writer.ToString());
+                throw new RazorCompilerException("Unable to load template assembly.");
             }
-            return modelType;
+
+            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassName);
+
+            if (type == null)
+            {
+                throw new RazorCompilerException("Unable to load template assembly.");
+            }
+
+            return type;
         }
 
-        private static Type FindTypeFromRazorLine(string line, string directive)
+        private static IEnumerable<Assembly> FindDeclarationAssemblies(ref TextReader reader)
         {
-            string typeName = line.Replace(directive, "").Trim();
+            Type model;
+            Type handler;
 
-            return TypeResolver.FindType(typeName);
+            CreateDeclarationTypes(ref reader, out handler, out model);
+
+            return GetNormalizedAssemblies(
+                new Type[] { model, handler }
+                    .Concat(model != null && model.IsGenericType ? model.GetGenericArguments() : new Type[0]).ToArray())
+                    .GroupBy(an => an.Location)
+                    .Select(an => an.First())
+                    .ToArray();
         }
 
-        internal Type CreateType(TextReader reader, Type handlerType, Type modelType)
+        private static IEnumerable<Assembly> GetNormalizedAssemblies(params Type[] types)
         {
-            TypeHelper.ExtractType(ref reader, "@model");
-            TypeHelper.ExtractType(ref reader, "@handler");
-            return CreateTypeImpl(reader);
+            return from type in types where type != null select type.Assembly;
+        }
+
+        private static void CreateDeclarationTypes(ref TextReader reader, out Type handlerType, out Type modelType)
+        {
+            modelType = TypeHelper.ExtractType(ref reader, "@model");
+            handlerType = TypeHelper.ExtractType(ref reader, "@handler");
         }
     }
 
-    static class TypeHelper
+    internal static class TypeHelper
     {
         private static readonly TypeResolver TypeResolver = new TypeResolver();
+
         internal static Type ExtractType(ref TextReader reader, string directive)
         {
-            Type modelType = null;
+            Type type = null;
+
             using (var writer = new StringWriter())
             {
                 while (reader.Peek() > -1)
                 {
                     var line = reader.ReadLine();
-                    if (line != null && line.Trim().StartsWith(directive))
+                    if (type == null && line != null && line.Trim().StartsWith(directive))
                     {
-                        modelType = FindTypeFromRazorLine(line, directive);
+                        type = FindTypeFromRazorLine(line, directive);
                     }
-                    else
-                    {
-                        writer.WriteLine(line);
-                    }
+
+                    writer.WriteLine(line);
                 }
+
 
                 using (Interlocked.CompareExchange(ref reader, new StringReader(writer.ToString()), reader))
                 {
                 }
             }
-            return modelType;
-        }
 
-        internal static Type DecideBaseType(Type handlerType, Type modelType)
-        {
-            if (handlerType == null)
-            {
-                if (modelType == null)
-                {
-                    return typeof(SimpleTemplateBase);
-                }
-                return typeof(SimpleTemplateModelBase<>).MakeGenericType(modelType);
-            }
-            if (modelType == null)
-            {
-                return typeof(SimpleTemplateHandlerBase<>).MakeGenericType(handlerType);
-            }
-
-            return typeof(SimpleTemplateHandlerModelBase<,>).MakeGenericType(handlerType, modelType);
+            return type;
         }
 
         private static Type FindTypeFromRazorLine(string line, string directive)
         {
-            string typeName = line.Replace(directive, "").Trim();
-            return TypeResolver.FindType(typeName);
-        }
-    }
-
-    public class RazorCompilerException : Exception
-    {
-        private readonly List<CompilerError> _errors;
-
-        public RazorCompilerException(List<CompilerError> errors)
-        {
-            _errors = errors;
-        }
-
-        public ReadOnlyCollection<CompilerError> Errors
-        {
-            get { return _errors.AsReadOnly(); }
-        }
-
-        public override string Message
-        {
-            get { return string.Join(Environment.NewLine, _errors); }
+            string typeName = line.Replace(directive, string.Empty).Trim();
+            return TypeHelper.TypeResolver.FindType(typeName);
         }
     }
 }

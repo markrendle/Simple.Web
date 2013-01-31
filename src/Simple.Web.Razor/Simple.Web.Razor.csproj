@@ -33,28 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20505.0\lib\net40\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20505.0\lib\net40\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20505.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20505.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\AspNetWebStack\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -74,19 +58,17 @@
     <Compile Include="Engine\SimpleCSharpCodeParser.cs" />
     <Compile Include="Engine\SimpleRazorEngineHost.cs" />
     <Compile Include="PreApplicationStartCode.cs" />
+    <Compile Include="RazorCompilerException.cs" />
+    <Compile Include="SimpleRazorConfiguration.cs" />
     <Compile Include="RazorHtmlMediaTypeHandler.cs" />
     <Compile Include="RazorTypeBuilder.cs" />
     <Compile Include="RazorViews.cs" />
     <Compile Include="SimpleRazorBuildProvider.cs" />
     <Compile Include="SimpleTemplateBase.cs" />
-    <Compile Include="SimpleWebPageRazorHost.cs" />
-    <Compile Include="SimpleWebRazorHostFactory.cs" />
     <Compile Include="TypeNameTranslator.cs" />
     <Compile Include="TypeResolver.cs" />
+    <Compile Include="DynamicDictionary.cs" />
     <Compile Include="ViewNotFoundException.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

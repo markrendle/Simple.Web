@@ -12,25 +12,32 @@ namespace Simple.Web.Razor
 
     internal class RazorViews
     {
+        private const string FileExtension = "cshtml";
+
         private static readonly object LockObject = new object();
         private static volatile bool _initialized;
         private static readonly Dictionary<string, Type> ViewPathCache = new Dictionary<string, Type>();
-        private static readonly Dictionary<Tuple<Type,Type>, Type> HandlerAndModelTypeCache = new Dictionary<Tuple<Type, Type>, Type>();
+        private static readonly Dictionary<Tuple<Type, Type>, Type> HandlerAndModelTypeCache = new Dictionary<Tuple<Type, Type>, Type>();
         private static readonly Dictionary<Type, Type> HandlerTypeCache = new Dictionary<Type, Type>();
         private static readonly Dictionary<Type, Type> ModelTypeCache = new Dictionary<Type, Type>();
-        private static readonly HashSet<Tuple<Type,Type>> AmbiguousHandlerAndModelTypes = new HashSet<Tuple<Type, Type>>();
+        private static readonly HashSet<Tuple<Type, Type>> AmbiguousHandlerAndModelTypes = new HashSet<Tuple<Type, Type>>();
         private static readonly HashSet<Type> AmbiguousHandlerTypes = new HashSet<Type>();
         private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>();
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
 
         private static readonly string AppRoot = AssemblyAppRoot(typeof(RazorViews).Assembly.GetPath());
 
-    	public static string AssemblyAppRoot(string typePath)
-    	{
-            return Path.GetDirectoryName(typePath).Regex(@"(\\|/)bin(\\|/)?([Dd]ebug|[Rr]elease)?$", string.Empty);
-    	}
+        private static Func<string, string> FileTokenizer = file =>
+            Path.Combine(
+                file.StartsWith("~/") ? Path.GetDirectoryName(file.Substring(2)) : Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, ""),
+                Path.GetFileNameWithoutExtension(file));
 
-    	public static void Initialize()
+        public static string AssemblyAppRoot(string typePath)
+        {
+            return Path.GetDirectoryName(typePath).Regex(@"(\\|/)bin(\\|/)?([Dd]ebug|[Rr]elease)?$", string.Empty);
+        }
+
+        public static void Initialize()
         {
             ClearCaches();
 
@@ -59,19 +66,19 @@ namespace Simple.Web.Razor
 
         private static void FindViews(string directory)
         {
-            foreach (var file in Directory.GetFiles(directory, "*.cshtml"))
+            foreach (var file in Directory.GetFiles(directory, String.Format("*.{0}", FileExtension)))
             {
                 using (var reader = new StreamReader(file))
                 {
                     try
                     {
                         var type = RazorTypeBuilder.CreateType(reader);
-                    	if (type == null) throw new Exception("Type returned was null (internal server error?)");
-                    	CachePageType(type, file);
+                        if (type == null) throw new Exception("Type returned was null (internal server error?)");
+                        CachePageType(type, file);
                     }
                     catch (RazorCompilerException ex)
                     {
-						Debug.WriteLine("*** View compile failed for "+file+": "+ex.Message);
+                        Debug.WriteLine("*** View compile failed for " + file + ": " + ex.Message);
                         Trace.TraceError(ex.Message);
                     }
                 }
@@ -83,18 +90,18 @@ namespace Simple.Web.Razor
             }
         }
 
-    	static void CachePageType(Type type, string file)
-    	{
-    		var token = Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, "");
-    		ViewPathCache.Add(Path.Combine(token, Path.GetFileNameWithoutExtension(file)), type);
-    		if (!CacheViewTypeByHandlerAndModelType(type))
-    		{
-    			CacheViewTypeByModelType(type);
-    			CacheViewTypeByHandlerType(type);
-    		}
-    	}
+        static void CachePageType(Type type, string file)
+        {
+            var token = FileTokenizer(file);
+            ViewPathCache.Add(token, type);
+            if (!CacheViewTypeByHandlerAndModelType(type))
+            {
+                CacheViewTypeByModelType(type);
+                CacheViewTypeByHandlerType(type);
+            }
+        }
 
-    	private static void CacheViewTypeByModelType(Type type)
+        private static void CacheViewTypeByModelType(Type type)
         {
             var baseType = type.BaseType;
 
@@ -252,7 +259,7 @@ namespace Simple.Web.Razor
 
             return TryGetHandlerType(handlerType.BaseType, modelType, out type);
         }
-        
+
         private static bool TryGetHandlerType(Type[] handlerTypeInterfaces, out Type type)
         {
             if (handlerTypeInterfaces == null || handlerTypeInterfaces.Length == 0)
@@ -262,8 +269,8 @@ namespace Simple.Web.Razor
             }
 
             var q = from @interface in handlerTypeInterfaces
-                       where HandlerTypeCache.ContainsKey(@interface)
-                       select HandlerTypeCache[@interface];
+                    where HandlerTypeCache.ContainsKey(@interface)
+                    select HandlerTypeCache[@interface];
             var list = q.ToList();
             if (list.Count == 1)
             {
@@ -326,13 +333,16 @@ namespace Simple.Web.Razor
         public Type GetViewType(string viewPath)
         {
             if (viewPath == null) throw new ArgumentNullException("viewPath");
+
             InitializeIfNot();
-            if (viewPath.EndsWith(".cshtml")) viewPath = Path.GetFileNameWithoutExtension(viewPath);
-            var key = Path.Combine("Views", viewPath);
+
+            var key = FileTokenizer(viewPath);
+
             if (!ViewPathCache.ContainsKey(key))
             {
                 Initialize();
             }
+
             return ViewPathCache[key];
         }
     }
