@@ -53,8 +53,6 @@
     <Compile Include="HandlerInfoTests.cs" />
     <Compile Include="GetHandlerTests.cs" />
     <Compile Include="LinkHelperTests.cs" />
-    <Compile Include="RoutingTableBuilderTests.cs" />
-    <Compile Include="RoutingTableTests.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>

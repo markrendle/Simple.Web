@@ -12,144 +12,112 @@
     /// </summary>
     internal class RoutingTable
     {
-        private const int MaximumGroupCount = 64;
-        private readonly ConcurrentDictionary<string, IList<HandlerTypeInfo>> _staticPaths =
-            new ConcurrentDictionary<string, IList<HandlerTypeInfo>>(StringComparer.OrdinalIgnoreCase);
+        private readonly MatcherCollection _matchers = new MatcherCollection();
+        private readonly Dictionary<string, IMatcher> _statics = new Dictionary<string, IMatcher>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly List<SortedList<Regex, IList<HandlerTypeInfo>>> _dynamicPaths;
-
-        internal RoutingTable()
+        public void Add(string template, Type type)
         {
-            _dynamicPaths = new List<SortedList<Regex, IList<HandlerTypeInfo>>>(GenerateEmptyLists());
+            Add(template, new HandlerTypeInfo(type));
         }
 
-        /// <summary>
-        /// Gets the type of handler for the specified URL.
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <param name="variables">The values of the variables from the URI template.</param>
-        /// <returns></returns>
-        public Type Get(string url, out IDictionary<string,string[]> variables)
+        public void Add(string template, HandlerTypeInfo type)
         {
-            variables = null;
-            var types = GetTypesForStatic(url) ??
-                GetTypesForDynamic(url, out variables);
-
-            try
+            var matchers = _matchers;
+            var parts = template.Trim('/').Split(new[] {'/'});
+            if (parts.Length == 0)
             {
-                return types == null ? null : types.Single().HandlerType;
+                return;
             }
-            catch (InvalidOperationException) // i.e. there's more than one...
+            IMatcher matcher;
+            if (_statics.ContainsKey(parts[0]))
             {
-                return null;
+                matcher = _statics[parts[0]];
             }
-        }
-
-        /// <summary>
-        /// Gets the type of handler for the specified URL.
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <param name="contentType">Value of the Content-Type header from the Request.</param>
-        /// <param name="acceptTypes">Values of the Accepts header from the Request.</param>
-        /// <param name="variables">The variables.</param>
-        /// <returns></returns>
-        public Type Get(string url, string contentType, IList<string> acceptTypes, out IDictionary<string, string[]> variables)
-        {
-            variables = null;
-            var types = GetTypesForStatic(url) ??
-                GetTypesForDynamic(url, out variables);
-
-            if (types == null) return null;
-            var typeArray = types.ToArray();
-            if (typeArray.Length == 1 && CheckMediaTypes(typeArray[0], contentType, acceptTypes))
+            else if (matchers.Contains(parts[0]))
             {
-                return typeArray[0].HandlerType;
-            }
-            var typeInfo = typeArray.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWith(acceptTypes))
-                           ?? typeArray.SingleOrDefault(t => t.RespondsToAll && t.RespondsWith(acceptTypes))
-                           ?? typeArray.SingleOrDefault(t => t.RespondsTo(contentType) && t.RespondsWithAll)
-                           ?? typeArray.SingleOrDefault(t => t.RespondsToAll && t.RespondsWithAll);
-            if (typeInfo == null) return null;
-            return typeInfo.HandlerType;
-        }
-
-        private static bool CheckMediaTypes(HandlerTypeInfo typeInfo, string contentType, IEnumerable<string> acceptTypes)
-        {
-            return (typeInfo.RespondsToAll || typeInfo.RespondsTo(contentType))
-                   &&
-                   (typeInfo.RespondsWithAll || typeInfo.RespondsWith(acceptTypes));
-        }
-
-        private IEnumerable<HandlerTypeInfo> GetTypesForStatic(string url)
-        {
-            url = url.TrimEnd('/');
-            if (_staticPaths.ContainsKey(url))
-            {
-                return _staticPaths[url];
-            }
-            return null;
-        }
-
-        private IEnumerable<HandlerTypeInfo> GetTypesForDynamic(string url, out IDictionary<string, string[]> variables)
-        {
-            for (int i = 0; i < MaximumGroupCount; i++)
-            {
-                if (_dynamicPaths[i].Count == 0) continue;
-
-                var entry = _dynamicPaths[i].FirstOrDefault(t => t.Key.IsMatch(url));
-                if (entry.Key == null)
-                {
-                    continue;
-                }
-
-                variables = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-                var match = entry.Key.Match(url);
-                foreach (var groupName in entry.Key.GetGroupNames())
-                {
-                    if (groupName == "0") continue;
-                    variables.Add(groupName, new[] {match.Groups[groupName].Value});
-                }
-                return entry.Value;
-            }
-            variables = null;
-            return null;
-        }
-
-        internal void Add(string uriTemplate, Type handlerType)
-        {
-            Add(uriTemplate, new HandlerTypeInfo(handlerType));
-        }
-
-        internal void Add(string uriTemplate, HandlerTypeInfo handlerType)
-        {
-            uriTemplate = uriTemplate.TrimEnd('/');
-            if (uriTemplate.Contains("{"))
-            {
-                var regex = new Regex("^" + Regex.Replace(uriTemplate, "{([^}]*)}", "(?<$1>[^/]*)") + "/?$", RegexOptions.IgnoreCase);
-                _dynamicPaths[regex.GetGroupNames().Length].Add(regex, new[] {handlerType});
+                matcher = matchers[parts[0]];
             }
             else
             {
-                var list = _staticPaths.GetOrAdd(uriTemplate, _ => new List<HandlerTypeInfo>());
-                list.Add(handlerType);
+                matcher = MatcherFactory.Create(parts[0]);
+                if (matcher is StaticMatcher)
+                {
+                    _statics.Add(parts[0], matcher);
+                }
+                else
+                {
+                    matchers.Add(matcher);
+                }
             }
-        }
 
-        internal IEnumerable<Type> GetAllTypes()
-        {
-            return _staticPaths.Values.SelectMany(list => list.Select(eti => eti.HandlerType))
-                .Concat(_dynamicPaths.SelectMany(l => l.Values.SelectMany(t => t)).Select(e => e.HandlerType))
-                .Distinct();
-        }
-
-        private static IEnumerable<SortedList<Regex, IList<HandlerTypeInfo>>> GenerateEmptyLists()
-        {
-            var regexTermComparer =
-                new Helpers.Comparer<Regex>(
-                    (regex, regex1) => StringComparer.OrdinalIgnoreCase.Compare(regex.ToString(), regex1.ToString()));
-            for (int i = 0; i < MaximumGroupCount; i++)
+            if (parts.Length == 1)
             {
-                yield return new SortedList<Regex, IList<HandlerTypeInfo>>(regexTermComparer);
+                matcher.AddTypeInfo(type);
+                return;
+            }
+
+            matcher.Add(parts, 1, 0).AddTypeInfo(type);
+        }
+
+        /// <summary>
+        /// Gets the type of handler for the specified URL.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="variables">The variables.</param>
+        /// <param name="contentType">Value of the Content-Type header from the Request.</param>
+        /// <param name="acceptTypes">Values of the Accepts header from the Request.</param>
+        /// <returns></returns>
+        public Type Get(string url, out IDictionary<string, string> variables, string contentType = null, IList<string> acceptTypes = null)
+        {
+            variables = null;
+            url = url.Trim('/');
+            int nextIndex = url.IndexOf('/');
+            string part = nextIndex >= 0 ? url.Substring(0, nextIndex) : url;
+            IMatcher matcher;
+            var matchData = new MatchData();
+            bool found = false;
+            if (_statics.TryGetValue(part, out matcher))
+            {
+                found = matcher.Match(part, url, nextIndex, matchData);
+            }
+            if (!found)
+            {
+                found = _matchers.Aggregate(false, (current, t) => t.Match(part, url, nextIndex, matchData) || current);
+            }
+
+            if (!found) return null;
+
+            variables = matchData.Variables;
+            if (matchData.Single != null) return matchData.Single.HandlerType;
+
+            return matchData.ResolveByMediaTypes(contentType, acceptTypes);
+        }
+
+        public HashSet<Type> GetAllTypes()
+        {
+            var set = new HashSet<Type>();
+            AddSub(set, _statics.Values);
+            AddSub(set, _matchers);
+            return set;
+        }
+
+        private void AddSub(HashSet<Type> set, IEnumerable<IMatcher> matchers)
+        {
+            foreach (var matcher in matchers)
+            {
+                if (matcher.Items != null)
+                {
+                    foreach (var typeInfo in matcher.Items)
+                    {
+                        set.Add(typeInfo.HandlerType);
+                    }
+                }
+                AddSub(set, matcher.Matchers);
+                var matcherBase = matcher as MatcherBase;
+                if (matcherBase != null)
+                {
+                    AddSub(set, matcherBase.StaticMatchers);
+                }
             }
         }
     }

@@ -83,18 +83,23 @@
                 return MakeCompletedTask();
             }
 
-            IDictionary<string, string[]> variables;
-            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, context.Request.GetContentType(), context.Request.GetAccept(), out variables);
+            IDictionary<string, string> variables;
+            var handlerType = TableFor(context.Request.HttpMethod).Get(context.Request.Url.AbsolutePath, out variables, context.Request.GetContentType(), context.Request.GetAccept());
             if (handlerType == null) return null;
             var handlerInfo = new HandlerInfo(handlerType, variables, context.Request.HttpMethod);
 
             foreach (var key in context.Request.QueryString.Keys.Where(k => !string.IsNullOrWhiteSpace(k)))
             {
-                handlerInfo.Variables.Add(key, context.Request.QueryString[key]);
+                handlerInfo.Variables.Add(key, CombineQueryStringValues(context.Request.QueryString[key]));
             }
 
             var task = PipelineFunctionFactory.Get(handlerInfo.HandlerType, handlerInfo.HttpMethod)(context, handlerInfo);
             return task ?? MakeCompletedTask();
+        }
+
+        private static string CombineQueryStringValues(string[] values)
+        {
+            return values.Length == 1 ? values[0] : string.Join("\t", values);
         }
 
         private static Task MakeCompletedTask()

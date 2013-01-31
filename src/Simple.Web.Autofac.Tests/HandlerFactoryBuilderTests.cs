@@ -22,9 +22,9 @@ namespace Simple.Web.Autofac.Tests
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
 
             var actual = (TestHandler)actualFunc(
-                new Dictionary<string, string[]>
+                new Dictionary<string, string>
                     {
-                        { "TestProperty", new[] { "Foo" } }
+                        { "TestProperty", "Foo" }
                     }).Handler;
 
             Assert.Equal(Status.OK, actual.Get());
@@ -43,7 +43,7 @@ namespace Simple.Web.Autofac.Tests
             var actualFunc = target.BuildHandlerBuilder(typeof(GenericTestHandler));
 
             var actual = (GenericTestHandler)actualFunc(
-                new Dictionary<string, string[]>
+                new Dictionary<string, string>
                     {
                         { "TestProperty", null }
                     }).Handler;
@@ -67,7 +67,7 @@ namespace Simple.Web.Autofac.Tests
             var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
 
             TestHandler handler;
-            using (var scopedHandler = actualFunc(new Dictionary<string, string[]>()))
+            using (var scopedHandler = actualFunc(new Dictionary<string, string>()))
             {
                 handler = (TestHandler)scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);

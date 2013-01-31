@@ -10,8 +10,8 @@ namespace Simple.Web.CodeGeneration
 
     sealed class PropertySetterBuilder
     {
-        private static readonly MethodInfo DictionaryContainsKeyMethod = typeof(IDictionary<string, string[]>).GetMethod("ContainsKey", new[] { typeof(string) });
-        private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string[]>).GetProperty("Item");
+        private static readonly MethodInfo DictionaryContainsKeyMethod = typeof(IDictionary<string, string>).GetMethod("ContainsKey", new[] { typeof(string) });
+        private static readonly PropertyInfo DictionaryIndexerProperty = typeof(IDictionary<string, string>).GetProperty("Item");
 
         private readonly ParameterExpression _param;
         private readonly Expression _obj;
@@ -58,7 +58,7 @@ namespace Simple.Web.CodeGeneration
             var name = Expression.Constant(_property.Name, typeof(string));
             _containsKey = Expression.Call(_param, DictionaryContainsKeyMethod, name);
             _nameProperty = Expression.Property(_obj, _property);
-            _itemProperty = Expression.ArrayIndex(Expression.Property(_param, DictionaryIndexerProperty, name), Expression.Constant(0));
+            _itemProperty = Expression.Property(_param, DictionaryIndexerProperty, name);
         }
 
         private CatchBlock CreateCatchBlock()

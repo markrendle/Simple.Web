@@ -12,7 +12,7 @@
         {
             var target = new HandlerBuilderFactory(new Configuration());
             var actualFunc = target.BuildHandlerBuilder(typeof (ParameterlessConstructorType));
-            var actual = actualFunc(new Dictionary<string, string[]>());
+            var actual = actualFunc(new Dictionary<string, string>());
             Assert.IsType<ParameterlessConstructorType>(actual.Handler);
         }
 
@@ -21,7 +21,7 @@
         {
             var target = new HandlerBuilderFactory(new Configuration());
             var actualFunc = target.BuildHandlerBuilder(typeof (NoParameterlessConstructorType));
-            Assert.Throws<InvalidOperationException>(() => actualFunc(new Dictionary<string, string[]>()));
+            Assert.Throws<InvalidOperationException>(() => actualFunc(new Dictionary<string, string>()));
         }
     }
 

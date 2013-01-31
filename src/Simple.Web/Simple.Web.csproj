@@ -192,9 +192,16 @@
     <Compile Include="RegexGenericResolverAttribute.cs" />
     <Compile Include="RespondsToAttribute.cs" />
     <Compile Include="RespondsWithAttribute.cs" />
+    <Compile Include="Routing\IMatcher.cs" />
+    <Compile Include="Routing\MatchData.cs" />
+    <Compile Include="Routing\MatcherBase.cs" />
+    <Compile Include="Routing\MatcherCollection.cs" />
+    <Compile Include="Routing\MatcherFactory.cs" />
     <Compile Include="Routing\RoutingException.cs" />
     <Compile Include="Routing\RoutingTable.cs" />
     <Compile Include="Routing\RoutingTableBuilder.cs" />
+    <Compile Include="Routing\SingleValueMatcher.cs" />
+    <Compile Include="Routing\StaticMatcher.cs" />
     <Compile Include="SimpleWeb.cs" />
     <Compile Include="Hosting\StartupTaskRunner.cs" />
     <Compile Include="Status.cs" />
@@ -211,7 +218,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent></PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <Import Condition="$(MSBuildProgramFiles32) == ''" Project="$(SolutionDir).nuget\nuget.targets" />
   <Import Condition="$(MSBuildProgramFiles32) != ''" Project="$(SolutionDir)\.nuget\nuget.targets" />

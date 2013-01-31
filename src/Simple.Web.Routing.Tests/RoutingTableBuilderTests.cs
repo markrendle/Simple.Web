@@ -50,8 +50,9 @@
         {
             var builder = new RoutingTableBuilder(typeof(IGet));
             var table = builder.BuildRoutingTable();
-            Assert.Contains(typeof(GetThingConstraint<Entity>), table.GetAllTypes());
-            Assert.Contains(typeof(GetThingConstraint<Exorcist>), table.GetAllTypes());
+            var allTypes = table.GetAllTypes();
+            Assert.Contains(typeof(GetThingConstraint<Entity>), allTypes);
+            Assert.Contains(typeof(GetThingConstraint<Exorcist>), allTypes);
         }
 
         [Fact]
@@ -59,8 +60,8 @@
         {
             var builder = new RoutingTableBuilder(typeof (IGet));
             var table = builder.BuildRoutingTable();
-            IDictionary<string, string[]> variables;
-            var actual = table.Get("/spaceship", "", new[] {"image/png"}, out variables);
+            IDictionary<string, string> variables;
+            var actual = table.Get("/spaceship", out variables, "", new[] {"image/png"});
             Assert.Equal(typeof(GetSpaceshipImage), actual);
         }
 
@@ -69,8 +70,8 @@
         {
             var builder = new RoutingTableBuilder(typeof(IGet));
             var table = builder.BuildRoutingTable();
-            IDictionary<string, string[]> variables;
-            var actual = table.Get("/spaceship", "", new[] { "*/*" }, out variables);
+            IDictionary<string, string> variables;
+            var actual = table.Get("/spaceship", out variables, "", new[] { "*/*" });
             Assert.Equal(typeof(GetSpaceship), actual);
         }
 
@@ -79,8 +80,8 @@
         {
             var builder = new RoutingTableBuilder(typeof(IGet));
             var table = builder.BuildRoutingTable();
-            IDictionary<string, string[]> variables;
-            var actual = table.Get("/spaceship", "", new string[0], out variables);
+            IDictionary<string, string> variables;
+            var actual = table.Get("/spaceship", out variables);
             Assert.Equal(typeof(GetSpaceship), actual);
         }
 
@@ -89,8 +90,8 @@
         {
             var builder = new RoutingTableBuilder(typeof (IGetAsync));
             var table = builder.BuildRoutingTable();
-            IDictionary<string, string[]> variables;
-            var actual = table.Get("/top/bottom", "", new string[0], out variables);
+            IDictionary<string, string> variables;
+            var actual = table.Get("/top/bottom", out variables, "", new string[0]);
             Assert.Equal(typeof(Bottom), actual);
         }
     }

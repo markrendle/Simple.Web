@@ -17,7 +17,7 @@ namespace Simple.Web.CodeGeneration
             _configuration = configuration;
         }
 
-        public Func<IDictionary<string, string[]>, IScopedHandler> BuildHandlerBuilder(Type type)
+        public Func<IDictionary<string, string>, IScopedHandler> BuildHandlerBuilder(Type type)
         {
             // Begin container scope
             var container = Expression.Constant(_configuration.Container);
@@ -28,7 +28,7 @@ namespace Simple.Web.CodeGeneration
             var getMethod = Expression.Call(scope, typeof(ISimpleContainerScope).GetMethod("Get").MakeGenericMethod(type));
             var instance = Expression.Variable(type);
             var construct = Expression.Assign(instance, getMethod);
-            var variables = Expression.Parameter(typeof(IDictionary<string, string[]>));
+            var variables = Expression.Parameter(typeof(IDictionary<string, string>));
             var handlerBlock = PropertySetterBuilder.MakePropertySetterBlock(type, variables, instance, construct);
 
             // Wrap handler block in IScopedHandler so we can dispose it later
@@ -44,7 +44,7 @@ namespace Simple.Web.CodeGeneration
                             };
             var scopeBlock = Expression.Block(typeof(IScopedHandler), new[] { createdInstance, scope, scopedHandler }, lines);
 
-            return Expression.Lambda<Func<IDictionary<string, string[]>, IScopedHandler>>(scopeBlock, variables).Compile();
+            return Expression.Lambda<Func<IDictionary<string, string>, IScopedHandler>>(scopeBlock, variables).Compile();
         }
     }
 }

@@ -7,8 +7,14 @@ namespace Simple.Web.Hosting
     internal sealed class HandlerTypeInfo
     {
         private readonly Type _type;
-        private readonly HashSet<string> _respondsWithTypes;
         private readonly HashSet<string> _respondsToTypes;
+        private readonly HashSet<string> _respondsWithTypes;
+        private readonly int _priority;
+
+        public int Priority
+        {
+            get { return _priority; }
+        }
 
         public HandlerTypeInfo(Type type) : this(type, null, null)
         {
@@ -17,33 +23,57 @@ namespace Simple.Web.Hosting
         public HandlerTypeInfo(Type type, IEnumerable<string> respondsToTypes, IEnumerable<string> respondsWithTypes)
         {
             _type = type;
-            _respondsWithTypes = new HashSet<string>(respondsWithTypes ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
-            _respondsToTypes = new HashSet<string>(respondsToTypes ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+            if (respondsToTypes != null)
+            {
+                _respondsToTypes = new HashSet<string>(respondsToTypes, StringComparer.OrdinalIgnoreCase);
+                if (_respondsToTypes.Count == 0) _respondsToTypes = null;
+            }
+            if (respondsWithTypes != null)
+            {
+                _respondsWithTypes = new HashSet<string>(respondsWithTypes, StringComparer.OrdinalIgnoreCase);
+                if (_respondsWithTypes.Count == 0) _respondsWithTypes = null;
+            }
         }
+
+        private HandlerTypeInfo(Type type, HashSet<string> respondsToTypes, HashSet<string> respondsWithTypes,
+                                int priority)
+        {
+            _type = type;
+            _respondsToTypes = respondsToTypes;
+            _respondsWithTypes = respondsWithTypes;
+            _priority = priority;
+        }
+
+        public int Property { get; set; }
 
         public Type HandlerType
         {
             get { return _type; }
         }
 
-        public bool RespondsWithAll
+        public bool RespondsTo(string contentType)
         {
-            get { return _respondsWithTypes.Count == 0; }
-        }
-
-        public bool RespondsWith(IEnumerable<string> contentTypes)
-        {
-            return _respondsWithTypes.Overlaps(contentTypes);
+            return _respondsToTypes != null && _respondsToTypes.Contains(contentType);
         }
 
         public bool RespondsToAll
         {
-            get { return _respondsToTypes.Count == 0; }
+            get { return _respondsToTypes == null; }
         }
 
-        public bool RespondsTo(string contentType)
+        public bool RespondsWith(string acceptType)
         {
-            return _respondsToTypes.Contains(contentType);
+            return _respondsWithTypes != null && _respondsWithTypes.Contains(acceptType);
+        }
+
+        public bool RespondsWithAll
+        {
+            get { return _respondsWithTypes == null; }
+        }
+
+        public HandlerTypeInfo SetPriority(int priority)
+        {
+            return new HandlerTypeInfo(_type, _respondsToTypes, _respondsWithTypes, priority);
         }
     }
 }

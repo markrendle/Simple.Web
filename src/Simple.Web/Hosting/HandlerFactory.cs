@@ -26,8 +26,8 @@
         private readonly HandlerBuilderFactory _handlerBuilderFactory;
 
         private readonly
-            ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string[]>, IScopedHandler>>> _builders =
-                new ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string[]>, IScopedHandler>>>();
+            ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>> _builders =
+                new ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerFactory"/> class.
@@ -49,7 +49,7 @@
             var builderDictionary = _builders.GetOrAdd(handlerInfo.HttpMethod,
                                                        _ =>
                                                        new ConcurrentDictionary
-                                                           <Type, Func<IDictionary<string, string[]>, IScopedHandler>>());
+                                                           <Type, Func<IDictionary<string, string>, IScopedHandler>>());
 
             var builder = builderDictionary.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
             var handler = builder(handlerInfo.Variables);

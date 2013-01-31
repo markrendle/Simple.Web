@@ -34,7 +34,7 @@ namespace Simple.Web.CodeGeneration
 
         private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
         {
-            if (acceptedTypes.Count == 1 && acceptedTypes[0].StartsWith("*/*"))
+            if (acceptedTypes == null || (acceptedTypes.Count == 1 && acceptedTypes[0].StartsWith("*/*")))
             {
                 mediaTypeHandler = null;
                 return false;

@@ -20,9 +20,9 @@
         public static IList<string> GetAccept(this IRequest request)
         {
             string[] accept;
-            if (request.Headers == null || !request.Headers.TryGetValue(HeaderKeys.Accept, out accept))
+            if (request.Headers == null || (!request.Headers.TryGetValue(HeaderKeys.Accept, out accept)) || accept[0] == "*/*")
             {
-                accept = MediaTypeWildcard;
+                accept = null;
             }
             else
             {
@@ -41,7 +41,7 @@
             string[] contentType;
             if (request.Headers == null || !request.Headers.TryGetValue(HeaderKeys.ContentType, out contentType))
             {
-                contentType = MediaTypeWildcard;
+                return null;
             }
             return contentType.FirstOrDefault();
         }
