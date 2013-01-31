@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
     using System.Web.Compilation;
 

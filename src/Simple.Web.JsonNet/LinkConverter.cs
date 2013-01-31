@@ -47,7 +47,7 @@
 
         internal static bool Ignore(Type type)
         {
-            return type.IsPrimitive || type.IsArray || type == typeof(string) || type == typeof(DateTime) ||
+            return type.IsPrimitive || type.IsArray || type == typeof(string) || type == typeof(Guid) || type == typeof(DateTime) ||
                    type == typeof(DateTimeOffset) || type.Name == "Nullable`1";
         }
 

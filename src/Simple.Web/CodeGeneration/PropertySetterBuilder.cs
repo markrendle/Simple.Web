@@ -47,7 +47,8 @@ namespace Simple.Web.CodeGeneration
         public static bool PropertyIsPrimitive(PropertyInfo property)
         {
             return property.PropertyType.IsPrimitive || property.PropertyType == typeof(string) ||
-                   property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(byte[]) ||
+                   property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTimeOffset) ||
+                   property.PropertyType == typeof(Guid) || property.PropertyType == typeof(byte[]) ||
                    property.PropertyType.IsEnum ||
                    (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
             
@@ -98,6 +99,15 @@ namespace Simple.Web.CodeGeneration
                                                             Expression.Convert(Expression.Call(typeof(Enum).GetMethod("Parse", new[] { typeof(Type), typeof(string), typeof(bool) }),
                                                                                                Expression.Constant(_property.PropertyType),
                                                                                                Expression.Call(_itemProperty, typeof(object).GetMethod("ToString")), Expression.Constant(true)), _property.PropertyType)),
+                                          assign), Expression.Catch(typeof(Exception), Expression.Empty()));
+            }
+            if (_property.PropertyType == typeof (Guid) || _property.PropertyType == typeof(Guid?))
+            {
+                return Expression.TryCatch( // try {
+                    Expression.IfThenElse(Expression.TypeIs(_itemProperty, typeof(string)),
+                                          Expression.Assign(_nameProperty,
+                                                            Expression.Convert(Expression.Call(typeof(Guid).GetMethod("Parse", new[] { typeof(string) }),
+                                                                                               Expression.Call(_itemProperty, typeof(object).GetMethod("ToString"))), _property.PropertyType)),
                                           assign), Expression.Catch(typeof(Exception), Expression.Empty()));
             }
             return Expression.TryCatch( // try {

@@ -23,6 +23,16 @@
             var actualFunc = target.BuildHandlerBuilder(typeof (NoParameterlessConstructorType));
             Assert.Throws<InvalidOperationException>(() => actualFunc(new Dictionary<string, string>()));
         }
+
+        [Fact]
+        public void SetsGuidPropertyCorrectly()
+        {
+            var guid = new Guid("FA37E0B4-2DB9-4471-BC6C-229748F417CA");
+            var target = new HandlerBuilderFactory(new Configuration());
+            var actualFunc = target.BuildHandlerBuilder(typeof (GuidHolder));
+            var actual = (GuidHolder)actualFunc(new Dictionary<string, string>{{"Guid",guid.ToString()}}).Handler;
+            Assert.Equal(guid, actual.Guid);
+        }
     }
 
     class NoParameterlessConstructorType
@@ -35,5 +45,9 @@
     class ParameterlessConstructorType
     {
         
+    }
+    class GuidHolder
+    {
+        public Guid? Guid { get; set; }
     }
 }

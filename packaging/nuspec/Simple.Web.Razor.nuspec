@@ -14,12 +14,18 @@
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="Simple.Web" version="0.0.0.0" />
-      <dependency id="AspNetWebPages.Core" version="2.0" />
     </dependencies>
+    <references>
+      <reference file="Simple.Web.Razor.dll" />
+      <reference file="System.Web.Mvc.dll" />
+      <reference file="System.Web.Razor.dll" />
+    </references>
   </metadata>
 
   <files>
     <file src="..\..\build\Simple.Web.Razor.dll" target="lib\net40" />
     <file src="..\..\src\Simple.Web.Razor\web.config.transform" target="content" />
+    <file src="..\..\lib\AspNetWebStack\System.Web.*" target="lib\net40\AspNetWebStack" />
+    <file src="..\..\lib\AspNetWebStack\License.txt" target="lib\net40\AspNetWebStack" />
   </files>
-</package> 
+</package>
