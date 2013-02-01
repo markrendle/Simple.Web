@@ -1,6 +1,6 @@
 <configuration>
   <system.web>
-    <compilation debug="true" targetFramework="4.0">
+    <compilation debug="true">
     </compilation>
     <!-- Uncomment this for running in VS2010 Dev Server -->
     <!--<httpHandlers>
