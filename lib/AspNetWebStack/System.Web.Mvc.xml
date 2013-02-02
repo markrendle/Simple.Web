@@ -793,14 +793,18 @@
             </summary>
         </member>
         <member name="P:System.Web.Mvc.Properties.MvcResources.DefaultControllerFactory_ControllerNameAmbiguous_WithoutRouteUrl">
-            <summary>
-              Looks up a localized string similar to Multiple types were found that match the controller named &apos;{0}&apos;. This can happen if the route that services this request does not specify namespaces to search for a controller that matches the request. If this is the case, register this route by calling an overload of the &apos;MapRoute&apos; method that takes a &apos;namespaces&apos; parameter.{2}{2}The request for &apos;{0}&apos; has found the following matching controllers:{1}.
-            </summary>
+             <summary>
+               Looks up a localized string similar to Multiple types were found that match the controller named &apos;{0}&apos;. This can happen if the route that services this request does not specify namespaces to search for a controller that matches the request. If this is the case, register this route by calling an overload of the &apos;MapRoute&apos; method that takes a &apos;namespaces&apos; parameter.
+            
+            The request for &apos;{0}&apos; has found the following matching controllers:{1}.
+             </summary>
         </member>
         <member name="P:System.Web.Mvc.Properties.MvcResources.DefaultControllerFactory_ControllerNameAmbiguous_WithRouteUrl">
-            <summary>
-              Looks up a localized string similar to Multiple types were found that match the controller named &apos;{0}&apos;. This can happen if the route that services this request (&apos;{1}&apos;) does not specify namespaces to search for a controller that matches the request. If this is the case, register this route by calling an overload of the &apos;MapRoute&apos; method that takes a &apos;namespaces&apos; parameter.{3}{3}The request for &apos;{0}&apos; has found the following matching controllers:{2}.
-            </summary>
+             <summary>
+               Looks up a localized string similar to Multiple types were found that match the controller named &apos;{0}&apos;. This can happen if the route that services this request (&apos;{1}&apos;) does not specify namespaces to search for a controller that matches the request. If this is the case, register this route by calling an overload of the &apos;MapRoute&apos; method that takes a &apos;namespaces&apos; parameter.
+            
+            The request for &apos;{0}&apos; has found the following matching controllers:{2}.
+             </summary>
         </member>
         <member name="P:System.Web.Mvc.Properties.MvcResources.DefaultControllerFactory_ErrorCreatingController">
             <summary>

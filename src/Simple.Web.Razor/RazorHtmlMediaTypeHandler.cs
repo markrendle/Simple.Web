@@ -1,6 +1,7 @@
 ﻿namespace Simple.Web.Razor
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
@@ -43,17 +44,19 @@
 
         internal static void RenderView(IContent content, TextWriter textWriter, Type viewType)
         {
-            var view = InflateType(viewType, content.Handler, content.Model, null);
+            var view = InflateType(viewType, content.Handler, content.Model);
 
             var hasLayout = HasLayout(view);
             var output = view.Output;
+            var sections = view.Sections;
 
             while (hasLayout)
             {
                 var parentType = _razorViews.GetViewType(view.Layout);
-                var parentView = InflateType(parentType, null, null, output);
+                var parentView = InflateType(parentType, null, null, output, sections);
 
                 output = parentView.Output;
+                sections = parentView.Sections;
 
                 if (!HasLayout(parentView))
                 {
@@ -64,15 +67,16 @@
             textWriter.Write(output);
         }
 
-        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model, string childOutput = null)
+        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model, string childOutput = null, IDictionary<string, string> sections = null)
         {
             var instance = (SimpleTemplateBase)Activator.CreateInstance(viewType);
 
             instance.SetChildOutput(childOutput);
+            instance.SetSections(sections);
             instance.SetViewBag(_viewBag);
             instance.SetHandler(handler);
             instance.SetModel(model);
-            instance.Execute();
+            instance.Render();
 
             return instance;
         }

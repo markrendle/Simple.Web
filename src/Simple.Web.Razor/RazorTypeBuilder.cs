@@ -15,8 +15,6 @@
 
     internal class RazorTypeBuilder
     {
-        private const string TempAssemblyPrefix = "SimpleView_";
-
         private static readonly IDictionary<String, String> CompilerProperties =
             new Dictionary<String, String> { { "CompilerVersion", "v4.0" } };
 
@@ -33,9 +31,9 @@
 
         private static Type CreateTypeImpl(TextReader reader)
         {
-            var assemblyName = Path.Combine(Path.GetTempPath(), string.Format("{0}{1}.dll", RazorTypeBuilder.TempAssemblyPrefix, Guid.NewGuid().ToString("N")));
+            var className = string.Format("{0}_{1}", SimpleRazorConfiguration.ClassPrefix, Guid.NewGuid().ToString("N"));
 
-            var compilerParameters = CreateCompilerParameters(ref reader, assemblyName);
+            var compilerParameters = CreateCompilerParameters(ref reader, className);
             var engine = CreateRazorTemplateEngine();
             var razorResult = engine.GenerateCode(reader);
             var viewType = CompileView(razorResult, compilerParameters);
@@ -52,7 +50,7 @@
             return engine;
         }
 
-        private static CompilerParameters CreateCompilerParameters(ref TextReader reader, string outputAssemblyName)
+        private static CompilerParameters CreateCompilerParameters(ref TextReader reader, string className)
         {
             var compilerParameters =
                 new CompilerParameters()
@@ -60,7 +58,7 @@
                     GenerateExecutable = false,
                     GenerateInMemory = true,
                     TreatWarningsAsErrors = false,
-                    OutputAssembly = outputAssemblyName
+                    OutputAssembly = Path.Combine(Path.GetTempPath(), string.Format("{0}.dll", className)),
                 };
 
             var declarationAssemblies = FindDeclarationAssemblies(ref reader);
@@ -88,14 +86,14 @@
 
             if (assembly == null)
             {
-                throw new RazorCompilerException("Unable to load template assembly.");
+                throw new RazorCompilerException("Unable to load view assembly.");
             }
 
-            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassName);
+            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassPrefix);
 
             if (type == null)
             {
-                throw new RazorCompilerException("Unable to load template assembly.");
+                throw new RazorCompilerException("Unable to load view assembly.");
             }
 
             return type;
