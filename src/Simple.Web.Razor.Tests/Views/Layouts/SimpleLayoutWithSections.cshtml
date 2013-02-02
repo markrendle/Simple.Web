@@ -1,0 +1,13 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Sections Layout Page</title>
+</head>
+<body>
+<h1>Section One</h1>
+@RenderSection("One", required:false)
+<p>@RenderBody()</p>
+<h1>Section Two</h1>
+@RenderSection("Two", required:true)
+</body>
+</html>

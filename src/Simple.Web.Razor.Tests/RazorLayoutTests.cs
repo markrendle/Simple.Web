@@ -2,6 +2,9 @@
 {
     using System;
     using System.IO;
+
+    using Simple.Web.TestHelpers;
+
     using Xunit;
 
     public class RazorLayoutTests
@@ -28,7 +31,7 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
+            Assert.Equal(Expected, HtmlComparison.Cleanse(writer.ToString()));
         }
 
         [Fact]
@@ -54,7 +57,7 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
+            Assert.Equal(Expected, HtmlComparison.Cleanse(writer.ToString()));
         }
 
         [Fact]
@@ -80,17 +83,12 @@
 
             RazorHtmlMediaTypeHandler.RenderView(output, writer, type);
 
-            Assert.Equal(Expected, this.CleanseForComparison(writer.ToString()));
+            Assert.Equal(Expected, HtmlComparison.Cleanse(writer.ToString()));
         }
 
         public class HandlerStub
         {
             public string Title { get; set; }
-        }
-
-        private string CleanseForComparison(string result)
-        {
-            return result.Trim().Replace("\n", "").Replace("\r", "");
         }
     }
 }

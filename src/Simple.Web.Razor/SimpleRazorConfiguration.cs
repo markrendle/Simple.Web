@@ -6,7 +6,7 @@ namespace Simple.Web.Razor
 
     internal static class SimpleRazorConfiguration
     {
-        internal const string ClassName = "SimpleView";
+        internal const string ClassPrefix = "SimpleView";
 
         internal const string Namespace = "SimpleRazor";
 
