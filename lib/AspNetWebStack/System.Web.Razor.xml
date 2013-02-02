@@ -1096,81 +1096,6 @@
               Looks up a localized string similar to In order to put a symbol back, it must have been the symbol which ended at the current position. The specified symbol ends at {0}, but the current position is {1}.
             </summary>
         </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_BackgroundThreadShutdown">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Shutdown.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_BackgroundThreadStart">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Startup.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_ChangesArrived">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] {1} changes arrived.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_ChangesDiscarded">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Discarded {1} changes.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_CollectedDiscardedChanges">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Collecting {1} discarded changes.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_Disabled">
-            <summary>
-              Looks up a localized string similar to Disabled.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_EditorProcessedChange">
-            <summary>
-              Looks up a localized string similar to [P][{0}] {3} Change in {2} milliseconds: {1}.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_EditorReceivedChange">
-            <summary>
-              Looks up a localized string similar to [P][{0}] Received Change: {1}.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_Enabled">
-            <summary>
-              Looks up a localized string similar to Enabled.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_Format">
-            <summary>
-              Looks up a localized string similar to [Razor] {0}.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_NoChangesArrived">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] no changes arrived?.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_ParseComplete">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Parse Complete in {1} milliseconds.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_QueuingParse">
-            <summary>
-              Looks up a localized string similar to [M][{0}] Queuing Parse for: {1}.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_Startup">
-            <summary>
-              Looks up a localized string similar to [Razor] Editor Tracing {0}.
-            </summary>
-        </member>
-        <member name="P:System.Web.Razor.Resources.RazorResources.Trace_TreesCompared">
-            <summary>
-              Looks up a localized string similar to [BG][{0}] Trees Compared in {1} milliseconds. Different = {2}.
-            </summary>
-        </member>
         <member name="P:System.Web.Razor.Resources.RazorResources.VBSymbol_CharacterLiteral">
             <summary>
               Looks up a localized string similar to &lt;&lt;character literal&gt;&gt;.
@@ -1230,6 +1155,9 @@
             <summary>
             Gets the 1-based index of the line referred to by this Source Location.
             </summary>
+            <remarks>
+            THIS IS 1-based!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            </remarks>
         </member>
         <member name="M:System.Web.Razor.Text.TextChange.#ctor(System.Int32,System.Int32,System.Web.Razor.Text.ITextBuffer,System.Int32,System.Web.Razor.Text.ITextBuffer)">
             <summary>

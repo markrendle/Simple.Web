@@ -8,13 +8,22 @@
     {
         public SimpleRazorEngineHost(RazorCodeLanguage codeLanguage) : base(codeLanguage)
         {
-            base.DefaultBaseClass = SimpleRazorConfiguration.BaseClass;
-            base.DefaultClassName = SimpleRazorConfiguration.ClassName;
-            base.DefaultNamespace = SimpleRazorConfiguration.Namespace;
+            this.DefaultBaseClass = SimpleRazorConfiguration.BaseClass;
+            this.DefaultClassName = SimpleRazorConfiguration.ClassPrefix;
+            this.DefaultNamespace = SimpleRazorConfiguration.Namespace;
+
+            base.GeneratedClassContext = new GeneratedClassContext(
+                executeMethodName: "Execute", 
+                writeMethodName: "Write", 
+                writeLiteralMethodName: "WriteLiteral", 
+                writeToMethodName: "WriteTo", 
+                writeLiteralToMethodName: "WriteLiteralTo",
+                templateTypeName: null,
+                defineSectionMethodName: "DefineSection");
 
             foreach (var namespaceAssembly in SimpleRazorConfiguration.NamespaceImports)
             {
-                base.NamespaceImports.Add(namespaceAssembly.Key);
+                this.NamespaceImports.Add(namespaceAssembly.Key);
             }
         }
 
