@@ -204,7 +204,7 @@
 
         private static readonly ConcurrentDictionary<string, RoutingTable> RoutingTables = new ConcurrentDictionary<string, RoutingTable>(StringComparer.OrdinalIgnoreCase);
 
-        private static RoutingTable BuildRoutingTable(string httpMethod)
+        internal static RoutingTable BuildRoutingTable(string httpMethod)
         {
             var types = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler).ToList();
             var handlerTypes = types

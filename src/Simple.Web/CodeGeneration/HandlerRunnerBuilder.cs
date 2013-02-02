@@ -199,23 +199,23 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildRunBlock()
         {
-            var methodInterface = _type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo);
-            var httpMethodAttribute = HttpMethodAttribute.Get(methodInterface);
-            var run = _type.GetMethod(httpMethodAttribute.Method);
+            var run = HttpMethodAttribute.GetMethod(_type, _httpMethod);
             var parameters = run.GetParameters();
             if (parameters.Length == 0)
             {
                 return Expression.Assign(_status, Expression.Call(_handler, run));
             }
 
-            var genericType = methodInterface.GetGenericArguments().Single();
+            var methodType = HttpMethodAttribute.GetAttributedType(_type, _httpMethod);
+
+            var genericType = methodType.GetGenericArguments().Single();
             var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(genericType);
             return Expression.Assign(_status, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
         }
 
         private Expression BuildAsyncRunBlock()
         {
-            var run = GetRunMethod();
+            var run = HttpMethodAttribute.GetMethod(_type, _httpMethod);
             var parameters = run.GetParameters();
             if (parameters.Length == 0)
             {
@@ -223,13 +223,6 @@ namespace Simple.Web.CodeGeneration
             }
             var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(parameters[0].ParameterType);
             return Expression.Assign(_task, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
-        }
-
-        private MethodInfo GetRunMethod()
-        {
-            var httpMethodAttribute = HttpMethodAttribute.Get(_type.GetInterfaces().Single(HttpMethodAttribute.IsAppliedTo));
-            var method = _type.GetMethod(httpMethodAttribute.Method);
-            return method;
         }
     }
 }

@@ -94,6 +94,19 @@
             var actual = table.Get("/top/bottom", out variables, "", new string[0]);
             Assert.Equal(typeof(Bottom), actual);
         }
+
+        [Fact]
+        public void FindsTypeWithTwoHttpInterfaces()
+        {
+            var putTable = Application.BuildRoutingTable("PUT");
+            IDictionary<string, string> variables;
+            var actualPut = putTable.Get("/dualmethod", out variables);
+            Assert.Equal(typeof(DualMethod), actualPut);
+
+            var patchTable = Application.BuildRoutingTable("PATCH");
+            var actualPatch = patchTable.Get("/dualmethod", out variables);
+            Assert.Equal(typeof(DualMethod), actualPatch);
+        }
     }
 
     [UriTemplate("/foo")]
@@ -220,6 +233,20 @@
     public class Bottom : Middle
     {
         public override Task<Status> Get()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [UriTemplate("/dualmethod")]
+    public class DualMethod : IPutAsync<Entity>, IPatchAsync<Entity>
+    {
+        public Task<Status> Put(Entity input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Status> Patch(Entity input)
         {
             throw new NotImplementedException();
         }

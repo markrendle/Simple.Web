@@ -190,12 +190,10 @@ namespace Simple.Web.CodeGeneration
 
         private MethodInfo GetRunMethod(string httpMethod)
         {
-            var httpMethodAttribute = _handlerType.GetInterfaces()
-                .Where(HttpMethodAttribute.IsAppliedTo)
-                .Select(HttpMethodAttribute.Get)
-                .Single(a => a.HttpMethod == httpMethod);
-
-            return _handlerType.GetMethod(httpMethodAttribute.Method);
+            return _handlerType.GetInterfaces()
+                               .Where(HttpMethodAttribute.IsAppliedTo)
+                               .Select(t => HttpMethodAttribute.GetMethod(t, httpMethod))
+                               .Single(a => a != null);
         }
 
         private IEnumerable<BehaviorInfo> GetSetupBehaviorInfos()

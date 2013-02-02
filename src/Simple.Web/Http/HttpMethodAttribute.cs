@@ -52,10 +52,31 @@ namespace Simple.Web.Http
         /// Gets the <see cref="HttpMethodAttribute"/> specified type.
         /// </summary>
         /// <param name="type">The type.</param>
+        /// <param name="httpMethod">The HTTP method to look for.</param>
         /// <returns><c>null</c> if the attribute does not exist.</returns>
-        public static HttpMethodAttribute Get(Type type)
+        public static HttpMethodAttribute Get(Type type, string httpMethod, bool excludeInterfaces = false)
         {
-            return (GetCustomAttribute(type, typeof(HttpMethodAttribute), true) ?? type.GetInterfaces().Select(Get).FirstOrDefault(a => a != null)) as HttpMethodAttribute;
+            var customAttribute = GetCustomAttributes(type, typeof (HttpMethodAttribute), true)
+                .Cast<HttpMethodAttribute>()
+                .FirstOrDefault(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
+            return customAttribute ?? type.GetInterfaces().Select(i => Get(i, httpMethod)).FirstOrDefault(a => a != null);
+        }
+
+        public static Type GetAttributedType(Type type, string httpMethod)
+        {
+            if (TypeHasAttribute(type, httpMethod))
+            {
+                return type;
+            }
+
+            return type.GetInterfaces().FirstOrDefault(i => TypeHasAttribute(i, httpMethod));
+        }
+
+        private static bool TypeHasAttribute(Type type, string httpMethod)
+        {
+            return GetCustomAttributes(type, typeof (HttpMethodAttribute))
+                .Cast<HttpMethodAttribute>()
+                .Any(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -63,9 +84,9 @@ namespace Simple.Web.Http
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>The value of the <see cref="Method"/> property, or <c>null</c> if the attribute is not applied to the type.</returns>
-        public static MethodInfo GetMethod(Type type)
+        public static MethodInfo GetMethod(Type type, string httpMethod)
         {
-            var attr = type.GetInterfaces().Select(Get).FirstOrDefault(a => a != null);
+            var attr = Get(type, httpMethod);
             return attr == null ? null : type.GetMethod(attr.Method);
         }
 
@@ -85,7 +106,7 @@ namespace Simple.Web.Http
 
         public static bool Matches(Type type, string httpMethod)
         {
-            var attribute = Get(type);
+            var attribute = Get(type, httpMethod);
             if (attribute == null) return false;
             return attribute.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase);
         }
