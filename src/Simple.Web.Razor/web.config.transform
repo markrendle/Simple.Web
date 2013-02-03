@@ -2,6 +2,7 @@
   <configSections />
   <appSettings>
     <add key="webPages:Enabled" value="false" />
+    <add key="ViewCache:Enabled" value="true" /> 
   </appSettings>
   <system.web>
     <compilation debug="true">

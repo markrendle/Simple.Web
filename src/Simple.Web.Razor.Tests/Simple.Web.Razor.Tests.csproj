@@ -97,10 +97,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Views\Layouts\SimpleLayoutWithSectionDuplicated.cshtml" />
-    <None Include="Views\Layouts\SimpleLayoutWithSections.cshtml" />
-    <None Include="Views\Layouts\SimpleLayoutWithTitle.cshtml" />
-    <None Include="Views\Layouts\SimpleLayout.cshtml" />
+    <None Include="Views\Layouts\SimpleLayoutWithSectionDuplicated.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\Layouts\SimpleLayoutWithSections.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\Layouts\SimpleLayoutWithTitle.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Views\Layouts\SimpleLayout.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Condition="$(MSBuildProgramFiles32) == ''" Project="$(SolutionDir).nuget\nuget.targets" />

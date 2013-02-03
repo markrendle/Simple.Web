@@ -35,7 +35,7 @@
 
             var compilerParameters = CreateCompilerParameters(ref reader, className);
             var engine = CreateRazorTemplateEngine();
-            var razorResult = engine.GenerateCode(reader);
+            var razorResult = engine.GenerateCode(reader, className, engine.Host.DefaultNamespace, null);
             var viewType = CompileView(razorResult, compilerParameters);
 
             return viewType;
@@ -59,6 +59,7 @@
                     GenerateInMemory = true,
                     TreatWarningsAsErrors = false,
                     OutputAssembly = Path.Combine(Path.GetTempPath(), string.Format("{0}.dll", className)),
+                    MainClass = className
                 };
 
             var declarationAssemblies = FindDeclarationAssemblies(ref reader);
@@ -89,7 +90,7 @@
                 throw new RazorCompilerException("Unable to load view assembly.");
             }
 
-            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + SimpleRazorConfiguration.ClassPrefix);
+            var type = assembly.GetType(SimpleRazorConfiguration.Namespace + "." + compilerParameters.MainClass);
 
             if (type == null)
             {

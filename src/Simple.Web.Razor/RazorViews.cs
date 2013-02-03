@@ -1,10 +1,10 @@
-using System.Text;
 using Simple.Web.Helpers;
 
 namespace Simple.Web.Razor
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -16,21 +16,31 @@ namespace Simple.Web.Razor
 
         private static readonly object LockObject = new object();
         private static volatile bool _initialized;
-        private static readonly Dictionary<string, Type> ViewPathCache = new Dictionary<string, Type>();
-        private static readonly Dictionary<Tuple<Type, Type>, Type> HandlerAndModelTypeCache = new Dictionary<Tuple<Type, Type>, Type>();
-        private static readonly Dictionary<Type, Type> HandlerTypeCache = new Dictionary<Type, Type>();
-        private static readonly Dictionary<Type, Type> ModelTypeCache = new Dictionary<Type, Type>();
-        private static readonly HashSet<Tuple<Type, Type>> AmbiguousHandlerAndModelTypes = new HashSet<Tuple<Type, Type>>();
-        private static readonly HashSet<Type> AmbiguousHandlerTypes = new HashSet<Type>();
-        private static readonly HashSet<Type> AmbiguousModelTypes = new HashSet<Type>();
+
+        private static readonly Dictionary<string, Func<Type>> TypeCache = new Dictionary<string, Func<Type>>();
+
+        private static readonly Dictionary<string, string> ViewPathCache = new Dictionary<string, string>();
+        private static readonly Dictionary<Tuple<string, string>, string> HandlerAndModelTypeCache = new Dictionary<Tuple<string, string>, string>();
+        private static readonly Dictionary<string, string> HandlerTypeCache = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> ModelTypeCache = new Dictionary<string, string>();
+
+        private static readonly HashSet<Tuple<string, string>> AmbiguousHandlerAndModelTypes = new HashSet<Tuple<string, string>>();
+        private static readonly HashSet<string> AmbiguousHandlerTypes = new HashSet<string>();
+        private static readonly HashSet<string> AmbiguousModelTypes = new HashSet<string>();
+
         private static readonly RazorTypeBuilder RazorTypeBuilder = new RazorTypeBuilder();
 
         private static readonly string AppRoot = AssemblyAppRoot(typeof(RazorViews).Assembly.GetPath());
 
-        private static Func<string, string> FileTokenizer = file =>
+        private static readonly bool IsViewCacheEnabled = GetViewCacheEnabled();
+
+        private static readonly Func<string, string> FileTokenizer = file =>
             Path.Combine(
                 file.StartsWith("~/") ? Path.GetDirectoryName(file.Substring(2)) : Path.GetDirectoryName(file).Replace(AppRoot + Path.DirectorySeparatorChar, ""),
                 Path.GetFileNameWithoutExtension(file));
+
+        private static readonly Func<string, string> FileFormatter =
+            prefix => string.Format("{0}.{1}", prefix, FileExtension);
 
         public static string AssemblyAppRoot(string typePath)
         {
@@ -41,9 +51,9 @@ namespace Simple.Web.Razor
         {
             ClearCaches();
 
-            const string directory = "Views";
+            const string searchPath = "Views";
 
-            var viewsDirectory = Path.Combine(AppRoot, directory);
+            var viewsDirectory = Path.Combine(AppRoot, searchPath);
 
             if (!Directory.Exists(viewsDirectory))
             {
@@ -53,35 +63,11 @@ namespace Simple.Web.Razor
             FindViews(viewsDirectory);
         }
 
-        private static void ClearCaches()
-        {
-            ViewPathCache.Clear();
-            ModelTypeCache.Clear();
-            HandlerTypeCache.Clear();
-            HandlerAndModelTypeCache.Clear();
-            AmbiguousModelTypes.Clear();
-            AmbiguousHandlerTypes.Clear();
-            AmbiguousHandlerAndModelTypes.Clear();
-        }
-
         private static void FindViews(string directory)
         {
-            foreach (var file in Directory.GetFiles(directory, String.Format("*.{0}", FileExtension)))
+            foreach (var file in Directory.GetFiles(directory, FileFormatter("*")))
             {
-                using (var reader = new StreamReader(file))
-                {
-                    try
-                    {
-                        var type = RazorTypeBuilder.CreateType(reader);
-                        if (type == null) throw new Exception("Type returned was null (internal server error?)");
-                        CachePageType(type, file);
-                    }
-                    catch (RazorCompilerException ex)
-                    {
-                        Debug.WriteLine("*** View compile failed for " + file + ": " + ex.Message);
-                        Trace.TraceError(ex.Message);
-                    }
-                }
+                GenerateViewType(file);
             }
 
             foreach (var subDirectory in Directory.GetDirectories(directory).Select(sub => Path.Combine(directory, sub)))
@@ -90,10 +76,58 @@ namespace Simple.Web.Razor
             }
         }
 
-        static void CachePageType(Type type, string file)
+        private static Type GenerateViewType(string pathname)
+        {
+            using (var reader = new StreamReader(pathname))
+            {
+                try
+                {
+                    var type = RazorTypeBuilder.CreateType(reader);
+
+                    if (TypeCache.ContainsKey(type.FullName))
+                    {
+                        throw new ArgumentException(
+                            String.Format("Duplicate generated type '{0}' is not permitted", type.FullName), pathname);
+                    }
+
+                    CachePageType(type, pathname);
+
+                    return type;
+                }
+                catch (RazorCompilerException ex)
+                {
+                    Debug.WriteLine("*** View compile failed for " + pathname + ": " + ex.Message);
+                    Trace.TraceError(ex.Message);
+                }
+            }
+
+            return null;
+        }
+
+        private static void CachePageType(Type type, string file)
         {
             var token = FileTokenizer(file);
-            ViewPathCache.Add(token, type);
+
+            TypeCache.Add(type.FullName, () => RuntimeTypeCheck(type));
+
+            if (ViewPathCache.ContainsKey(token))
+            {
+                if (!IsViewCacheEnabled)
+                {
+                    ClearCaches(ViewPathCache[token]);
+                    ViewPathCache[token] = type.FullName;
+                }
+                else
+                {
+                    throw new ArgumentException(
+                        string.Format("Unable to add duplicate view type for '{0}'.", file), "file");
+                }
+            }
+            else
+            {
+                ViewPathCache.Add(token, type.FullName);
+            }
+
             if (!CacheViewTypeByHandlerAndModelType(type))
             {
                 CacheViewTypeByModelType(type);
@@ -108,16 +142,19 @@ namespace Simple.Web.Razor
             if (!IsGeneric(baseType, typeof(SimpleTemplateModelBase<>), typeof(SimpleTemplateHandlerModelBase<,>))) return;
 
             int modelTypeIndex = baseType.GetGenericArguments().Length - 1;
+
             var modelType = baseType.GetGenericArguments()[modelTypeIndex];
-            if (AmbiguousModelTypes.Contains(modelType)) return;
-            if (ModelTypeCache.ContainsKey(modelType))
+
+            if (AmbiguousModelTypes.Contains(modelType.FullName)) return;
+
+            if (ModelTypeCache.ContainsKey(modelType.FullName))
             {
-                AmbiguousModelTypes.Add(modelType);
-                ModelTypeCache.Remove(modelType);
+                AmbiguousModelTypes.Add(modelType.FullName);
+                ModelTypeCache.Remove(modelType.FullName);
             }
             else
             {
-                ModelTypeCache.Add(modelType, type);
+                ModelTypeCache.Add(modelType.FullName, type.FullName);
             }
         }
 
@@ -128,15 +165,17 @@ namespace Simple.Web.Razor
             if (!IsGeneric(baseType, typeof(SimpleTemplateHandlerBase<>), typeof(SimpleTemplateHandlerModelBase<,>))) return;
 
             var handlerType = baseType.GetGenericArguments()[0];
-            if (AmbiguousModelTypes.Contains(handlerType)) return;
-            if (HandlerTypeCache.ContainsKey(handlerType))
+
+            if (AmbiguousModelTypes.Contains(handlerType.FullName)) return;
+
+            if (HandlerTypeCache.ContainsKey(handlerType.FullName))
             {
-                AmbiguousHandlerTypes.Add(handlerType);
-                HandlerTypeCache.Remove(handlerType);
+                AmbiguousHandlerTypes.Add(handlerType.FullName);
+                HandlerTypeCache.Remove(handlerType.FullName);
             }
             else
             {
-                HandlerTypeCache.Add(handlerType, type);
+                HandlerTypeCache.Add(handlerType.FullName, type.FullName);
             }
         }
 
@@ -147,8 +186,11 @@ namespace Simple.Web.Razor
             if (!IsGeneric(baseType, typeof(SimpleTemplateHandlerModelBase<,>))) return false;
 
             var genericArgs = baseType.GetGenericArguments();
-            var key = Tuple.Create(genericArgs[0], genericArgs[1]);
+
+            var key = Tuple.Create(genericArgs[0].FullName, genericArgs[1].FullName);
+
             if (AmbiguousHandlerAndModelTypes.Contains(key)) return false;
+
             if (HandlerAndModelTypeCache.ContainsKey(key))
             {
                 AmbiguousHandlerAndModelTypes.Add(key);
@@ -156,16 +198,20 @@ namespace Simple.Web.Razor
             }
             else
             {
-                HandlerAndModelTypeCache.Add(key, type);
+                HandlerAndModelTypeCache.Add(key, type.FullName);
             }
+
             return true;
         }
 
         private static bool IsGeneric(Type baseType, params Type[] validTypes)
         {
             if (baseType == null) return false;
+
             if (!baseType.IsGenericType) return false;
+
             var genericType = baseType.GetGenericTypeDefinition();
+
             return validTypes.Contains(genericType);
         }
 
@@ -201,16 +247,16 @@ namespace Simple.Web.Razor
                 type = null;
                 return false;
             }
-            if (AmbiguousModelTypes.Contains(modelType))
+
+            if (AmbiguousModelTypes.Contains(modelType.FullName))
             {
                 throw new AmbiguousViewException(handlerType, modelType);
             }
-            if (ModelTypeCache.ContainsKey(modelType))
+
+            if (ModelTypeCache.ContainsKey(modelType.FullName))
             {
-                {
-                    type = ModelTypeCache[modelType];
-                    return true;
-                }
+                type = TypeCache[ModelTypeCache[modelType.FullName]].Invoke();
+                return true;
             }
 
             return TryGetModelType(handlerType, modelType.BaseType, out type);
@@ -225,12 +271,12 @@ namespace Simple.Web.Razor
             }
 
             var q = from @interface in modelTypeInterfaces
-                    where ModelTypeCache.ContainsKey(@interface)
-                    select ModelTypeCache[@interface];
+                    where ModelTypeCache.ContainsKey(@interface.FullName)
+                    select ModelTypeCache[@interface.FullName];
             var list = q.ToList();
             if (list.Count == 1)
             {
-                type = list[0];
+                type = TypeCache[list[0]].Invoke();
                 return true;
             }
 
@@ -245,14 +291,16 @@ namespace Simple.Web.Razor
                 type = null;
                 return false;
             }
-            if (AmbiguousHandlerTypes.Contains(handlerType))
+
+            if (AmbiguousHandlerTypes.Contains(handlerType.FullName))
             {
                 throw new AmbiguousViewException(handlerType, modelType);
             }
-            if (HandlerTypeCache.ContainsKey(handlerType))
+
+            if (HandlerTypeCache.ContainsKey(handlerType.FullName))
             {
                 {
-                    type = HandlerTypeCache[handlerType];
+                    type = TypeCache[HandlerTypeCache[handlerType.FullName]].Invoke();
                     return true;
                 }
             }
@@ -269,16 +317,19 @@ namespace Simple.Web.Razor
             }
 
             var q = from @interface in handlerTypeInterfaces
-                    where HandlerTypeCache.ContainsKey(@interface)
-                    select HandlerTypeCache[@interface];
+                    where HandlerTypeCache.ContainsKey(@interface.FullName)
+                    select HandlerTypeCache[@interface.FullName];
+
             var list = q.ToList();
+
             if (list.Count == 1)
             {
-                type = list[0];
+                type = TypeCache[list[0]].Invoke();
                 return true;
             }
 
             type = null;
+
             return false;
         }
 
@@ -286,18 +337,17 @@ namespace Simple.Web.Razor
         {
             if (handlerType != null && modelType != null)
             {
-                var key = Tuple.Create(handlerType, modelType);
+                var key = Tuple.Create(handlerType.FullName, modelType.FullName);
 
                 if (AmbiguousHandlerAndModelTypes.Contains(key))
                 {
                     throw new AmbiguousViewException(handlerType, modelType);
                 }
+
                 if (HandlerAndModelTypeCache.ContainsKey(key))
                 {
-                    {
-                        type = HandlerAndModelTypeCache[key];
-                        return true;
-                    }
+                    type = TypeCache[HandlerAndModelTypeCache[key]].Invoke();
+                    return true;
                 }
 
                 if (handlerType.BaseType != null)
@@ -340,10 +390,87 @@ namespace Simple.Web.Razor
 
             if (!ViewPathCache.ContainsKey(key))
             {
-                Initialize();
+                return GenerateViewType(FileFormatter(key));
             }
 
-            return ViewPathCache[key];
+            return TypeCache[ViewPathCache[key]].Invoke();
+        }
+
+        private static void ClearTypesIn(IDictionary<string, string> dictionary, string typeName = null)
+        {
+            if (String.IsNullOrWhiteSpace(typeName))
+            {
+                dictionary.Clear();
+            }
+            else
+            {
+                KeyValuePair<string, string>? pair = dictionary.FirstOrDefault(x => x.Value.Equals(typeName));
+
+                if (pair != null && pair.Value.Key != null)
+                    dictionary.Remove(pair.Value.Key);
+            }
+        }
+
+        private static void ClearTypesIn(IDictionary<Tuple<string, string>, string> dictionary, string typeName = null)
+        {
+            if (String.IsNullOrWhiteSpace(typeName))
+            {
+                dictionary.Clear();
+            }
+            else
+            {
+                KeyValuePair<Tuple<string, string>, string>? pair = HandlerAndModelTypeCache.FirstOrDefault(x => x.Value.Equals(typeName));
+
+                if (pair != null && pair.Value.Key != null)
+                    HandlerAndModelTypeCache.Remove(pair.Value.Key);
+            }
+        }
+
+        private static void ClearCaches(string typeName = null)
+        {
+            ClearTypesIn(ViewPathCache, typeName);
+            ClearTypesIn(ModelTypeCache, typeName);
+            ClearTypesIn(ViewPathCache, typeName);
+            ClearTypesIn(ModelTypeCache, typeName);
+            ClearTypesIn(HandlerTypeCache, typeName);
+            ClearTypesIn(HandlerAndModelTypeCache, typeName);
+
+            AmbiguousModelTypes.RemoveWhere(x => typeName == null || x.Equals(typeName));
+            AmbiguousHandlerTypes.RemoveWhere(x => typeName == null || x.Equals(typeName));
+            AmbiguousHandlerAndModelTypes.RemoveWhere(x => typeName == null || x.Equals(typeName));
+
+            if (typeName == null)
+                TypeCache.Clear();
+            else
+                TypeCache.Remove(typeName);
+        }
+
+        private static Type RuntimeTypeCheck(Type type)
+        {
+            if (!IsViewCacheEnabled)
+            {
+                return
+                    GenerateViewType(
+                        Path.Combine(AppRoot, FileFormatter(ViewPathCache.FirstOrDefault(p => p.Value.Equals(type.FullName)).Key)));
+            }
+
+            return type;
+        }
+
+        private static bool GetViewCacheEnabled()
+        {
+            var viewCache = ConfigurationManager.AppSettings["ViewCache:Enabled"];
+
+            if (String.IsNullOrWhiteSpace(viewCache)) return true;
+
+            bool isEnabled;
+
+            if (!bool.TryParse(viewCache, out isEnabled))
+            {
+                throw new ConfigurationErrorsException("Invalid configuration value for appSetting 'ViewCache'");
+            }
+
+            return isEnabled;
         }
     }
 
