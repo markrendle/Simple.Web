@@ -135,6 +135,8 @@ task :publish => [:full] do
 	end
 
 	PublishNugets BUILD_NUMBER, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE
+
+    Rake::Task[:tag].invoke()
 end
 
 # Hidden tasks
@@ -148,6 +150,14 @@ task :init => [:clobber] do
 	Dir.mkdir RESULTS_PATH unless File.exists?(RESULTS_PATH)
 	Dir.mkdir ARTIFACTS_PATH unless File.exists?(ARTIFACTS_PATH)
 	Dir.mkdir NUGET_PATH unless File.exists?(NUGET_PATH)
+end
+
+task :tag do
+    tagupdate = `git tag -a \"v#{BUILD_NUMBER}\" -m \"Published nugets version #{BUILD_NUMBER}.\"`
+    raise "Unable to perform git tag operation (#{BUILD_NUMBER})." unless tagupdate.empty?
+
+    tagpush = `git push --tags` unless !tagupdate.empty?
+    raise "Unable to push git tag changes." unless tagpush.empty?
 end
 
 task :ci => [:package]
