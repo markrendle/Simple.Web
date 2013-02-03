@@ -18,5 +18,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\build\Simple.Web.Xml.dll" target="lib\net40" /> </files>
+    <file src="..\..\build\Simple.Web.Xml.dll" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.Xml.pdb" target="lib\net40" />
+    <file src="..\..\src\Simple.Web.Xml\**\*.cs" target="src" />
+  </files>
 </package>

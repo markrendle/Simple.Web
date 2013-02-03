@@ -19,6 +19,8 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.AspNet.dll" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.AspNet.pdb" target="lib\net40" />
+    <file src="..\..\src\Simple.Web.AspNet\**\*.cs" target="src" />
     <file src="..\..\src\Simple.Web.AspNet\web.config.transform" target="content" />
   </files>
 </package>

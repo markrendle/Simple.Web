@@ -314,6 +314,7 @@ class NuGetPackCustom < NuGetPack
     params << "-OutputDirectory \"#{output}\"" unless @output.nil?
     params << "-NoDefaultExcludes" unless !MONO
     params << "-Verbosity detailed" unless !TEAMCITY
+    params << "-Symbols"
     params << build_properties unless @properties.nil? || @properties.empty?
     
     merged_params = params.join(' ')

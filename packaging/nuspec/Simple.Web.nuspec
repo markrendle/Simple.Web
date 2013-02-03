@@ -15,5 +15,7 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.dll" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.pdb" target="lib\net40" />
+    <file src="..\..\src\Simple.Web\**\*.cs" target="src" />
   </files>
 </package> 
