@@ -153,8 +153,8 @@ task :init => [:clobber] do
 end
 
 task :tag do
-    tagupdate = `git tag -a \"v#{BUILD_NUMBER}\" -m \"Published nugets version #{BUILD_NUMBER}.\"`
-    raise "Unable to perform git tag operation (#{BUILD_NUMBER})." unless tagupdate.empty?
+    tagupdate = `git tag -a \"v#{BUILD_VERSION}\" -m \"Published nugets version #{BUILD_VERSION}.\"`
+    raise "Unable to perform git tag operation (#{BUILD_VERSION})." unless tagupdate.empty?
 
     tagpush = `git push --tags` unless !tagupdate.empty?
     raise "Unable to push git tag changes." unless tagpush.empty?
