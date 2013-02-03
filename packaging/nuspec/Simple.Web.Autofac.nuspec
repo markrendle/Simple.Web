@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.Autofac.dll" target="lib\net40" />
-    <file src="..\..\build\Simple.Web.Autofac.pdb" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.Autofac.?db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.Autofac\**\*.cs" target="src" />
   </files>
 </package>

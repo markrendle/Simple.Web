@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.JsonFx.dll" target="lib\net40" />
-    <file src="..\..\build\Simple.Web.JsonFx.pdb" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.JsonFx.?db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.JsonFx\**\*.cs" target="src" />
   </files>
 </package>
