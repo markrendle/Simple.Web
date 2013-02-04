@@ -265,6 +265,9 @@ def UpdateNuSpecVersions(nuspecs, nuspec_version)
     nuspecs.each do |nuspec|
         puts "Updating #{Pathname.new(nuspec).basename}"
         update_xml nuspec do |xml|
+            nuspec_id = xml.root.elements["metadata/id"].text
+
+            xml.root.elements["metadata/id"].text = !MONO ? nuspec_id : nuspec_id + "-mono"
             xml.root.elements["metadata/version"].text = nuspec_version
             local_dependencies = xml.root.elements["metadata/dependencies/dependency[contains(@id,'#{SOLUTION_NAME}')]"]
             local_dependencies.attributes["version"] = "#{nuspec_version}" unless local_dependencies.nil?
