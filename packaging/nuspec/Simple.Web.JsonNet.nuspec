@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.JsonNet.dll" target="lib\net40" /> 
-    <file src="..\..\build\Simple.Web.JsonNet.?db" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.JsonNet.*db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.JsonNet\**\*.cs" target="src" />
   </files>
 </package>

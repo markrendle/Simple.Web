@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file src="..\..\build\Simple.Web.StructureMap.dll" target="lib\net40" />
-    <file src="..\..\build\Simple.Web.StructureMap.?db" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.StructureMap.*db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.StructureMap\**\*.cs" target="src" />
   </files>
 </package>

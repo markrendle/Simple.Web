@@ -24,7 +24,7 @@
 
   <files>
     <file src="..\..\build\Simple.Web.Razor.dll" target="lib\net40" />
-    <file src="..\..\build\Simple.Web.Razor.?db" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.Razor.*db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.Razor\**\*.cs" target="src" />
     <file src="..\..\src\Simple.Web.Razor\web.config.transform" target="content" />
     <file src="..\..\lib\AspNetWebStack\System.Web.*" target="lib\net40\AspNetWebStack" />
