@@ -142,8 +142,8 @@ end
 # Hidden tasks
 task :init => [:clobber] do
 	if not TEAMCITY
-		indexupdate = `git update-index --assume-unchanged #{BASE_PATH}/src/CommonAssemblyInfo.cs`
-		raise "Unable to perform git index operation, cannot continue (#{indexupdate})." unless indexupdate.empty?
+        indexupdate = `git update-index --assume-unchanged #{SOURCE_PATH}/CommonAssemblyInfo.cs`
+        raise "Unable to perform git index operation, cannot continue (#{indexupdate})." unless indexupdate.empty?
 	end
 
 	Dir.mkdir BUILD_PATH unless File.exists?(BUILD_PATH)
