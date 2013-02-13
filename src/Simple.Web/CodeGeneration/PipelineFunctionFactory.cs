@@ -25,7 +25,7 @@ namespace Simple.Web.CodeGeneration
 
         public static Func<IContext, HandlerInfo, Task> Get(Type handlerType, string httpMethod)
         {
-            if (!RunMethodCache.ContainsKey(handlerType))
+            if (!RunMethodCache.ContainsKey(handlerType) || !RunMethodCache[handlerType].ContainsKey(httpMethod))
             {
                 lock (RunMethodCache)
                 {
