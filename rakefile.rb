@@ -55,7 +55,7 @@ ROOT_NAMESPACE = ""
 
 # Commands
 # XUNIT_COMMAND = "#{TOOLS_PATH}/xunit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
-XUNIT_COMMAND = "#{TOOLS_PATH}/xunit/xunit.console.clr4.exe"
+XUNIT_COMMAND = "#{TOOLS_PATH}/xUnit/xunit.console.clr4.exe"
 MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
 NUGET_COMMAND = "#{SOURCE_PATH}/.nuget/NuGet.exe"
 
