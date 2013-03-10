@@ -16,6 +16,7 @@ PLATFORM = ENV["platform"] || "x86"
 BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%H%M'))}"
 MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
 TEAMCITY = (!ENV["BUILD_NUMBER"].nil? or !ENV["TEAMCITY_BUILD_PROPERTIES_FILE"].nil?)
+TEAMCITY_BRANCH = !TEAMCITY ? nil : ENV["BRANCH"]
 
 # NuGet configuration
 NUGET_APIKEY_LOCAL = ENV["apikey_local"]
@@ -23,6 +24,10 @@ NUGET_APIURL_LOCAL = ENV["apiurl_local"]
 NUGET_APIKEY_REMOTE = ENV["apikey_remote"]
 NUGET_APIURL_REMOTE = ENV["apiurl_remote"]
 ENV["EnableNuGetPackageRestore"] = "true"
+
+# Symbol server configuration
+# SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
+# SYMBOL_APIURL_REMOTE = #ENV["symbol_remote"]
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -42,13 +47,15 @@ SOLUTION_FILE = "#{SOURCE_PATH}/Simple.Web.sln"
 VERSION_INFO = "#{BASE_PATH}/VERSION.txt"
 
 # Matching
-TEST_ASSEMBLY_PATTERN_PREFIX = ".Tests"
+TEST_ASSEMBLY_PATTERN_PREFIX = "Tests"
 TEST_ASSEMBLY_PATTERN_UNIT = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Unit"
 TEST_ASSEMBLY_PATTERN_INTEGRATION = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Integration"
 SPEC_ASSEMBLY_PATTERN = ".Specs"
+ROOT_NAMESPACE = ""
 
 # Commands
-XUNIT_COMMAND = "#{TOOLS_PATH}/xUnit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
+# XUNIT_COMMAND = "#{TOOLS_PATH}/xunit/xunit.console.clr4.#{(PLATFORM.empty? or PLATFORM.eql?('x86') ? 'x86' : '')}.exe"
+XUNIT_COMMAND = "#{TOOLS_PATH}/xunit/xunit.console.clr4.exe"
 MSPEC_COMMAND = "#{TOOLS_PATH}/mspec/mspec.exe"
 NUGET_COMMAND = "#{SOURCE_PATH}/.nuget/NuGet.exe"
 
@@ -57,6 +64,10 @@ require 'albacore'
 require 'pathname'
 require 'rake/clean'
 require 'rexml/document'
+
+# Check dependencies
+raise "You do not have the required dependencies, run '.\\InstallGem.bat' or './installgem.sh'." \
+    unless `bundle check`.include? "The Gemfile's dependencies are satisfied\n"
 
 # Configure albacore
 Albacore.configure do |config|
@@ -98,12 +109,12 @@ end
 
 desc "Build + Tests (default)"
 task :test => [:build] do
-	Rake::Task[:runtests].invoke(TEST_ASSEMBLY_PATTERN_PREFIX)
+    RunTests "#{TEST_ASSEMBLY_PATTERN_PREFIX}*"
 end
 
 desc "Build + Unit tests"
 task :quick => [:build] do
-	Rake::Task[:runtests].invoke(TEST_ASSEMBLY_PATTERN_UNIT)
+	RunTests TEST_ASSEMBLY_PATTERN_UNIT
 end
 
 desc "Build + Tests + Specs"
@@ -114,7 +125,7 @@ task :publocal => [:full] do
 	raise "Environment variable \"APIURL_LOCAL\" must be a valid nuget server url." unless !NUGET_APIURL_LOCAL.nil?
 	raise "Environment variable \"APIKEY_LOCAL\" must be that of your nuget api key." unless !NUGET_APIKEY_LOCAL.nil?
 
-	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL
+	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL, SYMBOL_APIURL_REMOTE
 end
 
 desc "Build + Tests + Specs + Package"
@@ -134,7 +145,7 @@ task :publish => [:full] do
 		raise "Publish aborted." unless response.downcase.eql?("y")
 	end
 
-	PublishNugets BUILD_NUMBER, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE
+	PublishNugets BUILD_NUMBER, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE, SYMBOL_APIURL_REMOTE
 
     Rake::Task[:tag].invoke()
 end
@@ -175,10 +186,10 @@ assemblyinfo :assemblyinfo do |asm|
 		commit = "git unavailable"
 	end
 
-	testassemblies = FileList.new("#{TESTS_PATH}/*#{TEST_ASSEMBLY_PATTERN_PREFIX}/")
+	testassemblies = FileList.new("#{TESTS_PATH}/*#{TEST_ASSEMBLY_PATTERN_PREFIX}.*/", "#{TESTS_PATH}/*#{TEST_ASSEMBLY_PATTERN_PREFIX}/")
 		.pathmap("%f")
 		.collect! { |assemblyname|
-			"[assembly: InternalsVisibleTo(\"#{assemblyname}\")]"
+			"[assembly: InternalsVisibleTo(\"#{ROOT_NAMESPACE}#{assemblyname}\")]"
 		}
 
 	asm.language = "C#"
@@ -195,15 +206,16 @@ assemblyinfo :assemblyinfo do |asm|
 	asm.com_visible = false
 end
 
-task :runtests, [:boundary] do |t, args|
-	args.with_default(:boundary => "*")
+mspec :mspec
 	
+# Helper methods
+def RunTests(boundary = "*")
 	runner = XUnitTestRunnerCustom.new(MONO ? 'mono' : XUNIT_COMMAND)
 	runner.html_output = RESULTS_PATH
 
 	assemblies = Array.new
 
-	args["boundary"].split(/,/).each do |this_boundary|
+    boundary.split(/,/).each do |this_boundary|
 		FileList.new("#{TESTS_PATH}/*#{this_boundary}")
 				.collect! { |element| 
 					FileList.new("#{element}/**/*#{this_boundary}.dll")
@@ -212,23 +224,22 @@ task :runtests, [:boundary] do |t, args|
 							assemblies.push (MONO ? "#{XUNIT_COMMAND} " : '') + this_file
 						end
 				}
+    end
 
+    if assemblies.length > 0
 		runner.assemblies = assemblies
 		runner.execute
 	end
 end
 
-mspec :mspec
-
-# Helper methods
-def PublishNugets(version, apiurl, apikey)
+def PublishNugets(version, apiurl, apikey, symbolurl)
 	PackageNugets(version)
 
 	nupkgs = FileList["#{NUGET_PATH}/*#{$version}.nupkg"]
     nupkgs.each do |nupkg| 
         puts "Pushing #{Pathname.new(nupkg).basename}"
         nuget_push = NuGetPush.new
-        nuget_push.source = "\"" + apiurl + "\""
+        nuget_push.source = "\"" + (nupkg.include?(".symbols.") ? symbolurl :  apiurl) + "\""
 		nuget_push.apikey = apikey
         nuget_push.command = NUGET_COMMAND
         nuget_push.package = (MONO ? nupkg : nupkg.gsub('/','\\'))
@@ -262,19 +273,30 @@ def UpdateNuSpecVersions(nuspecs, nuspec_version)
 	raise "No nuspecs to update." unless !nuspecs.nil?
 	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
 
+    suffix = ""
+    suffix << "-#{TEAMCITY_BRANCH}" unless (TEAMCITY_BRANCH.nil? or TEAMCITY_BRANCH.eql? "master" or TEAMCITY_BRANCH.eql? "<default>")
+    suffix << "-mono" unless !MONO
+
     nuspecs.each do |nuspec|
         puts "Updating #{Pathname.new(nuspec).basename}"
         update_xml nuspec do |xml|
             nuspec_id = xml.root.elements["metadata/id"].text
+            nuspec_mm_version = "[#{nuspec_version.split(".").first(4).join(".")}]"
 
-            xml.root.elements["metadata/id"].text = !MONO ? nuspec_id : nuspec_id + "-mono"
+            xml.root.elements["metadata/id"].text = (nuspec_id + suffix)
             xml.root.elements["metadata/version"].text = nuspec_version
-            local_dependencies = xml.root.elements["metadata/dependencies/dependency[contains(@id,'#{SOLUTION_NAME}')]"]
-            local_dependencies.attributes["version"] = "#{nuspec_version}" unless local_dependencies.nil?
             xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
             xml.root.elements["metadata/summary"].text = SOLUTION_DESC
             xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE
             xml.root.elements["metadata/projectUrl"].text = SOLUTION_URL
+			
+			xml.root.get_elements("//dependency").each { |e|
+				if e.attributes["id"].downcase.include? SOLUTION_NAME.downcase
+					e.attributes["id"] = (e.attributes["id"] + suffix)
+					e.attributes["version"] = "#{nuspec_mm_version}"
+				end
+			}
+
 			xml.root.get_elements("//file").each { |e| 
 				e.attributes["src"] = e.attributes["src"].gsub((MONO ? '\\' : '/'), (!MONO ? '\\' : '/')) 
 				e.attributes["target"] = e.attributes["target"].gsub((MONO ? '\\' : '/'), (!MONO ? '\\' : '/'))
