@@ -142,7 +142,7 @@
                     f => absolutePath.StartsWith(f.Alias + "/", StringComparison.OrdinalIgnoreCase));
                 if (folder != null)
                 {
-                    file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+                    file = SimpleWeb.Environment.PathUtility.MapPath(folder.RewriteAliasToPath(absolutePath));
                     cacheOptions = folder.CacheOptions;
                     accessControl = folder.AccessControl;
                 }

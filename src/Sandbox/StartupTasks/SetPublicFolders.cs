@@ -7,6 +7,7 @@
         public void Run(IConfiguration configuration, IWebEnvironment environment)
         {
             configuration.PublicFolders.Add("/Scripts");
+            configuration.PublicFolders.Add(new PublicFolder("/html", "/h"));
             configuration.PublicFileMappings.Add("/about", "/about.html");
             configuration.AuthenticatedFileMappings.Add("/secure", "/secure.html");
             configuration.AuthenticatedFileMappings.Add("/secure.html", "/secure.html");
