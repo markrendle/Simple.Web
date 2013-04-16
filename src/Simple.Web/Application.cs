@@ -113,6 +113,7 @@
         {
             var absolutePath = context.Request.Url.AbsolutePath;
             string file;
+            PublicFolder folder = null;
             if (SimpleWeb.Configuration.PublicFileMappings.ContainsKey(absolutePath))
             {
                 file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.PublicFileMappings[absolutePath]);
@@ -125,24 +126,35 @@
                     CheckAuthentication.Redirect(context);
                     return true;
                 }
-                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath]);
-            }
-            else if (
-                SimpleWeb.Configuration.PublicFolders.Any(
-                    folder => absolutePath.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
-            {
-                file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+                file =
+                    SimpleWeb.Environment.PathUtility.MapPath(
+                        SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath]);
             }
             else
             {
-                return false;
+                folder = SimpleWeb.Configuration.PublicFolders.FirstOrDefault(
+                    f => absolutePath.StartsWith(f.Alias + "/", StringComparison.OrdinalIgnoreCase));
+                if (folder != null)
+                {
+                    file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(file) || !File.Exists(file)) return false;
 
             context.Response.Status = Status.OK;
             context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));
-            context.Response.SetContentLength(new FileInfo(file).Length);
+            var fileInfo = new FileInfo(file);
+            context.Response.SetContentLength(fileInfo.Length);
+            context.Response.SetLastModified(fileInfo.LastWriteTimeUtc);
+            if (folder != null && folder.CacheOptions != null)
+            {
+                context.Response.SetCacheOptions(folder.CacheOptions);
+            }
             context.Response.WriteFunction = (stream) =>
                 {
                     using (var fileStream = File.OpenRead(file))

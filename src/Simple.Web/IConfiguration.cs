@@ -13,7 +13,7 @@ namespace Simple.Web
         /// <summary>
         /// Gets the list of public folders.
         /// </summary>
-        ISet<string> PublicFolders { get; }
+        ISet<PublicFolder> PublicFolders { get; }
 
         /// <summary>
         /// Gets a dictionary representing URLs which should be mapped directly to files.

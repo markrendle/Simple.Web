@@ -33,6 +33,16 @@ namespace Simple.Web.Http
         }
 
         /// <summary>
+        /// Sets the response Last-Modified header.
+        /// </summary>
+        /// <param name="response">The <see cref="IResponse"/> instance.</param>
+        /// <param name="time">The time the resource was last modified.</param>
+        public static void SetLastModified(this IResponse response, DateTimeOffset time)
+        {
+            response.SetHeader(HeaderKeys.LastModified, time.ToString("r"));
+        }
+
+        /// <summary>
         /// Sets a response header. Any current values for the specified header field are replaced.
         /// </summary>
         /// <param name="response">The <see cref="IResponse"/> instance.</param>

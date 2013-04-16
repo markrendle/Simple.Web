@@ -6,29 +6,33 @@ namespace Simple.Web
     using DependencyInjection;
 
     /// <summary>
-    /// Default implementation of <see cref="IConfiguration"/>.
+    ///     Default implementation of <see cref="IConfiguration" />.
     /// </summary>
     public sealed class Configuration : IConfiguration
     {
-        private readonly DefaultAuthenticationProvider _defaultAuthenticationProvider = new DefaultAuthenticationProvider();
-        private readonly IDictionary<string, string> _publicFileMappings =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly IDictionary<string, string> _authenticatedFileMappings =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        private readonly DefaultAuthenticationProvider _defaultAuthenticationProvider =
+            new DefaultAuthenticationProvider();
+
+        private readonly IDictionary<string, string> _publicFileMappings =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        private readonly HashSet<PublicFolder> _publicFolders = new HashSet<PublicFolder>();
+        private IAuthenticationProvider _authenticationProvider;
+        private ISimpleContainer _container = new DefaultSimpleContainer();
+
         /// <summary>
-        /// Gets a dictionary representing URLs which map to files but are only for authenticated users.
+        ///     Gets a dictionary representing URLs which map to files but are only for authenticated users.
         /// </summary>
         public IDictionary<string, string> AuthenticatedFileMappings
         {
             get { return _authenticatedFileMappings; }
         }
 
-        private readonly HashSet<string> _publicFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private ISimpleContainer _container = new DefaultSimpleContainer();
-
         /// <summary>
-        /// Gets a dictionary representing URLs which should be mapped directly to files.
+        ///     Gets a dictionary representing URLs which should be mapped directly to files.
         /// </summary>
         public IDictionary<string, string> PublicFileMappings
         {
@@ -36,18 +40,18 @@ namespace Simple.Web
         }
 
         /// <summary>
-        /// Gets the list of public folders.
+        ///     Gets the list of public folders.
         /// </summary>
-        public ISet<string> PublicFolders
+        public ISet<PublicFolder> PublicFolders
         {
             get { return _publicFolders; }
         }
 
         /// <summary>
-        /// Gets or sets the IoC container.
+        ///     Gets or sets the IoC container.
         /// </summary>
         /// <value>
-        /// The container.
+        ///     The container.
         /// </value>
         public ISimpleContainer Container
         {
@@ -56,20 +60,18 @@ namespace Simple.Web
         }
 
         /// <summary>
-        /// Gets or sets the type of the handler which provides the login page for Forms-based Authentication.
+        ///     Gets or sets the type of the handler which provides the login page for Forms-based Authentication.
         /// </summary>
         /// <value>
-        /// The login page.
+        ///     The login page.
         /// </value>
         public Type LoginPage { get; set; }
 
-        private IAuthenticationProvider _authenticationProvider;
-
         /// <summary>
-        /// Gets or sets the authentication provider.
+        ///     Gets or sets the authentication provider.
         /// </summary>
         /// <value>
-        /// The authentication provider.
+        ///     The authentication provider.
         /// </value>
         public IAuthenticationProvider AuthenticationProvider
         {

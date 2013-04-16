@@ -187,6 +187,7 @@
     <Compile Include="Owin\PostedFile.cs" />
     <Compile Include="Owin\QueryStringParser.cs" />
     <Compile Include="Priority.cs" />
+    <Compile Include="PublicFolder.cs" />
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
     <Compile Include="RegexGenericResolverAttribute.cs" />
