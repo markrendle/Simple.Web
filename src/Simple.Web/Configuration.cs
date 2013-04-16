@@ -10,14 +10,14 @@ namespace Simple.Web
     /// </summary>
     public sealed class Configuration : IConfiguration
     {
-        private readonly IDictionary<string, string> _authenticatedFileMappings =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, PublicFile> _authenticatedFileMappings =
+            new Dictionary<string, PublicFile>(StringComparer.OrdinalIgnoreCase);
 
         private readonly DefaultAuthenticationProvider _defaultAuthenticationProvider =
             new DefaultAuthenticationProvider();
 
-        private readonly IDictionary<string, string> _publicFileMappings =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, PublicFile> _publicFileMappings =
+            new Dictionary<string, PublicFile>(StringComparer.OrdinalIgnoreCase);
 
         private readonly HashSet<PublicFolder> _publicFolders = new HashSet<PublicFolder>();
         private IAuthenticationProvider _authenticationProvider;
@@ -26,7 +26,7 @@ namespace Simple.Web
         /// <summary>
         ///     Gets a dictionary representing URLs which map to files but are only for authenticated users.
         /// </summary>
-        public IDictionary<string, string> AuthenticatedFileMappings
+        public IDictionary<string, PublicFile> AuthenticatedFileMappings
         {
             get { return _authenticatedFileMappings; }
         }
@@ -34,7 +34,7 @@ namespace Simple.Web
         /// <summary>
         ///     Gets a dictionary representing URLs which should be mapped directly to files.
         /// </summary>
-        public IDictionary<string, string> PublicFileMappings
+        public IDictionary<string, PublicFile> PublicFileMappings
         {
             get { return _publicFileMappings; }
         }

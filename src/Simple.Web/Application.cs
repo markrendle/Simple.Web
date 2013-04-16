@@ -113,10 +113,12 @@
         {
             var absolutePath = context.Request.Url.AbsolutePath;
             string file;
-            PublicFolder folder = null;
+            CacheOptions cacheOptions;
             if (SimpleWeb.Configuration.PublicFileMappings.ContainsKey(absolutePath))
             {
-                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.PublicFileMappings[absolutePath]);
+                var publicFile = SimpleWeb.Configuration.PublicFileMappings[absolutePath];
+                file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
+                cacheOptions = publicFile.CacheOptions;
             }
             else if (SimpleWeb.Configuration.AuthenticatedFileMappings.ContainsKey(absolutePath))
             {
@@ -126,17 +128,18 @@
                     CheckAuthentication.Redirect(context);
                     return true;
                 }
-                file =
-                    SimpleWeb.Environment.PathUtility.MapPath(
-                        SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath]);
+                var publicFile = SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath];
+                file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
+                cacheOptions = publicFile.CacheOptions;
             }
             else
             {
-                folder = SimpleWeb.Configuration.PublicFolders.FirstOrDefault(
+                var folder = SimpleWeb.Configuration.PublicFolders.FirstOrDefault(
                     f => absolutePath.StartsWith(f.Alias + "/", StringComparison.OrdinalIgnoreCase));
                 if (folder != null)
                 {
                     file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+                    cacheOptions = folder.CacheOptions;
                 }
                 else
                 {
@@ -151,9 +154,9 @@
             var fileInfo = new FileInfo(file);
             context.Response.SetContentLength(fileInfo.Length);
             context.Response.SetLastModified(fileInfo.LastWriteTimeUtc);
-            if (folder != null && folder.CacheOptions != null)
+            if (cacheOptions != null)
             {
-                context.Response.SetCacheOptions(folder.CacheOptions);
+                context.Response.SetCacheOptions(cacheOptions);
             }
             context.Response.WriteFunction = (stream) =>
                 {

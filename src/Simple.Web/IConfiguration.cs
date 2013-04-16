@@ -18,12 +18,12 @@ namespace Simple.Web
         /// <summary>
         /// Gets a dictionary representing URLs which should be mapped directly to files.
         /// </summary>
-        IDictionary<string, string> PublicFileMappings { get; }
+        IDictionary<string, PublicFile> PublicFileMappings { get; }
 
         /// <summary>
         /// Gets a dictionary representing URLs which map to files but are only for authenticated users.
         /// </summary>
-        IDictionary<string, string> AuthenticatedFileMappings { get; }
+        IDictionary<string, PublicFile> AuthenticatedFileMappings { get; }
         
         /// <summary>
         /// Gets or sets the IoC container.
