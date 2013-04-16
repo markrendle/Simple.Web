@@ -1,7 +1,10 @@
 namespace Simple.Web
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
+    using Cors;
     using Http;
 
     public class PublicFolder : IEquatable<PublicFolder>
@@ -10,20 +13,30 @@ namespace Simple.Web
         private readonly string _alias;
         private readonly string _path;
         private readonly CacheOptions _cacheOptions;
+        private readonly IList<IAccessControlEntry> _accessControl;
 
         public PublicFolder(string path) : this(path, path)
         {
+        }
+
+        public PublicFolder(string path, params AccessControlEntry[] accessControl) : this(path, path, null, accessControl)
+        {
+            
         }
 
         public PublicFolder(string path, CacheOptions cacheOptions) : this(path, path, cacheOptions)
         {
         }
 
-        public PublicFolder(string path, string alias) : this(path, alias, null)
+        public PublicFolder(string path, string alias) : this(path, alias, (CacheOptions)null)
         {
         }
 
-        public PublicFolder(string path, string alias, CacheOptions cacheOptions)
+        public PublicFolder(string path, string alias, params AccessControlEntry[] accessControl) : this(path, alias, null, accessControl)
+        {
+        }
+
+        public PublicFolder(string path, string alias, CacheOptions cacheOptions, params AccessControlEntry[] accessControl)
         {
             if (path == null) throw new ArgumentNullException("path");
             if (alias == null) throw new ArgumentNullException("alias");
@@ -33,6 +46,10 @@ namespace Simple.Web
             if (!path.Equals(alias, StringComparison.OrdinalIgnoreCase))
             {
                 _rewrite = new Regex("^" + Regex.Escape(alias), RegexOptions.IgnoreCase);
+            }
+            if (accessControl != null)
+            {
+                _accessControl = accessControl;
             }
         }
 
@@ -49,6 +66,11 @@ namespace Simple.Web
         public CacheOptions CacheOptions
         {
             get { return _cacheOptions; }
+        }
+
+        public IList<IAccessControlEntry> AccessControl
+        {
+            get { return _accessControl; }
         }
 
         public string RewriteAliasToPath(string absolutePath)

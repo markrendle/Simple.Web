@@ -10,6 +10,7 @@
     using System.Threading.Tasks;
     using Behaviors.Implementations;
     using CodeGeneration;
+    using Cors;
     using Helpers;
     using Hosting;
     using Http;
@@ -114,11 +115,13 @@
             var absolutePath = context.Request.Url.AbsolutePath;
             string file;
             CacheOptions cacheOptions;
+            IList<IAccessControlEntry> accessControl;
             if (SimpleWeb.Configuration.PublicFileMappings.ContainsKey(absolutePath))
             {
                 var publicFile = SimpleWeb.Configuration.PublicFileMappings[absolutePath];
                 file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
                 cacheOptions = publicFile.CacheOptions;
+                accessControl = publicFile.AccessControl;
             }
             else if (SimpleWeb.Configuration.AuthenticatedFileMappings.ContainsKey(absolutePath))
             {
@@ -131,6 +134,7 @@
                 var publicFile = SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath];
                 file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
                 cacheOptions = publicFile.CacheOptions;
+                accessControl = publicFile.AccessControl;
             }
             else
             {
@@ -140,6 +144,7 @@
                 {
                     file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
                     cacheOptions = folder.CacheOptions;
+                    accessControl = folder.AccessControl;
                 }
                 else
                 {
@@ -157,6 +162,10 @@
             if (cacheOptions != null)
             {
                 context.Response.SetCacheOptions(cacheOptions);
+            }
+            if (accessControl != null)
+            {
+                context.SetAccessControlHeaders(accessControl);
             }
             context.Response.WriteFunction = (stream) =>
                 {

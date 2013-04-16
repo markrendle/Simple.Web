@@ -35,5 +35,10 @@ namespace Simple.Web.Http
         /// Gets the list of uploaded files.
         /// </summary>
         IEnumerable<IPostedFile> Files { get; }
+
+        /// <summary>
+        /// Gets the Host header value.
+        /// </summary>
+        string Host { get; }
     }
 }

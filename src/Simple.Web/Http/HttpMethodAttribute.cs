@@ -53,6 +53,7 @@ namespace Simple.Web.Http
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="httpMethod">The HTTP method to look for.</param>
+        /// <param name="excludeInterfaces">If <c>true</c>, interfaces will not be included in the search.</param>
         /// <returns><c>null</c> if the attribute does not exist.</returns>
         public static HttpMethodAttribute Get(Type type, string httpMethod, bool excludeInterfaces = false)
         {
@@ -83,6 +84,7 @@ namespace Simple.Web.Http
         /// Gets the entry-point method name for a handler type.
         /// </summary>
         /// <param name="type">The type.</param>
+        /// <param name="httpMethod">The HTTP method to match against the type.</param>
         /// <returns>The value of the <see cref="Method"/> property, or <c>null</c> if the attribute is not applied to the type.</returns>
         public static MethodInfo GetMethod(Type type, string httpMethod)
         {

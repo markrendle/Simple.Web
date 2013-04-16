@@ -85,6 +85,8 @@
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
+    <Compile Include="Cors\AccessControlEntry.cs" />
+    <Compile Include="Cors\IAccessControlEntry.cs" />
     <Compile Include="ExplicitGenericResolverAttribute.cs" />
     <Compile Include="GenericResolverAttribute.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Behaviors\Implementations\SetLastModified.cs" />
     <Compile Include="Behaviors\Implementations\SetOutputETag.cs" />
     <Compile Include="Behaviors\Implementations\SetUserCookie.cs" />
+    <Compile Include="Http\ContextExtensions.cs" />
     <Compile Include="Http\Cookie.cs" />
     <Compile Include="Http\CookieWriter.cs" />
     <Compile Include="Http\HeaderKeys.cs" />

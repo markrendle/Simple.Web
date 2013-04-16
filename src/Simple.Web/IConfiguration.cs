@@ -3,6 +3,7 @@ namespace Simple.Web
     using System;
     using System.Collections.Generic;
     using Authentication;
+    using Cors;
     using DependencyInjection;
 
     /// <summary>
@@ -24,7 +25,13 @@ namespace Simple.Web
         /// Gets a dictionary representing URLs which map to files but are only for authenticated users.
         /// </summary>
         IDictionary<string, PublicFile> AuthenticatedFileMappings { get; }
-        
+
+        /// <summary>
+        /// Gets the Set of Origins which are allowed to access this application.
+        /// To allow full CORS from any origin, add the wildcard &quot;*&quot; to this Set.
+        /// </summary>
+        ISet<IAccessControlEntry> AccessControl { get; }
+            
         /// <summary>
         /// Gets or sets the IoC container.
         /// </summary>

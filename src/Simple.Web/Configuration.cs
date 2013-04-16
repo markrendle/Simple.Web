@@ -3,6 +3,7 @@ namespace Simple.Web
     using System;
     using System.Collections.Generic;
     using Authentication;
+    using Cors;
     using DependencyInjection;
 
     /// <summary>
@@ -22,6 +23,7 @@ namespace Simple.Web
         private readonly HashSet<PublicFolder> _publicFolders = new HashSet<PublicFolder>();
         private IAuthenticationProvider _authenticationProvider;
         private ISimpleContainer _container = new DefaultSimpleContainer();
+        private readonly ISet<IAccessControlEntry> _accessControl = new HashSet<IAccessControlEntry>(AccessControlEntry.OriginComparer);
 
         /// <summary>
         ///     Gets a dictionary representing URLs which map to files but are only for authenticated users.
@@ -30,6 +32,8 @@ namespace Simple.Web
         {
             get { return _authenticatedFileMappings; }
         }
+
+        public ISet<IAccessControlEntry> AccessControl { get { return _accessControl; } }
 
         /// <summary>
         ///     Gets a dictionary representing URLs which should be mapped directly to files.
