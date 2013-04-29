@@ -38,11 +38,11 @@ namespace Simple.Web.Behaviors.Implementations
                 context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
                 if (context.Request.HttpMethod.Equals("HEAD")) return TaskHelper.Completed();
 
-                context.Response.WriteFunction = (stream) =>
+                context.Response.WriteFunction = (stream) => handler.Output.ContinueWith(t =>
                     {
-                        var content = new Content(context.Request.Url, handler, handler.Output);
+                        var content = new Content(context.Request.Url, handler, t.Result);
                         return mediaTypeHandler.Write(content, stream);
-                    };
+                    }).Unwrap();
             }
             return TaskHelper.Completed();
         }

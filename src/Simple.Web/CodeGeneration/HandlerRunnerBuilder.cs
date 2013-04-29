@@ -222,7 +222,9 @@ namespace Simple.Web.CodeGeneration
                 return Expression.Assign(_task, Expression.Call(_handler, run));
             }
             var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(parameters[0].ParameterType);
-            return Expression.Assign(_task, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
+            var checkRunException = typeof (CheckRunException).GetMethod("ImplAsync",
+                                                                         BindingFlags.Public | BindingFlags.Static);
+            return Expression.Assign(_task, Expression.Call(checkRunException, Expression.Call(_handler, run, Expression.Call(getInput, _context)), _context));
         }
     }
 }

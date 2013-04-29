@@ -55,5 +55,10 @@ namespace Simple.Web
         /// The authentication provider.
         /// </value>
         IAuthenticationProvider AuthenticationProvider { get; set; }
+
+        /// <summary>
+        /// Gets or sets a Handler for Exceptions to write something meaningful to the response.
+        /// </summary>
+        IExceptionHandler ExceptionHandler { get; set; }
     }
 }

@@ -28,11 +28,16 @@ namespace Simple.Web.CodeGeneration
         {
             var context = Expression.Parameter(typeof(IContext));
             var handler = Expression.Parameter(_handlerType);
+            var checkRunException = typeof (CheckRunException).GetMethod("Impl",
+                                                                         BindingFlags.Public | BindingFlags.Static);
+            var exception = Expression.Parameter(typeof (Exception));
 
             var parameters = _method.GetParameters();
             if (parameters.Length == 0)
             {
-                var call = Expression.Call(handler, _method);
+                Expression call = Expression.Call(handler, _method);
+                call = Expression.TryCatch(call,
+                                    Expression.Catch(exception, Expression.Call(checkRunException, exception, context)));
                 return Expression.Lambda(call, handler, context).Compile();
             }
             else if (parameters.Length == 1)
@@ -40,7 +45,9 @@ namespace Simple.Web.CodeGeneration
                 var getInput =
                     typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static)
                     .MakeGenericMethod(parameters[0].ParameterType);
-                var call = Expression.Call(handler, _method, Expression.Call(getInput, context));
+                Expression call = Expression.Call(handler, _method, Expression.Call(getInput, context));
+                call = Expression.TryCatch(call,
+                                    Expression.Catch(exception, Expression.Call(checkRunException, exception, context)));
                 return Expression.Lambda(call, handler, context).Compile();
             }
             else
@@ -53,11 +60,18 @@ namespace Simple.Web.CodeGeneration
         {
             var context = Expression.Parameter(typeof(IContext));
             var handler = Expression.Parameter(_handlerType);
+            var checkRunExceptionAsyncCheck = typeof (CheckRunException).GetMethod("ImplAsyncCheck",
+                                                                         BindingFlags.Public | BindingFlags.Static);
+            var checkRunExceptionAsync = typeof (CheckRunException).GetMethod("ImplAsync",
+                                                                         BindingFlags.Public | BindingFlags.Static);
+            var exception = Expression.Parameter(typeof (Exception));
 
             var parameters = _method.GetParameters();
             if (parameters.Length == 0)
             {
-                var call = Expression.Call(handler, _method);
+                Expression call = Expression.Call(checkRunExceptionAsync, Expression.Call(handler, _method), context);
+                call = Expression.TryCatch(call,
+                                    Expression.Catch(exception, Expression.Call(checkRunExceptionAsyncCheck, exception, context)));
                 return Expression.Lambda(call, handler, context).Compile();
             }
             if (parameters.Length == 1)
@@ -65,7 +79,9 @@ namespace Simple.Web.CodeGeneration
                 var getInput =
                     typeof(GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static)
                     .MakeGenericMethod(parameters[0].ParameterType);
-                var call = Expression.Call(handler, _method, Expression.Call(getInput, context));
+                Expression call = Expression.Call(checkRunExceptionAsync, Expression.Call(handler, _method, Expression.Call(getInput, context)), context);
+                call = Expression.TryCatch(call,
+                                    Expression.Catch(exception, Expression.Call(checkRunExceptionAsyncCheck, exception, context)));
                 return Expression.Lambda(call, handler, context).Compile();
             }
             throw new InvalidOperationException("Handler methods may only take 0 or 1 parameters.");

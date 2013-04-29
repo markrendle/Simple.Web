@@ -43,10 +43,10 @@
                 return TaskHelper.Completed(new Result(null, 404, null, null));
             }
             return task
-                .ContinueWith(t => WriteResponse(context, env)).Unwrap();
+                .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
         }
 
-        private static Task WriteResponse(OwinContext context, IDictionary<string, object> env)
+        private static Task WriteResponse(Task task, OwinContext context, IDictionary<string, object> env)
         {
             var tcs = new TaskCompletionSource<int>();
             var cancellationToken = (CancellationToken) env[OwinKeys.CallCancelled];

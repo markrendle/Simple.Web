@@ -82,5 +82,7 @@ namespace Simple.Web
             get { return _authenticationProvider ?? _defaultAuthenticationProvider; }
             set { _authenticationProvider = value; }
         }
+
+        public IExceptionHandler ExceptionHandler { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace Simple.Web.Behaviors
     /// </summary>
     /// <typeparam name="TOutput">The type of the output.</typeparam>
     /// <remarks>Use this interface instead of <see cref="IOutput{T}"/> to preserve an asynchronous pipeline.</remarks>
+    [OutputBehavior(typeof(Implementations.WriteOutputAsync))]
     public interface IOutputAsync<TOutput>
     {
         /// <summary>

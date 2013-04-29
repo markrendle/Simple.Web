@@ -72,6 +72,7 @@
     <Compile Include="CodeGeneration\AsyncPipeline.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
+    <Compile Include="CodeGeneration\CheckRunException.cs" />
     <Compile Include="CodeGeneration\CookiePropertySetter.cs" />
     <Compile Include="CodeGeneration\HandlerBlock.cs" />
     <Compile Include="CodeGeneration\IScopedHandler.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Http\HeaderKeys.cs" />
     <Compile Include="Http\RequestExtensions.cs" />
     <Compile Include="Http\ResponseExtensions.cs" />
+    <Compile Include="IExceptionHandler.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
