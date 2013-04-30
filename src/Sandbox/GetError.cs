@@ -10,11 +10,14 @@ namespace Sandbox
     using Simple.Web.Behaviors;
 
     [UriTemplate("/error")]
-    public class GetError : IGet, IOutput<RawHtml>
+    public class GetError : IGetAsync, IOutput<RawHtml>
     {
-        public Status Get()
+        public Task<Status> Get()
         {
-            throw new NotImplementedException();
+            return Task.Factory.StartNew<Status>(() =>
+                {
+                    throw new NotImplementedException();
+                });
         }
 
         public RawHtml Output { get; private set; }

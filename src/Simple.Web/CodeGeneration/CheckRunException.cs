@@ -12,20 +12,21 @@ namespace Simple.Web.CodeGeneration
     {
         public static Task<Status> ImplAsync(Task<Status> task, IContext context)
         {
-            if (!task.IsFaulted)
-            {
-                return task.ContinueWith(t => t.Result);
-            }
-            var tcs = new TaskCompletionSource<Status>();
-            if (task.Exception != null && task.Exception.InnerExceptions.Any() && SimpleWeb.Configuration.ExceptionHandler != null)
-            {
-                tcs.SetResult(SimpleWeb.Configuration.ExceptionHandler.Handle(task.Exception.InnerExceptions.First(), context));
-            }
-            else
-            {
-                tcs.SetResult(new Status(500, "Internal server error"));
-            }
-            return tcs.Task;
+            return task.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        return t.Result;
+                    }
+                    if (t.Exception != null && t.Exception.InnerExceptions.Any() && SimpleWeb.Configuration.ExceptionHandler != null)
+                    {
+                        return SimpleWeb.Configuration.ExceptionHandler.Handle(t.Exception.InnerExceptions.First(), context);
+                    }
+                    else
+                    {
+                        return new Status(500, "Internal server error");
+                    }
+                });
         }
 
         public static Task<Status> ImplAsyncCheck(Exception exception, IContext context)
