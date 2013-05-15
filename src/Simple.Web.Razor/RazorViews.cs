@@ -14,6 +14,12 @@ namespace Simple.Web.Razor
     {
         private const string FileExtension = "cshtml";
 
+        private const string DefaultViewPath = "Views";
+
+        private const string AppSettings_CacheEnabled = "ViewCache:Enabled";
+        private const string AppSettings_Path = "ViewPath:Value";
+        private const string AppSettings_RecursiveDiscovery = "ViewRecursiveDiscovery:Enabled";
+
         private static readonly object LockObject = new object();
         private static volatile bool _initialized;
 
@@ -32,7 +38,7 @@ namespace Simple.Web.Razor
 
         private static readonly string AppRoot = AssemblyAppRoot(typeof(RazorViews).Assembly.GetPath());
 
-        private static readonly bool IsViewCacheEnabled = GetViewCacheEnabled();
+        private static readonly bool IsCacheEnabled = ParseBooleanAppSettings(AppSettings_CacheEnabled);
 
         private static readonly Func<string, string> FileTokenizer = file =>
             Path.Combine(
@@ -51,7 +57,8 @@ namespace Simple.Web.Razor
         {
             ClearCaches();
 
-            const string searchPath = "Views";
+            string searchPath = ParseStringAppSettings(AppSettings_Path, DefaultViewPath).Trim('/', '\\');
+            bool recursiveDiscovery = ParseBooleanAppSettings(AppSettings_RecursiveDiscovery);
 
             var viewsDirectory = Path.Combine(AppRoot, searchPath);
 
@@ -60,19 +67,23 @@ namespace Simple.Web.Razor
                 return;
             }
 
-            FindViews(viewsDirectory);
+            FindViews(viewsDirectory, recursiveDiscovery);
         }
 
-        private static void FindViews(string directory)
+        private static void FindViews(string directory, bool recurse = true)
         {
             foreach (var file in Directory.GetFiles(directory, FileFormatter("*")))
             {
                 GenerateViewType(file);
             }
 
-            foreach (var subDirectory in Directory.GetDirectories(directory).Select(sub => Path.Combine(directory, sub)))
+            if (recurse)
             {
-                FindViews(subDirectory);
+                foreach (
+                    var subDirectory in Directory.GetDirectories(directory).Select(sub => Path.Combine(directory, sub)))
+                {
+                    FindViews(subDirectory);
+                }
             }
         }
 
@@ -112,7 +123,7 @@ namespace Simple.Web.Razor
 
             if (ViewPathCache.ContainsKey(token))
             {
-                if (!IsViewCacheEnabled)
+                if (!IsCacheEnabled)
                 {
                     ClearCaches(ViewPathCache[token]);
                     ViewPathCache[token] = type.FullName;
@@ -447,7 +458,7 @@ namespace Simple.Web.Razor
 
         private static Type RuntimeTypeCheck(Type type)
         {
-            if (!IsViewCacheEnabled)
+            if (!IsCacheEnabled)
             {
                 return
                     GenerateViewType(
@@ -457,20 +468,39 @@ namespace Simple.Web.Razor
             return type;
         }
 
-        private static bool GetViewCacheEnabled()
+        private static string ParseStringAppSettings(string key, string defaultValue)
         {
-            var viewCache = ConfigurationManager.AppSettings["ViewCache:Enabled"];
+            var value = ConfigurationManager.AppSettings[key];
 
-            if (String.IsNullOrWhiteSpace(viewCache)) return true;
+            if (String.IsNullOrWhiteSpace(value))
+            {
+                if (String.IsNullOrWhiteSpace(defaultValue))
+                {
+                    throw new ConfigurationErrorsException(
+                        string.Format("Invalid configuration value for appSetting '{0}'", key));                    
+                }
+
+                return defaultValue;
+            }
+
+            return value;
+        }
+
+        private static bool ParseBooleanAppSettings(string key)
+        {
+            var value = ConfigurationManager.AppSettings[key];
+
+            if (string.IsNullOrWhiteSpace(value)) return true;
 
             bool isEnabled;
 
-            if (!bool.TryParse(viewCache, out isEnabled))
+            if (!bool.TryParse(value, out isEnabled))
             {
-                throw new ConfigurationErrorsException("Invalid configuration value for appSetting 'ViewCache'");
+                throw new ConfigurationErrorsException(
+                    string.Format("Invalid configuration value for appSetting '{0}'", key));
             }
 
-            return isEnabled;
+            return isEnabled;                        
         }
     }
 
