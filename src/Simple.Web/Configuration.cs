@@ -4,6 +4,7 @@ namespace Simple.Web
     using System.Collections.Generic;
     using Authentication;
     using DependencyInjection;
+    using MediaTypeHandling;
 
     /// <summary>
     /// Default implementation of <see cref="IConfiguration"/>.
@@ -76,5 +77,7 @@ namespace Simple.Web
             get { return _authenticationProvider ?? _defaultAuthenticationProvider; }
             set { _authenticationProvider = value; }
         }
+
+        public IMediaTypeHandler DefaultMediaTypeHandler { get; set; }
     }
 }

@@ -40,18 +40,25 @@
             {
                 foreach (var property in contract.Properties)
                 {
-                    var getValueMethod = typeof(IValueProvider).GetMethod("GetValue");
+                    var getValueMethod = typeof (IValueProvider).GetMethod("GetValue");
                     var valueProvider = Expression.Constant(property.ValueProvider);
-                    yield return Expression.Call(writer, LinkConverter.WritePropertyName, Expression.Constant(property.PropertyName));
+                    yield return
+                        Expression.Call(writer, LinkConverter.WritePropertyName,
+                                        Expression.Constant(property.PropertyName));
                     var getValue = Expression.Call(valueProvider, getValueMethod, value);
                     yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
                 }
             }
-            foreach (var info in typeof(T).GetProperties())
+            else
             {
-                yield return Expression.Call(writer, LinkConverter.WritePropertyName, Expression.Constant(ToCamelCase(info.Name)));
-                var getValue = Expression.Convert(Expression.Property(value, info), typeof(object));
-                yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
+                foreach (var info in typeof (T).GetProperties())
+                {
+                    yield return
+                        Expression.Call(writer, LinkConverter.WritePropertyName,
+                                        Expression.Constant(ToCamelCase(info.Name)));
+                    var getValue = Expression.Convert(Expression.Property(value, info), typeof (object));
+                    yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
+                }
             }
         }
 

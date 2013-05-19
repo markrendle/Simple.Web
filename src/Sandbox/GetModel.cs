@@ -16,5 +16,6 @@ namespace Sandbox
 
     public class Model
     {
+        public string Property { get; set; }
     }
 }

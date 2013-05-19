@@ -70,6 +70,11 @@ namespace Simple.Web.MediaTypeHandling
                 return wildcard.Item2();
             }
 
+            if (mediaType.StartsWith("*/*", StringComparison.OrdinalIgnoreCase))
+            {
+                return SimpleWeb.Configuration.DefaultMediaTypeHandler;
+            }
+
             UnsupportedMediaTypes.Add(mediaType);
             return null;
         }

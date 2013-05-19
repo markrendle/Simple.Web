@@ -53,10 +53,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Fix.AspNet.0.3.2.10\lib\net40\Fix.AspNet.dll</HintPath>
     </Reference>
-    <Reference Include="JsonFx">
-      <HintPath>..\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System" />
@@ -117,6 +117,10 @@
     <ProjectReference Include="..\Simple.Web.AspNet\Simple.Web.AspNet.csproj">
       <Project>{266d3482-c95c-4b2f-b7ea-f08f849084d3}</Project>
       <Name>Simple.Web.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.JsonNet\Simple.Web.JsonNet.csproj">
+      <Project>{6dce0964-3bf0-4185-ac6e-1f8b97908601}</Project>
+      <Name>Simple.Web.JsonNet</Name>
     </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>

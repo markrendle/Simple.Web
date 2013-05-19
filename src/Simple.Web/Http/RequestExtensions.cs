@@ -20,9 +20,9 @@
         public static IList<string> GetAccept(this IRequest request)
         {
             string[] accept;
-            if (request.Headers == null || (!request.Headers.TryGetValue(HeaderKeys.Accept, out accept)) || accept[0] == "*/*")
+            if (request.Headers == null || (!request.Headers.TryGetValue(HeaderKeys.Accept, out accept)) || accept[0].StartsWith("*/*"))
             {
-                accept = null;
+                accept = MediaTypeWildcard;
             }
             else
             {
