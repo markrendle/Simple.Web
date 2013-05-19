@@ -47,6 +47,21 @@
         }
 
         /// <summary>
+        /// Gets the Origin header entry.
+        /// </summary>
+        /// <param name="request">The <see cref="IRequest"/> instance.</param>
+        /// <returns>The Origin header value, or <c>null</c> if not in the Headers collection.</returns>
+        public static string GetOrigin(this IRequest request)
+        {
+            string[] origins;
+            if (request.Headers == null || !request.Headers.TryGetValue(HeaderKeys.ContentType, out origins))
+            {
+                return null;
+            }
+            return origins.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Tries to get the value of a Cookie.
         /// </summary>
         /// <param name="request">The <see cref="IRequest"/> instance.</param>

@@ -22,6 +22,10 @@
         /// <param name="context">The context.</param>
         public static void Impl<T>(IOutput<T> handler, IContext context)
         {
+            if (typeof (T).IsClass)
+            {
+                if (ReferenceEquals(handler.Output, null)) return;
+            }
             if (typeof(T) == typeof(RawHtml))
             {
                 WriteRawHtml((IOutput<RawHtml>)handler, context);
@@ -67,11 +71,18 @@
         {
             context.Response.SetContentType(GetHtmlContentType(context));
             if (context.Request.HttpMethod.Equals("HEAD")) return;
-            context.Response.WriteFunction = (stream) =>
-                {
-                    var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
-                    return stream.WriteAsync(bytes, 0, bytes.Length);
-                };
+            if (handler.Output == null)
+            {
+                context.Response.WriteFunction = stream => TaskHelper.Completed();
+            }
+            else
+            {
+                context.Response.WriteFunction = (stream) =>
+                    {
+                        var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+                        return stream.WriteAsync(bytes, 0, bytes.Length);
+                    };
+            }
         }
 
         private static string GetHtmlContentType(IContext context)

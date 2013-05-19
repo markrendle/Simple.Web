@@ -14,7 +14,7 @@ load "VERSION.txt"
 CONFIG = ENV["config"] || "Release"
 PLATFORM = ENV["platform"] || "x86"
 BUILD_NUMBER = "#{BUILD_VERSION}.#{(ENV["BUILD_NUMBER"] || Time.new.strftime('5%H%M'))}"
-MONO = (RUBY_PLATFORM.downcase.include?('linux') or RUBY_PLATFORM.downcase.include?('darwin'))
+MONO = !RUBY_PLATFORM.match("linux|darwin").nil?
 TEAMCITY = (!ENV["BUILD_NUMBER"].nil? or !ENV["TEAMCITY_BUILD_PROPERTIES_FILE"].nil?)
 TEAMCITY_BRANCH = !TEAMCITY ? nil : ENV["BRANCH"]
 
@@ -27,7 +27,7 @@ ENV["EnableNuGetPackageRestore"] = "true"
 
 # Symbol server configuration
 # SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
-# SYMBOL_APIURL_REMOTE = #ENV["symbol_remote"]
+SYMBOL_APIURL_REMOTE = ENV["symbol_remote"] # For nuget.org make this the same as NUGET_APIURI_REMOTE
 
 # Paths
 BASE_PATH = File.expand_path(File.dirname(__FILE__))
@@ -48,7 +48,7 @@ VERSION_INFO = "#{BASE_PATH}/VERSION.txt"
 
 # Matching
 TEST_ASSEMBLY_PATTERN_PREFIX = "Tests"
-TEST_ASSEMBLY_PATTERN_UNIT = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Unit"
+TEST_ASSEMBLY_PATTERN_UNIT = "#{TEST_ASSEMBLY_PATTERN_PREFIX}"
 TEST_ASSEMBLY_PATTERN_INTEGRATION = "#{TEST_ASSEMBLY_PATTERN_PREFIX}.Integration"
 SPEC_ASSEMBLY_PATTERN = ".Specs"
 ROOT_NAMESPACE = ""
@@ -125,7 +125,7 @@ task :publocal => [:full] do
 	raise "Environment variable \"APIURL_LOCAL\" must be a valid nuget server url." unless !NUGET_APIURL_LOCAL.nil?
 	raise "Environment variable \"APIKEY_LOCAL\" must be that of your nuget api key." unless !NUGET_APIKEY_LOCAL.nil?
 
-	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL, SYMBOL_APIURL_REMOTE
+	PublishNugets BUILD_NUMBER, NUGET_APIURL_LOCAL, NUGET_APIKEY_LOCAL, SYMBOL_APIURL_LOCAL
 end
 
 desc "Build + Tests + Specs + Package"
@@ -239,7 +239,7 @@ def PublishNugets(version, apiurl, apikey, symbolurl)
     nupkgs.each do |nupkg| 
         puts "Pushing #{Pathname.new(nupkg).basename}"
         nuget_push = NuGetPush.new
-        nuget_push.source = "\"" + (nupkg.include?(".symbols.") ? symbolurl :  apiurl) + "\""
+        nuget_push.source = "\"" + ((not symbolurl.nil? and nupkg.include?(".symbols.")) ? symbolurl :  apiurl) + "\""
 		nuget_push.apikey = apikey
         nuget_push.command = NUGET_COMMAND
         nuget_push.package = (MONO ? nupkg : nupkg.gsub('/','\\'))

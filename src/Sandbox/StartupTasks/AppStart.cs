@@ -9,6 +9,7 @@
         public void Run(IConfiguration configuration, IWebEnvironment environment)
         {
             SimpleWeb.Configuration.AuthenticationProvider = new DefaultAuthenticationProvider();
+            SimpleWeb.Configuration.ExceptionHandler = new ExceptionHandler();
             SimpleWeb.Configuration.DefaultMediaTypeHandler = new JsonMediaTypeHandler();
         }
     }

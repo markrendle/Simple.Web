@@ -10,6 +10,7 @@
     using System.Threading.Tasks;
     using Behaviors.Implementations;
     using CodeGeneration;
+    using Cors;
     using Helpers;
     using Hosting;
     using Http;
@@ -42,10 +43,10 @@
                 return TaskHelper.Completed(new Result(null, 404, null, null));
             }
             return task
-                .ContinueWith(t => WriteResponse(context, env)).Unwrap();
+                .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
         }
 
-        private static Task WriteResponse(OwinContext context, IDictionary<string, object> env)
+        private static Task WriteResponse(Task task, OwinContext context, IDictionary<string, object> env)
         {
             var tcs = new TaskCompletionSource<int>();
             var cancellationToken = (CancellationToken) env[OwinKeys.CallCancelled];
@@ -113,9 +114,14 @@
         {
             var absolutePath = context.Request.Url.AbsolutePath;
             string file;
+            CacheOptions cacheOptions;
+            IList<IAccessControlEntry> accessControl;
             if (SimpleWeb.Configuration.PublicFileMappings.ContainsKey(absolutePath))
             {
-                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.PublicFileMappings[absolutePath]);
+                var publicFile = SimpleWeb.Configuration.PublicFileMappings[absolutePath];
+                file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
+                cacheOptions = publicFile.CacheOptions;
+                accessControl = publicFile.AccessControl;
             }
             else if (SimpleWeb.Configuration.AuthenticatedFileMappings.ContainsKey(absolutePath))
             {
@@ -125,24 +131,42 @@
                     CheckAuthentication.Redirect(context);
                     return true;
                 }
-                file = SimpleWeb.Environment.PathUtility.MapPath(SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath]);
-            }
-            else if (
-                SimpleWeb.Configuration.PublicFolders.Any(
-                    folder => absolutePath.StartsWith(folder + "/", StringComparison.OrdinalIgnoreCase)))
-            {
-                file = SimpleWeb.Environment.PathUtility.MapPath(absolutePath);
+                var publicFile = SimpleWeb.Configuration.AuthenticatedFileMappings[absolutePath];
+                file = SimpleWeb.Environment.PathUtility.MapPath(publicFile.Path);
+                cacheOptions = publicFile.CacheOptions;
+                accessControl = publicFile.AccessControl;
             }
             else
             {
-                return false;
+                var folder = SimpleWeb.Configuration.PublicFolders.FirstOrDefault(
+                    f => absolutePath.StartsWith(f.Alias + "/", StringComparison.OrdinalIgnoreCase));
+                if (folder != null)
+                {
+                    file = SimpleWeb.Environment.PathUtility.MapPath(folder.RewriteAliasToPath(absolutePath));
+                    cacheOptions = folder.CacheOptions;
+                    accessControl = folder.AccessControl;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(file) || !File.Exists(file)) return false;
 
             context.Response.Status = Status.OK;
             context.Response.SetContentType(GetContentType(file, context.Request.GetAccept()));
-            context.Response.SetContentLength(new FileInfo(file).Length);
+            var fileInfo = new FileInfo(file);
+            context.Response.SetContentLength(fileInfo.Length);
+            context.Response.SetLastModified(fileInfo.LastWriteTimeUtc);
+            if (cacheOptions != null)
+            {
+                context.Response.SetCacheOptions(cacheOptions);
+            }
+            if (accessControl != null)
+            {
+                context.SetAccessControlHeaders(accessControl);
+            }
             context.Response.WriteFunction = (stream) =>
                 {
                     using (var fileStream = File.OpenRead(file))

@@ -72,6 +72,7 @@
     <Compile Include="CodeGeneration\AsyncPipeline.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
+    <Compile Include="CodeGeneration\CheckRunException.cs" />
     <Compile Include="CodeGeneration\CookiePropertySetter.cs" />
     <Compile Include="CodeGeneration\HandlerBlock.cs" />
     <Compile Include="CodeGeneration\IScopedHandler.cs" />
@@ -85,6 +86,8 @@
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
     <Compile Include="CodeGeneration\ScopedHandler.cs" />
     <Compile Include="CodeGeneration\TypeEx.cs" />
+    <Compile Include="Cors\AccessControlEntry.cs" />
+    <Compile Include="Cors\IAccessControlEntry.cs" />
     <Compile Include="ExplicitGenericResolverAttribute.cs" />
     <Compile Include="GenericResolverAttribute.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
@@ -101,11 +104,13 @@
     <Compile Include="Behaviors\Implementations\SetLastModified.cs" />
     <Compile Include="Behaviors\Implementations\SetOutputETag.cs" />
     <Compile Include="Behaviors\Implementations\SetUserCookie.cs" />
+    <Compile Include="Http\ContextExtensions.cs" />
     <Compile Include="Http\Cookie.cs" />
     <Compile Include="Http\CookieWriter.cs" />
     <Compile Include="Http\HeaderKeys.cs" />
     <Compile Include="Http\RequestExtensions.cs" />
     <Compile Include="Http\ResponseExtensions.cs" />
+    <Compile Include="IExceptionHandler.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
@@ -187,6 +192,8 @@
     <Compile Include="Owin\PostedFile.cs" />
     <Compile Include="Owin\QueryStringParser.cs" />
     <Compile Include="Priority.cs" />
+    <Compile Include="PublicFile.cs" />
+    <Compile Include="PublicFolder.cs" />
     <Compile Include="Raw.cs" />
     <Compile Include="RawHtml.cs" />
     <Compile Include="RegexGenericResolverAttribute.cs" />

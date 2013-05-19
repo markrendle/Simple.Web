@@ -12,6 +12,7 @@ namespace Simple.Web.Mocks
         {
             QueryString = new Dictionary<string, string[]>();
 			HttpMethod = "GET";
+            Host = "localhost";
         }
         public Uri Url { get; set; }
 
@@ -23,5 +24,6 @@ namespace Simple.Web.Mocks
 
         public IDictionary<string, string[]> Headers { get; set; }
         public IEnumerable<IPostedFile> Files { get; private set; }
+        public string Host { get; private set; }
     }
 }

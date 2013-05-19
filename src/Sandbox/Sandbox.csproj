@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="about.html" />
+    <Content Include="html\static.html" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
@@ -97,6 +98,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="GetError.cs" />
     <Compile Include="GetModel.cs" />
     <Compile Include="Models\Form.cs" />
     <Compile Include="GetForm.cs" />

@@ -55,6 +55,11 @@ namespace Simple.Web.Owin
             }
         }
 
+        public string Host
+        {
+            get { return Headers[HeaderKeys.Host][0]; }
+        }
+
         private static string MakeUriString(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders)
         {
             string[] hostHeaders;
