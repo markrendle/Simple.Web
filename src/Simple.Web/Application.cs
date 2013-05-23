@@ -59,13 +59,22 @@
                 try
                 {
                     context.Response.EnsureContentTypeCharset();
-                    env[OwinKeys.StatusCode] = context.Response.Status.Code;
-                    env[OwinKeys.ReasonPhrase] = context.Response.Status.Description;
-                    env[OwinKeys.ResponseHeaders] = context.Response.Headers;
+
+                    env.Add(OwinKeys.StatusCode, context.Response.Status.Code);
+                    env.Add(OwinKeys.ReasonPhrase, context.Response.Status.Description);
+
+                    var responseHeaders = (IDictionary<string, string[]>)env[OwinKeys.ResponseHeaders];
+
+                    foreach (var header in context.Response.Headers)
+                    {
+                        responseHeaders.Add(header.Key, header.Value);
+                    }
+                    
                     if (context.Response.WriteFunction != null)
                     {
                         return context.Response.WriteFunction((Stream) env[OwinKeys.ResponseBody]);
                     }
+                    
                     tcs.SetResult(0);
                 }
                 catch (Exception ex)
