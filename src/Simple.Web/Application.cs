@@ -40,7 +40,10 @@
             var task = Run(context);
             if (task == null)
             {
-                return TaskHelper.Completed(new Result(null, 404, null, null));
+                env.Add(OwinKeys.StatusCode, Status.NotFound.Code);
+                env.Add(OwinKeys.ReasonPhrase, Status.NotFound.Description);
+
+                return TaskHelper.Completed(new Result(null, Status.NotFound.Code, null, null));
             }
             return task
                 .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();

@@ -20,6 +20,11 @@ namespace Simple.Web
         public static readonly Status Created = new Status(201, "Created");
 
         /// <summary>
+        /// Indicates that the requested resource could not be found.
+        /// </summary>
+        public static readonly Status NotFound = new Status(404, "Not Found");
+
+        /// <summary>
         /// Indicates that a PUT or POST request conflicted with an existing resource.
         /// </summary>
         public static readonly Status Conflict = new Status(409, "Conflict");
