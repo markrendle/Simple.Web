@@ -47,6 +47,8 @@ namespace Simple.Web.JsonFx
 
         public Task Write(IContent content, Stream outputStream)
         {
+            try
+            {
             if (content.Model != null)
             {
                 object output;
@@ -70,6 +72,11 @@ namespace Simple.Web.JsonFx
                     buffer = Encoding.UTF8.GetBytes(writer.ToString());
                 }
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            }
+            catch (Exception ex)
+            {
+                return TaskHelper.Exception(ex);
             }
 
             return TaskHelper.Completed();
