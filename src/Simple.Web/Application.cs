@@ -63,13 +63,16 @@
                     env.Add(OwinKeys.StatusCode, context.Response.Status.Code);
                     env.Add(OwinKeys.ReasonPhrase, context.Response.Status.Description);
 
-                    var responseHeaders = (IDictionary<string, string[]>)env[OwinKeys.ResponseHeaders];
-
-                    foreach (var header in context.Response.Headers)
+                    if (context.Response.Headers != null)
                     {
-                        responseHeaders.Add(header.Key, header.Value);
+                        var responseHeaders = (IDictionary<string, string[]>)env[OwinKeys.ResponseHeaders];
+
+                        foreach (var header in context.Response.Headers)
+                        {
+                            responseHeaders.Add(header.Key, header.Value);
+                        }
                     }
-                    
+
                     if (context.Response.WriteFunction != null)
                     {
                         return context.Response.WriteFunction((Stream) env[OwinKeys.ResponseBody]);
