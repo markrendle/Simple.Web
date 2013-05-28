@@ -6,6 +6,7 @@
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Behaviors.Implementations;
@@ -38,6 +39,7 @@
         {
             var context = new OwinContext(env);
             var task = Run(context);
+
             if (task == null)
             {
                 env.Add(OwinKeys.StatusCode, Status.NotFound.Code);
@@ -45,17 +47,34 @@
 
                 return TaskHelper.Completed(new Result(null, Status.NotFound.Code, null, null));
             }
+
             return task
                 .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
+        }
+
+        private static Func<Stream, Task> ErrorHandler(string message)
+        {
+            return stream =>
+            {
+                var bytes = Encoding.UTF8.GetBytes(message);
+                return stream.WriteAsync(bytes, 0, bytes.Length);
+            };
         }
 
         private static Task WriteResponse(Task task, OwinContext context, IDictionary<string, object> env)
         {
             var tcs = new TaskCompletionSource<int>();
-            var cancellationToken = (CancellationToken) env[OwinKeys.CallCancelled];
+
+            var cancellationToken = (CancellationToken)env[OwinKeys.CallCancelled];
+
             if (cancellationToken.IsCancellationRequested)
             {
                 tcs.SetCanceled();
+            }
+            else if (task.IsFaulted || task.Exception != null)
+            {
+                context.Response.Status = Status.InternalServerError;
+                context.Response.WriteFunction = ErrorHandler(task.Exception == null ? "An unknown error occured." : task.Exception.ToString());
             }
             else
             {
@@ -78,7 +97,7 @@
 
                     if (context.Response.WriteFunction != null)
                     {
-                        return context.Response.WriteFunction((Stream) env[OwinKeys.ResponseBody]);
+                        return context.Response.WriteFunction((Stream)env[OwinKeys.ResponseBody]);
                     }
                     
                     tcs.SetResult(0);
@@ -88,6 +107,7 @@
                     tcs.SetException(ex);
                 }
             }
+
             return tcs.Task;
         }
 

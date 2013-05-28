@@ -19,5 +19,17 @@
 
         public const string Version = "owin.Version";
         public const string CallCancelled = "owin.CallCancelled";
+
+        public const string ClientCertifiate = "ssl.ClientCertificate";
+
+        public const string ServerRemoteIpAddress = "server.RemoteIpAddress";
+        public const string ServerRemotePort = "server.RemotePort";
+        public const string ServerLocalIpAddress = "server.LocalIpAddress";
+        public const string ServerLocalPort = "server.LocalPort";
+        public const string ServerUser = "server.User";
+        public const string ServerIsLocal = "server.IsLocal";
+
+        public const string WebSocketSupport = "websocket.Support";
+        public const string WebSocketFunc = "websocket.Func";
     }
 }
