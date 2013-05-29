@@ -12,14 +12,12 @@ namespace Simple.Web
     /// </summary>
     public sealed class Configuration : IConfiguration
     {
-        private readonly IDictionary<string, PublicFile> _authenticatedFileMappings =
-            new Dictionary<string, PublicFile>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, PublicFile> _authenticatedFileMappings = new FileMappingDictionary();
 
         private readonly DefaultAuthenticationProvider _defaultAuthenticationProvider =
             new DefaultAuthenticationProvider();
 
-        private readonly IDictionary<string, PublicFile> _publicFileMappings =
-            new Dictionary<string, PublicFile>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, PublicFile> _publicFileMappings = new FileMappingDictionary();
 
         private readonly HashSet<PublicFolder> _publicFolders = new HashSet<PublicFolder>();
         private ISimpleContainer _container = new DefaultSimpleContainer();

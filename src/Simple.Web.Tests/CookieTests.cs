@@ -199,4 +199,23 @@ namespace Simple.Web.Tests
         public string Name { get; set; }
         public int Age { get; set; }
     }
+
+    public class FileMappingDictionaryTest
+    {
+        [Fact]
+        public void AddingPathWithTrailingSlashAddsItWithout()
+        {
+            var target = new FileMappingDictionary();
+            target.Add("/foo/", "foo.html");
+            Assert.Equal("foo.html", target["/foo"].Path);
+        }
+
+        [Fact]
+        public void AddingPathWithoutTrailingSlashAddsItWith()
+        {
+            var target = new FileMappingDictionary();
+            target.Add("/foo", "foo.html");
+            Assert.Equal("foo.html", target["/foo/"].Path);
+        }
+    }
 }

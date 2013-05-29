@@ -89,6 +89,7 @@
     <Compile Include="Cors\AccessControlEntry.cs" />
     <Compile Include="Cors\IAccessControlEntry.cs" />
     <Compile Include="ExplicitGenericResolverAttribute.cs" />
+    <Compile Include="FileMappingDictionary.cs" />
     <Compile Include="GenericResolverAttribute.cs" />
     <Compile Include="Helpers\AsyncExtensions.cs" />
     <Compile Include="Helpers\EnumerableExtensions.cs" />
@@ -212,6 +213,8 @@
     <Compile Include="SimpleWeb.cs" />
     <Compile Include="Hosting\StartupTaskRunner.cs" />
     <Compile Include="Status.cs" />
+    <Compile Include="Status.Success.cs" />
+    <Compile Include="Status.Redirect.cs" />
     <Compile Include="UnsupportedMediaTypeException.cs" />
     <Compile Include="UriTemplateAttribute.cs" />
     <Compile Include="User.cs" />

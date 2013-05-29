@@ -43,3 +43,4 @@ nuget
 src/packages/*
 !src/packages/repositories.config
 artifacts
+*.ncrunchsolution

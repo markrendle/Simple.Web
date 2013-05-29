@@ -7,7 +7,7 @@ namespace Simple.Web
     /// Represents the HTTP Status Code returned by a Handler.
     /// </summary>
     /// <remarks>Has an implicit cast from <see cref="int"/>.</remarks>
-    public struct Status : IEquatable<Status>
+    public partial struct Status : IEquatable<Status>
     {
         /// <summary>
         /// The basic "everything's OK" status.
