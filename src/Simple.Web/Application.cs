@@ -58,6 +58,7 @@
             {
                 try
                 {
+                    context.Response.EnsureContentTypeCharset();
                     env[OwinKeys.StatusCode] = context.Response.Status.Code;
                     env[OwinKeys.ReasonPhrase] = context.Response.Status.Description;
                     env[OwinKeys.ResponseHeaders] = context.Response.Headers;

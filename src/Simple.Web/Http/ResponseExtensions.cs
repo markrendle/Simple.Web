@@ -3,6 +3,7 @@ namespace Simple.Web.Http
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Text.RegularExpressions;
     using Cors;
 
     /// <summary>
@@ -12,6 +13,7 @@ namespace Simple.Web.Http
     {
         private const int MinusOneYear = -31557600;
         private static readonly string[] MediaTypeWildcard = new[] {"*/*"};
+        private static readonly Regex CharsetCheck = new Regex(@";\s*charset=");
 
         /// <summary>
         /// Sets the response Content-Type header.
@@ -21,6 +23,18 @@ namespace Simple.Web.Http
         public static void SetContentType(this IResponse response, string contentType)
         {
             response.SetHeader(HeaderKeys.ContentType, contentType);
+        }
+
+        public static void EnsureContentTypeCharset(this IResponse response, string charset = "utf-8")
+        {
+            string value;
+            if (response.TryGetHeader(HeaderKeys.ContentType, out value))
+            {
+                if (!CharsetCheck.IsMatch(value))
+                {
+                    response.SetHeader(HeaderKeys.ContentType, value + "; charset=" + charset);
+                }
+            }
         }
 
         /// <summary>
@@ -53,6 +67,38 @@ namespace Simple.Web.Http
         {
             EnsureHeaders(response);
             response.Headers[header] = new[] {value};
+        }
+
+        /// <summary>
+        /// Gets a response header if it is set.
+        /// </summary>
+        /// <param name="response">The <see cref="IResponse"/> instance.</param>
+        /// <param name="header">The header key.</param>
+        /// <param name="value">The header value if it is set; otherwise, <c>null</c>.</param>
+        /// <returns><c>true</c> if the header is set; otherwise, <c>false</c>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the header is set but has multiple values.</exception>
+        public static bool TryGetHeader(this IResponse response, string header, out string value)
+        {
+            if (response.Headers == null || response.Headers.Count == 0)
+            {
+                value = null;
+                return false;
+            }
+
+            string[] values;
+            if ((!response.Headers.TryGetValue(header, out values)) || values.Length == 0)
+            {
+                value = null;
+                return false;
+            }
+
+            if (values.Length == 1)
+            {
+                value = values[0];
+                return true;
+            }
+            
+            throw new InvalidOperationException("Header has more than one value.");
         }
 
         /// <summary>
