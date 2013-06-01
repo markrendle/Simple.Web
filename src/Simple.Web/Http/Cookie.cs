@@ -35,7 +35,7 @@ namespace Simple.Web.Http
         {
             Path = Path ?? "/";
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}={1}", Name, HttpUtility.UrlEncode(Value, Encoding.Default));
+            builder.AppendFormat("{0}={1}", Name, HttpUtility.UrlEncode(Value, Encoding.UTF8));
             if (!string.IsNullOrWhiteSpace(Domain))
             {
                 builder.AppendFormat("; Domain={0}", Domain);

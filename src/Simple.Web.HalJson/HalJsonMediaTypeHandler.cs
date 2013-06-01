@@ -43,7 +43,7 @@ namespace Simple.Web.HalJson
             var stringWriter = new StringWriter();
             var writer = new JsonTextWriter(stringWriter);
             serializer.Serialize(writer, output);
-            var buffer = Encoding.Default.GetBytes(stringWriter.ToString());
+            var buffer = Encoding.UTF8.GetBytes(stringWriter.ToString());
             return outputStream.WriteAsync(buffer, 0, buffer.Length);
         }
 

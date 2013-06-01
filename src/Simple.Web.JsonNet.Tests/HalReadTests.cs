@@ -13,7 +13,7 @@
         {
             const string source = @"{""name"":""Arthur Dent"",""location"":""Guildford""}";
             Person actual;
-            using (var stream = new MemoryStream(Encoding.Default.GetBytes(source)))
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
             {
                 stream.Position = 0;
                 var target = new HalJsonMediaTypeHandler();
@@ -30,7 +30,7 @@
             const string source =
                 @"{""_links"": {""self"":""/person/42""}, ""name"":""Arthur Dent"",""location"":""Guildford""}";
             Person actual;
-            using (var stream = new MemoryStream(Encoding.Default.GetBytes(source)))
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(source)))
             {
                 stream.Position = 0;
                 var target = new HalJsonMediaTypeHandler();

@@ -36,7 +36,7 @@
             using (var writer = new StringWriter())
             {
                 RenderView(content, writer, viewType);
-                buffer = Encoding.Default.GetBytes(writer.ToString());
+                buffer = Encoding.UTF8.GetBytes(writer.ToString());
             }
 
             return outputStream.WriteAsync(buffer, 0, buffer.Length);

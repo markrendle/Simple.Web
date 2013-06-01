@@ -67,7 +67,7 @@ namespace Simple.Web.JsonFx
                                                                     new Iso8601DateFilter());
 
                     new JsonWriter(dataWriterSettings).Write(output, writer);
-                    buffer = Encoding.Default.GetBytes(writer.ToString());
+                    buffer = Encoding.UTF8.GetBytes(writer.ToString());
                 }
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);
             }

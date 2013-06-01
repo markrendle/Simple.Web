@@ -12,7 +12,7 @@ namespace Simple.Web.Tests
         {
             var target = new FormDeserializer();
             FD actual;
-            using (var s = new MemoryStream(Encoding.Default.GetBytes("Text=Hello+World!")))
+            using (var s = new MemoryStream(Encoding.UTF8.GetBytes("Text=Hello+World!")))
             {
                 actual = target.Read(s, typeof (FD)) as FD;
             }
@@ -24,7 +24,7 @@ namespace Simple.Web.Tests
         {
             var target = new FormDeserializer();
             FD actual;
-            using (var s = new MemoryStream(Encoding.Default.GetBytes("Text=NXqAP07hSjgGiTlyCCcMoAYt4%2BNNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng%3D%3D")))
+            using (var s = new MemoryStream(Encoding.UTF8.GetBytes("Text=NXqAP07hSjgGiTlyCCcMoAYt4%2BNNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng%3D%3D")))
             {
                 actual = target.Read(s, typeof (FD)) as FD;
             }

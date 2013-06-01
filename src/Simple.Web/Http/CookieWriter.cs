@@ -11,7 +11,7 @@
         {
             path = path ?? "/";
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}={1}; Path={2}", name, HttpUtility.UrlEncode(value, Encoding.Default), path);
+            builder.AppendFormat("{0}={1}; Path={2}", name, HttpUtility.UrlEncode(value, Encoding.UTF8), path);
             if (timeOut != 0)
             {
                 builder.AppendFormat("; Expires={0}", (DateTime.UtcNow + TimeSpan.FromSeconds(timeOut)).ToString("R"));

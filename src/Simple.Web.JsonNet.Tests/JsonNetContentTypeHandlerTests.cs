@@ -16,6 +16,27 @@ namespace Simple.Web.JsonNet.Tests
     public class JsonNetContentTypeHandlerTests
     {
         [Fact]
+        public void SerializesCyrillicText()
+        {
+            const string russian = "Мыа алиё лаборамюз ед, ведят промпта элыктрам квюо ты.";
+            var content = new Content(new Uri("http://test.com/customer/42"), new ThingHandler(), new Thing { Path = russian });
+            var target = new JsonMediaTypeHandler();
+            string actual;
+            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            {
+                target.Write(content, stream).Wait();
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    actual = reader.ReadToEnd();
+                }
+                stream.ForceDispose();
+            }
+            
+            Assert.Contains(russian, actual);
+        }
+
+        [Fact]
         public void PicksUpOrdersLinkFromCustomer()
         {
             const string idProperty = @"""id"":42";

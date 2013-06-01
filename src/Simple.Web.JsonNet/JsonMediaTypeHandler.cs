@@ -65,7 +65,7 @@ namespace Simple.Web.JsonNet
                                        ReferenceLoopHandling = Settings.ReferenceLoopHandling,
                                    };
                 var json = JsonConvert.SerializeObject(content.Model, settings);
-                var buffer = Encoding.Default.GetBytes(json);
+                var buffer = Encoding.UTF8.GetBytes(json);
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);
             }
 
