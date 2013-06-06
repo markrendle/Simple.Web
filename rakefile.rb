@@ -26,7 +26,7 @@ NUGET_APIURL_REMOTE = ENV["apiurl_remote"]
 ENV["EnableNuGetPackageRestore"] = "true"
 
 # Symbol server configuration
-# SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
+SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
 SYMBOL_APIURL_REMOTE = ENV["symbol_remote"] # For nuget.org make this the same as NUGET_APIURI_REMOTE
 
 # Paths
