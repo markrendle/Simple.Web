@@ -10,8 +10,8 @@ namespace Simple.Web.Windsor.Tests
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Register(Component.For<IResult>().ImplementedBy<OkResult>().LifestyleTransient());
-            container.Register(Component.For<TestHandler>().ImplementedBy<TestHandler>().LifestyleTransient());
+            container.Register(Component.For<IResult>().ImplementedBy<OkResult>().LifestyleScoped());
+            container.Register(Component.For<TestHandler>().ImplementedBy<TestHandler>().LifestyleScoped());
         }
     }
 }
