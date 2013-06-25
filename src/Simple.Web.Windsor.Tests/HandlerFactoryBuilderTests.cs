@@ -11,11 +11,11 @@ namespace Simple.Web.Windsor.Tests
         {
             var startup = new TestStartup();
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
-            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
-            var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
-            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo" } }).Handler;
-            Assert.Equal(Status.OK, actual.Get());
-            Assert.Equal("Foo", actual.TestProperty);
+            var builderFactory = new HandlerBuilderFactory(SimpleWeb.Configuration);
+            var handlerFactory = builderFactory.BuildHandlerBuilder(typeof(TestHandler));
+            var handler = (TestHandler)handlerFactory(new Dictionary<string, string> { { "TestProperty", "Foo" } }).Handler;
+            Assert.Equal(Status.OK, handler.Get());
+            Assert.Equal("Foo", handler.TestProperty);
         }
 
         [Fact]
@@ -23,11 +23,11 @@ namespace Simple.Web.Windsor.Tests
         {
             var startup = new TestStartup();
             startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
-            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
-            var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
+            var builderFactory = new HandlerBuilderFactory(SimpleWeb.Configuration);
+            var handlerFactory = builderFactory.BuildHandlerBuilder(typeof(TestHandler));
 
             TestHandler handler;
-            using (var scopedHandler = actualFunc(new Dictionary<string, string>()))
+            using (var scopedHandler = handlerFactory(new Dictionary<string, string>()))
             {
                 handler = (TestHandler) scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);

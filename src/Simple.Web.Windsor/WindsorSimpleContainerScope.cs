@@ -9,7 +9,8 @@ namespace Simple.Web.Windsor
     {
         readonly IWindsorContainer _container;
         readonly IDisposable _scope;
-       
+        bool _disposed;
+
         internal WindsorSimpleContainerScope(IWindsorContainer container)
         {
             _container = container;
@@ -18,12 +19,31 @@ namespace Simple.Web.Windsor
 
         public T Get<T>()
         {
-            return _container.Resolve<T>();
+            EnsureNotDisposed();
+
+            return _container.Kernel.Resolve<T>();
         }
 
         public void Dispose()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             _scope.Dispose();
+            _disposed = true;
+
+            GC.SuppressFinalize(this);
+        }
+
+
+        void EnsureNotDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("WindsorDependencyScope");
+            }
         }
     }
 }
