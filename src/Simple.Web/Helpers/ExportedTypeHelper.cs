@@ -2,6 +2,7 @@ namespace Simple.Web.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -31,6 +32,10 @@ namespace Simple.Web.Helpers
                         catch (ReflectionTypeLoadException e) // We can't gaurantee the assembly we're exporting from as it's indirect references
                         {
                             types = e.Types;
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            types = new Type[0];
                         }
 
                         return types;

@@ -32,11 +32,11 @@ namespace Simple.Web
         /// <summary>
         /// Indicates that a request was processed successfully and a new resource was created.
         /// </summary>
-        /// <param name="redirectLocation">The redirect location.</param>
+        /// <param name="location">The redirect location.</param>
         /// <returns></returns>
-        public static Status CreatedRedirect(string redirectLocation)
+        public static Status CreatedRedirect(string location)
         {
-            return new Status(201, "Created", redirectLocation);
+            return new Status(201, "Created", location);
         }
 
         /// <summary>
@@ -47,33 +47,42 @@ namespace Simple.Web
         /// <summary>
         /// A redirect to another resource, telling the client to use the new URI for all future requests.
         /// </summary>
-        public static Status MovedPermanently(string redirectLocation)
+        public static Status MovedPermanently(string location)
         {
-            return new Status(301, "Moved Permanently", redirectLocation);
+            return new Status(301, "Moved Permanently", location);
         }
 
         /// <summary>
         /// A redirect to another resource, but telling the client to continue to use this URI for future requests.
         /// </summary>
-        public static Status Found(string redirectLocation)
+        public static Status Found(string location)
         {
-            return new Status(302, "Found", redirectLocation);
+            return new Status(302, "Found", location);
         }
 
         /// <summary>
         /// A redirect to another resource, commonly used after a POST operation to prevent refreshes.
         /// </summary>
-        public static Status SeeOther(string redirectLocation)
+        public static Status SeeOther(string location)
         {
-            return new Status(303, "See Other", redirectLocation);
+            return new Status(303, "See Other", location);
         }
 
         /// <summary>
         /// A Temporary redirect, e.g. for a login page.
         /// </summary>
-        public static Status TemporaryRedirect(string redirectLocation)
+        public static Status TemporaryRedirect(string location)
         {
-            return new Status(307, "Temporary Redirect", redirectLocation);
+            return new Status(307, "Temporary Redirect", location);
+        }
+
+        /// <summary>
+        /// Indicated requerst accepted for processing, but the processing has not been completed. The
+        /// location is the URL used to check it's status.
+        /// </summary>
+        public static Status Accepted(string location)
+        {
+            return new Status(202, "Accepted", location);
         }
 
         /// <summary>
@@ -95,7 +104,7 @@ namespace Simple.Web
 
         private readonly int _httpStatusCode;
         private readonly string _httpStatusDescription;
-        private readonly string _redirectLocation;
+        private readonly string _locationHeader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Status"/> struct.
@@ -119,12 +128,12 @@ namespace Simple.Web
         /// </summary>
         /// <param name="httpStatusCode">The HTTP status code.</param>
         /// <param name="httpStatusDescription">The HTTP status description.</param>
-        /// <param name="redirectLocation">Redirection Url</param>
-        public Status(int httpStatusCode, string httpStatusDescription, string redirectLocation) : this()
+        /// <param name="locationHeader">Redirection Url</param>
+        public Status(int httpStatusCode, string httpStatusDescription, string locationHeader) : this()
         {
             _httpStatusCode = httpStatusCode;
             _httpStatusDescription = httpStatusDescription;
-            _redirectLocation = redirectLocation;
+            _locationHeader = locationHeader;
         }
 
         /// <summary>
@@ -187,9 +196,9 @@ namespace Simple.Web
             get { return _httpStatusCode >= 200 && _httpStatusCode <= 299; }
         }
 
-        public string RedirectLocation
+        public string LocationHeader
         {
-            get { return _redirectLocation; }
+            get { return _locationHeader; }
         }
 
         /// <summary>
