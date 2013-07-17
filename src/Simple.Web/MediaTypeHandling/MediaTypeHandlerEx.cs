@@ -7,7 +7,7 @@ namespace Simple.Web.MediaTypeHandling
 
     static class MediaTypeHandlerEx
     {
-        private static readonly IDictionary<Type, HashSet<string>> Cache = new Dictionary<Type, HashSet<string>>(); 
+        private static readonly IDictionary<Type, HashSet<string>> Cache = new Dictionary<Type, HashSet<string>>();
         private static readonly object Sync = new object();
 
         /// <summary>
@@ -33,7 +33,40 @@ namespace Simple.Web.MediaTypeHandling
                     }
                 }
             }
-            return acceptedTypes.FirstOrDefault(contentTypes.Contains);
+            return acceptedTypes.FirstOrDefault(x => ContainsMatchingContentType(contentTypes, x));
+        }
+
+        private static bool ContainsMatchingContentType(IEnumerable<string> supportedMediaTypes, string mediaType)
+        {
+            bool matched = false;
+            foreach (var supportedMediaType in supportedMediaTypes)
+            {
+                if (IsWildCardMediaType(supportedMediaType))
+                {
+                    matched = MatchesWildCard(supportedMediaType, mediaType);
+                }
+                else
+                {
+                    matched = (supportedMediaType == mediaType);
+                }
+
+                if (matched)
+                {
+                    break;
+                }
+            }
+            return matched;
+        }
+
+        private static bool IsWildCardMediaType(string mediaType)
+        {
+            return mediaType.Contains("*");
+        }
+
+        private static bool MatchesWildCard(string wildcard, string mediaType)
+        {
+            var parts = wildcard.Split('*');
+            return (mediaType.StartsWith(parts[0]) && mediaType.EndsWith(parts[1]));
         }
     }
 }

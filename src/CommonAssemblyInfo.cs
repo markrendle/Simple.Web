@@ -1,15 +1,16 @@
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Runtime.InteropServices;
-[assembly: AssemblyCompany("Mark Rendle")]
+[assembly: AssemblyCompany("Mark Rendle, Ian Battersby, and contributors")]
 [assembly: AssemblyProduct("Simple.Web")]
 [assembly: AssemblyCopyright("Copyright (C) Mark Rendle 2012")]
+[assembly: AssemblyTrademark("7c9e14b1afb8068ac85e01b3b9253a12844cd130")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("0.0.0.0")]
-[assembly: AssemblyFileVersion("0.0.0.0")]
+[assembly: AssemblyVersion("0.8.0.51335")]
+[assembly: AssemblyFileVersion("0.8.0.51335")]
 
-[assembly: AssemblyConfiguration("Release")]
-[assembly: AssemblyInformationalVersion("0.0.0.0")]
+[assembly: AssemblyConfiguration("debug")]
+[assembly: AssemblyInformationalVersion("0.8.0.51335")]
 
 [assembly: InternalsVisibleTo("Simple.Web.Autofac.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.CodeGeneration.Tests")]
