@@ -8,6 +8,9 @@
     using Behaviors;
     using MediaTypeHandling;
     using Mocks;
+
+    using Simple.Web.MediaTypeHandling;
+
     using Xunit;
 
     public class GetHandlerTests
@@ -18,7 +21,7 @@
         }
     }
 
-    
+
 
     [UriTemplate("/")]
     [RespondsWith(MediaType.Html)]
