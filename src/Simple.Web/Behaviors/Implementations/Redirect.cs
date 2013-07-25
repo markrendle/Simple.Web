@@ -42,9 +42,9 @@
         /// <returns><c>false</c> (to prevent response output) if the status is a redirect code; otherwise, <c>true</c>.</returns>
         public static bool Impl(object handler, IContext context)
         {
-            if (!(string.IsNullOrWhiteSpace(context.Response.Status.RedirectLocation)))
+            if (!(string.IsNullOrWhiteSpace(context.Response.Status.LocationHeader)))
             {
-                context.Response.SetHeader("Location", context.Response.Status.RedirectLocation);
+                context.Response.SetHeader("Location", context.Response.Status.LocationHeader);
                 return false;
                 // this cancels the responder task, so doesn't require a view. Cookie task MUST come before this!
             }

@@ -6,6 +6,7 @@
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Behaviors.Implementations;
@@ -38,34 +39,67 @@
         {
             var context = new OwinContext(env);
             var task = Run(context);
+
             if (task == null)
             {
-                return TaskHelper.Completed(new Result(null, 404, null, null));
+                env.Add(OwinKeys.StatusCode, Status.NotFound.Code);
+                env.Add(OwinKeys.ReasonPhrase, Status.NotFound.Description);
+
+                return TaskHelper.Completed(new Result(null, Status.NotFound.Code, null, null));
             }
+
             return task
                 .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
+        }
+
+        private static Func<Stream, Task> ErrorHandler(string message)
+        {
+            return stream =>
+            {
+                var bytes = Encoding.UTF8.GetBytes(message);
+                return stream.WriteAsync(bytes, 0, bytes.Length);
+            };
         }
 
         private static Task WriteResponse(Task task, OwinContext context, IDictionary<string, object> env)
         {
             var tcs = new TaskCompletionSource<int>();
-            var cancellationToken = (CancellationToken) env[OwinKeys.CallCancelled];
+
+            var cancellationToken = (CancellationToken)env[OwinKeys.CallCancelled];
+
             if (cancellationToken.IsCancellationRequested)
             {
                 tcs.SetCanceled();
+            }
+            else if (task.IsFaulted || task.Exception != null)
+            {
+                context.Response.Status = Status.InternalServerError;
+                context.Response.WriteFunction = ErrorHandler(task.Exception == null ? "An unknown error occured." : task.Exception.ToString());
             }
             else
             {
                 try
                 {
                     context.Response.EnsureContentTypeCharset();
-                    env[OwinKeys.StatusCode] = context.Response.Status.Code;
-                    env[OwinKeys.ReasonPhrase] = context.Response.Status.Description;
-                    env[OwinKeys.ResponseHeaders] = context.Response.Headers;
+
+                    env.Add(OwinKeys.StatusCode, context.Response.Status.Code);
+                    env.Add(OwinKeys.ReasonPhrase, context.Response.Status.Description);
+
+                    if (context.Response.Headers != null)
+                    {
+                        var responseHeaders = (IDictionary<string, string[]>)env[OwinKeys.ResponseHeaders];
+
+                        foreach (var header in context.Response.Headers)
+                        {
+                            responseHeaders.Add(header.Key, header.Value);
+                        }
+                    }
+
                     if (context.Response.WriteFunction != null)
                     {
-                        return context.Response.WriteFunction((Stream) env[OwinKeys.ResponseBody]);
+                        return context.Response.WriteFunction((Stream)env[OwinKeys.ResponseBody]);
                     }
+                    
                     tcs.SetResult(0);
                 }
                 catch (Exception ex)
@@ -73,6 +107,7 @@
                     tcs.SetException(ex);
                 }
             }
+
             return tcs.Task;
         }
 

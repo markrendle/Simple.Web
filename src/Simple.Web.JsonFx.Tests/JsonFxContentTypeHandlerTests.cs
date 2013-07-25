@@ -68,6 +68,51 @@ namespace Simple.Web.JsonFx.Tests
             Assert.Contains(ordersLink, actual);
             Assert.Contains(selfLink, actual);
         }
+
+        [Fact]
+        public void WritesJsonWithEnum()
+        {
+            var content = new Content(new Uri("http://test.com/EnumCustomer/42"), new EnumCustomerHandler(), new[] { new EnumCustomer() { AnEnum = MyEnum.Ian } });
+            var target = new JsonMediaTypeHandler();
+
+            string actual;
+
+            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            {
+                target.Write(content, stream).Wait();
+                stream.Position = 0;
+
+                using (var reader = new StreamReader(stream))
+                {
+                    actual = reader.ReadToEnd();
+                }
+
+                stream.ForceDispose();
+            }
+
+            Assert.NotNull(actual);
+        }
+
+        [Fact]
+        public void ParsesJasnWithEnum()
+        {
+            var content = "{ \"AnEnum\": \"Ian\" }";
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(content);
+            writer.Flush();
+            stream.Position = 0;
+
+            var handler = new JsonMediaTypeHandler();
+
+            var obj = handler.Read(stream, typeof(EnumCustomer));
+
+            stream.Close();
+
+            Assert.IsType<EnumCustomer>(obj);
+            Assert.NotNull(obj);
+            Assert.Equal(MyEnum.Ian, (obj as EnumCustomer).AnEnum);
+        }
     }
 
     [LinksFrom(typeof(Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
@@ -87,8 +132,25 @@ namespace Simple.Web.JsonFx.Tests
     {
     }
 
+    [LinksFrom(typeof(EnumCustomer), "/enumcustomer/{Id}", Rel = "self", Type = "application/vnd.enum.customer")]
+    public class EnumCustomerHandler
+    {
+
+    }
+
     public class Customer
     {
         public int Id { get; set; }
+    }
+
+    public enum MyEnum
+    {
+        Ian,
+        Franc
+    }
+
+    public class EnumCustomer
+    {
+        public MyEnum AnEnum { get; set; }
     }
 }

@@ -44,14 +44,12 @@ namespace Simple.Web.Razor
         public virtual void Write(object value)
         {
             _output.Append(value);
-            Trace.Write("\nWrite: " + value);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void WriteLiteral(object value)
         {
             _output.Append(value);
-            Trace.Write("\nWriteLiteral: " + value);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
