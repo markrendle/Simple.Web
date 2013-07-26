@@ -32,15 +32,13 @@ namespace Simple.Web.Xml.Tests
             }
             Assert.NotNull(actual);
 
-            var root = XElement.Parse(actual);
-            Assert.Equal("Order", root.Name.LocalName);
-            XElement id = root.Element(root.GetDefaultNamespace() + "Id");
-            Assert.NotNull(id);
-            Assert.Equal("54", id.Value);
-            
-            XElement customerId = root.Element(root.GetDefaultNamespace() + "CustomerId");
-            Assert.NotNull(customerId);
-            Assert.Equal("42", customerId.Value);
+	        const string expected = "<Order xmlns='http://schemas.datacontract.org/2004/07/Simple.Web.Xml.Tests'" +
+	                                "       xmlns:i='http://www.w3.org/2001/XMLSchema-instance'>" +
+	                                "  <CustomerId>42</CustomerId>"+
+	                                "  <Id>54</Id>"+
+	                                "</Order>";
+
+			XElement.Parse(actual).ShouldEqual(expected);
         }
         
         [Fact]
@@ -61,13 +59,15 @@ namespace Simple.Web.Xml.Tests
             }
             Assert.NotNull(actual);
 
-            var root = XElement.Parse(actual);
-            Assert.Equal("Customer", root.Name.LocalName);
-            XElement id = root.Element(root.GetDefaultNamespace() + "Id");
-            Assert.NotNull(id);
-            Assert.Equal("42", id.Value);
-            var links = root.Elements("link").ToList();
-            Assert.Equal(2, links.Count);
+	        const string expected = "<?xml version='1.0' encoding='utf-8'?>" +
+	                                "<Customer xmlns='http://schemas.datacontract.org/2004/07/Simple.Web.Xml.Tests'" +
+	                                "          xmlns:i='http://www.w3.org/2001/XMLSchema-instance'>" +
+	                                "  <Id>42</Id>" +
+	                                "  <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' xmlns='' />" +
+	                                "  <link href='/customer/42' rel='self' type='application/vnd.customer+xml' xmlns='' />" +
+	                                "</Customer>";
+
+			XElement.Parse(actual).ShouldEqual(expected);
         }
         
         [Fact]
@@ -88,27 +88,28 @@ namespace Simple.Web.Xml.Tests
             }
             Assert.NotNull(actual);
 
-            var root = XElement.Parse(actual);
-            Assert.Equal("Customers", root.Name.LocalName);
-            var customer = root.Elements().FirstOrDefault(x => x.Name.LocalName == "Customer");
-            XElement id = customer.Element(customer.GetDefaultNamespace() + "Id");
-            Assert.NotNull(id);
-            Assert.Equal("42", id.Value);
-            var links = customer.Elements("link").ToList();
-            Assert.Equal(2, links.Count);
+	        const string expected = "<?xml version='1.0' encoding='utf-8'?>" +
+	                                "<Customers>" +
+	                                "  <Customer xmlns='http://schemas.datacontract.org/2004/07/Simple.Web.Xml.Tests'" +
+	                                "            xmlns:i='http://www.w3.org/2001/XMLSchema-instance'>" +
+	                                "    <Id>42</Id>" +
+	                                "    <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' xmlns='' />" +
+	                                "    <link href='/customer/42' rel='self' type='application/vnd.customer+xml' xmlns='' />" +
+	                                "  </Customer>" +
+	                                "</Customers>";
+			
+			XElement.Parse(actual).ShouldEqual(expected);
         }
     }
 
     [LinksFrom(typeof(Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
     public class CustomerOrders
     {
-
     }
 
     [LinksFrom(typeof(Customer), "/customer/{Id}", Rel = "self", Type = "application/vnd.customer")]
     public class CustomerHandler
     {
-
     }
 
     [LinksFrom(typeof(IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
@@ -118,7 +119,6 @@ namespace Simple.Web.Xml.Tests
 
     public class OrderHandler
     {
-        
     }
 
     public class Customer
