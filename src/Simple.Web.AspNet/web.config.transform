@@ -1,14 +1,5 @@
 <configuration>
-  <system.web>
-    <compilation debug="true">
-    </compilation>
-    <!-- Uncomment this for running in VS2010 Dev Server -->
-    <!--<httpHandlers>
-      <add verb="*" path="*" type="Fix.AspNet.FixHttpHandler"/>
-    </httpHandlers>-->
-  </system.web>
   <system.webServer>
-    <!-- Comment this for running in VS2010 Dev Server -->
     <handlers>
       <add name="Fix.AspNet" path="*" verb="*" type="Fix.AspNet.FixHttpHandler"/>
     </handlers>
