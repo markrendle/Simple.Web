@@ -21,49 +21,52 @@ namespace Simple.Web.JsonNet
         private static HashSet<Type> GetKnownTypes()
         {
             var q = ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists)
-                              .SelectMany(LinkAttributeBase.Get)
-                              .Select(l => l.ModelType);
+                                      .SelectMany(LinkAttributeBase.Get)
+                                      .Select(l => l.ModelType);
             return new HashSet<Type>(q);
         }
 
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
-                                                                                {
-                                                                                    DateFormatHandling =
-                                                                                        DateFormatHandling.IsoDateFormat,
-                                                                                    ReferenceLoopHandling =
-                                                                                        ReferenceLoopHandling.Ignore,
-                                                                                    ContractResolver =
-                                                                                        new CamelCasePropertyNamesContractResolver
-                                                                                        ()
-                                                                                };
+            {
+                DateFormatHandling =
+                    DateFormatHandling.IsoDateFormat,
+                ReferenceLoopHandling =
+                    ReferenceLoopHandling.Ignore,
+                ContractResolver =
+                    new CamelCasePropertyNamesContractResolver
+                        ()
+            };
 
         public static JsonSerializerSettings Settings
         {
             get { return SerializerSettings; }
         }
 
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            // pass the combined resolver strategy into the settings object
-            using (var streamReader = new StreamReader(inputStream))
-            {
-                return JsonConvert.DeserializeObject(streamReader.ReadToEnd(), inputType, SerializerSettings);
-            }
+            return Task<T>.Factory.StartNew(() =>
+                {
+                    // pass the combined resolver strategy into the settings object
+                    using (var streamReader = new StreamReader(inputStream))
+                    {
+                        return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd(), SerializerSettings);
+                    }
+                });
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             if (content.Model != null)
             {
                 var linkConverters = LinkConverter.CreateForGraph(content.Model.GetType(), KnownTypes.Value,
-                                                                 LinkHelper.GetLinksForModel, Settings.ContractResolver);
+                                                                  LinkHelper.GetLinksForModel, Settings.ContractResolver);
                 var settings = new JsonSerializerSettings
-                                   {
-                                       Converters = linkConverters,
-                                       ContractResolver = Settings.ContractResolver,
-                                       DateFormatHandling = Settings.DateFormatHandling,
-                                       ReferenceLoopHandling = Settings.ReferenceLoopHandling,
-                                   };
+                    {
+                        Converters = linkConverters,
+                        ContractResolver = Settings.ContractResolver,
+                        DateFormatHandling = Settings.DateFormatHandling,
+                        ReferenceLoopHandling = Settings.ReferenceLoopHandling,
+                    };
                 var json = JsonConvert.SerializeObject(content.Model, settings);
                 var buffer = Encoding.UTF8.GetBytes(json);
                 return outputStream.WriteAsync(buffer, 0, buffer.Length);

@@ -20,7 +20,7 @@
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<CustomerList>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {

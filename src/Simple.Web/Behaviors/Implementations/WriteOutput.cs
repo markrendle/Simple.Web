@@ -26,9 +26,9 @@
             {
                 if (ReferenceEquals(handler.Output, null)) return;
             }
-            if (typeof(T) == typeof(RawHtml))
+            if (typeof (T) == typeof (RawHtml))
             {
-                WriteRawHtml((IOutput<RawHtml>)handler, context);
+                WriteRawHtml((IOutput<RawHtml>) handler, context);
                 return;
             }
             WriteUsingMediaTypeHandler(handler, context);
@@ -46,12 +46,13 @@
                 context.Response.WriteFunction = (stream) =>
                     {
                         var content = new Content(context.Request.Url, handler, handler.Output);
-                        return mediaTypeHandler.Write(content, stream);
+                        return mediaTypeHandler.Write<T>(content, stream);
                     };
             }
         }
 
-        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes,
+                                                   out IMediaTypeHandler mediaTypeHandler)
         {
             try
             {
@@ -88,7 +89,7 @@
         private static string GetHtmlContentType(IContext context)
         {
             return context.Request.GetAccept()
-                   .FirstOrDefault( at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+                          .FirstOrDefault(at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
         }
     }
 }

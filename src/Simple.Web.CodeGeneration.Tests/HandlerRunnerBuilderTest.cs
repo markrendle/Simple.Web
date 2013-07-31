@@ -14,7 +14,7 @@
 
     public class HandlerRunnerBuilderTest
     {
-        static readonly IMediaTypeHandler JsonMediaTypeHandler = new TestJsonMediaTypeHandler();
+        private static readonly IMediaTypeHandler JsonMediaTypeHandler = new TestJsonMediaTypeHandler();
         private static readonly byte[] TestJson = Encoding.UTF8.GetBytes("{\"Called\": true, \"Test\":\"Pass\"}\r\n");
 
         [Fact]
@@ -22,7 +22,10 @@
         {
             var target = new HandlerRunnerBuilder(typeof (Foo), "GET").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
+            context.Request = new MockRequest
+                {
+                    Headers = new Dictionary<string, string[]> {{HeaderKeys.Accept, new[] {"text/html"}}}
+                };
             var foo = new Foo();
             target(foo, context);
             Assert.True(foo.Called);
@@ -33,7 +36,10 @@
         {
             var target = new HandlerRunnerBuilder(typeof (RedirectFoo), "GET").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
+            context.Request = new MockRequest
+                {
+                    Headers = new Dictionary<string, string[]> {{HeaderKeys.Accept, new[] {"text/html"}}}
+                };
             context.Response = new MockResponse();
             var foo = new RedirectFoo();
             target(foo, context);
@@ -45,8 +51,16 @@
         {
             var target = new HandlerRunnerBuilder(typeof (PostFoo), "POST").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
-                InputStream = new MemoryStream(TestJson)};
+            context.Request = new MockRequest
+                {
+                    Headers =
+                        new Dictionary<string, string[]>
+                            {
+                                {HeaderKeys.Accept, new[] {"text/html"}},
+                                {HeaderKeys.ContentType, new[] {"application/json"}}
+                            },
+                    InputStream = new MemoryStream(TestJson)
+                };
             var postFoo = new PostFoo();
             target(postFoo, context);
             Assert.True(postFoo.Called);
@@ -58,8 +72,16 @@
         {
             var target = new HandlerRunnerBuilder(typeof (PostAsyncFoo), "POST").BuildAsyncRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
-                InputStream = new MemoryStream(TestJson)};
+            context.Request = new MockRequest
+                {
+                    Headers =
+                        new Dictionary<string, string[]>
+                            {
+                                {HeaderKeys.Accept, new[] {"text/html"}},
+                                {HeaderKeys.ContentType, new[] {"application/json"}}
+                            },
+                    InputStream = new MemoryStream(TestJson)
+                };
             var postFoo = new PostAsyncFoo();
             target.Start(postFoo, context);
             Assert.True(postFoo.Called);
@@ -71,41 +93,60 @@
         {
             var target = new HandlerRunnerBuilder(typeof (PutFoo), "PUT").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
-                InputStream = new MemoryStream(TestJson)};
+            context.Request = new MockRequest
+                {
+                    Headers =
+                        new Dictionary<string, string[]>
+                            {
+                                {HeaderKeys.Accept, new[] {"text/html"}},
+                                {HeaderKeys.ContentType, new[] {"application/json"}}
+                            },
+                    InputStream = new MemoryStream(TestJson)
+                };
             var postFoo = new PutFoo();
             target(postFoo, context);
             Assert.True(postFoo.Called);
             Assert.Equal("Pass", postFoo.Test);
         }
-        
+
         [Fact]
         public void CallsPatchWithParameter()
         {
             var target = new HandlerRunnerBuilder(typeof (PatchFoo), "PATCH").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } }, {HeaderKeys.ContentType, new[] { "application/json" }} },
-                InputStream = new MemoryStream(TestJson)};
+            context.Request = new MockRequest
+                {
+                    Headers =
+                        new Dictionary<string, string[]>
+                            {
+                                {HeaderKeys.Accept, new[] {"text/html"}},
+                                {HeaderKeys.ContentType, new[] {"application/json"}}
+                            },
+                    InputStream = new MemoryStream(TestJson)
+                };
             var postFoo = new PatchFoo();
             target(postFoo, context);
             Assert.True(postFoo.Called);
             Assert.Equal("Pass", postFoo.Test);
         }
-        
+
         [Fact]
         public void BarStopsFoo()
         {
             var target = new HandlerRunnerBuilder(typeof (Bar), "GET").BuildRunner();
             var context = new Mocks.MockContext();
-            context.Request = new MockRequest { Headers = new Dictionary<string, string[]> { { HeaderKeys.Accept, new[] { "text/html" } } } };
+            context.Request = new MockRequest
+                {
+                    Headers = new Dictionary<string, string[]> {{HeaderKeys.Accept, new[] {"text/html"}}}
+                };
             var bar = new Bar();
             target(bar, context);
-            Assert.True(((IBar)bar).Called);
-            Assert.False(((IFoo)bar).Called);
+            Assert.True(((IBar) bar).Called);
+            Assert.False(((IFoo) bar).Called);
         }
     }
 
-    class Bar : IGet, IFoo, IBar
+    internal class Bar : IGet, IFoo, IBar
     {
         bool IFoo.Called { get; set; }
         bool IBar.Called { get; set; }
@@ -120,6 +161,7 @@
     {
         public string Test;
         public bool Called;
+
         public Status Post(FooModel input)
         {
             Called = input.Called;
@@ -132,6 +174,7 @@
     {
         public string Test;
         public bool Called;
+
         public Task<Status> Post(FooModel input)
         {
             Called = input.Called;
@@ -146,6 +189,7 @@
     {
         public string Test;
         public bool Called;
+
         public Status Put(FooModel input)
         {
             Called = input.Called;
@@ -158,6 +202,7 @@
     {
         public string Test;
         public bool Called;
+
         public Status Patch(FooModel input)
         {
             Called = input.Called;
@@ -166,16 +211,17 @@
         }
     }
 
-    class Foo : IGet, IFoo
+    internal class Foo : IGet, IFoo
     {
         public bool Called { get; set; }
+
         public Status Get()
         {
             return new Status();
         }
     }
 
-    class RedirectFoo : IGet
+    internal class RedirectFoo : IGet
     {
         public Status Get()
         {
@@ -183,7 +229,7 @@
         }
     }
 
-    [RequestBehavior(typeof(FooImpl))]
+    [RequestBehavior(typeof (FooImpl))]
     public interface IFoo
     {
         bool Called { get; set; }
@@ -192,13 +238,14 @@
     public static class FooImpl
     {
         public static bool Called;
+
         public static void Impl(IFoo foo, IContext context)
         {
             foo.Called = true;
         }
     }
-    
-    [RequestBehavior(typeof(BarImpl), Priority = Priority.Highest)]
+
+    [RequestBehavior(typeof (BarImpl), Priority = Priority.Highest)]
     public interface IBar
     {
         bool Called { get; set; }
@@ -207,6 +254,7 @@
     public static class BarImpl
     {
         public static bool Called;
+
         public static bool Impl(IBar bar, IContext context)
         {
             bar.Called = true;
@@ -223,16 +271,18 @@
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class TestJsonMediaTypeHandler : IMediaTypeHandler
     {
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            return new FooModel()
-            {
-                Test = "Pass",
-                Called = true
-            };
+            var source = new TaskCompletionSource<T>();
+            source.SetResult((T) (object) new FooModel()
+                {
+                    Test = "Pass",
+                    Called = true
+                });
+            return source.Task;
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             return TaskHelper.Completed();
         }

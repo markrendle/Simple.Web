@@ -21,7 +21,7 @@ namespace Simple.Web.CodeGeneration
         private readonly Type _type;
         private readonly string _httpMethod;
         private readonly IMethodLookup _methodLookup;
-        private readonly List<Expression> _blocks = new List<Expression>(); 
+        private readonly List<Expression> _blocks = new List<Expression>();
         private readonly LabelTarget _end = Expression.Label("end");
         private readonly ParameterExpression _handlerParameter;
         private ParameterExpression _context;
@@ -35,14 +35,14 @@ namespace Simple.Web.CodeGeneration
             _type = type;
             _httpMethod = httpMethod;
             _methodLookup = methodLookup ?? new MethodLookup();
-            _handlerParameter = Expression.Parameter(typeof(object), "obj");
+            _handlerParameter = Expression.Parameter(typeof (object), "obj");
             _handler = Expression.Variable(_type, "handler");
         }
 
         public Action<object, IContext> BuildRunner()
         {
-            _status = Expression.Variable(typeof(Status), "status");
-            _context = Expression.Parameter(typeof(IContext), "context");
+            _status = Expression.Variable(typeof (Status), "status");
+            _context = Expression.Parameter(typeof (IContext), "context");
 
             _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
             CreateSetupBlocks();
@@ -61,7 +61,7 @@ namespace Simple.Web.CodeGeneration
         public AsyncRunner BuildAsyncRunner()
         {
             _task = Expression.Variable(typeof (Task<Status>), "task");
-            _context = Expression.Parameter(typeof(IContext), "context");
+            _context = Expression.Parameter(typeof (IContext), "context");
             _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
             CreateSetupBlocks();
             _blocks.Add(BuildAsyncRunBlock());
@@ -73,9 +73,9 @@ namespace Simple.Web.CodeGeneration
                 Expression.Lambda<Func<object, IContext, Task<Status>>>(block, _handlerParameter, _context).Compile();
 
             _blocks.Clear();
-            _context = Expression.Parameter(typeof(IContext), "context");
+            _context = Expression.Parameter(typeof (IContext), "context");
             _blocks.Add(Expression.Assign(_handler, Expression.Convert(_handlerParameter, _type)));
-            _status = Expression.Parameter(typeof(Status), "status");
+            _status = Expression.Parameter(typeof (Status), "status");
 
             CreateResponseBlocks();
             CreateDisposeBlock();
@@ -83,7 +83,9 @@ namespace Simple.Web.CodeGeneration
             _blocks.Add(Expression.Label(_end));
             block = Expression.Block(new[] {_handler}, _blocks);
 
-            var end = Expression.Lambda<Action<object, IContext, Status>>(block, _handlerParameter, _context, _status).Compile();
+            var end =
+                Expression.Lambda<Action<object, IContext, Status>>(block, _handlerParameter, _context, _status)
+                          .Compile();
 
             return new AsyncRunner(start, end);
         }
@@ -121,7 +123,15 @@ namespace Simple.Web.CodeGeneration
             }
 
             // If we didn't trigger an Output, try writing a View.
-            _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
+            if (_methodLookup.WriteView.IsGenericMethod)
+            {
+                MethodInfo genericMethod = _methodLookup.WriteView.MakeGenericMethod(new[] {_type});
+                _blocks.Add(Expression.Call(genericMethod, _handler, _context));
+            }
+            else
+            {
+                _blocks.Add(Expression.Call(_methodLookup.WriteView, _handler, _context));
+            }
         }
 
         private bool AddBehaviorBlock(BehaviorInfo behaviorInfo)
@@ -151,7 +161,7 @@ namespace Simple.Web.CodeGeneration
             var methodCallExpression = BuildMethodCallExpression(method);
 
             // If the implementation method returns a boolean, then when it is false, stop processing.
-            if (method.ReturnType == typeof(bool))
+            if (method.ReturnType == typeof (bool))
             {
                 return Expression.IfThen(Expression.Not(methodCallExpression), Expression.Return(_end));
             }
@@ -172,7 +182,7 @@ namespace Simple.Web.CodeGeneration
             var methodCallExpression = BuildMethodCallExpression(method);
 
             // If the implementation method returns a boolean, then when it is false, stop processing.
-            if (method.ReturnType == typeof(bool))
+            if (method.ReturnType == typeof (bool))
             {
                 return Expression.IfThen(Expression.Not(methodCallExpression), Expression.Return(_end));
             }
@@ -186,9 +196,9 @@ namespace Simple.Web.CodeGeneration
 
         private void CreateDisposeBlock()
         {
-            if (typeof(IDisposable).IsAssignableFrom(_type))
+            if (typeof (IDisposable).IsAssignableFrom(_type))
             {
-                _blocks.Add(Expression.Call(_handler, typeof(IDisposable).GetMethod("Dispose")));
+                _blocks.Add(Expression.Call(_handler, typeof (IDisposable).GetMethod("Dispose")));
             }
         }
 
@@ -209,7 +219,9 @@ namespace Simple.Web.CodeGeneration
             var methodType = HttpMethodAttribute.GetAttributedType(_type, _httpMethod);
 
             var genericType = methodType.GetGenericArguments().Single();
-            var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(genericType);
+            var getInput =
+                typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static)
+                                 .MakeGenericMethod(genericType);
             return Expression.Assign(_status, Expression.Call(_handler, run, Expression.Call(getInput, _context)));
         }
 
@@ -221,10 +233,15 @@ namespace Simple.Web.CodeGeneration
             {
                 return Expression.Assign(_task, Expression.Call(_handler, run));
             }
-            var getInput = typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(parameters[0].ParameterType);
+            var getInput =
+                typeof (GetInput).GetMethod("Impl", BindingFlags.Public | BindingFlags.Static)
+                                 .MakeGenericMethod(parameters[0].ParameterType);
             var checkRunException = typeof (CheckRunException).GetMethod("ImplAsync",
                                                                          BindingFlags.Public | BindingFlags.Static);
-            return Expression.Assign(_task, Expression.Call(checkRunException, Expression.Call(_handler, run, Expression.Call(getInput, _context)), _context));
+            return Expression.Assign(_task,
+                                     Expression.Call(checkRunException,
+                                                     Expression.Call(_handler, run, Expression.Call(getInput, _context)),
+                                                     _context));
         }
     }
 }
