@@ -22,12 +22,13 @@ namespace Simple.Web.JsonFx.Tests
             const string selfLink =
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
+                                      new Customer {Id = 42});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -50,12 +51,13 @@ namespace Simple.Web.JsonFx.Tests
             const string selfLink =
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new[] { new Customer { Id = 42 } });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
+                                      new[] {new Customer {Id = 42}});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -72,14 +74,15 @@ namespace Simple.Web.JsonFx.Tests
         [Fact]
         public void WritesJsonWithEnum()
         {
-            var content = new Content(new Uri("http://test.com/EnumCustomer/42"), new EnumCustomerHandler(), new[] { new EnumCustomer() { AnEnum = MyEnum.Ian } });
+            var content = new Content(new Uri("http://test.com/EnumCustomer/42"), new EnumCustomerHandler(),
+                                      new[] {new EnumCustomer() {AnEnum = MyEnum.Ian}});
             var target = new JsonMediaTypeHandler();
 
             string actual;
 
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<IEnumerable<EnumCustomer>>(content, stream).Wait();
                 stream.Position = 0;
 
                 using (var reader = new StreamReader(stream))
@@ -105,7 +108,7 @@ namespace Simple.Web.JsonFx.Tests
 
             var handler = new JsonMediaTypeHandler();
 
-            var obj = handler.Read(stream, typeof(EnumCustomer));
+            var obj = handler.Read<EnumCustomer>(stream).Result;
 
             stream.Close();
 
@@ -115,27 +118,25 @@ namespace Simple.Web.JsonFx.Tests
         }
     }
 
-    [LinksFrom(typeof(Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
+    [LinksFrom(typeof (Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")
+    ]
     public class CustomerOrders
     {
-        
     }
 
-    [LinksFrom(typeof(Customer), "/customer/{Id}", Rel = "self", Type = "application/vnd.customer")]
+    [LinksFrom(typeof (Customer), "/customer/{Id}", Rel = "self", Type = "application/vnd.customer")]
     public class CustomerHandler
     {
-        
     }
 
-    [LinksFrom(typeof(IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
+    [LinksFrom(typeof (IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
     public class CustomersHandler
     {
     }
 
-    [LinksFrom(typeof(EnumCustomer), "/enumcustomer/{Id}", Rel = "self", Type = "application/vnd.enum.customer")]
+    [LinksFrom(typeof (EnumCustomer), "/enumcustomer/{Id}", Rel = "self", Type = "application/vnd.enum.customer")]
     public class EnumCustomerHandler
     {
-
     }
 
     public class Customer
