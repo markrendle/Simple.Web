@@ -24,7 +24,7 @@
 
             var mediaTypeHandlerTable = new MediaTypeHandlerTable();
             var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.GetContentType());
-            handler.Input = (T)mediaTypeHandler.Read(context.Request.InputStream, typeof(T));
+            handler.Input = mediaTypeHandler.Read<T>(context.Request.InputStream).Result;
         }
     }
 }

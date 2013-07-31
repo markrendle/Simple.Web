@@ -14,10 +14,9 @@ namespace Sandbox
     {
         public Task<Status> Get()
         {
-            return Task.Factory.StartNew<Status>(() =>
-                {
-                    throw new NotImplementedException();
-                });
+            var tcs = new TaskCompletionSource<Status>();
+            tcs.SetException(new NotImplementedException());
+            return tcs.Task;
         }
 
         public RawHtml Output { get; private set; }
