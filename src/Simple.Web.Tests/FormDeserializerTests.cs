@@ -14,7 +14,7 @@ namespace Simple.Web.Tests
             FD actual;
             using (var s = new MemoryStream(Encoding.UTF8.GetBytes("Text=Hello+World!")))
             {
-                actual = target.Read(s, typeof (FD)) as FD;
+                actual = target.Read<FD>(s).Result;
             }
             Assert.Equal("Hello World!", actual.Text);
         }
@@ -24,11 +24,17 @@ namespace Simple.Web.Tests
         {
             var target = new FormDeserializer();
             FD actual;
-            using (var s = new MemoryStream(Encoding.UTF8.GetBytes("Text=NXqAP07hSjgGiTlyCCcMoAYt4%2BNNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng%3D%3D")))
+            using (
+                var s =
+                    new MemoryStream(
+                        Encoding.UTF8.GetBytes(
+                            "Text=NXqAP07hSjgGiTlyCCcMoAYt4%2BNNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng%3D%3D"))
+                )
             {
-                actual = target.Read(s, typeof (FD)) as FD;
+                actual = target.Read<FD>(s).Result;
             }
-            Assert.Equal("NXqAP07hSjgGiTlyCCcMoAYt4+NNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng==", actual.Text);
+            Assert.Equal("NXqAP07hSjgGiTlyCCcMoAYt4+NNd3qGT45HFgqOK2bqL4my1QFuGjVVa4NEQ8hXjLJEA0BERl8tNpPwEBZRng==",
+                         actual.Text);
         }
     }
 

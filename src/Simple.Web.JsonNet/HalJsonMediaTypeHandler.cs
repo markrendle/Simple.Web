@@ -18,24 +18,27 @@
     public class HalJsonMediaTypeHandler : IMediaTypeHandler
     {
         private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
-                                                                             {
-                                                                                 ReferenceLoopHandling =
-                                                                                     ReferenceLoopHandling.Ignore,
-                                                                                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                                                                                 NullValueHandling = NullValueHandling.Ignore,
-                                                                             };
+            {
+                ReferenceLoopHandling =
+                    ReferenceLoopHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore,
+            };
 
         private static JsonSerializerSettings _settings;
 
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            var serializer = JsonSerializer.Create(Settings);
-            var streamReader = new StreamReader(inputStream);
-            var reader = new JsonTextReader(streamReader);
-            return serializer.Deserialize(reader, inputType);
+            return Task<T>.Factory.StartNew(() =>
+                {
+                    var serializer = JsonSerializer.Create(Settings);
+                    var streamReader = new StreamReader(inputStream);
+                    var reader = new JsonTextReader(streamReader);
+                    return serializer.Deserialize<T>(reader);
+                });
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             if (ReferenceEquals(null, content.Model)) return TaskHelper.Completed();
 

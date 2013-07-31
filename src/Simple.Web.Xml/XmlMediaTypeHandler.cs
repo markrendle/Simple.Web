@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Simple.Web.Links.Xml;
 
 namespace Simple.Web.Xml
 {
@@ -18,13 +19,16 @@ namespace Simple.Web.Xml
     [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class XmlMediaTypeHandler : IMediaTypeHandler
     {
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            var dataContractSerializer = new DataContractSerializer(inputType);
-            return dataContractSerializer.ReadObject(inputStream);
+            return Task<T>.Factory.StartNew(() =>
+                {
+                    var dataContractSerializer = new DataContractSerializer(typeof (T));
+                    return (T) dataContractSerializer.ReadObject(inputStream);
+                });
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             if (content.Model != null)
             {
@@ -38,6 +42,7 @@ namespace Simple.Web.Xml
                     var links = content.Links.ToList();
                     if (links.Count == 0)
                     {
+                        // todo should we use typeof(T) here?
                         new DataContractSerializer(content.Model.GetType()).WriteObject(outputStream, content.Model);
                     }
                     else
@@ -115,28 +120,16 @@ namespace Simple.Web.Xml
 
             return XElement.Parse(stringBuilder.ToString());
         }
-        
+
         private static XElement CreateElementWithLinks(object model, IEnumerable<Link> links)
         {
             var xml = CreateElement(model);
 
             foreach (var link in links)
             {
-                var linkElement = new XElement("link");
-                linkElement.SetAttributeValue("title", link.Title);
-                linkElement.SetAttributeValue("href", link.Href);
-                linkElement.SetAttributeValue("rel", link.Rel);
-                linkElement.SetAttributeValue("type", EnsureXml(link.Type));
-                xml.Add(linkElement);
+                xml.Add(link.ToXml());
             }
             return xml;
-        }
-
-        private static string EnsureXml(string type)
-        {
-            if (string.IsNullOrWhiteSpace(type)) return MediaType.Xml;
-            if (type.EndsWith("xml")) return type;
-            return type + "+xml";
         }
     }
 }

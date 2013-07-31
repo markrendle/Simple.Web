@@ -17,7 +17,7 @@
             {
                 stream.Position = 0;
                 var target = new HalJsonMediaTypeHandler();
-                actual = (Person) target.Read(stream, typeof (Person));
+                actual = target.Read<Person>(stream).Result;
             }
 
             Assert.Equal("Arthur Dent", actual.Name);
@@ -34,7 +34,7 @@
             {
                 stream.Position = 0;
                 var target = new HalJsonMediaTypeHandler();
-                actual = (Person) target.Read(stream, typeof (Person));
+                actual = target.Read<Person>(stream).Result;
             }
 
             Assert.Equal("Arthur Dent", actual.Name);

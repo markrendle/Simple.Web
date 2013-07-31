@@ -38,7 +38,7 @@ namespace Simple.Web.ContentTypeHandling.Tests
             Assert.NotNull(actual);
             Assert.IsType<TestMediaTypeHandler>(actual);
         }
-        
+
         [Fact]
         public void FindsHandlerForDirectTypeList()
         {
@@ -78,12 +78,12 @@ namespace Simple.Web.ContentTypeHandling.Tests
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class TestMediaTypeHandler : IMediaTypeHandler
     {
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
             throw new NotImplementedException();
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             throw new NotImplementedException();
         }
@@ -92,12 +92,12 @@ namespace Simple.Web.ContentTypeHandling.Tests
     [MediaTypes("application/hal+json")]
     public class HalMediaTypeHandler : IMediaTypeHandler
     {
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
             throw new NotImplementedException();
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@ namespace Simple.Web.MediaTypeHandling
     using System.Threading.Tasks;
 
     [MediaTypes("application/x-www-form-urlencoded")]
-    sealed class FormDeserializer : IMediaTypeHandler
+    internal sealed class FormDeserializer : IMediaTypeHandler
     {
         private static readonly char[] SplitTokens = new[] {'\n', '&'};
 
@@ -16,29 +16,39 @@ namespace Simple.Web.MediaTypeHandling
         /// Reads content from the specified input stream, which is assumed to be in x-www-form-urlencoded format.
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
-        /// <param name="inputType">Type of the input.</param>
         /// <returns>
         /// A model constructed from the content in the input stream.
         /// </returns>
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            string text;
-            using (var streamReader = new StreamReader(inputStream))
-            {
-                text = streamReader.ReadToEnd();
-            }
-            var pairs = text.Split(SplitTokens, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => Tuple.Create(s.Split('=')[0], s.Split('=')[1]));
-            var obj = Activator.CreateInstance(inputType);
-            foreach (var pair in pairs)
-            {
-                var property = inputType.GetProperty(pair.Item1) ?? inputType.GetProperties().FirstOrDefault(p => p.Name.Equals(pair.Item1, StringComparison.OrdinalIgnoreCase));
-                if (property != null)
-                {
-                    property.SetValue(obj, Convert.ChangeType(HttpUtility.UrlDecode(pair.Item2), property.PropertyType), null);
-                }
-            }
-            return obj;
+            return Task<T>.Factory.StartNew(
+                () =>
+                    {
+                        string text;
+                        using (var streamReader = new StreamReader(inputStream))
+                        {
+                            text = streamReader.ReadToEnd();
+                        }
+                        var pairs = text.Split(SplitTokens, StringSplitOptions.RemoveEmptyEntries);
+                        var obj = Activator.CreateInstance<T>();
+                        // reflection is slow, get the property[] once.
+                        var properties = typeof (T).GetProperties();
+                        foreach (var pair in pairs)
+                        {
+                            var nameValue = pair.Split('=');
+                            var property =
+                                properties.FirstOrDefault(p => p.Name.Equals(nameValue[0], StringComparison.Ordinal)) ??
+                                properties.FirstOrDefault(
+                                    p => p.Name.Equals(nameValue[0], StringComparison.OrdinalIgnoreCase));
+                            if (property != null)
+                            {
+                                property.SetValue(obj,
+                                                  Convert.ChangeType(HttpUtility.UrlDecode(nameValue[1]),
+                                                                     property.PropertyType), null);
+                            }
+                        }
+                        return obj;
+                    });
         }
 
         /// <summary>
@@ -46,7 +56,7 @@ namespace Simple.Web.MediaTypeHandling
         /// </summary>
         /// <param name="content">The content.</param>
         /// <param name="outputStream">The output stream.</param>
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             var tcs = new TaskCompletionSource<object>();
             tcs.SetException(new NotImplementedException());

@@ -22,7 +22,7 @@
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {
-                target.Write(content, stream).Wait();
+                target.Write<Person>(content, stream).Wait();
                 stream.Position = 0;
                 var text = new StreamReader(stream).ReadToEnd();
                 actual = JObject.Parse(text);
@@ -30,25 +30,25 @@
 
             Assert.Equal("Marvin", actual["name"]);
             Assert.Equal("Car Park", actual["location"]);
-            var links = (JObject)actual["_links"];
+            var links = (JObject) actual["_links"];
             Assert.Equal("/person/Marvin", links["self"]["href"]);
         }
-        
+
         [Fact]
         public void WritesCollectionWithLinks()
         {
             JObject actual;
 
             var people = new List<Person>
-                             {
-                                 new Person {Name = "Marvin", Location = "Car Park"},
-                                 new Person {Name = "Zaphod", Location = "The Restaurant at the End of the Universe"}
-                             };
+                {
+                    new Person {Name = "Marvin", Location = "Car Park"},
+                    new Person {Name = "Zaphod", Location = "The Restaurant at the End of the Universe"}
+                };
             var content = new Content(new Uri("http://test.com/people"), new PeopleHandler(), people);
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {
-                target.Write(content, stream).Wait();
+                target.Write<IEnumerable<Person>>(content, stream).Wait();
                 stream.Position = 0;
                 var text = new StreamReader(stream).ReadToEnd();
                 actual = JObject.Parse(text);
@@ -61,22 +61,20 @@
             Assert.Equal("Car Park", marvin["location"]);
             var marvinLinks = (JObject) marvin["_links"];
             Assert.Equal("/person/Marvin", marvinLinks["self"]["href"]);
-            var links = (JObject)actual["_links"];
+            var links = (JObject) actual["_links"];
             Assert.Equal("/people", links["self"]["href"]);
         }
     }
 
-    [Canonical(typeof(Person))]
+    [Canonical(typeof (Person))]
     [UriTemplate("/person/{Name}")]
     public class PersonHandler
     {
-        
     }
 
-    [Canonical(typeof(IEnumerable<Person>))]
+    [Canonical(typeof (IEnumerable<Person>))]
     [UriTemplate("/people")]
     public class PeopleHandler
     {
-        
     }
 }

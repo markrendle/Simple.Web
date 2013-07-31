@@ -19,12 +19,13 @@ namespace Simple.Web.JsonNet.Tests
         public void SerializesCyrillicText()
         {
             const string russian = "Мыа алиё лаборамюз ед, ведят промпта элыктрам квюо ты.";
-            var content = new Content(new Uri("http://test.com/customer/42"), new ThingHandler(), new Thing { Path = russian });
+            var content = new Content(new Uri("http://test.com/customer/42"), new ThingHandler(),
+                                      new Thing {Path = russian});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Thing>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -32,7 +33,7 @@ namespace Simple.Web.JsonNet.Tests
                 }
                 stream.ForceDispose();
             }
-            
+
             Assert.Contains(russian, actual);
         }
 
@@ -45,12 +46,13 @@ namespace Simple.Web.JsonNet.Tests
             const string selfLink =
                 @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
+                                      new Customer {Id = 42});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -70,12 +72,13 @@ namespace Simple.Web.JsonNet.Tests
             const string contactsLink =
                 @"{""title"":null,""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""type"":""application/json""}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
+                                      new Customer {Id = 42});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -96,12 +99,13 @@ namespace Simple.Web.JsonNet.Tests
             const string selfLink =
                 @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"),  new CustomerHandler(), new[] { new Customer { Id = 42 } });
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
+                                      new[] {new Customer {Id = 42}});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -119,17 +123,17 @@ namespace Simple.Web.JsonNet.Tests
         public void AddsSelfLinkToChildCollectionItems()
         {
             var customer = new Customer
-                               {
-                                   Id = 42,
-                                   Orders = new List<Order> {new Order {CustomerId = 42, Id = 54}}
-                               };
+                {
+                    Id = 42,
+                    Orders = new List<Order> {new Order {CustomerId = 42, Id = 54}}
+                };
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), customer);
             var target = new JsonMediaTypeHandler();
 
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -157,12 +161,13 @@ namespace Simple.Web.JsonNet.Tests
             const string thingLink =
                 @"{""title"":null,""href"":""/things?path=%2Ffoo%2Fbar"",""rel"":""self"",""type"":""application/json""}";
 
-            var content = new Content(new Uri("http://test.com/foo/bar"), new ThingHandler(), new Thing { Path = "/foo/bar" });
+            var content = new Content(new Uri("http://test.com/foo/bar"), new ThingHandler(),
+                                      new Thing {Path = "/foo/bar"});
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new NonClosingMemoryStream(new MemoryStream()))
             {
-                target.Write(content, stream).Wait();
+                target.Write<Thing>(content, stream).Wait();
                 stream.Position = 0;
                 using (var reader = new StreamReader(stream))
                 {
@@ -175,46 +180,41 @@ namespace Simple.Web.JsonNet.Tests
         }
     }
 
-    [LinksFrom(typeof(Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
+    [LinksFrom(typeof (Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")
+    ]
     public class CustomerOrders
     {
-
     }
 
-    [Canonical(typeof(Customer), "/customer/{Id}", Type = "application/vnd.customer")]
+    [Canonical(typeof (Customer), "/customer/{Id}", Type = "application/vnd.customer")]
     public class CustomerHandler
     {
-
     }
 
-    [Canonical(typeof(Order), "/order/{Id}", Type = "application/vnd.order")]
+    [Canonical(typeof (Order), "/order/{Id}", Type = "application/vnd.order")]
     public class OrderHandler
     {
-
     }
 
     [UriTemplate("/customer")]
     public abstract class CustomerBase
     {
-        
     }
 
     [UriTemplate("/{Id}/contacts")]
-    [LinksFrom(typeof(Customer), Rel = "customer.contacts")]
-    public class CustomerContacts: CustomerBase
+    [LinksFrom(typeof (Customer), Rel = "customer.contacts")]
+    public class CustomerContacts : CustomerBase
     {
-        
     }
 
-    [LinksFrom(typeof(IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
+    [LinksFrom(typeof (IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
     public class CustomersHandler
     {
     }
 
-    [LinksFrom(typeof(Thing), "/things?path={Path}", Rel = "self")]
+    [LinksFrom(typeof (Thing), "/things?path={Path}", Rel = "self")]
     public class ThingHandler
     {
-        
     }
 
     public class Customer
