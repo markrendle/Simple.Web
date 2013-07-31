@@ -1,8 +1,8 @@
-using System.Xml.Linq;
-using Xunit.Sdk;
-
-namespace Simple.Web.TestHelpers
+namespace Simple.Web.TestHelpers.Xml
 {
+    using System.Xml.Linq;
+    using Xunit.Sdk;
+
 	public static class XNameExtensions
 	{
 		public static void ShouldEqual(this XName actual, XName expected)

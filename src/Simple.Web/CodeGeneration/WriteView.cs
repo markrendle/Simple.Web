@@ -7,16 +7,16 @@ namespace Simple.Web.CodeGeneration
     using Http;
     using MediaTypeHandling;
 
-    static class WriteView
+    internal static class WriteView
     {
-        public static void Impl(object handler, IContext context)
+        public static void Impl<T>(object handler, IContext context)
         {
-            WriteUsingMediaTypeHandler(handler, context);
+            WriteUsingMediaTypeHandler<T>(handler, context);
         }
 
-        private static void WriteUsingMediaTypeHandler(object handler, IContext context)
+        private static void WriteUsingMediaTypeHandler<T>(object handler, IContext context)
         {
-			if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
+            if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
             if (context.Request.HttpMethod.Equals("HEAD")) return;
             IMediaTypeHandler mediaTypeHandler;
             var acceptedTypes = context.Request.GetAccept();
@@ -27,12 +27,13 @@ namespace Simple.Web.CodeGeneration
                 context.Response.WriteFunction = (stream) =>
                     {
                         var content = new Content(context.Request.Url, handler, null);
-                        return mediaTypeHandler.Write(content, stream);
+                        return mediaTypeHandler.Write<T>(content, stream);
                     };
             }
         }
 
-        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes,
+                                                   out IMediaTypeHandler mediaTypeHandler)
         {
             if (acceptedTypes == null || (acceptedTypes.Count == 1 && acceptedTypes[0].StartsWith("*/*")))
             {

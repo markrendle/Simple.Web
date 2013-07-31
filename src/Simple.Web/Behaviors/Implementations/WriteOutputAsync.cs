@@ -22,9 +22,9 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns>A <see cref="Task"/> which will complete when the output has been written.</returns>
         public static Task Impl<T>(IOutputAsync<T> handler, IContext context)
         {
-            if (typeof(T) == typeof(RawHtml))
+            if (typeof (T) == typeof (RawHtml))
             {
-                return WriteRawHtml((IOutputAsync<RawHtml>)handler, context);
+                return WriteRawHtml((IOutputAsync<RawHtml>) handler, context);
             }
             return WriteUsingMediaTypeHandler(handler, context);
         }
@@ -41,13 +41,14 @@ namespace Simple.Web.Behaviors.Implementations
                 context.Response.WriteFunction = (stream) => handler.Output.ContinueWith(t =>
                     {
                         var content = new Content(context.Request.Url, handler, t.Result);
-                        return mediaTypeHandler.Write(content, stream);
+                        return mediaTypeHandler.Write<T>(content, stream);
                     }).Unwrap();
             }
             return TaskHelper.Completed();
         }
 
-        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes,
+                                                   out IMediaTypeHandler mediaTypeHandler)
         {
             try
             {

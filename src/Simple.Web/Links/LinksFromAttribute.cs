@@ -1,7 +1,6 @@
 ﻿namespace Simple.Web.Links
 {
     using System;
-    using System.ComponentModel;
 
     /// <summary>
     /// Denotes that a handler provides a transition for the specified model type.

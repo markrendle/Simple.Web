@@ -20,17 +20,19 @@ namespace Simple.Web.JsonFx
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandler : IMediaTypeHandler
     {
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
             var resolver = CreateResolverStrategy();
 
             // pass the combined resolver strategy into the settings object
             var reader = new JsonReader(new DataReaderSettings(resolver));
 
+            T result;
             using (var streamReader = new StreamReader(inputStream))
             {
-                return reader.Read(streamReader, inputType);
+                result = reader.Read<T>(streamReader);
             }
+            return TaskHelper.Completed(result);
         }
 
         private static CombinedResolverStrategy CreateResolverStrategy()
@@ -45,34 +47,34 @@ namespace Simple.Web.JsonFx
                 new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_")); // CONST_STYLE
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             try
             {
-            if (content.Model != null)
-            {
-                object output;
+                if (content.Model != null)
+                {
+                    object output;
 
-                var enumerable = content.Model as IEnumerable<object>;
-                if (enumerable != null)
-                {
-                    output = ProcessList(enumerable.ToList());
-                }
-                else
-                {
-                    output = ProcessContent(content);
-                }
-                byte[] buffer;
-                using (var writer = new StringWriter())
-                {
-                    var dataWriterSettings = new DataWriterSettings(new MonoCompatResolverStrategy(),
-                                                                    new Iso8601DateFilter());
+                    var enumerable = content.Model as IEnumerable<object>;
+                    if (enumerable != null)
+                    {
+                        output = ProcessList(enumerable.ToList());
+                    }
+                    else
+                    {
+                        output = ProcessContent(content);
+                    }
+                    byte[] buffer;
+                    using (var writer = new StringWriter())
+                    {
+                        var dataWriterSettings = new DataWriterSettings(new MonoCompatResolverStrategy(),
+                                                                        new Iso8601DateFilter());
 
-                    new JsonWriter(dataWriterSettings).Write(output, writer);
-                    buffer = Encoding.UTF8.GetBytes(writer.ToString());
+                        new JsonWriter(dataWriterSettings).Write(output, writer);
+                        buffer = Encoding.UTF8.GetBytes(writer.ToString());
+                    }
+                    return outputStream.WriteAsync(buffer, 0, buffer.Length);
                 }
-                return outputStream.WriteAsync(buffer, 0, buffer.Length);
-            }
             }
             catch (Exception ex)
             {
@@ -113,7 +115,6 @@ namespace Simple.Web.JsonFx
                         yield return dictionary;
                         continue;
                     }
-
                 }
 
                 yield return o;

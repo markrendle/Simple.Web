@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{648B6029-95B7-42AD-A589-565BA82F543F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Performance.MediaTypeHandlers</RootNamespace>
+    <AssemblyName>Performance.MediaTypeHandlers</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Web.Xml.Tests\XmlTestContainer.cs">
+      <Link>XmlTestContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Web.Xml.Tests\XmlTestConverters.cs">
+      <Link>XmlTestConverters.cs</Link>
+    </Compile>
+    <Compile Include="CodeExecutionTimer.cs" />
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Web.JsonFx\Simple.Web.JsonFx.csproj">
+      <Project>{a1e30ac1-2765-4e4f-8155-682a64d8b204}</Project>
+      <Name>Simple.Web.JsonFx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.JsonNet\Simple.Web.JsonNet.csproj">
+      <Project>{6dce0964-3bf0-4185-ac6e-1f8b97908601}</Project>
+      <Name>Simple.Web.JsonNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.TestHelpers\Simple.Web.TestHelpers.csproj">
+      <Project>{2c65a993-1eb6-4971-a1ee-b0fcf31af525}</Project>
+      <Name>Simple.Web.TestHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.Xml\Simple.Web.Xml.csproj">
+      <Project>{432a3064-7f99-4822-a896-18c7a2014fba}</Project>
+      <Name>Simple.Web.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
+      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
+      <Name>Simple.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

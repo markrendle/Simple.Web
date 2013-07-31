@@ -16,12 +16,12 @@
         private static readonly RazorViews _razorViews = new RazorViews();
         private static readonly DynamicDictionary<string> _viewBag = new DynamicDictionary<string>();
 
-        public object Read(Stream inputStream, Type inputType)
+        public Task<T> Read<T>(Stream inputStream)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
-        public Task Write(IContent content, Stream outputStream)
+        public Task Write<T>(IContent content, Stream outputStream)
         {
             var handlerType = content.Handler != null ? content.Handler.GetType() : null;
             var modelType = content.Model != null ? content.Model.GetType() : null;
@@ -67,9 +67,11 @@
             textWriter.Write(output);
         }
 
-        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model, string childOutput = null, IDictionary<string, string> sections = null)
+        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model,
+                                                      string childOutput = null,
+                                                      IDictionary<string, string> sections = null)
         {
-            var instance = (SimpleTemplateBase)Activator.CreateInstance(viewType);
+            var instance = (SimpleTemplateBase) Activator.CreateInstance(viewType);
 
             instance.SetChildOutput(childOutput);
             instance.SetSections(sections);

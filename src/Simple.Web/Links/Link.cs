@@ -1,12 +1,10 @@
 ﻿namespace Simple.Web.Links
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Represents a link, to be sent as part of a resource in a RESTful API.
     /// </summary>
-    [DataContract(Name = "link")]
     public class Link
     {
         private readonly Type _handlerType;
@@ -35,13 +33,9 @@
         /// <summary>
         /// Gets the title: a human-readable name for the link.
         /// </summary>
-        [DataMember(Name = "title")]
         public string Title
         {
             get { return _title; }
-// ReSharper disable ValueParameterNotUsed (required by DataContractSerializer)
-            private set { }
-// ReSharper restore ValueParameterNotUsed
         }
 
         /// <summary>
@@ -56,31 +50,22 @@
         /// <summary>
         /// Gets the href: the URI pointing to the resource/handler.
         /// </summary>
-        [DataMember(Name = "href")]
         public string Href
         {
             get { return _href; }
-// ReSharper disable ValueParameterNotUsed (required by DataContractSerializer)
-            private set { }
-// ReSharper restore ValueParameterNotUsed
         }
 
         /// <summary>
         /// Gets the rel: the relationship of the link to the resource it is included with.
         /// </summary>
-        [DataMember(Name = "rel")]
         public string Rel
         {
             get { return _rel; }
-// ReSharper disable ValueParameterNotUsed (required by DataContractSerializer)
-            private set { }
-// ReSharper restore ValueParameterNotUsed
         }
 
         /// <summary>
         /// Gets the type: the Content-Type returned by the link.
         /// </summary>
-        [DataMember(Name = "type")]
         public string Type
         {
             get { return _type; }
