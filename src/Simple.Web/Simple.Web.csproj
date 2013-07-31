@@ -47,9 +47,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +208,8 @@
     <Compile Include="Routing\RoutingTableBuilder.cs" />
     <Compile Include="Routing\SingleValueMatcher.cs" />
     <Compile Include="Routing\StaticMatcher.cs" />
+    <Compile Include="Links\Xml\LinkToXml.cs" />
+    <Compile Include="Serialization\IConvertXmlFor.cs" />
     <Compile Include="SimpleWeb.cs" />
     <Compile Include="Hosting\StartupTaskRunner.cs" />
     <Compile Include="Status.cs" />
