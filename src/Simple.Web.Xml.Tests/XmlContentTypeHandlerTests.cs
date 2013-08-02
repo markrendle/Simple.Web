@@ -21,15 +21,10 @@ namespace Simple.Web.Xml.Tests
                                       new Order {Id = 54, CustomerId = 42});
             var target = new XmlMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Order>(content, stream);
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
 
@@ -49,15 +44,10 @@ namespace Simple.Web.Xml.Tests
                                       new Customer {Id = 42});
             var target = new XmlMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Customer>(content, stream);
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
 
@@ -79,15 +69,10 @@ namespace Simple.Web.Xml.Tests
                                       new[] {new Customer {Id = 42}});
             var target = new XmlMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<IEnumerable<Customer>>(content, stream);
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
 

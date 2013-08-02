@@ -23,15 +23,10 @@ namespace Simple.Web.JsonNet.Tests
                                       new Thing {Path = russian});
             var target = new JsonMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Thing>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
 
             Assert.Contains(russian, actual);
@@ -50,15 +45,10 @@ namespace Simple.Web.JsonNet.Tests
                                       new Customer {Id = 42});
             var target = new JsonMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Customer>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
             Assert.Contains(idProperty, actual);
@@ -76,15 +66,10 @@ namespace Simple.Web.JsonNet.Tests
                                       new Customer {Id = 42});
             var target = new JsonMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Customer>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
             Assert.Contains(contactsLink, actual);
@@ -103,15 +88,10 @@ namespace Simple.Web.JsonNet.Tests
                                       new[] {new Customer {Id = 42}});
             var target = new JsonMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<IEnumerable<Customer>>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
             Assert.Contains(idProperty, actual);
@@ -131,15 +111,10 @@ namespace Simple.Web.JsonNet.Tests
             var target = new JsonMediaTypeHandler();
 
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Customer>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
             var jobj = JObject.Parse(actual);
@@ -165,15 +140,10 @@ namespace Simple.Web.JsonNet.Tests
                                       new Thing {Path = "/foo/bar"});
             var target = new JsonMediaTypeHandler();
             string actual;
-            using (var stream = new NonClosingMemoryStream(new MemoryStream()))
+            using (var stream = new StringBuilderStream())
             {
                 target.Write<Thing>(content, stream).Wait();
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    actual = reader.ReadToEnd();
-                }
-                stream.ForceDispose();
+                actual = stream.StringValue;
             }
             Assert.NotNull(actual);
             Assert.Contains(thingLink, actual);
