@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Simple.Web.Links.Xml;
+using Simple.Web.ExplicitXml;
 
 namespace Simple.Web.Xml
 {

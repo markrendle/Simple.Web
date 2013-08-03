@@ -23,7 +23,7 @@ namespace Simple.Web.Xml.Tests
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Order>(content, stream);
+                target.Write<Order>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
@@ -46,7 +46,7 @@ namespace Simple.Web.Xml.Tests
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream);
+                target.Write<Customer>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
@@ -71,7 +71,7 @@ namespace Simple.Web.Xml.Tests
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<IEnumerable<Customer>>(content, stream);
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
@@ -88,36 +88,5 @@ namespace Simple.Web.Xml.Tests
 
             XElement.Parse(actual).ShouldEqual(expected);
         }
-    }
-
-    [LinksFrom(typeof (Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")
-    ]
-    public class CustomerOrders
-    {
-    }
-
-    [LinksFrom(typeof (Customer), "/customer/{Id}", Rel = "self", Type = "application/vnd.customer")]
-    public class CustomerHandler
-    {
-    }
-
-    [LinksFrom(typeof (IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
-    public class CustomersHandler
-    {
-    }
-
-    public class OrderHandler
-    {
-    }
-
-    public class Customer
-    {
-        public int Id { get; set; }
-    }
-
-    public class Order
-    {
-        public int Id { get; set; }
-        public int CustomerId { get; set; }
     }
 }

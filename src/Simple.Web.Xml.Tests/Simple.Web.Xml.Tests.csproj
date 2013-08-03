@@ -45,10 +45,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExplicitXmlContentTypeHandlerTests.cs" />
+    <Compile Include="TestModelsAndHandelers.cs" />
     <Compile Include="XmlContentTypeHandlerTests.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="XmlTestContainer.cs" />
+    <Compile Include="XmlTestConverters.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web.Xml\Simple.Web.Xml.csproj">

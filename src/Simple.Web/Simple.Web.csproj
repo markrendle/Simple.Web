@@ -111,6 +111,7 @@
     <Compile Include="Http\ResponseExtensions.cs" />
     <Compile Include="IExceptionHandler.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
+    <Compile Include="MediaTypeHandling\IMediaConverter.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
       <SubType>Code</SubType>
@@ -208,8 +209,6 @@
     <Compile Include="Routing\RoutingTableBuilder.cs" />
     <Compile Include="Routing\SingleValueMatcher.cs" />
     <Compile Include="Routing\StaticMatcher.cs" />
-    <Compile Include="Links\Xml\LinkToXml.cs" />
-    <Compile Include="Serialization\IConvertXmlFor.cs" />
     <Compile Include="SimpleWeb.cs" />
     <Compile Include="Hosting\StartupTaskRunner.cs" />
     <Compile Include="Status.cs" />
