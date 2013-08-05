@@ -52,7 +52,7 @@ namespace Simple.Web.JsonFx.Tests
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<IEnumerable<Customer>>(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
@@ -72,7 +72,7 @@ namespace Simple.Web.JsonFx.Tests
 
             using (var stream = new StringBuilderStream())
             {
-                target.Write<IEnumerable<EnumCustomer>>(content, stream).Wait();
+                target.Write<EnumCustomer>(content, stream).Wait();
                 actual = stream.StringValue;
             }
 

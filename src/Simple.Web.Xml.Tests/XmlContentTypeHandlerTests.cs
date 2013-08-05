@@ -71,7 +71,7 @@ namespace Simple.Web.Xml.Tests
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<IEnumerable<Customer>>(content, stream).Wait();
+                target.Write<Customer>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
