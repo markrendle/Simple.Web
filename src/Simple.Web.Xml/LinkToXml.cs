@@ -1,9 +1,10 @@
-﻿using System.Xml.Linq;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.ExplicitXml
+﻿namespace Simple.Web.Xml
 {
+    using System;
+    using System.Xml.Linq;
+    using Links;
+    using MediaTypeHandling;
+
 	public class LinkToXml : IMediaConverter<Link,XElement>
 	{
 		public static readonly LinkToXml Instance = new LinkToXml();
@@ -18,13 +19,13 @@ namespace Simple.Web.ExplicitXml
 	    public Link FromWireFormat(XElement wireFormat)
 	    {
             // come back to this when necessary
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
 
 	    public Link FromWireFormat(XElement wireFormat, Link loadThis)
 	    {
             // come back to this when necessary
-            throw new System.NotImplementedException();
+            throw new NotSupportedException();
         }
 
 	    public XElement ToWireFormat(Link value)

@@ -18,7 +18,7 @@
 
         public Task<T> Read<T>(Stream inputStream)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Task Write<T>(IContent content, Stream outputStream)
