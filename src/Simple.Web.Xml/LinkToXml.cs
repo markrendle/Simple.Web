@@ -5,30 +5,17 @@
     using Links;
     using MediaTypeHandling;
 
-	public class LinkToXml : IMediaConverter<Link,XElement>
+	public class LinkToXml : IConvertXmlFor<Link>
 	{
 		public static readonly LinkToXml Instance = new LinkToXml();
 
-		private static string EnsureTypeIsXml(string type)
-		{
-			if (string.IsNullOrWhiteSpace(type)) return MediaType.Xml;
-			if (type.EndsWith("xml")) return type;
-			return type + "+xml";
-		}
-
-	    public Link FromWireFormat(XElement wireFormat)
+	    public Link FromXml(XElement wireFormat)
 	    {
             // come back to this when necessary
             throw new NotSupportedException();
         }
 
-	    public Link FromWireFormat(XElement wireFormat, Link loadThis)
-	    {
-            // come back to this when necessary
-            throw new NotSupportedException();
-        }
-
-	    public XElement ToWireFormat(Link value)
+	    public XElement ToXml(Link value)
 	    {
             var linkElement = new XElement("link");
             linkElement.SetAttributeValue("title", value.Title);
@@ -37,18 +24,25 @@
             linkElement.SetAttributeValue("type", EnsureTypeIsXml(value.Type));
             return linkElement;
         }
+
+		private static string EnsureTypeIsXml(string type)
+		{
+			if (string.IsNullOrWhiteSpace(type)) return MediaType.Xml;
+			if (type.EndsWith("xml")) return type;
+			return type + "+xml";
+		}
 	}
 
 	public static class LinkToXmlExtensions
 	{
 		public static Link ToLink(this XElement element)
 		{
-			return LinkToXml.Instance.FromWireFormat(element);
+			return LinkToXml.Instance.FromXml(element);
 		}
 
 		public static XElement ToXml(this Link value)
 		{
-			return LinkToXml.Instance.ToWireFormat(value);
+			return LinkToXml.Instance.ToXml(value);
 		}
 	}
 }

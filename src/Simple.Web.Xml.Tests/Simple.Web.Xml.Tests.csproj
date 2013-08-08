@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="ExplicitXmlContentTypeHandlerTests.cs" />
     <Compile Include="TestModelsAndHandelers.cs" />
-    <Compile Include="XmlContentTypeHandlerTests.cs" />
+    <Compile Include="DataContractXmlContentTypeHandlerTests.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>

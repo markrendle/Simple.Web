@@ -59,7 +59,7 @@ namespace Simple.Web.MediaTypeHandling
         public Task Write<T>(IContent content, Stream outputStream)
         {
             var tcs = new TaskCompletionSource<object>();
-            tcs.SetException(new NotImplementedException());
+            tcs.SetException(new NotSupportedException());
             return tcs.Task;
         }
     }

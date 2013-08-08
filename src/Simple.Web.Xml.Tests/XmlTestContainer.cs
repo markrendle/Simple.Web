@@ -6,11 +6,9 @@ namespace Simple.Web.Xml.Tests
 {
     public class XmlTestContainer : ISimpleContainer
     {
-        private readonly Scope _scope = new Scope();
-
         public ISimpleContainerScope BeginScope()
         {
-            return _scope;
+            return new Scope();
         }
 
         private class Scope : ISimpleContainerScope
@@ -22,11 +20,11 @@ namespace Simple.Web.Xml.Tests
             public T Get<T>()
             {
                 var requestedType = typeof (T);
-                if (requestedType == typeof (IMediaConverter<Order, XElement>))
+                if (requestedType == typeof (IConvertXmlFor<Order>))
                 {
                     return (T) (object) new OrderConverter();
                 }
-                if (requestedType == typeof (IMediaConverter<Customer, XElement>))
+                if (requestedType == typeof (IConvertXmlFor<Customer>))
                 {
                     return (T) (object) new CustomerConverter();
                 }

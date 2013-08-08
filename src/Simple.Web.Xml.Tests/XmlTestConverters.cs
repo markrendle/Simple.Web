@@ -1,21 +1,15 @@
 ﻿using System.Xml.Linq;
-using Simple.Web.MediaTypeHandling;
 
 namespace Simple.Web.Xml.Tests
 {
-    internal class OrderConverter : IMediaConverter<Order, XElement>
+    internal class OrderConverter : IConvertXmlFor<Order>
     {
-        public Order FromWireFormat(XElement wireFormat)
+        public Order FromXml(XElement wireFormat)
         {
             throw new System.NotImplementedException();
         }
 
-        public Order FromWireFormat(XElement wireFormat, Order loadThis)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public XElement ToWireFormat(Order value)
+        public XElement ToXml(Order value)
         {
             return new XElement("Order",
                                 new XElement("CustomerId", value.CustomerId),
@@ -23,19 +17,14 @@ namespace Simple.Web.Xml.Tests
         }
     }
 
-    internal class CustomerConverter : IMediaConverter<Customer, XElement>
+    internal class CustomerConverter : IConvertXmlFor<Customer>
     {
-        public Customer FromWireFormat(XElement wireFormat)
+        public Customer FromXml(XElement wireFormat)
         {
             throw new System.NotImplementedException();
         }
 
-        public Customer FromWireFormat(XElement wireFormat, Customer loadThis)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public XElement ToWireFormat(Customer value)
+        public XElement ToXml(Customer value)
         {
             return new XElement("Customer",
                                 new XElement("Id", value.Id));
