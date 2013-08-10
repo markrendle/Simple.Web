@@ -11,6 +11,15 @@
     [UriTemplate("/{Id}")]
     public class Customer : CustomerRelated
     {
+        public Customer()
+        {
+        }
+
+        public Customer(int id)
+        {
+            Id = id;
+        }
+
         public int Id { get; set; }
         public IList<Order> Orders { get; set; }
     }

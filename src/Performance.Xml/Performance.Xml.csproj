@@ -41,11 +41,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Simple.Web.Xml.Tests\XmlTestContainer.cs">
+      <Link>XmlTestContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\Simple.Web.Xml.Tests\XmlTestConverters.cs">
+      <Link>XmlTestConverters.cs</Link>
+    </Compile>
+    <Compile Include="CodeExecutionTimer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\Simple.Web.TestHelpers\Simple.Web.TestHelpers.csproj">
+      <Project>{2c65a993-1eb6-4971-a1ee-b0fcf31af525}</Project>
+      <Name>Simple.Web.TestHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.Xml\Simple.Web.Xml.csproj">
+      <Project>{432a3064-7f99-4822-a896-18c7a2014fba}</Project>
+      <Name>Simple.Web.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
+      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
+      <Name>Simple.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,6 +4,16 @@
 
     public class Order
     {
+        public Order()
+        {
+        }
+
+        public Order(int customerId, int id)
+        {
+            CustomerId = customerId;
+            Id = id;
+        }
+
         public int Id { get; set; }
         public int CustomerId { get; set; }
     }
