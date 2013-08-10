@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using Links;
     using MediaTypeHandling;
     using TestHelpers;
+    using TestHelpers.Sample;
     using Xunit;
 
     public class MonoCompatResolverStrategyTests
@@ -13,7 +13,7 @@
         [Fact]
         public void SerializingListToJsonHasExpectedData()
         {
-            const string expectedString = "{\"Customers\":[{\"Id\":42}]}";
+            const string expectedString = "{\"Customers\":[{\"Id\":42,\"Orders\":null}]}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomersListHandler(), new CustomerList() { Customers = new List<Customer>() { new Customer { Id = 42 } } });
             var target = new JsonMediaTypeHandler();

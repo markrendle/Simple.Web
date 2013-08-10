@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using Simple.Web.DependencyInjection;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-using Simple.Web.TestHelpers;
-using Simple.Web.Xml;
-using Xunit;
-
-namespace Simple.Web.Xml.Tests
+﻿namespace Simple.Web.Xml.Tests
 {
+    using System;
+    using System.Xml.Linq;
+    using MediaTypeHandling;
+    using TestHelpers;
+    using TestHelpers.Sample;
+    using TestHelpers.Xml;
+    using Xml;
+    using Xunit;
+
     public class ExplicitXmlContentTypeHandlerTests
     {
         public ExplicitXmlContentTypeHandlerTests()
@@ -34,6 +33,7 @@ namespace Simple.Web.Xml.Tests
             const string expected = "<Order>" +
                                     "  <CustomerId>42</CustomerId>" +
                                     "  <Id>54</Id>" +
+                                    "  <link href='/order/54' rel='self' type='application/vnd.order+xml' />" +
                                     "</Order>";
 
             XElement.Parse(actual).ShouldEqual(expected);
@@ -55,6 +55,7 @@ namespace Simple.Web.Xml.Tests
 
             const string expected = "<Customer>" +
                                     "  <Id>42</Id>" +
+                                    "  <link href='/customer/42/contacts' rel='customer.contacts' type='application/vnd.contact+xml' />" +
                                     "  <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' />" +
                                     "  <link href='/customer/42' rel='self' type='application/vnd.customer+xml' />" +
                                     "</Customer>";
@@ -79,6 +80,7 @@ namespace Simple.Web.Xml.Tests
             const string expected = "<Customers>" +
                                     "  <Customer>" +
                                     "    <Id>42</Id>" +
+                                    "    <link href='/customer/42/contacts' rel='customer.contacts' type='application/vnd.contact+xml' />" +
                                     "    <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' xmlns='' />" +
                                     "    <link href='/customer/42' rel='self' type='application/vnd.customer+xml' xmlns='' />" +
                                     "  </Customer>" +

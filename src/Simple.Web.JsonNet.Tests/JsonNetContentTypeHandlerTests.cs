@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.JsonNet.Tests
+﻿namespace Simple.Web.JsonNet.Tests
 {
-    using System.IO;
-    using Links;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using MediaTypeHandling;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using TestHelpers;
+    using TestHelpers.Sample;
     using Xunit;
 
     public class JsonNetContentTypeHandlerTests
@@ -60,7 +56,7 @@ namespace Simple.Web.JsonNet.Tests
         public void PicksUpContactsLinkFromCustomer()
         {
             const string contactsLink =
-                @"{""title"":null,""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""type"":""application/json""}";
+                @"{""title"":null,""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""type"":""application/vnd.contact+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new Customer {Id = 42});
@@ -148,59 +144,5 @@ namespace Simple.Web.JsonNet.Tests
             Assert.NotNull(actual);
             Assert.Contains(thingLink, actual);
         }
-    }
-
-    [LinksFrom(typeof (Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")
-    ]
-    public class CustomerOrders
-    {
-    }
-
-    [Canonical(typeof (Customer), "/customer/{Id}", Type = "application/vnd.customer")]
-    public class CustomerHandler
-    {
-    }
-
-    [Canonical(typeof (Order), "/order/{Id}", Type = "application/vnd.order")]
-    public class OrderHandler
-    {
-    }
-
-    [UriTemplate("/customer")]
-    public abstract class CustomerBase
-    {
-    }
-
-    [UriTemplate("/{Id}/contacts")]
-    [LinksFrom(typeof (Customer), Rel = "customer.contacts")]
-    public class CustomerContacts : CustomerBase
-    {
-    }
-
-    [LinksFrom(typeof (IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
-    public class CustomersHandler
-    {
-    }
-
-    [LinksFrom(typeof (Thing), "/things?path={Path}", Rel = "self")]
-    public class ThingHandler
-    {
-    }
-
-    public class Customer
-    {
-        public int Id { get; set; }
-        public IList<Order> Orders { get; set; }
-    }
-
-    public class Order
-    {
-        public int Id { get; set; }
-        public int CustomerId { get; set; }
-    }
-
-    public class Thing
-    {
-        public string Path { get; set; }
     }
 }

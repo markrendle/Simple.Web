@@ -2,8 +2,8 @@
 {
     using System.Text;
     using System.IO;
-    using HalJson.Tests;
     using JsonNet;
+    using TestHelpers.Sample;
     using Xunit;
 
     public class HalReadTests

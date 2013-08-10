@@ -1,9 +1,8 @@
-﻿using System.Xml.Linq;
-using Simple.Web.DependencyInjection;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.Xml.Tests
+﻿namespace Simple.Web.Xml.Tests
 {
+    using DependencyInjection;
+    using TestHelpers.Sample;
+
     public class XmlTestContainer : ISimpleContainer
     {
         public ISimpleContainerScope BeginScope()

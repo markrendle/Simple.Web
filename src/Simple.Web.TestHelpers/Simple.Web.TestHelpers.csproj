@@ -49,13 +49,24 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Sample\Customers.cs" />
+    <Compile Include="Sample\EnumCustomers.cs" />
+    <Compile Include="Sample\Orders.cs" />
+    <Compile Include="Sample\People.cs" />
+    <Compile Include="Sample\Things.cs" />
     <Compile Include="StringBuilderStream.cs" />
-    <Compile Include="XAttributeExtensions.cs" />
-    <Compile Include="XElementExtensions.cs" />
-    <Compile Include="XNameExtensions.cs" />
+    <Compile Include="Xml\XAttributeExtensions.cs" />
+    <Compile Include="Xml\XElementExtensions.cs" />
+    <Compile Include="Xml\XNameExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">
+      <Project>{903C289D-4CAE-4259-80DA-79D74CE06DCE}</Project>
+      <Name>Simple.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
