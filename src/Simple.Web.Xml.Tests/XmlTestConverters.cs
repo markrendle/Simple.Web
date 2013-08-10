@@ -1,7 +1,8 @@
-﻿using System.Xml.Linq;
-
-namespace Simple.Web.Xml.Tests
+﻿namespace Simple.Web.Xml.Tests
 {
+    using System.Xml.Linq;
+    using TestHelpers.Sample;
+
     internal class OrderConverter : IConvertXmlFor<Order>
     {
         public Order FromXml(XElement wireFormat)

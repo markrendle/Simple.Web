@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.JsonFx.Tests
+﻿namespace Simple.Web.JsonFx.Tests
 {
+    using System;
     using System.IO;
-    using Links;
     using MediaTypeHandling;
     using TestHelpers;
+    using TestHelpers.Sample;
     using Xunit;
 
     public class JsonFxContentTypeHandlerTests
@@ -20,7 +16,7 @@ namespace Simple.Web.JsonFx.Tests
             const string ordersLink =
                 @"{""Title"":null,""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
+                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new Customer {Id = 42});
@@ -44,7 +40,7 @@ namespace Simple.Web.JsonFx.Tests
             const string ordersLink =
                 @"{""Title"":null,""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}]}";
+                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new[] {new Customer {Id = 42}});
@@ -99,42 +95,5 @@ namespace Simple.Web.JsonFx.Tests
             Assert.NotNull(obj);
             Assert.Equal(MyEnum.Ian, (obj as EnumCustomer).AnEnum);
         }
-    }
-
-    [LinksFrom(typeof (Customer), "/customer/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")
-    ]
-    public class CustomerOrders
-    {
-    }
-
-    [LinksFrom(typeof (Customer), "/customer/{Id}", Rel = "self", Type = "application/vnd.customer")]
-    public class CustomerHandler
-    {
-    }
-
-    [LinksFrom(typeof (IEnumerable<Customer>), "/customers", Rel = "self", Type = "application/vnd.list.customer")]
-    public class CustomersHandler
-    {
-    }
-
-    [LinksFrom(typeof (EnumCustomer), "/enumcustomer/{Id}", Rel = "self", Type = "application/vnd.enum.customer")]
-    public class EnumCustomerHandler
-    {
-    }
-
-    public class Customer
-    {
-        public int Id { get; set; }
-    }
-
-    public enum MyEnum
-    {
-        Ian,
-        Franc
-    }
-
-    public class EnumCustomer
-    {
-        public MyEnum AnEnum { get; set; }
     }
 }
