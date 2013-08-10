@@ -81,7 +81,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Performance\Benchmark\Benchmark.csproj", "{152D7995-8CE2-4EDB-BD22-5349D07F63D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance.Xml", "Performance.Xml\Performance.Xml.csproj", "{648B6029-95B7-42AD-A589-565BA82F543F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance.MediaTypeHandlers", "Performance.MediaTypeHandlers\Performance.MediaTypeHandlers.csproj", "{648B6029-95B7-42AD-A589-565BA82F543F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

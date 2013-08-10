@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Performance.Xml
+namespace Performance.MediaTypeHandlers
 {
     internal class CodeExecutionTimer
     {

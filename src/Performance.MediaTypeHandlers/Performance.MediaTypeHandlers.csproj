@@ -7,8 +7,8 @@
     <ProjectGuid>{648B6029-95B7-42AD-A589-565BA82F543F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Performance.Xml</RootNamespace>
-    <AssemblyName>Performance.Xml</AssemblyName>
+    <RootNamespace>Performance.MediaTypeHandlers</RootNamespace>
+    <AssemblyName>Performance.MediaTypeHandlers</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Simple.Web.Xml.Tests\XmlTestContainer.cs">
       <Link>XmlTestContainer.cs</Link>
     </Compile>
@@ -49,10 +52,17 @@
     </Compile>
     <Compile Include="CodeExecutionTimer.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Simple.Web.JsonFx\Simple.Web.JsonFx.csproj">
+      <Project>{a1e30ac1-2765-4e4f-8155-682a64d8b204}</Project>
+      <Name>Simple.Web.JsonFx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Web.JsonNet\Simple.Web.JsonNet.csproj">
+      <Project>{6dce0964-3bf0-4185-ac6e-1f8b97908601}</Project>
+      <Name>Simple.Web.JsonNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.TestHelpers\Simple.Web.TestHelpers.csproj">
       <Project>{2c65a993-1eb6-4971-a1ee-b0fcf31af525}</Project>
       <Name>Simple.Web.TestHelpers</Name>
