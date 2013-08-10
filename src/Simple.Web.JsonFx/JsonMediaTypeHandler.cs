@@ -22,18 +22,17 @@ namespace Simple.Web.JsonFx
     {
         public Task<T> Read<T>(Stream inputStream)
         {
-            return Task<T>.Factory.StartNew(() =>
-                {
-                    var resolver = CreateResolverStrategy();
+            var resolver = CreateResolverStrategy();
 
-                    // pass the combined resolver strategy into the settings object
-                    var reader = new JsonReader(new DataReaderSettings(resolver));
+            // pass the combined resolver strategy into the settings object
+            var reader = new JsonReader(new DataReaderSettings(resolver));
 
-                    using (var streamReader = new StreamReader(inputStream))
-                    {
-                        return reader.Read<T>(streamReader);
-                    }
-                });
+            T result;
+            using (var streamReader = new StreamReader(inputStream))
+            {
+                result = reader.Read<T>(streamReader);
+            }
+            return TaskHelper.Completed(result);
         }
 
         private static CombinedResolverStrategy CreateResolverStrategy()

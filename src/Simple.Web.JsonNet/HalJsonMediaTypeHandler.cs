@@ -29,13 +29,11 @@
 
         public Task<T> Read<T>(Stream inputStream)
         {
-            return Task<T>.Factory.StartNew(() =>
-                {
-                    var serializer = JsonSerializer.Create(Settings);
-                    var streamReader = new StreamReader(inputStream);
-                    var reader = new JsonTextReader(streamReader);
-                    return serializer.Deserialize<T>(reader);
-                });
+            var serializer = JsonSerializer.Create(Settings);
+            var streamReader = new StreamReader(inputStream);
+            var reader = new JsonTextReader(streamReader);
+            var result = serializer.Deserialize<T>(reader);
+            return TaskHelper.Completed(result);
         }
 
         public Task Write<T>(IContent content, Stream outputStream)
