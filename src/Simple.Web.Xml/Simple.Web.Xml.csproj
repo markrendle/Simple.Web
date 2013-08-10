@@ -47,8 +47,10 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="XmlMediaTypeHandler.cs" />
     <Compile Include="ExplicitXmlMediaTypeHandler.cs" />
+    <Compile Include="IConvertXmlFor.cs" />
+    <Compile Include="LinkToXml.cs" />
+    <Compile Include="DataContractXmlMediaTypeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

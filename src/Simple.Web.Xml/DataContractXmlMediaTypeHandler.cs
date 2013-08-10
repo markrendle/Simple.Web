@@ -2,7 +2,10 @@
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.Serialization;
+    using System.Text;
     using System.Threading.Tasks;
+    using System.Xml;
     using System.Xml.Linq;
     using Inflector;
     using Helpers;
@@ -10,10 +13,8 @@
     using MediaTypeHandling;
 
     [MediaTypes(MediaType.Xml, "application/*+xml")]
-    public class ExplicitXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
+    public class DataContractXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
     {
-        private object _outputConverter;
-
         protected override XElement ReadInput(Stream inputStream)
         {
             return XElement.Load(inputStream);
@@ -21,36 +22,26 @@
 
         protected override T FromWireFormat<T>(XElement wireFormat)
         {
-            IConvertXmlFor<T> converter;
-            using (var container = SimpleWeb.Configuration.Container.BeginScope())
-            {
-                converter = container.Get<IConvertXmlFor<T>>();
-            }
-            return converter.FromXml(wireFormat);
+            var dataContractSerializer = new DataContractSerializer(typeof(T));
+            return (T)dataContractSerializer.ReadObject(wireFormat.CreateReader());
         }
+
+        private DataContractSerializer _outputSerializer;
 
         protected override XElement ToWireFormat<T>(T item, IEnumerable<Link> itemLinks)
         {
-            IConvertXmlFor<T> converter;
-            if (_outputConverter == null)
+            if (_outputSerializer == null)
             {
-                using (var container = SimpleWeb.Configuration.Container.BeginScope())
-                {
-                    _outputConverter = converter = container.Get<IConvertXmlFor<T>>();
-                }
+                _outputSerializer = new DataContractSerializer(typeof (T));
             }
-            else
+            var stringBuilder = new StringBuilder();
+            var xmlWriter = XmlWriter.Create(stringBuilder);
+            _outputSerializer.WriteObject(xmlWriter, item);
+            xmlWriter.Flush();
+            var xml = XElement.Parse(stringBuilder.ToString());
+            foreach (var link in itemLinks)
             {
-                converter = (IConvertXmlFor<T>) _outputConverter;
-            }
-
-            var xml = converter.ToXml(item);
-            if (itemLinks != null)
-            {
-                foreach (var link in itemLinks)
-                {
-                    xml.Add(link.ToXml());
-                }
+                xml.Add(link.ToXml());
             }
             return xml;
         }
