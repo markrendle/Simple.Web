@@ -15,15 +15,17 @@
     [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class DataContractXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
     {
-        protected override XElement ReadInput(Stream inputStream)
+        protected override Task<XElement> ReadInput(Stream inputStream)
         {
-            return XElement.Load(inputStream);
+            return TaskHelper.Completed(XElement.Load(inputStream));
         }
 
-        protected override T FromWireFormat<T>(XElement wireFormat)
+        protected override Task<T> FromWireFormat<T>(XElement wireFormat)
         {
             var dataContractSerializer = new DataContractSerializer(typeof(T));
-            return (T)dataContractSerializer.ReadObject(wireFormat.CreateReader());
+            var xmlReader = wireFormat.CreateReader();
+            var obj = dataContractSerializer.ReadObject(xmlReader);
+            return TaskHelper.Completed((T)obj);
         }
 
         private DataContractSerializer _outputSerializer;

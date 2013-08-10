@@ -11,17 +11,14 @@ namespace Simple.Web.MediaTypeHandling
     {
         public Task<T> Read<T>(Stream inputStream)
         {
-            return Task<T>.Factory.StartNew(() =>
-                {
-                    var wireFormat = ReadInput(inputStream);
-                    var result = FromWireFormat<T>(wireFormat);
-                    return result;
-                });
+            return ReadInput(inputStream)
+                .ContinueWith(t => FromWireFormat<T>(t.Result))
+                .Unwrap();
         }
 
-        protected abstract TWireFormat ReadInput(Stream inputStream);
+        protected abstract Task<TWireFormat> ReadInput(Stream inputStream);
 
-        protected abstract T FromWireFormat<T>(TWireFormat wireFormat);
+        protected abstract Task<T> FromWireFormat<T>(TWireFormat wireFormat);
 
         public Task Write<T>(IContent content, Stream outputStream)
         {
