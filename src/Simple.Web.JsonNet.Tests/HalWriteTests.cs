@@ -48,7 +48,7 @@
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {
-                target.Write<IEnumerable<Person>>(content, stream).Wait();
+                target.Write<Person>(content, stream).Wait();
                 stream.Position = 0;
                 var text = new StreamReader(stream).ReadToEnd();
                 actual = JObject.Parse(text);

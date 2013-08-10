@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Simple.Web.JsonNet
+﻿namespace Simple.Web.JsonNet
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
     using Helpers;
     using Links;
     using MediaTypeHandling;
@@ -58,7 +57,7 @@ namespace Simple.Web.JsonNet
         {
             if (content.Model != null)
             {
-                var linkConverters = LinkConverter.CreateForGraph(content.Model.GetType(), KnownTypes.Value,
+                var linkConverters = LinkConverter.CreateForGraph(typeof(T), KnownTypes.Value,
                                                                   LinkHelper.GetLinksForModel, Settings.ContractResolver);
                 var settings = new JsonSerializerSettings
                     {
