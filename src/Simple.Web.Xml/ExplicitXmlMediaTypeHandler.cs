@@ -14,19 +14,19 @@
     {
         private object _outputConverter;
 
-        protected override XElement ReadInput(Stream inputStream)
+        protected override Task<XElement> ReadInput(Stream inputStream)
         {
-            return XElement.Load(inputStream);
+            return TaskHelper.Completed(XElement.Load(inputStream));
         }
 
-        protected override T FromWireFormat<T>(XElement wireFormat)
+        protected override Task<T> FromWireFormat<T>(XElement wireFormat)
         {
             IConvertXmlFor<T> converter;
             using (var container = SimpleWeb.Configuration.Container.BeginScope())
             {
                 converter = container.Get<IConvertXmlFor<T>>();
             }
-            return converter.FromXml(wireFormat);
+            return TaskHelper.Completed(converter.FromXml(wireFormat));
         }
 
         protected override XElement ToWireFormat<T>(T item, IEnumerable<Link> itemLinks)
