@@ -43,14 +43,13 @@
 
         public Task<T> Read<T>(Stream inputStream)
         {
-            return Task<T>.Factory.StartNew(() =>
-                {
-                    // pass the combined resolver strategy into the settings object
-                    using (var streamReader = new StreamReader(inputStream))
-                    {
-                        return JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd(), SerializerSettings);
-                    }
-                });
+            T result;
+            // pass the combined resolver strategy into the settings object
+            using (var streamReader = new StreamReader(inputStream))
+            {
+                result = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd(), SerializerSettings);
+            }
+            return TaskHelper.Completed(result);
         }
 
         public Task Write<T>(IContent content, Stream outputStream)

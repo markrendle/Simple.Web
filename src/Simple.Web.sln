@@ -81,6 +81,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Performance\Benchmark\Benchmark.csproj", "{152D7995-8CE2-4EDB-BD22-5349D07F63D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance.MediaTypeHandlers", "Performance.MediaTypeHandlers\Performance.MediaTypeHandlers.csproj", "{648B6029-95B7-42AD-A589-565BA82F543F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -331,6 +333,16 @@ Global
 		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{152D7995-8CE2-4EDB-BD22-5349D07F63D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -352,5 +364,6 @@ Global
 		{8A70C5E5-ADB6-4E91-BD8C-D47532D1A358} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
 		{85A04371-B382-4DCE-A173-7BEF7960BD19} = {2EA3D337-D73D-4470-85E2-9AD037F202D6}
 		{152D7995-8CE2-4EDB-BD22-5349D07F63D8} = {27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}
+		{648B6029-95B7-42AD-A589-565BA82F543F} = {27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}
 	EndGlobalSection
 EndGlobal

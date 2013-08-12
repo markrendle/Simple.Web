@@ -3,11 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using HalJson.Tests;
     using JsonNet;
-    using Links;
     using MediaTypeHandling;
     using Newtonsoft.Json.Linq;
+    using TestHelpers.Sample;
     using Xunit;
 
     public class HalWriteTests
@@ -64,17 +63,5 @@
             var links = (JObject) actual["_links"];
             Assert.Equal("/people", links["self"]["href"]);
         }
-    }
-
-    [Canonical(typeof (Person))]
-    [UriTemplate("/person/{Name}")]
-    public class PersonHandler
-    {
-    }
-
-    [Canonical(typeof (IEnumerable<Person>))]
-    [UriTemplate("/people")]
-    public class PeopleHandler
-    {
     }
 }
