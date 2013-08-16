@@ -16,7 +16,8 @@
       <dependency id="Simple.Web" version="0.0.0.0" />
       <dependency id="Microsoft.Owin-mono" version="2.0.0-rtw-20815-004" />
       <dependency id="Microsoft.Owin.Hosting-mono" version="2.0.0-rtw-20815-004" />
-      <dependency id="Microsoft.Diagnostics-mono" version="2.0.0-rtw-20815-004" />
+      <dependency id="Microsoft.Owin.Diagnostics-mono" version="2.0.0-rtw-20815-004" />
+      <dependency id="Microsoft.Owin.Host.HttpListener-mono" version="2.0.0-rtw-20815-004" />
     </dependencies>
   </metadata>
   <files>

@@ -182,6 +182,10 @@ xbuild :xbuild
 assemblyinfo :assemblyinfo do |asm|
 	asm_version = BUILD_NUMBER
 
+    if TEAMCITY
+        puts "##teamcity[buildNumber '#{BUILD_NUMBER}']"
+    end
+
 	begin
 		commit = `git log -1 --pretty=format:%H`
 	rescue
