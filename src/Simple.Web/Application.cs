@@ -15,8 +15,10 @@
     using Helpers;
     using Hosting;
     using Http;
-    using Owin;
+
     using Routing;
+
+    using Simple.Web.OwinSupport;
 #pragma warning disable 811
     using Result = System.Tuple<System.Collections.Generic.IDictionary<string, object>, int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.Tasks.Task>>;
 #pragma warning restore 811
@@ -91,7 +93,14 @@
 
                         foreach (var header in context.Response.Headers)
                         {
-                            responseHeaders.Add(header.Key, header.Value);
+                            if (responseHeaders.ContainsKey(header.Key))
+                            {
+                                responseHeaders[header.Key] = header.Value;
+                            }
+                            else
+                            {
+                                responseHeaders.Add(header.Key, header.Value);
+                            }
                         }
                     }
 
@@ -99,7 +108,7 @@
                     {
                         return context.Response.WriteFunction((Stream)env[OwinKeys.ResponseBody]);
                     }
-                    
+
                     tcs.SetResult(0);
                 }
                 catch (Exception ex)
@@ -219,35 +228,35 @@
         {
             if (acceptTypes == null) return "text/plain";
 
-			var types = acceptTypes.ToArray();
+            var types = acceptTypes.ToArray();
 
-			if (types.All(r=>r == "*/*")) return GuessType(file);
+            if (types.All(r => r == "*/*")) return GuessType(file);
             return types.FirstOrDefault() ?? "text/plain";
         }
 
-    	static string GuessType(string file)
-    	{
-    		switch (file.ToLower().SubstringAfterLast('.'))
-    		{
-				case "js":
-				case "javascript": return "text/javascript";
+        static string GuessType(string file)
+        {
+            switch (file.ToLower().SubstringAfterLast('.'))
+            {
+                case "js":
+                case "javascript": return "text/javascript";
 
-				case "css": return "text/css";
+                case "css": return "text/css";
 
-				case "jpg":
-				case "jpeg": return "image/jpeg";
-				case "png": return "image/png";
-				case "gif": return "image/gif";
+                case "jpg":
+                case "jpeg": return "image/jpeg";
+                case "png": return "image/png";
+                case "gif": return "image/gif";
 
                 case "html":
                 case "htm":
                 case "xhtml": return "text/html";
 
-				default: return "text/plain";
-    		}
-    	}
+                default: return "text/plain";
+            }
+        }
 
-    	private static void Startup()
+        private static void Startup()
         {
             if (_startupTaskRunner != null)
             {
@@ -268,7 +277,7 @@
         {
             var types = ExportedTypeHelper.FromCurrentAppDomain(IsHttpMethodHandler).ToList();
             var handlerTypes = types
-                .Where(i => HttpMethodAttribute.Matches(i,httpMethod))
+                .Where(i => HttpMethodAttribute.Matches(i, httpMethod))
                 .ToArray();
 
             return new RoutingTableBuilder(handlerTypes).BuildRoutingTable();

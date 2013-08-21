@@ -129,7 +129,9 @@ task :publocal => [:full] do
 end
 
 desc "Build + Tests + Specs + Package"
-task :package => [:full] do
+task :package => [:full, :packageonly] 
+
+task :packageonly do
 	PackageNugets BUILD_NUMBER
 end
 
@@ -179,6 +181,10 @@ xbuild :xbuild
 
 assemblyinfo :assemblyinfo do |asm|
 	asm_version = BUILD_NUMBER
+
+    if TEAMCITY
+        puts "##teamcity[buildNumber '#{BUILD_NUMBER}']"
+    end
 
 	begin
 		commit = `git log -1 --pretty=format:%H`
@@ -269,9 +275,9 @@ def PackageNugets(nuspec_version)
     end
 end
 
-def UpdateNuSpecVersions(nuspecs, nuspec_version)
+def UpdateNuSpecVersions(nuspecs, target_version)
 	raise "No nuspecs to update." unless !nuspecs.nil?
-	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
+	raise "Invalid nuspec version specified." unless !target_version.nil?
 
     suffix = ""
     suffix << "-#{TEAMCITY_BRANCH}" unless (TEAMCITY_BRANCH.nil? or TEAMCITY_BRANCH.eql? "master" or TEAMCITY_BRANCH.eql? "<default>")
@@ -281,10 +287,12 @@ def UpdateNuSpecVersions(nuspecs, nuspec_version)
         puts "Updating #{Pathname.new(nuspec).basename}"
         update_xml nuspec do |xml|
             nuspec_id = xml.root.elements["metadata/id"].text
-            nuspec_mm_version = "[#{nuspec_version.split(".").first(4).join(".")}]"
+            nuspec_version = xml.root.elements["metadata/version"].text
+            nuspec_mm_version = "[#{target_version.split(".").first(4).join(".")}]"
+            target_mm_version = target_version.split(".")
 
-            xml.root.elements["metadata/id"].text = (nuspec_id + suffix)
-            xml.root.elements["metadata/version"].text = nuspec_version
+            xml.root.elements["metadata/id"].text = nuspec_id + suffix 
+            xml.root.elements["metadata/version"].text = !nuspec_version.include?("-") ? target_version : target_mm_version.first(3).join(".") + (nuspec_version.include?("-") ? "-#{nuspec_version.partition('-').last}" : "") + "-#{target_mm_version.last}"
             xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
             xml.root.elements["metadata/summary"].text = SOLUTION_DESC
             xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE

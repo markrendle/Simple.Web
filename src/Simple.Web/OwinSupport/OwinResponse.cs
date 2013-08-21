@@ -1,11 +1,11 @@
-namespace Simple.Web.Owin
+namespace Simple.Web.OwinSupport
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
-    using Http;
+
+    using Simple.Web.Http;
 
     internal class OwinResponse : IResponse
     {
