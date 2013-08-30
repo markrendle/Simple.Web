@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="GetEnumerable.cs" />
     <Compile Include="GetError.cs" />
     <Compile Include="GetModel.cs" />
     <Compile Include="Models\Form.cs" />
@@ -159,6 +160,9 @@
     <Content Include="Views\Model.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EnumerableQSArg.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
