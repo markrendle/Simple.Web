@@ -1,4 +1,4 @@
-﻿namespace Simple.Web.Owin
+﻿namespace Simple.Web.OwinSupport
 {
     internal static class OwinKeys
     {

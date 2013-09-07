@@ -1,4 +1,4 @@
-namespace Simple.Web.Owin
+namespace Simple.Web.OwinSupport
 {
     using System.IO;
     using System.Web;
@@ -16,7 +16,7 @@ namespace Simple.Web.Owin
         /// <param name="filename">The name of the saved file. </param><exception cref="T:System.Web.HttpException">The <see cref="P:System.Web.Configuration.HttpRuntimeSection.RequireRootedSaveAsPath"/> property of the <see cref="T:System.Web.Configuration.HttpRuntimeSection"/> object is set to true, but <paramref name="filename"/> is not an absolute path.</exception>
         public void SaveAs(string filename)
         {
-            _file.SaveAs(filename);
+            this._file.SaveAs(filename);
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Simple.Web.Owin
         /// </returns>
         public string FileName
         {
-            get { return _file.FileName; }
+            get { return this._file.FileName; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Simple.Web.Owin
         /// </returns>
         public string ContentType
         {
-            get { return _file.ContentType; }
+            get { return this._file.ContentType; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Simple.Web.Owin
         /// </returns>
         public int ContentLength
         {
-            get { return _file.ContentLength; }
+            get { return this._file.ContentLength; }
         }
 
         /// <summary>
@@ -60,12 +60,12 @@ namespace Simple.Web.Owin
         /// </returns>
         public Stream InputStream
         {
-            get { return _file.InputStream; }
+            get { return this._file.InputStream; }
         }
 
         public PostedFile(HttpPostedFile file)
         {
-            _file = file;
+            this._file = file;
         }
     }
 }

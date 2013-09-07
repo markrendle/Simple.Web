@@ -1,10 +1,11 @@
-namespace Simple.Web.Owin
+namespace Simple.Web.OwinSupport
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Web;
-    using Http;
+
+    using Simple.Web.Http;
 
     internal class OwinRequest : IRequest
     {
@@ -12,22 +13,22 @@ namespace Simple.Web.Owin
 
         public OwinRequest(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders, Stream inputStream)
         {
-            HttpMethod = env[OwinKeys.Method].ToString();
-            Headers = requestHeaders;
-            InputStream = inputStream;
-            Url = new Uri(MakeUriString(env, requestHeaders));
+            this.HttpMethod = env[OwinKeys.Method].ToString();
+            this.Headers = requestHeaders;
+            this.InputStream = inputStream;
+            this.Url = new Uri(MakeUriString(env, requestHeaders));
             if (env.ContainsKey(OwinKeys.QueryString))
             {
-                QueryString = QueryStringParser.Parse((string) env[OwinKeys.QueryString]);
+                this.QueryString = QueryStringParser.Parse((string) env[OwinKeys.QueryString]);
             }
             else
             {
-                QueryString = new Dictionary<string, string[]>();
+                this.QueryString = new Dictionary<string, string[]>();
             }
             object aspNetContext;
             if (env.TryGetValue("aspnet.Context", out aspNetContext))
             {
-                _context = (HttpContext) aspNetContext;
+                this._context = (HttpContext) aspNetContext;
             }
         }
 
@@ -45,11 +46,11 @@ namespace Simple.Web.Owin
         {
             get
             {
-                if (_context != null)
+                if (this._context != null)
                 {
-                    for (int i = 0; i < _context.Request.Files.Count; i++)
+                    for (int i = 0; i < this._context.Request.Files.Count; i++)
                     {
-                        yield return new PostedFile(_context.Request.Files.Get(i));
+                        yield return new PostedFile(this._context.Request.Files.Get(i));
                     }
                 }
             }
@@ -57,7 +58,7 @@ namespace Simple.Web.Owin
 
         public string Host
         {
-            get { return Headers[HeaderKeys.Host][0]; }
+            get { return this.Headers[HeaderKeys.Host][0]; }
         }
 
         private static string MakeUriString(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders)

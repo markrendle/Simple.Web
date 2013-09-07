@@ -1,4 +1,4 @@
-﻿namespace Simple.Web.Owin
+﻿namespace Simple.Web.OwinSupport
 {
     using System.Collections.Generic;
     using System.Linq;
