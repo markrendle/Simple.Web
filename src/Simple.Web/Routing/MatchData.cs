@@ -10,7 +10,7 @@ namespace Simple.Web.Routing
         private bool _set;
         private HandlerTypeInfo _single;
         private List<HandlerTypeInfo> _list;
-        private HandlerTypeInfo[] _prioritised; 
+        private HandlerTypeInfo[] _prioritised;
         private IDictionary<string, string> _variables;
 
         public IDictionary<string, string> Variables
@@ -68,7 +68,15 @@ namespace Simple.Web.Routing
             {
                 _variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
-            _variables[key] = value;
+            if (_variables.ContainsKey(key))
+            {
+                // Append this value with a delimiter
+                _variables[key] += "\t" + value;
+            }
+            else
+            {
+                _variables.Add(key, value);
+            }
         }
 
         public Type ResolveByMediaTypes(string contentType, IList<string> acceptTypes)

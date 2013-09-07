@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Autofac;
+﻿using Autofac;
+using System.Reflection;
 using Xunit;
 
 namespace Simple.Web.Autofac.Tests
