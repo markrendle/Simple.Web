@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
-using Autofac;
 
 namespace Simple.Web.Autofac.Tests
 {
-    using System.Reflection;
     using CodeGeneration;
+    using System.Reflection;
     using Xunit;
 
     public class HandlerFactoryBuilderTests

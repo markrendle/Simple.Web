@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Mark Rendle")]
 [assembly: AssemblyProduct("Simple.Web")]
