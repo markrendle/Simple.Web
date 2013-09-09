@@ -21,6 +21,6 @@ namespace Simple.Web.Windsor
             configuration.Container = new WindsorSimpleContainer(container);
         }
 
-        internal protected abstract IEnumerable<IWindsorInstaller> GetInstallers();
+        protected abstract IEnumerable<IWindsorInstaller> GetInstallers();
     }
 }
