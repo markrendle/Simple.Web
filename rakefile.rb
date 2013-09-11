@@ -293,11 +293,14 @@ def UpdateNuSpecVersions(nuspecs, target_version)
 
             xml.root.elements["metadata/id"].text = nuspec_id + suffix 
             xml.root.elements["metadata/version"].text = !nuspec_version.include?("-") ? target_version : target_mm_version.first(3).join(".") + (nuspec_version.include?("-") ? "-#{nuspec_version.partition('-').last}" : "") + "-#{target_mm_version.last}"
-            xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
             xml.root.elements["metadata/summary"].text = SOLUTION_DESC
             xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE
             xml.root.elements["metadata/projectUrl"].text = SOLUTION_URL
-			
+
+            if xml.root.elements["metadata/authors"].include?('$authors$')
+                xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
+	        end
+
 			xml.root.get_elements("//dependency").each { |e|
 				if e.attributes["id"].downcase.include? SOLUTION_NAME.downcase
 					e.attributes["id"] = (e.attributes["id"] + suffix)
@@ -341,13 +344,12 @@ class NuGetPackCustom < NuGetPack
     
     params = []
     params << "pack"
-    params << "-Symbols" if @symbols
+    params << "-Symbols" if !TEAMCITY
     params << nuspec
     params << "-BasePath \"#{base_folder}\"" unless @base_folder.nil?
     params << "-OutputDirectory \"#{output}\"" unless @output.nil?
     params << "-NoDefaultExcludes" unless !MONO
     params << "-Verbosity detailed" unless !TEAMCITY
-    params << "-Symbols"
     params << build_properties unless @properties.nil? || @properties.empty?
     
     merged_params = params.join(' ')
