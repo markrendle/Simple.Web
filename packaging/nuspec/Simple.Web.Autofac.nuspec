@@ -3,8 +3,8 @@
   <metadata>
     <id>Simple.Web.Autofac</id>
     <version>0.0.0.0</version>
-    <authors>Mark Rendle, Kevin Stout</authors>
-    <owners>Mark Rendle, Kevin Stout</owners>
+    <authors>Mark Rendle, Ian Battersby, and Kevin Stout</authors>
+    <owners>Mark Rendle, Ian Battersby, Kevin Stout</owners>
     <copyright>Mark Rendle, Kevin Stout</copyright>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>

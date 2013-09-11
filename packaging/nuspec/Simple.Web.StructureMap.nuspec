@@ -3,9 +3,9 @@
   <metadata>
     <id>Simple.Web.StructureMap</id>
     <version>0.0.0.0</version>
-    <authors>Mark Rendle, Roy Jacobs</authors>
-    <owners>Mark Rendle, Roy Jacobs</owners>
-    <copyright>Mark Rendle, Roy Jacobs</copyright>
+    <authors>Mark Rendle, Ian Battersby, and Roy Jacobs</authors>
+    <owners>Mark Rendle, Ian Battersby, Roy Jacobs</owners>
+    <copyright>Mark Rendle</copyright>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
