@@ -1,0 +1,17 @@
+﻿@model Sandbox.EnumerableModel
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>title</title>
+    </head>
+    <body>
+        <div>
+              @foreach (var message in Model.Messages)
+              {
+                  <br/>@message
+              }
+        </div>
+    </body>
+</html>

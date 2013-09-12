@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Mark Rendle")]
 [assembly: AssemblyProduct("Simple.Web")]
@@ -21,5 +21,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Simple.Web.Razor.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.Routing.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.StructureMap.Tests")]
+[assembly: InternalsVisibleTo("Simple.Web.Windsor.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.Xml.Tests")]

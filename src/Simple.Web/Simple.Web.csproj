@@ -65,7 +65,7 @@
     <Compile Include="Behaviors\BehaviorAttribute.cs" />
     <Compile Include="Behaviors\CookieAttribute.cs" />
     <Compile Include="Behaviors\IETag.cs" />
-    <Compile Include="Behaviors\Implementations\WriteOutput.cs" />
+    <Compile Include="Behaviors\Implementations\Disposable.cs" />
     <Compile Include="Behaviors\Implementations\GetInput.cs" />
     <Compile Include="Behaviors\Implementations\OptionalAuthentication.cs" />
     <Compile Include="Behaviors\Implementations\WriteOutputAsync.cs" />
@@ -132,6 +132,7 @@
     <Compile Include="Behaviors\Implementations\Redirect.cs" />
     <Compile Include="Behaviors\Implementations\SetFiles.cs" />
     <Compile Include="Behaviors\Implementations\SetInput.cs" />
+    <Compile Include="Behaviors\Implementations\WriteOutput.cs" />
     <Compile Include="CodeGeneration\WriteRawHtml.cs" />
     <Compile Include="CodeGeneration\WriteStatusCode.cs" />
     <Compile Include="Behaviors\Implementations\WriteStreamResponse.cs" />
