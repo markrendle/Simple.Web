@@ -104,8 +104,14 @@ namespace Simple.Web.CodeGeneration
                 blocks.Add(writeViewBlock);
             }
 
-            var call = BuildCallExpression(blocks);
+            if (typeof(IDisposable).IsAssignableFrom(_handlerType))
+            {
+                var disposeBlock = new PipelineBlock();
+                disposeBlock.Add(typeof(Disposable).GetMethod("Impl", BindingFlags.Static | BindingFlags.Public));
+                blocks.Add(disposeBlock);
+            }
 
+            var call = BuildCallExpression(blocks);
 
             var createHandler = BuildCreateHandlerExpression();
 
