@@ -1,64 +1,87 @@
-﻿namespace Simple.Web.Xml
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Inflector;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Inflector;
+using Simple.Web.DependencyInjection;
+using Simple.Web.Helpers;
+using Simple.Web.Links;
+using Simple.Web.MediaTypeHandling;
 
+namespace Simple.Web.Xml
+{
     [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class ExplicitXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
     {
         private object _outputConverter;
+
+        protected override void AddWireFormattedLinks(XElement wireFormattedItem, IEnumerable<Link> itemLinks)
+        {
+            if (itemLinks == null)
+            {
+                return;
+            }
+            foreach (Link link in itemLinks)
+            {
+                wireFormattedItem.Add(link.ToXml());
+            }
+        }
+
+        protected override Task<T> FromWireFormat<T>(XElement wireFormat)
+        {
+            XmlConverter<T> converter;
+            using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
+            {
+                converter = container.Get<XmlConverter<T>>();
+            }
+            return TaskHelper.Completed(converter.FromXml(wireFormat));
+        }
 
         protected override Task<XElement> ReadInput(Stream inputStream)
         {
             return TaskHelper.Completed(XElement.Load(inputStream));
         }
 
-        protected override Task<T> FromWireFormat<T>(XElement wireFormat)
+        protected override XElement ToWireFormat(object item)
         {
-            IConvertXmlFor<T> converter;
-            using (var container = SimpleWeb.Configuration.Container.BeginScope())
-            {
-                converter = container.Get<IConvertXmlFor<T>>();
-            }
-            return TaskHelper.Completed(converter.FromXml(wireFormat));
-        }
-
-        protected override XElement ToWireFormat<T>(T item, IEnumerable<Link> itemLinks)
-        {
-            IConvertXmlFor<T> converter;
+            IXmlConverter converter;
             if (_outputConverter == null)
             {
-                using (var container = SimpleWeb.Configuration.Container.BeginScope())
+                using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
                 {
-                    _outputConverter = converter = container.Get<IConvertXmlFor<T>>();
+                    Type type = typeof (XmlConverter<>).MakeGenericType(item.GetType());
+                    _outputConverter = converter = (IXmlConverter) container.Get(type);
                 }
             }
             else
             {
-                converter = (IConvertXmlFor<T>) _outputConverter;
+                converter = (IXmlConverter) _outputConverter;
             }
+            return converter.ToXml(item);
+        }
 
-            var xml = converter.ToXml(item);
-            if (itemLinks != null)
+        protected override XElement ToWireFormat<T>(T item)
+        {
+            XmlConverter<T> converter;
+            if (_outputConverter == null)
             {
-                foreach (var link in itemLinks)
+                using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
                 {
-                    xml.Add(link.ToXml());
+                    _outputConverter = converter = container.Get<XmlConverter<T>>();
                 }
             }
-            return xml;
+            else
+            {
+                converter = (XmlConverter<T>) _outputConverter;
+            }
+            return converter.ToXml(item);
         }
 
         protected override XElement WrapCollection(IList<XElement> collection, IEnumerable<Link> collectionLinks)
         {
             var xml = new XElement(collection[0].Name.LocalName.Pluralize());
-            foreach (var element in collection)
+            foreach (XElement element in collection)
             {
                 xml.Add(element);
             }

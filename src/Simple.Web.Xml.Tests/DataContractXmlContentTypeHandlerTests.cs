@@ -1,13 +1,14 @@
-﻿namespace Simple.Web.Xml.Tests
-{
-    using System;
-    using System.Xml.Linq;
-    using MediaTypeHandling;
-    using TestHelpers;
-    using TestHelpers.Sample;
-    using TestHelpers.Xml;
-    using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
+using Simple.Web.MediaTypeHandling;
+using Simple.Web.TestHelpers;
+using Simple.Web.TestHelpers.Sample;
+using Simple.Web.TestHelpers.Xml;
+using Xunit;
 
+namespace Simple.Web.Xml.Tests
+{
     public class DataContractXmlContentTypeHandlerTests
     {
         [Fact]
@@ -24,12 +25,13 @@
             }
             Assert.NotNull(actual);
 
-            const string expected = "<Order xmlns='http://schemas.datacontract.org/2004/07/Simple.Web.TestHelpers.Sample'" +
-                                    "       xmlns:i='http://www.w3.org/2001/XMLSchema-instance'>" +
-                                    "  <CustomerId>42</CustomerId>" +
-                                    "  <Id>54</Id>" +
-                                    "  <link href='/order/54' rel='self' type='application/vnd.order+xml' xmlns='' />" +
-                                    "</Order>";
+            const string expected =
+                "<Order xmlns='http://schemas.datacontract.org/2004/07/Simple.Web.TestHelpers.Sample'" +
+                "       xmlns:i='http://www.w3.org/2001/XMLSchema-instance'>" +
+                "  <CustomerId>42</CustomerId>" +
+                "  <Id>54</Id>" +
+                "  <link href='/order/54' rel='self' type='application/vnd.order+xml' xmlns='' />" +
+                "</Order>";
 
             XElement.Parse(actual).ShouldEqual(expected);
         }
@@ -70,7 +72,7 @@
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);

@@ -1,8 +1,9 @@
-﻿namespace Simple.Web.Xml.Tests
-{
-    using DependencyInjection;
-    using TestHelpers.Sample;
+﻿using System;
+using Simple.Web.DependencyInjection;
+using Simple.Web.TestHelpers.Sample;
 
+namespace Simple.Web.Xml.Tests
+{
     public class XmlTestContainer : ISimpleContainer
     {
         public ISimpleContainerScope BeginScope()
@@ -18,16 +19,21 @@
 
             public T Get<T>()
             {
-                var requestedType = typeof (T);
-                if (requestedType == typeof (IConvertXmlFor<Order>))
+                Type requestedType = typeof (T);
+                return (T) Get(requestedType);
+            }
+
+            public object Get(Type objectType)
+            {
+                if (objectType == typeof (XmlConverter<Order>))
                 {
-                    return (T) (object) new OrderConverter();
+                    return new OrderConverter();
                 }
-                if (requestedType == typeof (IConvertXmlFor<Customer>))
+                if (objectType == typeof(XmlConverter<Customer>))
                 {
-                    return (T) (object) new CustomerConverter();
+                    return new CustomerConverter();
                 }
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
     }

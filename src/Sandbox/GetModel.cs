@@ -19,7 +19,7 @@ namespace Sandbox
 
     [UriTemplate("/models")]
     [RespondsWith(MediaType.Json)]
-    public class GetAllModels : IGet, IOutputEnumerable<Model>
+    public class GetAllModels : IGet, IOutput<IEnumerable<Model>>
     {
         public IEnumerable<Model> Output {
             get { return new[] {new Model("one"), new Model("two"), new Model("three"),}; }

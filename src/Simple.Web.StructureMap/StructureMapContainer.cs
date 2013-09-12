@@ -1,4 +1,5 @@
-﻿using Simple.Web.DependencyInjection;
+﻿using System;
+using Simple.Web.DependencyInjection;
 using StructureMap;
 
 namespace Simple.Web.StructureMap
@@ -29,12 +30,17 @@ namespace Simple.Web.StructureMap
 
         public T Get<T>()
         {
-        	return IsConcrete<T>() ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
+        	return IsConcrete(typeof(T)) ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
         }
 
-    	static bool IsConcrete<T>()
+        public object Get(Type objectType)
+        {
+            return IsConcrete(objectType) ? _container.GetInstance(objectType) : _container.TryGetInstance(objectType);
+        }
+
+        private static bool IsConcrete(Type type)
     	{
-    		return !(typeof(T).IsAbstract || typeof(T).IsInterface);
+            return !(type.IsAbstract || type.IsInterface);
     	}
 
     	public void Dispose()

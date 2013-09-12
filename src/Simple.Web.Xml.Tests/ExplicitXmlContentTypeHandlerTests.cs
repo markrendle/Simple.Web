@@ -1,14 +1,14 @@
-﻿namespace Simple.Web.Xml.Tests
-{
-    using System;
-    using System.Xml.Linq;
-    using MediaTypeHandling;
-    using TestHelpers;
-    using TestHelpers.Sample;
-    using TestHelpers.Xml;
-    using Xml;
-    using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
+using Simple.Web.MediaTypeHandling;
+using Simple.Web.TestHelpers;
+using Simple.Web.TestHelpers.Sample;
+using Simple.Web.TestHelpers.Xml;
+using Xunit;
 
+namespace Simple.Web.Xml.Tests
+{
     public class ExplicitXmlContentTypeHandlerTests
     {
         public ExplicitXmlContentTypeHandlerTests()
@@ -72,7 +72,7 @@
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);

@@ -19,8 +19,7 @@
     {
         private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
             {
-                ReferenceLoopHandling =
-                    ReferenceLoopHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore,
             };
