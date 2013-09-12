@@ -48,6 +48,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ExplicitXmlMediaTypeHandler.cs" />
+    <Compile Include="XElementMediaTypeHandlerBase.cs" />
     <Compile Include="XmlConverter.cs" />
     <Compile Include="LinkToXml.cs" />
     <Compile Include="DataContractXmlMediaTypeHandler.cs" />
