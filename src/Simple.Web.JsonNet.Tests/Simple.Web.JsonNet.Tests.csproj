@@ -57,12 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonNetContentTypeHandlerTests.cs" />
+    <Compile Include="JsonMediaTypeHandlerWithDeepLinksTests.cs" />
+    <Compile Include="JsonMediaTypeHandlerTests.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="HalReadTests.cs" />
-    <Compile Include="HalWriteTests.cs" />
+    <Compile Include="HalJsonMediaTypeHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -68,6 +68,7 @@ namespace Simple.Web.Xml
 
         protected override XElement WrapCollection(IList<XElement> collection, IEnumerable<Link> collectionLinks)
         {
+            //todo should we wrap a single item?
             var xml = new XElement(collection[0].Name.LocalName.Pluralize());
             foreach (XElement element in collection)
             {
