@@ -1,75 +1,60 @@
-﻿namespace Simple.Web.Xml
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Inflector;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
+﻿using System;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Simple.Web.DependencyInjection;
+using Simple.Web.Helpers;
+using Simple.Web.MediaTypeHandling;
 
+namespace Simple.Web.Xml
+{
     [MediaTypes(MediaType.Xml, "application/*+xml")]
-    public class ExplicitXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
+    public class ExplicitXmlMediaTypeHandler : XElementMediaTypeHandlerBase
     {
         private object _outputConverter;
 
-        protected override Task<XElement> ReadInput(Stream inputStream)
-        {
-            return TaskHelper.Completed(XElement.Load(inputStream));
-        }
-
         protected override Task<T> FromWireFormat<T>(XElement wireFormat)
         {
-            IConvertXmlFor<T> converter;
-            using (var container = SimpleWeb.Configuration.Container.BeginScope())
+            XmlConverter<T> converter;
+            using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
             {
-                converter = container.Get<IConvertXmlFor<T>>();
+                converter = container.Get<XmlConverter<T>>();
             }
             return TaskHelper.Completed(converter.FromXml(wireFormat));
         }
 
-        protected override XElement ToWireFormat<T>(T item, IEnumerable<Link> itemLinks)
+        protected override XElement ToWireFormat(object item)
         {
-            IConvertXmlFor<T> converter;
+            IXmlConverter converter;
             if (_outputConverter == null)
             {
-                using (var container = SimpleWeb.Configuration.Container.BeginScope())
+                using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
                 {
-                    _outputConverter = converter = container.Get<IConvertXmlFor<T>>();
+                    Type type = typeof (XmlConverter<>).MakeGenericType(item.GetType());
+                    _outputConverter = converter = (IXmlConverter) container.Get(type);
                 }
             }
             else
             {
-                converter = (IConvertXmlFor<T>) _outputConverter;
+                converter = (IXmlConverter) _outputConverter;
             }
+            return converter.ToXml(item);
+        }
 
-            var xml = converter.ToXml(item);
-            if (itemLinks != null)
+        protected override XElement ToWireFormat<T>(T item)
+        {
+            XmlConverter<T> converter;
+            if (_outputConverter == null)
             {
-                foreach (var link in itemLinks)
+                using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
                 {
-                    xml.Add(link.ToXml());
+                    _outputConverter = converter = container.Get<XmlConverter<T>>();
                 }
             }
-            return xml;
-        }
-
-        protected override XElement WrapCollection(IList<XElement> collection, IEnumerable<Link> collectionLinks)
-        {
-            var xml = new XElement(collection[0].Name.LocalName.Pluralize());
-            foreach (var element in collection)
+            else
             {
-                xml.Add(element);
+                converter = (XmlConverter<T>) _outputConverter;
             }
-            //todo add collection links?
-            return xml;
-        }
-
-        protected override Task WriteOutput(XElement output, Stream outputStream)
-        {
-            output.Save(outputStream);
-            return TaskHelper.Completed();
+            return converter.ToXml(item);
         }
     }
 }

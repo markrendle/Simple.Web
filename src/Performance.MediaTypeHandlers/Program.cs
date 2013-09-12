@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Simple.Web;
+using Simple.Web.JsonNet;
 using Simple.Web.MediaTypeHandling;
 using Simple.Web.TestHelpers;
 using Simple.Web.TestHelpers.Sample;
@@ -21,27 +22,32 @@ namespace Performance.MediaTypeHandlers
             Console.WriteLine();
 
             Console.WriteLine("Testing ExplicitXml.Write<T> over {0} iterations...", iterations);
-            var explicitAverage = CodeExecutionTimer.Average(iterations, () => ExplicitXmlWrite(content));
+            double explicitAverage = CodeExecutionTimer.Average(iterations, () => ExplicitXmlWrite(content));
             Console.WriteLine("Average: {0}s", explicitAverage);
             Console.WriteLine();
 
             Console.WriteLine("Testing DataContractXml.Write<T> over {0} iterations...", iterations);
-            var dataContractAverage = CodeExecutionTimer.Average(iterations, () => DataContractXmlWrite(content));
+            double dataContractAverage = CodeExecutionTimer.Average(iterations, () => DataContractXmlWrite(content));
             Console.WriteLine("Average: {0}s", dataContractAverage);
             Console.WriteLine();
 
             Console.WriteLine("Testing JsonNet.Write<T> over {0} iterations...", iterations);
-            var jsonNetAverage = CodeExecutionTimer.Average(iterations, () => JsonNetWrite(content));
+            double jsonNetAverage = CodeExecutionTimer.Average(iterations, () => JsonNetWrite(content));
             Console.WriteLine("Average: {0}s", jsonNetAverage);
             Console.WriteLine();
 
             Console.WriteLine("Testing HalJsonNet.Write<T> over {0} iterations...", iterations);
-            var halJsonNetAverage = CodeExecutionTimer.Average(iterations, () => HalJsonNetWrite(content));
+            double halJsonNetAverage = CodeExecutionTimer.Average(iterations, () => HalJsonNetWrite(content));
             Console.WriteLine("Average: {0}s", halJsonNetAverage);
             Console.WriteLine();
 
+            Console.WriteLine("Testing JsonNetWithDeepLinks.Write<T> over {0} iterations...", iterations);
+            double jsonNetDeepLinksAverage = CodeExecutionTimer.Average(iterations, () => JsonNetDeepLinksWrite(content));
+            Console.WriteLine("Average: {0}s", jsonNetDeepLinksAverage);
+            Console.WriteLine();
+
             Console.WriteLine("Testing JsonFX.Write<T> over {0} iterations...", iterations);
-            var jsonFxAverage = CodeExecutionTimer.Average(iterations, () => JsonFxWrite(content));
+            double jsonFxAverage = CodeExecutionTimer.Average(iterations, () => JsonFxWrite(content));
             Console.WriteLine("Average: {0}s", jsonFxAverage);
             Console.WriteLine();
 
@@ -88,7 +94,7 @@ namespace Performance.MediaTypeHandlers
                         },
                     new Customer(4)
                         {
-                            Orders = new List<Order>()
+                            Orders = new List<Order>
                                 {
                                     new Order(4, 400),
                                     new Order(4, 401),
@@ -99,7 +105,7 @@ namespace Performance.MediaTypeHandlers
                         },
                     new Customer(5)
                         {
-                            Orders = new List<Order>()
+                            Orders = new List<Order>
                                 {
                                     new Order(5, 500),
                                     new Order(5, 501),
@@ -141,13 +147,19 @@ namespace Performance.MediaTypeHandlers
 
         private static void JsonNetWrite(IContent content)
         {
-            var handler = new Simple.Web.JsonNet.JsonMediaTypeHandler();
+            var handler = new JsonMediaTypeHandler();
             TestWrite(handler, content);
         }
 
         private static void HalJsonNetWrite(IContent content)
         {
-            var handler = new Simple.Web.JsonNet.HalJsonMediaTypeHandler();
+            var handler = new HalJsonMediaTypeHandler();
+            TestWrite(handler, content);
+        }
+
+        private static void JsonNetDeepLinksWrite(IContent content)
+        {
+            var handler = new JsonMediaTypeHandlerWithDeepLinks();
             TestWrite(handler, content);
         }
 
@@ -156,7 +168,7 @@ namespace Performance.MediaTypeHandlers
             var handler = new Simple.Web.JsonFx.JsonMediaTypeHandler();
             TestWrite(handler, content);
         }
-        
+
         private static void TestWrite(IMediaTypeHandler handler, IContent content)
         {
             string actual;

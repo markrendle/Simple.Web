@@ -46,13 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HalJsonMediaTypeHandler.cs" />
-    <Compile Include="JsonMediaTypeHandler.cs" />
+    <Compile Include="JsonMediaTypeHandlerWithDeepLinks.cs" />
+    <Compile Include="JsonNetMediaTypeHandlerBase.cs" />
     <Compile Include="LinkConverter.cs" />
     <Compile Include="LinkConverter`1.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="HalJsonMediaTypeHandler.cs" />
+    <Compile Include="JsonMediaTypeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

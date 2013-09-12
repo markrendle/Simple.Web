@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Simple.Web.Helpers;
@@ -16,10 +17,6 @@ namespace Simple.Web.MediaTypeHandling
                 .Unwrap();
         }
 
-        protected abstract Task<TWireFormat> ReadInput(Stream inputStream);
-
-        protected abstract Task<T> FromWireFormat<T>(TWireFormat wireFormat);
-
         public Task Write<T>(IContent content, Stream outputStream)
         {
             if (content.Model != null)
@@ -27,12 +24,12 @@ namespace Simple.Web.MediaTypeHandling
                 TWireFormat output = null;
 
                 // handle enumerable
-                var enumerable = content.Model as IEnumerable<T>;
-                if (enumerable != null)
+                var enumerable = content.Model as IEnumerable;
+                if (enumerable != null && typeof (T) != typeof (string))
                 {
-                    var skipLinksLookup = false;
+                    bool skipLinksLookup = false;
                     var formatted = new List<TWireFormat>();
-                    foreach (var item in enumerable)
+                    foreach (object item in enumerable)
                     {
                         ICollection<Link> itemLinks = null;
                         if (!skipLinksLookup)
@@ -44,9 +41,10 @@ namespace Simple.Web.MediaTypeHandling
                                 itemLinks = null;
                             }
                         }
-                        var wireFormat = ToWireFormat(item, itemLinks);
+                        TWireFormat wireFormat = ToWireFormat(item);
                         if (wireFormat != null)
                         {
+                            AddWireFormattedLinks(wireFormat, itemLinks);
                             formatted.Add(wireFormat);
                         }
                     }
@@ -57,7 +55,11 @@ namespace Simple.Web.MediaTypeHandling
                 }
                 else
                 {
-                    output = ToWireFormat((T) content.Model, content.Links);
+                    output = ToWireFormat((T) content.Model);
+                    if (output != null)
+                    {
+                        AddWireFormattedLinks(output, content.Links);
+                    }
                 }
                 if (output != null)
                 {
@@ -67,10 +69,17 @@ namespace Simple.Web.MediaTypeHandling
             return TaskHelper.Completed();
         }
 
-        protected abstract TWireFormat ToWireFormat<T>(T item, IEnumerable<Link> itemLinks);
+        protected abstract void AddWireFormattedLinks(TWireFormat wireFormattedItem, IEnumerable<Link> itemLinks);
 
-        protected abstract TWireFormat WrapCollection(IList<TWireFormat> collection,
-                                                      IEnumerable<Link> collectionLinks);
+        protected abstract Task<T> FromWireFormat<T>(TWireFormat wireFormat);
+
+        protected abstract Task<TWireFormat> ReadInput(Stream inputStream);
+
+        protected abstract TWireFormat ToWireFormat(object item);
+
+        protected abstract TWireFormat ToWireFormat<T>(T item);
+
+        protected abstract TWireFormat WrapCollection(IList<TWireFormat> collection, IEnumerable<Link> collectionLinks);
 
         protected abstract Task WriteOutput(TWireFormat output, Stream outputStream);
     }

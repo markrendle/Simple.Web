@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Text;
     using Behaviors;
-    using CodeGeneration;
     using Helpers;
     using Http;
     using MediaTypeHandling;

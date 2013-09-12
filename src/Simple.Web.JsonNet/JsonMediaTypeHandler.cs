@@ -1,76 +1,50 @@
-﻿namespace Simple.Web.JsonNet
+﻿using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using Simple.Web.Links;
+using Simple.Web.MediaTypeHandling;
+
+namespace Simple.Web.JsonNet
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-
     [MediaTypes(MediaType.Json, "application/*+json")]
-    public class JsonMediaTypeHandler : IMediaTypeHandler
+    public class JsonMediaTypeHandler : JsonNetMediaTypeHandlerBase
     {
-        private static readonly Lazy<HashSet<Type>> KnownTypes = new Lazy<HashSet<Type>>(GetKnownTypes);
-
-        private static HashSet<Type> GetKnownTypes()
+        static JsonMediaTypeHandler()
         {
-            var q = ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists)
-                                      .SelectMany(LinkAttributeBase.Get)
-                                      .Select(l => l.ModelType);
-            return new HashSet<Type>(q);
+            SetDefaultSettings(new JsonSerializerSettings
+                {
+                    DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                });
         }
 
-        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
-            {
-                DateFormatHandling =
-                    DateFormatHandling.IsoDateFormat,
-                ReferenceLoopHandling =
-                    ReferenceLoopHandling.Ignore,
-                ContractResolver =
-                    new CamelCasePropertyNamesContractResolver
-                        ()
-            };
-
-        public static JsonSerializerSettings Settings
+        protected override void AddWireFormattedLinks(JToken wireFormattedItem, IEnumerable<Link> itemLinks)
         {
-            get { return SerializerSettings; }
-        }
-
-        public Task<T> Read<T>(Stream inputStream)
-        {
-            T result;
-            // pass the combined resolver strategy into the settings object
-            using (var streamReader = new StreamReader(inputStream))
+            IList<Link> links = itemLinks as IList<Link> ?? itemLinks.ToList();
+            if (links.Count == 0)
             {
-                result = JsonConvert.DeserializeObject<T>(streamReader.ReadToEnd(), SerializerSettings);
+                return;
             }
-            return TaskHelper.Completed(result);
+            var jLinks = new JArray();
+            foreach (Link link in links)
+            {
+                EnsureLinkTypeIsJson(link);
+                jLinks.Add(JObject.FromObject(link, Serializer));
+            }
+            wireFormattedItem["links"] = jLinks;
         }
 
-        public Task Write<T>(IContent content, Stream outputStream)
+        protected override JToken WrapCollection(IList<JToken> collection, IEnumerable<Link> collectionLinks)
         {
-            if (content.Model != null)
+            var array = new JArray();
+            foreach (JToken jitem in collection)
             {
-                var linkConverters = LinkConverter.CreateForGraph(typeof(T), KnownTypes.Value,
-                                                                  LinkHelper.GetLinksForModel, Settings.ContractResolver);
-                var settings = new JsonSerializerSettings
-                    {
-                        Converters = linkConverters,
-                        ContractResolver = Settings.ContractResolver,
-                        DateFormatHandling = Settings.DateFormatHandling,
-                        ReferenceLoopHandling = Settings.ReferenceLoopHandling,
-                    };
-                var json = JsonConvert.SerializeObject(content.Model, settings);
-                var buffer = Encoding.UTF8.GetBytes(json);
-                return outputStream.WriteAsync(buffer, 0, buffer.Length);
+                array.Add(jitem);
             }
-
-            return TaskHelper.Completed();
+            return array;
         }
     }
 }

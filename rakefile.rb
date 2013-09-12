@@ -26,7 +26,7 @@ NUGET_APIURL_REMOTE = ENV["apiurl_remote"]
 ENV["EnableNuGetPackageRestore"] = "true"
 
 # Symbol server configuration
-# SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
+SYMBOL_APIURL_LOCAL = ENV["symbol_local"]
 SYMBOL_APIURL_REMOTE = ENV["symbol_remote"] # For nuget.org make this the same as NUGET_APIURI_REMOTE
 
 # Paths
@@ -129,7 +129,9 @@ task :publocal => [:full] do
 end
 
 desc "Build + Tests + Specs + Package"
-task :package => [:full] do
+task :package => [:full, :packageonly] 
+
+task :packageonly do
 	PackageNugets BUILD_NUMBER
 end
 
@@ -179,6 +181,10 @@ xbuild :xbuild
 
 assemblyinfo :assemblyinfo do |asm|
 	asm_version = BUILD_NUMBER
+
+    if TEAMCITY
+        puts "##teamcity[buildNumber '#{BUILD_NUMBER}']"
+    end
 
 	begin
 		commit = `git log -1 --pretty=format:%H`
@@ -269,9 +275,9 @@ def PackageNugets(nuspec_version)
     end
 end
 
-def UpdateNuSpecVersions(nuspecs, nuspec_version)
+def UpdateNuSpecVersions(nuspecs, target_version)
 	raise "No nuspecs to update." unless !nuspecs.nil?
-	raise "Invalid nuspec version specified." unless !nuspec_version.nil?
+	raise "Invalid nuspec version specified." unless !target_version.nil?
 
     suffix = ""
     suffix << "-#{TEAMCITY_BRANCH}" unless (TEAMCITY_BRANCH.nil? or TEAMCITY_BRANCH.eql? "master" or TEAMCITY_BRANCH.eql? "<default>")
@@ -281,15 +287,20 @@ def UpdateNuSpecVersions(nuspecs, nuspec_version)
         puts "Updating #{Pathname.new(nuspec).basename}"
         update_xml nuspec do |xml|
             nuspec_id = xml.root.elements["metadata/id"].text
-            nuspec_mm_version = "[#{nuspec_version.split(".").first(4).join(".")}]"
+            nuspec_version = xml.root.elements["metadata/version"].text
+            nuspec_mm_version = "[#{target_version.split(".").first(4).join(".")}]"
+            target_mm_version = target_version.split(".")
 
-            xml.root.elements["metadata/id"].text = (nuspec_id + suffix)
-            xml.root.elements["metadata/version"].text = nuspec_version
-            xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
+            xml.root.elements["metadata/id"].text = nuspec_id + suffix 
+            xml.root.elements["metadata/version"].text = !nuspec_version.include?("-") ? target_version : target_mm_version.first(3).join(".") + (nuspec_version.include?("-") ? "-#{nuspec_version.partition('-').last}" : "") + "-#{target_mm_version.last}"
             xml.root.elements["metadata/summary"].text = SOLUTION_DESC
             xml.root.elements["metadata/licenseUrl"].text = SOLUTION_LICENSE
             xml.root.elements["metadata/projectUrl"].text = SOLUTION_URL
-			
+
+            if xml.root.elements["metadata/authors"].include?('$authors$')
+                xml.root.elements["metadata/authors"].text = SOLUTION_COMPANY
+	        end
+
 			xml.root.get_elements("//dependency").each { |e|
 				if e.attributes["id"].downcase.include? SOLUTION_NAME.downcase
 					e.attributes["id"] = (e.attributes["id"] + suffix)
@@ -333,13 +344,12 @@ class NuGetPackCustom < NuGetPack
     
     params = []
     params << "pack"
-    params << "-Symbols" if @symbols
+    params << "-Symbols" if !TEAMCITY
     params << nuspec
     params << "-BasePath \"#{base_folder}\"" unless @base_folder.nil?
     params << "-OutputDirectory \"#{output}\"" unless @output.nil?
     params << "-NoDefaultExcludes" unless !MONO
     params << "-Verbosity detailed" unless !TEAMCITY
-    params << "-Symbols"
     params << build_properties unless @properties.nil? || @properties.empty?
     
     merged_params = params.join(' ')

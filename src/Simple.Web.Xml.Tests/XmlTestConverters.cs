@@ -1,16 +1,17 @@
-﻿namespace Simple.Web.Xml.Tests
-{
-    using System.Xml.Linq;
-    using TestHelpers.Sample;
+﻿using System;
+using System.Xml.Linq;
+using Simple.Web.TestHelpers.Sample;
 
-    internal class OrderConverter : IConvertXmlFor<Order>
+namespace Simple.Web.Xml.Tests
+{
+    internal class OrderConverter : XmlConverter<Order>
     {
-        public Order FromXml(XElement wireFormat)
+        public override Order FromXml(XElement wireFormat)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public XElement ToXml(Order value)
+        public override XElement ToXml(Order value)
         {
             return new XElement("Order",
                                 new XElement("CustomerId", value.CustomerId),
@@ -18,14 +19,14 @@
         }
     }
 
-    internal class CustomerConverter : IConvertXmlFor<Customer>
+    internal class CustomerConverter : XmlConverter<Customer>
     {
-        public Customer FromXml(XElement wireFormat)
+        public override Customer FromXml(XElement wireFormat)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public XElement ToXml(Customer value)
+        public override XElement ToXml(Customer value)
         {
             return new XElement("Customer",
                                 new XElement("Id", value.Id));

@@ -1,123 +1,74 @@
-﻿namespace Simple.Web.JsonNet
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using Simple.Web.Links;
+using Simple.Web.MediaTypeHandling;
+
+namespace Simple.Web.JsonNet
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Serialization;
-
     [MediaTypes("application/hal+json")]
-    public class HalJsonMediaTypeHandler : IMediaTypeHandler
+    public class HalJsonMediaTypeHandler : JsonNetMediaTypeHandlerBase
     {
-        private static readonly JsonSerializerSettings DefaultSettings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling =
-                    ReferenceLoopHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore,
-            };
-
-        private static JsonSerializerSettings _settings;
-
-        public Task<T> Read<T>(Stream inputStream)
+        static HalJsonMediaTypeHandler()
         {
-            var serializer = JsonSerializer.Create(Settings);
-            var streamReader = new StreamReader(inputStream);
-            var reader = new JsonTextReader(streamReader);
-            var result = serializer.Deserialize<T>(reader);
-            return TaskHelper.Completed(result);
-        }
-
-        public Task Write<T>(IContent content, Stream outputStream)
-        {
-            if (ReferenceEquals(null, content.Model)) return TaskHelper.Completed();
-
-            var serializer = JsonSerializer.Create(Settings);
-            var output = ProcessContent(content, serializer);
-
-            var stringWriter = new StringWriter();
-            var writer = new JsonTextWriter(stringWriter);
-            serializer.Serialize(writer, output);
-            var buffer = Encoding.UTF8.GetBytes(stringWriter.ToString());
-            return outputStream.WriteAsync(buffer, 0, buffer.Length);
-        }
-
-        public static JsonSerializerSettings Settings
-        {
-            get { return _settings ?? DefaultSettings; }
-            set { _settings = value; }
-        }
-
-        private static JObject ProcessContent(IContent content, JsonSerializer serializer)
-        {
-            var links = content.Links.ToList();
-
-            JObject jo;
-
-            var list = content.Model as IEnumerable;
-            if (list != null)
-            {
-                jo = new JObject();
-                var array = new JArray();
-                jo["collection"] = array;
-                foreach (var o in list)
+            SetDefaultSettings(new JsonSerializerSettings
                 {
-                    var jitem = JObject.FromObject(o, serializer);
-                    jitem.Add("_links", CreateHalLinks(LinkHelper.GetLinksForModel(o), serializer));
-                    array.Add(jitem);
-                }
-            }
-            else
-            {
-                jo = JObject.FromObject(content.Model, serializer);
-            }
-
-            if (links.Count > 0)
-            {
-                jo["_links"] = CreateHalLinks(links, serializer);
-            }
-            return jo;
+                    //DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    NullValueHandling = NullValueHandling.Ignore,
+                });
         }
 
-        private static JObject CreateHalLinks(IEnumerable<Link> links, JsonSerializer serializer)
+        protected override void AddWireFormattedLinks(JToken wireFormattedItem, IEnumerable<Link> itemLinks)
+        {
+            IList<Link> links = itemLinks as IList<Link> ?? itemLinks.ToList();
+            if (links.Count == 0)
+            {
+                return;
+            }
+            JObject halLinks = CreateLinks(links);
+            wireFormattedItem["_links"] = halLinks;
+        }
+
+        protected override JToken WrapCollection(IList<JToken> collection, IEnumerable<Link> collectionLinks)
+        {
+            var container = new JObject();
+            var array = new JArray();
+            container["collection"] = array;
+            foreach (JToken jitem in collection)
+            {
+                array.Add(jitem);
+            }
+            container["_links"] = CreateLinks(collectionLinks);
+            return container;
+        }
+
+        private JObject CreateLinks(IEnumerable<Link> itemLinks)
         {
             var halLinks = new JObject();
-            foreach (var link in links)
+            foreach (Link link in itemLinks)
             {
-                halLinks.Add(link.Rel, JObject.FromObject(new HalLink(link.Href, link.Title), serializer));
+                halLinks.Add(link.Rel, JObject.FromObject(new HalLink(link.Href, link.Title), Serializer));
             }
             return halLinks;
         }
 
         private class HalLink
         {
-            private readonly string _href;
-            private readonly string _title;
-
             public HalLink(string href, string title)
             {
                 if (href == null) throw new ArgumentNullException("href");
-                _href = href;
-                _title = string.IsNullOrWhiteSpace(title) ? null : title;
+                Href = href;
+                Title = string.IsNullOrWhiteSpace(title) ? null : title;
             }
 
-            public string Href
-            {
-                get { return _href; }
-            }
+            public string Href { get; private set; }
 
-            public string Title
-            {
-                get { return _title; }
-            }
+            public string Title { get; private set; }
         }
     }
 }

@@ -82,7 +82,7 @@ namespace Simple.Web.CodeGeneration
         protected static IEnumerable<TInfo> FindBehaviorTypes<TAttribute,TInfo>(Func<Type,Type,Priority,TInfo> construct)
             where TAttribute : BehaviorAttribute
         {
-            foreach (var behaviorType in ExportedTypeHelper.FromCurrentAppDomain(IsBehaviorType<TAttribute>))
+			foreach (var behaviorType in ExportedTypeHelper.FromCurrentAppDomain(type => IsBehaviorType<TAttribute>(type)))
             {
                 var attribute = (TAttribute) Attribute.GetCustomAttribute(behaviorType, typeof(TAttribute));
                 if (attribute != null)

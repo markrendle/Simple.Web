@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Simple.Web.Hosting.Self</id>
+    <version>0.0.0-alpha</version>
+    <authors>$authors$</authors>
+    <owners>Mark Rendle, Ian Battersby</owners>
+    <copyright>Mark Rendle</copyright>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/markrendle/Simple.Web</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Enables OWIN-compatible hosting via OwinHost/Katana.</description>
+    <summary>A REST-focused, object-oriented Web Framework for .NET 4.</summary>
+    <tags>simple.web</tags>
+    <dependencies>
+      <dependency id="Simple.Web" version="0.0.0.0" />
+      <dependency id="Microsoft.Owin-mono" version="2.0.0-rtw-20815-004" />
+      <dependency id="Microsoft.Owin.Hosting-mono" version="2.0.0-rtw-20815-004" />
+      <dependency id="Microsoft.Owin.Diagnostics-mono" version="2.0.0-rtw-20815-004" />
+      <dependency id="Microsoft.Owin.Host.HttpListener-mono" version="2.0.0-rtw-20815-004" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\build\Simple.Web.Hosting.Self.dll" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.Hosting.Self.*db" target="lib\net40" />
+    <file src="..\..\src\Simple.Web.Hosting.Self\**\*.cs" target="src" />
+  </files>
+</package>

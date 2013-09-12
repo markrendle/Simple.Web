@@ -35,6 +35,11 @@ namespace Simple.Web.Ninject
             return _block.TryGet<T>();
         }
 
+        public object Get(Type objectType)
+        {
+            return _block.TryGet(objectType);
+        }
+
         public void Dispose()
         {
             _block.Dispose();

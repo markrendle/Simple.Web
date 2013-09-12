@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -10,7 +11,7 @@ namespace Sandbox
     using Simple.Web.Behaviors;
 
     [UriTemplate("/")]
-    public class GetIndex : IGetAsync, IOutput<RawHtml>
+    public class GetIndex : IGetAsync, IOutput<RawHtml>, IDisposable
     {
         public Task<Status> Get()
         {
@@ -26,6 +27,11 @@ namespace Sandbox
         private Task DoLongRunningThing()
         {
             return Task.Factory.StartNew(() => { });
+        }
+
+        public void Dispose()
+        {
+            Trace.WriteLine("Disposing GetIndex");
         }
     }
 }

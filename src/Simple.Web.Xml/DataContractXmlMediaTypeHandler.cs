@@ -1,68 +1,48 @@
-﻿namespace Simple.Web.Xml
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Runtime.Serialization;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml;
-    using System.Xml.Linq;
-    using Inflector;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
+﻿using System;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
+using Simple.Web.Helpers;
+using Simple.Web.MediaTypeHandling;
 
+namespace Simple.Web.Xml
+{
     [MediaTypes(MediaType.Xml, "application/*+xml")]
-    public class DataContractXmlMediaTypeHandler : MediaTypeHandlerBase<XElement>
+    public class DataContractXmlMediaTypeHandler : XElementMediaTypeHandlerBase
     {
-        protected override Task<XElement> ReadInput(Stream inputStream)
-        {
-            return TaskHelper.Completed(XElement.Load(inputStream));
-        }
+        private DataContractSerializer _outputSerializer;
 
         protected override Task<T> FromWireFormat<T>(XElement wireFormat)
         {
-            var dataContractSerializer = new DataContractSerializer(typeof(T));
-            var xmlReader = wireFormat.CreateReader();
-            var obj = dataContractSerializer.ReadObject(xmlReader);
-            return TaskHelper.Completed((T)obj);
+            var dataContractSerializer = new DataContractSerializer(typeof (T));
+            XmlReader xmlReader = wireFormat.CreateReader();
+            object obj = dataContractSerializer.ReadObject(xmlReader);
+            return TaskHelper.Completed((T) obj);
         }
 
-        private DataContractSerializer _outputSerializer;
+        protected override XElement ToWireFormat(object item)
+        {
+            return ToWireFormat(item.GetType(), item);
+        }
 
-        protected override XElement ToWireFormat<T>(T item, IEnumerable<Link> itemLinks)
+        protected override XElement ToWireFormat<T>(T item)
+        {
+            return ToWireFormat(typeof (T), item);
+        }
+
+        private XElement ToWireFormat(Type itemType, object item)
         {
             if (_outputSerializer == null)
             {
-                _outputSerializer = new DataContractSerializer(typeof (T));
+                _outputSerializer = new DataContractSerializer(itemType);
             }
             var stringBuilder = new StringBuilder();
-            var xmlWriter = XmlWriter.Create(stringBuilder);
+            XmlWriter xmlWriter = XmlWriter.Create(stringBuilder);
             _outputSerializer.WriteObject(xmlWriter, item);
             xmlWriter.Flush();
-            var xml = XElement.Parse(stringBuilder.ToString());
-            foreach (var link in itemLinks)
-            {
-                xml.Add(link.ToXml());
-            }
-            return xml;
-        }
-
-        protected override XElement WrapCollection(IList<XElement> collection, IEnumerable<Link> collectionLinks)
-        {
-            var xml = new XElement(collection[0].Name.LocalName.Pluralize());
-            foreach (var element in collection)
-            {
-                xml.Add(element);
-            }
-            //todo add collection links?
-            return xml;
-        }
-
-        protected override Task WriteOutput(XElement output, Stream outputStream)
-        {
-            output.Save(outputStream);
-            return TaskHelper.Completed();
+            return XElement.Parse(stringBuilder.ToString());
         }
     }
 }
