@@ -47,8 +47,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Autofac", "Simpl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Routing.Tests", "Simple.Web.Routing.Tests\Simple.Web.Routing.Tests.csproj", "{98C77473-2239-4387-AE6C-A86333E00127}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.HalJson", "Simple.Web.HalJson\Simple.Web.HalJson.csproj", "{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.JsonNet", "Simple.Web.JsonNet\Simple.Web.JsonNet.csproj", "{6DCE0964-3BF0-4185-AC6E-1F8B97908601}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.JsonNet.Tests", "Simple.Web.JsonNet.Tests\Simple.Web.JsonNet.Tests.csproj", "{10C175C4-B495-4A2F-96C1-4B4B0F9181BB}"
@@ -63,6 +61,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{85A043
 	ProjectSection(SolutionItems) = preProject
 		..\packaging\nuspec\Simple.Web.AspNet.nuspec = ..\packaging\nuspec\Simple.Web.AspNet.nuspec
 		..\packaging\nuspec\Simple.Web.Autofac.nuspec = ..\packaging\nuspec\Simple.Web.Autofac.nuspec
+		..\packaging\nuspec\Simple.Web.Hosting.Self.nuspec = ..\packaging\nuspec\Simple.Web.Hosting.Self.nuspec
 		..\packaging\nuspec\Simple.Web.JsonFx.nuspec = ..\packaging\nuspec\Simple.Web.JsonFx.nuspec
 		..\packaging\nuspec\Simple.Web.JsonNet.nuspec = ..\packaging\nuspec\Simple.Web.JsonNet.nuspec
 		..\packaging\nuspec\Simple.Web.Ninject.nuspec = ..\packaging\nuspec\Simple.Web.Ninject.nuspec
@@ -95,6 +94,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Windsor", "Simple.Web.Windsor\Simple.Web.Windsor.csproj", "{1C8870A8-D935-4708-83F9-FEEF29B6C7AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Web.Windsor.Tests", "Simple.Web.Windsor.Tests\Simple.Web.Windsor.Tests.csproj", "{14F8FACA-9699-4CAC-8F5C-C1171A07BE6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance.MediaTypeHandlers", "Performance.MediaTypeHandlers\Performance.MediaTypeHandlers.csproj", "{648B6029-95B7-42AD-A589-565BA82F543F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplestWeb", "SimplestWeb\SimplestWeb.csproj", "{F05AF399-8512-472D-B80C-C5FCAB62A471}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,13 +133,6 @@ Global
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|x86.ActiveCfg = Release|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -189,10 +185,6 @@ Global
 		{98C77473-2239-4387-AE6C-A86333E00127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C77473-2239-4387-AE6C-A86333E00127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C77473-2239-4387-AE6C-A86333E00127}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B25E0D92-9C93-4C3F-9527-26285B9D9FFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6DCE0964-3BF0-4185-AC6E-1F8B97908601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6DCE0964-3BF0-4185-AC6E-1F8B97908601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DCE0964-3BF0-4185-AC6E-1F8B97908601}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -229,6 +221,14 @@ Global
 		{14F8FACA-9699-4CAC-8F5C-C1171A07BE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14F8FACA-9699-4CAC-8F5C-C1171A07BE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14F8FACA-9699-4CAC-8F5C-C1171A07BE6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648B6029-95B7-42AD-A589-565BA82F543F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F05AF399-8512-472D-B80C-C5FCAB62A471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F05AF399-8512-472D-B80C-C5FCAB62A471}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F05AF399-8512-472D-B80C-C5FCAB62A471}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F05AF399-8512-472D-B80C-C5FCAB62A471}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -251,7 +251,9 @@ Global
 		{EBA606EB-A137-4463-8433-BDA5E1B82B2F} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
 		{93B51907-FFFF-4393-8C76-B17DE2D70B80} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
 		{D772AAFB-A54B-44D5-86B1-D7D78E83B341} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
+		{F05AF399-8512-472D-B80C-C5FCAB62A471} = {B905E6D5-9624-4052-9DC7-FABDC58EA5D1}
 		{85A04371-B382-4DCE-A173-7BEF7960BD19} = {2EA3D337-D73D-4470-85E2-9AD037F202D6}
 		{152D7995-8CE2-4EDB-BD22-5349D07F63D8} = {27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}
+		{648B6029-95B7-42AD-A589-565BA82F543F} = {27DBE0D3-F97E-4D76-8F93-B8F030F69A4C}
 	EndGlobalSection
 EndGlobal

@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Simple.Web.DependencyInjection;
-using Simple.Web.Hosting;
 
 namespace Simple.Web.CodeGeneration
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
 
     internal class HandlerBuilderFactory
     {
@@ -25,7 +25,7 @@ namespace Simple.Web.CodeGeneration
             var scope = Expression.Variable(typeof(ISimpleContainerScope));
 
             // Create handler block
-            var getMethod = Expression.Call(scope, typeof(ISimpleContainerScope).GetMethod("Get").MakeGenericMethod(type));
+            var getMethod = Expression.Call(scope, typeof (ISimpleContainerScope).GetMethods().First(m => m.ContainsGenericParameters).MakeGenericMethod(type));
             var instance = Expression.Variable(type);
             var construct = Expression.Assign(instance, getMethod);
             var variables = Expression.Parameter(typeof(IDictionary<string, string>));

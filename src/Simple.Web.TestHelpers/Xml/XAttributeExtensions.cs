@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using Xunit.Sdk;
-
-namespace Simple.Web.TestHelpers
+namespace Simple.Web.TestHelpers.Xml
 {
+    using System.Collections.Generic;
+    using System.Xml.Linq;
+    using Xunit.Sdk;
+
 	public static class XAttributeExtensions
 	{
 		public static void ShouldEqual(this XAttribute actual, XAttribute expected)

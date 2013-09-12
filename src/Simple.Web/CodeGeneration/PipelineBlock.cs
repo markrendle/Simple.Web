@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.CodeGeneration
+﻿using System.Diagnostics;
+
+namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Collections.Generic;
@@ -79,6 +81,12 @@
                     {
                         method = method.MakeGenericMethod(@interface.GetGenericArguments().Single());
                     }
+                }
+                else
+                {
+                    // bind handler as generic type?
+                    method = method.MakeGenericMethod(typeof(object));
+                    //Debugger.Break();
                 }
             }
             return Expression.Call(method, handler, context);
