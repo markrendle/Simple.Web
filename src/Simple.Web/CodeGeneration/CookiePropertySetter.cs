@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace Simple.Web.CodeGeneration
 
         internal static IEnumerable<Expression> GetCookiePropertySetters(Type type, ParameterExpression handler, ParameterExpression context)
         {
-            foreach (var cookieProperty in type.GetProperties().Where(p => Attribute.GetCustomAttribute(p, typeof(CookieAttribute)) != null))
+            foreach (var cookieProperty in type.GetProperties().Where(p => p.CanWrite && Attribute.GetCustomAttribute(p, typeof(CookieAttribute)) != null))
             {
                 var attribute = (CookieAttribute)Attribute.GetCustomAttribute(cookieProperty, typeof(CookieAttribute));
                 var property = Expression.Property(handler, cookieProperty);
@@ -92,6 +93,7 @@ namespace Simple.Web.CodeGeneration
         {
             string value;
             context.Request.TryGetCookieValue(name, out value);
+            Trace.WriteLine("GetCookieValue");
             return value;
         }
     }

@@ -1,3 +1,5 @@
+using System.Runtime.Remoting.Messaging;
+
 namespace Simple.Web.Mocks
 {
     using System;
@@ -10,6 +12,10 @@ namespace Simple.Web.Mocks
 
     public class MockResponse : IResponse
     {
+        public MockResponse()
+        {
+            Headers = new Dictionary<string, string[]>();
+        }
         public Status Status { get; set; }
         public Func<Stream, Task> WriteFunction { get; set; }
         public IDictionary<string, string[]> Headers { get; set; }

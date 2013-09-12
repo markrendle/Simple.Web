@@ -33,6 +33,11 @@
             return GetMethod("ContinueWithAsyncBlock", handlerType);
         }
 
+        public static MethodInfo ContinueWithActionMethod(Type handlerType)
+        {
+            return GetMethod("ContinueWithAction", handlerType);
+        }
+
         private static MethodInfo GetMethod(string name, Type handlerType)
         {
             return typeof (AsyncPipeline).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(handlerType);
@@ -69,6 +74,20 @@
                     if (t.Result)
                     {
                         context.Response.Status = continuation(handler, context);
+                        return true;
+                    }
+                    return false;
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        private static Task<bool> ContinueWithAction<THandler>(Task<bool> task, Action<THandler, IContext> continuation, IContext context,
+            THandler handler)
+        {
+            return task.ContinueWith(t =>
+                {
+                    if (t.Result)
+                    {
+                        continuation(handler, context);
                         return true;
                     }
                     return false;
