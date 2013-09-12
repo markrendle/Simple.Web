@@ -6,7 +6,7 @@ namespace Simple.Web.Windsor.Tests
 {
     public class HandlerFactoryBuilderTests
     {
-        [Fact]
+        [IgnoreOnMonoFact]
         public void CreatesInstanceOfType()
         {
             var startup = new TestStartup();
@@ -18,7 +18,7 @@ namespace Simple.Web.Windsor.Tests
             Assert.Equal("Foo", handler.TestProperty);
         }
 
-        [Fact]
+        [IgnoreOnMonoFact]
         public void DisposesInstances()
         {
             var startup = new TestStartup();
@@ -29,7 +29,7 @@ namespace Simple.Web.Windsor.Tests
             TestHandler handler;
             using (var scopedHandler = handlerFactory(new Dictionary<string, string>()))
             {
-                handler = (TestHandler) scopedHandler.Handler;
+                handler = (TestHandler)scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);
             }
             Assert.Equal(true, handler.IsDisposed);

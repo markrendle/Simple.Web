@@ -58,6 +58,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="HandlerFactoryBuilderTests.cs" />
+    <Compile Include="IgnoreOnMonoFactAttribute.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="OkResult.cs" />
     <Compile Include="TestHandler.cs" />
