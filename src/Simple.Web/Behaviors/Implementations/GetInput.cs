@@ -23,7 +23,7 @@
 
             var mediaTypeHandlerTable = new MediaTypeHandlerTable();
             var mediaTypeHandler = mediaTypeHandlerTable.GetMediaTypeHandler(context.Request.GetContentType());
-            return (T)mediaTypeHandler.Read(context.Request.InputStream, typeof(T));
+            return mediaTypeHandler.Read<T>(context.Request.InputStream).Result;
         }
     }
 }

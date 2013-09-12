@@ -5,11 +5,11 @@ using Simple.Web.DependencyInjection;
 
 namespace Simple.Web.Windsor
 {
-    public class WindsorSimpleContainerScope: ISimpleContainerScope
+    public class WindsorSimpleContainerScope : ISimpleContainerScope
     {
-        readonly IWindsorContainer _container;
-        readonly IDisposable _scope;
-        bool _disposed;
+        private readonly IWindsorContainer _container;
+        private readonly IDisposable _scope;
+        private bool _disposed;
 
         internal WindsorSimpleContainerScope(IWindsorContainer container)
         {
@@ -22,6 +22,13 @@ namespace Simple.Web.Windsor
             EnsureNotDisposed();
 
             return _container.Kernel.Resolve<T>();
+        }
+
+        public object Get(Type objectType)
+        {
+            EnsureNotDisposed();
+
+            return _container.Kernel.Resolve(objectType);
         }
 
         public void Dispose()
@@ -38,7 +45,7 @@ namespace Simple.Web.Windsor
         }
 
 
-        void EnsureNotDisposed()
+        private void EnsureNotDisposed()
         {
             if (_disposed)
             {

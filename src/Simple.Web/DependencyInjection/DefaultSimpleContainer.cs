@@ -32,6 +32,11 @@ namespace Simple.Web.DependencyInjection
             }
         }
 
+        public object Get(Type objectType)
+        {
+            throw new NotImplementedException();
+        }
+
         private static bool TryCreateInstance<T>(out T instance)
         {
             var implementations = ExportedTypeHelper.FromCurrentAppDomain(IsImplementationOf<T>).ToList();

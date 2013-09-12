@@ -53,9 +53,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +118,7 @@
     <Compile Include="Http\ResponseExtensions.cs" />
     <Compile Include="IExceptionHandler.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
+    <Compile Include="MediaTypeHandling\MediaTypeHandlerBase.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
       <SubType>Code</SubType>

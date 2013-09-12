@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.Autofac
+﻿using System;
+
+namespace Simple.Web.Autofac
 {
     using DependencyInjection;
     using global::Autofac;
@@ -30,8 +32,15 @@
         public T Get<T>()
         {
             T instance;
+            _scope.TryResolve(out instance);
+            return instance;
+        }
 
-            return _scope.TryResolve<T>(out instance) ? instance : default(T);            
+        public object Get(Type objectType)
+        {
+            object instance;
+            _scope.TryResolve(objectType, out instance);
+            return instance;
         }
 
         public void Dispose()
