@@ -69,6 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{85A043
 		..\packaging\nuspec\Simple.Web.nuspec = ..\packaging\nuspec\Simple.Web.nuspec
 		..\packaging\nuspec\Simple.Web.Razor.nuspec = ..\packaging\nuspec\Simple.Web.Razor.nuspec
 		..\packaging\nuspec\Simple.Web.StructureMap.nuspec = ..\packaging\nuspec\Simple.Web.StructureMap.nuspec
+		..\packaging\nuspec\Simple.Web.Windsor.nuspec = ..\packaging\nuspec\Simple.Web.Windsor.nuspec
 		..\packaging\nuspec\Simple.Web.Xml.nuspec = ..\packaging\nuspec\Simple.Web.Xml.nuspec
 	EndProjectSection
 EndProject
