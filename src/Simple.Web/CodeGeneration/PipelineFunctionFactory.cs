@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Web.Handlers;
 using Simple.Web.Behaviors.Implementations;
 
 namespace Simple.Web.CodeGeneration
@@ -52,7 +53,8 @@ namespace Simple.Web.CodeGeneration
                 }
             }
 
-            // It's not really worth all the locking palaver here, worst case scenario the AsyncRunMethod gets built more than once.
+            // It's not really worth all the locking palaver here,
+            // worst case scenario the AsyncRunMethod gets built more than once.
             Func<IContext, HandlerInfo, Task> method;
             if (!handlerCache.TryGetValue(httpMethod, out method))
             {
@@ -80,13 +82,25 @@ namespace Simple.Web.CodeGeneration
             var blocks = new List<object>();
 
             blocks.AddRange(CreateBlocks(GetSetupBehaviorInfos()));
-            var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context);
-            blocks.AddRange(setCookieProperties);
+
+            var buildAction = GetType().GetMethod("BuildAction", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(_handlerType);
+
+            var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context).ToList();
+            if (setCookieProperties.Any())
+            {
+                var setCookieDelegate = buildAction.Invoke(this, new object[] {setCookieProperties});
+                blocks.Add(setCookieDelegate);
+            }
 
             var second = new HandlerBlock(_handlerType, GetRunMethod(httpMethod));
             blocks.Add(second);
-            var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context);
-            blocks.AddRange(setPropertyCookies);
+
+            var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context).ToList();
+            if (setPropertyCookies.Any())
+            {
+                var setPropertyDelegate = buildAction.Invoke(this, new object[] {setPropertyCookies});
+                blocks.Add(setPropertyDelegate);
+            }
 
             var redirectBehavior = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High) { Universal = true };
 
@@ -152,6 +166,9 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildCallExpression(IEnumerable<object> blocks)
         {
+            HandlerBlock handlerBlock;
+            PipelineBlock pipelineBlock;
+
             Expression call = Expression.Call(AsyncPipeline.DefaultStartMethod);
 
             foreach (var block in blocks)
@@ -165,11 +182,16 @@ namespace Simple.Web.CodeGeneration
                 {
                     call = BuildCallHandlerExpression(block, call);
                 }
-                else
+                else if ((pipelineBlock = block as PipelineBlock) != null)
                 {
                     call = Expression.Call(AsyncPipeline.ContinueWithAsyncBlockMethod(_handlerType), call,
-                                           Expression.Constant(((PipelineBlock)block).Generate(_handlerType)),
+                                           Expression.Constant((pipelineBlock).Generate(_handlerType)),
                                            _context, _handler);
+                }
+                else
+                {
+                    call = Expression.Call(AsyncPipeline.ContinueWithActionMethod(_handlerType), call,
+                        Expression.Constant(block), _context, _handler);
                 }
             }
             return call;
@@ -227,6 +249,11 @@ namespace Simple.Web.CodeGeneration
                 }
             }
             return behaviorInfo.BehaviorType.IsAssignableFrom(_handlerType);
+        }
+
+        private Action<THandler, IContext> BuildAction<THandler>(IEnumerable<Expression> blocks)
+        {
+            return Expression.Lambda<Action<THandler, IContext>>(Expression.Block(blocks), _handler, _context).Compile();
         }
     }
 }

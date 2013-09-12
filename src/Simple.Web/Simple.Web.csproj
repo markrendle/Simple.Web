@@ -127,7 +127,6 @@
     <Compile Include="Helpers\AssemblyExtensions.cs" />
     <Compile Include="Behaviors\Implementations\CheckAuthentication.cs" />
     <Compile Include="Behaviors\Implementations\SetCacheOptions.cs" />
-    <Compile Include="CodeGeneration\HandlerRunnerBuilder.cs" />
     <Compile Include="CodeGeneration\IMethodLookup.cs" />
     <Compile Include="CodeGeneration\MethodLookup.cs" />
     <Compile Include="Behaviors\Implementations\Redirect.cs" />
@@ -147,7 +146,6 @@
     <Compile Include="DependencyInjection\DefaultSimpleContainer.cs" />
     <Compile Include="CodeGeneration\HandlerBuilderFactory.cs" />
     <Compile Include="Hosting\HandlerInfo.cs" />
-    <Compile Include="Hosting\HandlerRunnerFactory.cs" />
     <Compile Include="Hosting\HandlerTypeInfo.cs" />
     <Compile Include="Helpers\ExportedTypeHelper.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />

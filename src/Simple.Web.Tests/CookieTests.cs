@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Simple.Web.Behaviors;
 using Simple.Web.CodeGeneration;
+using Simple.Web.Hosting;
 using Simple.Web.Http;
 using Simple.Web.Mocks;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Simple.Web.Tests
 {
@@ -18,17 +20,8 @@ namespace Simple.Web.Tests
             var request = new MockRequest {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=Pass"}}}};
             var context = new MockContext {Request = request};
 
-            var runner = new HandlerRunnerBuilder(typeof (SingleStringCookieHandler), "GET").BuildRunner();
-            var target = new SingleStringCookieHandler();
-            try
-            {
-                runner(target, context);
-            }
-            catch (ArgumentNullException)
-            {
-                // Content-type handling is going to throw an exception here.
-            }
-            Assert.Equal("Pass", target.Test);
+            Run<SingleStringCookieHandler>(context);
+            Assert.Equal("Pass", SingleStringCookieHandler.TestValue);
         }
         
         [Fact]
@@ -39,17 +32,8 @@ namespace Simple.Web.Tests
                 {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
             var context = new MockContext {Request = request};
 
-            var runner = new HandlerRunnerBuilder(typeof (SingleGuidCookieHandler), "GET").BuildRunner();
-            var target = new SingleGuidCookieHandler();
-            try
-            {
-                runner(target, context);
-            }
-            catch (ArgumentNullException)
-            {
-                // Content-type handling is going to throw an exception here.
-            }
-            Assert.Equal(expected, target.Test);
+            Run<SingleGuidCookieHandler>(context);
+            Assert.Equal(expected, SingleGuidCookieHandler.TestValue);
         }
         
         [Fact]
@@ -60,17 +44,8 @@ namespace Simple.Web.Tests
                 {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
             var context = new MockContext {Request = request};
 
-            var runner = new HandlerRunnerBuilder(typeof (SingleNullableGuidCookieHandler), "GET").BuildRunner();
-            var target = new SingleNullableGuidCookieHandler();
-            try
-            {
-                runner(target, context);
-            }
-            catch (ArgumentNullException)
-            {
-                // Content-type handling is going to throw an exception here.
-            }
-            Assert.Equal(expected, target.Test);
+            Run<SingleNullableGuidCookieHandler>(context);
+            Assert.Equal(expected, SingleNullableGuidCookieHandler.TestValue);
         }
         
         [Fact]
@@ -79,17 +54,8 @@ namespace Simple.Web.Tests
             var request = new MockRequest();
             var context = new MockContext {Request = request};
 
-            var runner = new HandlerRunnerBuilder(typeof (SingleNullableGuidCookieHandler), "GET").BuildRunner();
-            var target = new SingleNullableGuidCookieHandler();
-            try
-            {
-                runner(target, context);
-            }
-            catch (ArgumentNullException)
-            {
-                // Content-type handling is going to throw an exception here.
-            }
-            Assert.False(target.Test.HasValue);
+            Run<SingleNullableGuidCookieHandler>(context);
+            Assert.False(SingleNullableGuidCookieHandler.TestValue.HasValue);
         }
 
         //[Fact]
@@ -121,8 +87,7 @@ namespace Simple.Web.Tests
             var request = new MockRequest();
             var response = new MockResponse();
             var context = new MockContext {Request = request, Response = response};
-            var handler = new SingleStringCookieHandler {Test = "Pass"};
-            Run(handler, context);
+            Run<SingleStringCookieSetHandler>(context);
             string[] cookies;
             Assert.True(response.Headers.TryGetValue(HeaderKeys.SetCookie, out cookies));
             Assert.True(cookies.Any(c => c.StartsWith("Test=Pass;")));
@@ -136,12 +101,13 @@ namespace Simple.Web.Tests
             Assert.Equal("bar", value);
         }
         
-        private static void Run<T>(T handler, IContext context)
+        private static void Run<T>(IContext context)
         {
-            var runner = new HandlerRunnerBuilder(typeof(T), "GET").BuildRunner();
+            var runner = new PipelineFunctionFactory(typeof (T)).BuildAsyncRunMethod("GET");
+            var info = new HandlerInfo(typeof(T), "GET");
             try
             {
-                runner(handler, context);
+                runner(context, info).Wait();
             }
             catch (ArgumentNullException)
             {
@@ -152,8 +118,10 @@ namespace Simple.Web.Tests
 
     class SingleStringCookieHandler : IGet
     {
+        public static string TestValue;
         public Status Get()
         {
+            TestValue = Test;
             return 200;
         }
 
@@ -161,10 +129,23 @@ namespace Simple.Web.Tests
         public string Test { get; set; }
     }
     
-    class SingleGuidCookieHandler : IGet
+    class SingleStringCookieSetHandler : IGet
     {
         public Status Get()
         {
+            return 200;
+        }
+
+        [Cookie]
+        public string Test { get { return "Pass"; } }
+    }
+    
+    class SingleGuidCookieHandler : IGet
+    {
+        public static Guid TestValue;
+        public Status Get()
+        {
+            TestValue = Test;
             return 200;
         }
 
@@ -174,8 +155,10 @@ namespace Simple.Web.Tests
     
     class SingleNullableGuidCookieHandler : IGet
     {
+        public static Guid? TestValue;
         public Status Get()
         {
+            TestValue = Test;
             return 200;
         }
 
