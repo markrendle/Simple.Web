@@ -35,11 +35,11 @@
                 return obj => toDictionaryMethod.Invoke(obj, null) as IDictionary<string, object>;
             }
 
+            // do reflection once!
+            var properties = type.GetProperties().Where(p => p.CanRead && p.GetIndexParameters().Length == 0).ToList();
+
             return obj =>
                        {
-                           var properties =
-                               obj.GetType().GetProperties().Where(p => p.CanRead && p.GetIndexParameters().Length == 0)
-                                   .ToList();
                            var dictionary = new Dictionary<string, object>(properties.Count);
                            foreach (var property in properties)
                            {

@@ -26,5 +26,12 @@ namespace Simple.Web.DependencyInjection
         /// <typeparam name="T">The type of thing to construct.</typeparam>
         /// <returns>A new instance of T.</returns>
         T Get<T>();
+
+        /// <summary>
+        /// Gets an instance of <c>objectType</c>.
+        /// </summary>
+        /// <param name="objectType">The type of thing to construct.</param>
+        /// <returns>A new instance of objectType.</returns>
+        object Get(Type objectType);
     }
 }
