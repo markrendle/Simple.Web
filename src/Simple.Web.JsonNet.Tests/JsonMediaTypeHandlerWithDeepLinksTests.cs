@@ -86,7 +86,7 @@
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
@@ -114,6 +114,46 @@
             }
             Assert.NotNull(actual);
             var jobj = JObject.Parse(actual);
+            var orders = jobj["orders"] as JArray;
+            Assert.NotNull(orders);
+            var order = orders[0] as JObject;
+            Assert.NotNull(order);
+            var links = order["links"] as JArray;
+            Assert.NotNull(links);
+            var self = links.FirstOrDefault(jt => jt["rel"].Value<string>() == "self");
+            Assert.NotNull(self);
+            Assert.Equal("/order/54", self["href"].Value<string>());
+            Assert.Equal("application/vnd.order+json", self["type"].Value<string>());
+        }
+
+        [Fact]
+        public void AddsSelfLinkToChildCollectionItemsWithMultipleCustomers()
+        {
+            var customers = new List<Customer>
+                {
+                    new Customer
+                        {
+                            Id = 42,
+                            Orders = new List<Order> {new Order {CustomerId = 42, Id = 54}}
+                        },
+                    new Customer
+                        {
+                            Id = 112358,
+                            Orders = new List<Order> {new Order {CustomerId = 112358, Id = 17}}
+                        },
+                };
+            var content = new Content(new Uri("http://test.com/customers"), new CustomersHandler(), customers);
+            var target = new JsonMediaTypeHandlerWithDeepLinks();
+
+            string actual;
+            using (var stream = new StringBuilderStream())
+            {
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
+                actual = stream.StringValue;
+            }
+            Assert.NotNull(actual);
+            var jarray = JArray.Parse(actual);
+            var jobj = jarray[0];
             var orders = jobj["orders"] as JArray;
             Assert.NotNull(orders);
             var order = orders[0] as JObject;

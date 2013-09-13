@@ -30,9 +30,7 @@ namespace Simple.Web.Xml.Tests
             }
             Assert.NotNull(actual);
 
-            const string expected = "<Order>" +
-                                    "  <CustomerId>42</CustomerId>" +
-                                    "  <Id>54</Id>" +
+            const string expected = "<Order Id='54' CustomerId='42'>" +
                                     "  <link href='/order/54' rel='self' type='application/vnd.order+xml' />" +
                                     "</Order>";
 
@@ -53,8 +51,7 @@ namespace Simple.Web.Xml.Tests
             }
             Assert.NotNull(actual);
 
-            const string expected = "<Customer>" +
-                                    "  <Id>42</Id>" +
+            const string expected = "<Customer Id='42'>" +
                                     "  <link href='/customer/42/contacts' rel='customer.contacts' type='application/vnd.contact+xml' />" +
                                     "  <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' />" +
                                     "  <link href='/customer/42' rel='self' type='application/vnd.customer+xml' />" +
@@ -78,8 +75,7 @@ namespace Simple.Web.Xml.Tests
             Assert.NotNull(actual);
 
             const string expected = "<Customers>" +
-                                    "  <Customer>" +
-                                    "    <Id>42</Id>" +
+                                    "  <Customer Id='42'>" +
                                     "    <link href='/customer/42/contacts' rel='customer.contacts' type='application/vnd.contact+xml' />" +
                                     "    <link href='/customer/42/orders' rel='customer.orders' type='application/vnd.list.order+xml' xmlns='' />" +
                                     "    <link href='/customer/42' rel='self' type='application/vnd.customer+xml' xmlns='' />" +
