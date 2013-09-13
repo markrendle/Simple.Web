@@ -80,7 +80,7 @@ namespace Simple.Web.JsonNet.Tests
             var target = new HalJsonMediaTypeHandler();
             using (var stream = new MemoryStream())
             {
-                target.Write<Person>(content, stream).Wait();
+                target.Write<IEnumerable<Person>>(content, stream).Wait();
                 stream.Position = 0;
                 string text = new StreamReader(stream).ReadToEnd();
                 actual = JObject.Parse(text);

@@ -10,171 +10,71 @@ using Simple.Web.Xml.Tests;
 
 namespace Performance.MediaTypeHandlers
 {
-    internal class Program
+    internal static class Program
     {
+        private const int Iterations = 5000;
+
         private static void Main(string[] args)
         {
-            const int iterations = 5000;
             SimpleWeb.Configuration.Container = new XmlTestContainer();
 
-            Console.WriteLine("Creating Content");
-            IContent content = CreateContent();
+            Console.WriteLine("Performance testing of MediaTypeHandlers");
+            Console.WriteLine("\tS: Single Customer with 20 Orders");
+            Console.WriteLine("\tM: Five Customers with at least Five Orders");
+            Console.WriteLine();
+            Console.WriteLine("Testing over {0} iterations...", Iterations);
             Console.WriteLine();
 
-            Console.WriteLine("Testing ExplicitXml.Write<T> over {0} iterations...", iterations);
-            double explicitAverage = CodeExecutionTimer.Average(iterations, () => ExplicitXmlWrite(content));
-            Console.WriteLine("Average: {0}s", explicitAverage);
-            Console.WriteLine();
+            TestHandler("ExplicitXml    ", () => new ExplicitXmlMediaTypeHandler());
+            TestHandler("DataContractXml", () => new DataContractXmlMediaTypeHandler());
+            TestHandler("JsonNet        ", () => new JsonMediaTypeHandler());
+            TestHandler("HalJsonNet     ", () => new HalJsonMediaTypeHandler());
+            TestHandler("JsonFX         ", () => new Simple.Web.JsonFx.JsonMediaTypeHandler());
+            // todo fix deep link handler for multiple.
+            //TestHandler("JsonNet W/Links", () => new JsonMediaTypeHandlerWithDeepLinks());
 
-            Console.WriteLine("Testing DataContractXml.Write<T> over {0} iterations...", iterations);
-            double dataContractAverage = CodeExecutionTimer.Average(iterations, () => DataContractXmlWrite(content));
-            Console.WriteLine("Average: {0}s", dataContractAverage);
             Console.WriteLine();
-
-            Console.WriteLine("Testing JsonNet.Write<T> over {0} iterations...", iterations);
-            double jsonNetAverage = CodeExecutionTimer.Average(iterations, () => JsonNetWrite(content));
-            Console.WriteLine("Average: {0}s", jsonNetAverage);
-            Console.WriteLine();
-
-            Console.WriteLine("Testing HalJsonNet.Write<T> over {0} iterations...", iterations);
-            double halJsonNetAverage = CodeExecutionTimer.Average(iterations, () => HalJsonNetWrite(content));
-            Console.WriteLine("Average: {0}s", halJsonNetAverage);
-            Console.WriteLine();
-
-            Console.WriteLine("Testing JsonNetWithDeepLinks.Write<T> over {0} iterations...", iterations);
-            double jsonNetDeepLinksAverage = CodeExecutionTimer.Average(iterations, () => JsonNetDeepLinksWrite(content));
-            Console.WriteLine("Average: {0}s", jsonNetDeepLinksAverage);
-            Console.WriteLine();
-
-            Console.WriteLine("Testing JsonFX.Write<T> over {0} iterations...", iterations);
-            double jsonFxAverage = CodeExecutionTimer.Average(iterations, () => JsonFxWrite(content));
-            Console.WriteLine("Average: {0}s", jsonFxAverage);
-            Console.WriteLine();
-
-            Console.WriteLine("Done");
-            Console.ReadLine();
+            Console.WriteLine("Done. Press any key to exit.");
+            Console.Read();
         }
 
-        private static IContent CreateContent()
+        private static void TestHandler(string name, Func<IMediaTypeHandler> ctor)
         {
-            var customers = new List<Customer>
+            Console.Write("{0}\t\tS: ", name);
+            double average = CodeExecutionTimer.Average(Iterations, () =>
                 {
-                    new Customer(1)
-                        {
-                            Orders = new List<Order>
-                                {
-                                    new Order(1, 100),
-                                    new Order(1, 101),
-                                    new Order(1, 102),
-                                    new Order(1, 103),
-                                    new Order(1, 104),
-                                }
-                        },
-                    new Customer(2)
-                        {
-                            Orders = new List<Order>
-                                {
-                                    new Order(2, 200),
-                                    new Order(2, 201),
-                                    new Order(2, 202),
-                                    new Order(2, 203),
-                                    new Order(2, 204),
-                                }
-                        },
-                    new Customer(3)
-                        {
-                            Orders = new List<Order>
-                                {
-                                    new Order(3, 300),
-                                    new Order(3, 301),
-                                    new Order(3, 302),
-                                    new Order(3, 303),
-                                    new Order(3, 304),
-                                }
-                        },
-                    new Customer(4)
-                        {
-                            Orders = new List<Order>
-                                {
-                                    new Order(4, 400),
-                                    new Order(4, 401),
-                                    new Order(4, 402),
-                                    new Order(4, 403),
-                                    new Order(4, 404),
-                                }
-                        },
-                    new Customer(5)
-                        {
-                            Orders = new List<Order>
-                                {
-                                    new Order(5, 500),
-                                    new Order(5, 501),
-                                    new Order(5, 502),
-                                    new Order(5, 503),
-                                    new Order(5, 504),
-                                    new Order(5, 505),
-                                    new Order(5, 506),
-                                    new Order(5, 507),
-                                    new Order(5, 508),
-                                    new Order(5, 509),
-                                    new Order(5, 510),
-                                    new Order(5, 511),
-                                    new Order(5, 512),
-                                    new Order(5, 513),
-                                    new Order(5, 514),
-                                    new Order(5, 515),
-                                    new Order(5, 516),
-                                    new Order(5, 517),
-                                    new Order(5, 518),
-                                    new Order(5, 519),
-                                }
-                        },
-                };
-            return new Content(new Uri("http://test.com/customers"), new CustomersHandler(), customers);
+                    IMediaTypeHandler handler = ctor();
+                    TestWriteSingle(handler);
+                });
+            Console.Write("{0:0.0000000000}s\tM: ", average);
+            average = CodeExecutionTimer.Average(Iterations, () =>
+                {
+                    IMediaTypeHandler handler = ctor();
+                    TestWriteMultiple(handler);
+                });
+            Console.WriteLine("{0:0.0000000000}s", average);
         }
 
-        private static void ExplicitXmlWrite(IContent content)
-        {
-            var handler = new ExplicitXmlMediaTypeHandler();
-            TestWrite(handler, content);
-        }
-
-        private static void DataContractXmlWrite(IContent content)
-        {
-            var handler = new DataContractXmlMediaTypeHandler();
-            TestWrite(handler, content);
-        }
-
-        private static void JsonNetWrite(IContent content)
-        {
-            var handler = new JsonMediaTypeHandler();
-            TestWrite(handler, content);
-        }
-
-        private static void HalJsonNetWrite(IContent content)
-        {
-            var handler = new HalJsonMediaTypeHandler();
-            TestWrite(handler, content);
-        }
-
-        private static void JsonNetDeepLinksWrite(IContent content)
-        {
-            var handler = new JsonMediaTypeHandlerWithDeepLinks();
-            TestWrite(handler, content);
-        }
-
-        private static void JsonFxWrite(IContent content)
-        {
-            var handler = new Simple.Web.JsonFx.JsonMediaTypeHandler();
-            TestWrite(handler, content);
-        }
-
-        private static void TestWrite(IMediaTypeHandler handler, IContent content)
+        private static void TestWriteSingle(IMediaTypeHandler handler)
         {
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                handler.Write<Customer>(content, stream).Wait();
+                handler.Write<Customer>(TestData.SingleContent, stream).Wait();
+                actual = stream.StringValue;
+            }
+            if (actual == null)
+            {
+                throw new Exception("No Output!");
+            }
+        }
+
+        private static void TestWriteMultiple(IMediaTypeHandler handler)
+        {
+            string actual;
+            using (var stream = new StringBuilderStream())
+            {
+                handler.Write<IEnumerable<Customer>>(TestData.MultipleContent, stream).Wait();
                 actual = stream.StringValue;
             }
             if (actual == null)
