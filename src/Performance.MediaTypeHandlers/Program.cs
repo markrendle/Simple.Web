@@ -33,6 +33,7 @@ namespace Performance.MediaTypeHandlers
             // todo fix deep link handler for multiple.
             //TestHandler("JsonNet W/Links", () => new JsonMediaTypeHandlerWithDeepLinks());
 
+            Console.WriteLine();
             Console.WriteLine("Done. Press any key to exit.");
             Console.Read();
         }
@@ -45,13 +46,13 @@ namespace Performance.MediaTypeHandlers
                     IMediaTypeHandler handler = ctor();
                     TestWriteSingle(handler);
                 });
-            Console.Write("{0}s\tM: ", average);
+            Console.Write("{0:0.0000000000}s\tM: ", average);
             average = CodeExecutionTimer.Average(Iterations, () =>
                 {
                     IMediaTypeHandler handler = ctor();
                     TestWriteMultiple(handler);
                 });
-            Console.WriteLine("{0}s", average);
+            Console.WriteLine("{0:0.0000000000}s", average);
         }
 
         private static void TestWriteSingle(IMediaTypeHandler handler)
