@@ -1,4 +1,6 @@
-﻿namespace Simple.Web.JsonFx.Tests
+﻿using System.Collections.Generic;
+
+namespace Simple.Web.JsonFx.Tests
 {
     using System;
     using System.IO;
@@ -48,7 +50,7 @@
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);
