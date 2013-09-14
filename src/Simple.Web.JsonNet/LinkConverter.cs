@@ -53,6 +53,10 @@
 
         private static JsonConverter Build(Type type, Func<object, IEnumerable<object>> linkEnumerator, IContractResolver contractResolver)
         {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+            {
+                return Build(type.GetGenericArguments().Single(), linkEnumerator, contractResolver);
+            }
             var enumerable = type.GetInterface(typeof (IEnumerable<>).FullName);
             if (enumerable != null)
             {

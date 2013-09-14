@@ -2,9 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using MediaTypeHandling;
-    using Newtonsoft.Json.Linq;
     using TestHelpers;
     using TestHelpers.Sample;
     using Xunit;
@@ -86,7 +84,7 @@
             string actual;
             using (var stream = new StringBuilderStream())
             {
-                target.Write<Customer>(content, stream).Wait();
+                target.Write<IEnumerable<Customer>>(content, stream).Wait();
                 actual = stream.StringValue;
             }
             Assert.NotNull(actual);

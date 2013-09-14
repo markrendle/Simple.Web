@@ -6,6 +6,8 @@ namespace Simple.Web.Xml.Tests
 {
     internal class OrderConverter : XmlConverter<Order>
     {
+        internal static readonly OrderConverter Instance = new OrderConverter();
+
         public override Order FromXml(XElement wireFormat)
         {
             throw new NotImplementedException();
@@ -14,8 +16,8 @@ namespace Simple.Web.Xml.Tests
         public override XElement ToXml(Order value)
         {
             return new XElement("Order",
-                                new XElement("CustomerId", value.CustomerId),
-                                new XElement("Id", value.Id));
+                                new XAttribute("Id", value.Id),
+                                new XAttribute("CustomerId", value.CustomerId));
         }
     }
 
@@ -28,8 +30,16 @@ namespace Simple.Web.Xml.Tests
 
         public override XElement ToXml(Customer value)
         {
-            return new XElement("Customer",
-                                new XElement("Id", value.Id));
+            var xml = new XElement("Customer",
+                                   new XAttribute("Id", value.Id));
+            if (value.Orders != null && value.Orders.Count > 0)
+            {
+                foreach (Order order in value.Orders)
+                {
+                    xml.Add(OrderConverter.Instance.ToXml(order));
+                }
+            }
+            return xml;
         }
     }
 }

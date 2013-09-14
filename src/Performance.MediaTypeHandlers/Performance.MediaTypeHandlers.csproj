@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="CodeExecutionTimer.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
