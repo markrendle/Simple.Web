@@ -45,6 +45,8 @@ namespace Simple.Web.Razor
             };
         }
 
+        public string ClassName {get { return _className; }}
+
         public void SetModel(Type model)
         {
             _model = model;
@@ -173,13 +175,11 @@ namespace Simple.Web.Razor
 
         private static Type CreateTypeImpl(StreamReader reader)
         {
-            var className = string.Format("{0}_{1}", SimpleRazorConfiguration.ClassPrefix, Guid.NewGuid().ToString("N"));
-
             var context = CreateContext(reader);
 
 //            var compilerParameters = CreateCompilerParameters(ref reader, className);
             var engine = CreateRazorTemplateEngine();
-            var razorResult = engine.GenerateCode(reader, className, engine.Host.DefaultNamespace, null);
+            var razorResult = engine.GenerateCode(reader, context.ClassName, engine.Host.DefaultNamespace, null);
             var viewType = CompileView(razorResult, context.GetCompilerParameters());
 
             return viewType;
