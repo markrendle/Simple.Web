@@ -22,11 +22,7 @@ namespace Simple.Web.Razor.Tests
         [Fact]
         public void GetsModelTypeFromRazorMarkup()
         {
-            Type type;
-            using (var reader = new StringReader(ModelTemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(ModelTemplateText);
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
@@ -36,11 +32,7 @@ namespace Simple.Web.Razor.Tests
         [Fact]
         public void GetsHandlerTypeFromRazorMarkup()
         {
-            Type type;
-            using (var reader = new StringReader(HandlerTemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(HandlerTemplateText);
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
@@ -57,11 +49,7 @@ namespace Simple.Web.Razor.Tests
 <p>@m.Text</p>
 }
 </body></html>";
-            Type type;
-            using (var reader = new StringReader(templateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(templateText);
             Assert.NotNull(type);
             var genericArguments = type.BaseType.GetGenericArguments();
             Assert.Equal(1, genericArguments.Length);
