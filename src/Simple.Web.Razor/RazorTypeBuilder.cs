@@ -15,149 +15,15 @@ namespace Simple.Web.Razor
 
     using Simple.Web.Razor.Engine;
 
-    internal class RazorTypeBuilderContext
-    {
-        private static readonly string[] ExcludedReferencesOnMono =
-            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
-
-        private static readonly Func<Assembly, bool> IsValidReference = an =>
-                ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
-
-        private Type _model;
-        private Type _handler;
-        private List<string> _lines;
-        private StreamReader _reader;
-        private CompilerParameters _compilerParameters;
-        private string _className;
-
-        public RazorTypeBuilderContext()
-        {
-            _className = string.Format("{0}_{1}", SimpleRazorConfiguration.ClassPrefix, Guid.NewGuid().ToString("N"));
-
-            _compilerParameters =
-            new CompilerParameters()
-            {
-                GenerateExecutable = false,
-                GenerateInMemory = true,
-                TreatWarningsAsErrors = false,
-                OutputAssembly = Path.Combine(Path.GetTempPath(), string.Format("{0}.dll", _className)),
-                MainClass = _className
-            };
-        }
-
-        public string ClassName {get { return _className; }}
-
-        public void SetModel(Type model)
-        {
-            _model = model;
-        }
-
-        public void SetHandler(Type handler)
-        {
-            _handler = handler;
-        }
-
-        public void SetLines(List<string> lines)
-        {
-            _lines = lines;
-        }
-
-        public void SetReader(StreamReader reader)
-        {
-            _reader = reader;
-        }
-
-        public CompilerParameters GetCompilerParameters()
-        {
-            var declarationAssemblies = FindDeclarationAssemblies();
-
-
-
-            _compilerParameters.ReferencedAssemblies.AddRange(
-                TypeResolver.DefaultAssemblies
-                .Union(declarationAssemblies)
-                .Where(an => IsValidReference(an))
-                .Select(an => an.Location).ToArray());
-
-            return _compilerParameters;
-        }
-
-        private IEnumerable<Assembly> FindDeclarationAssemblies()
-        {
-            return GetNormalizedAssemblies(
-                new Type[] { _model, _handler }
-                    .Concat(_model != null && _model.IsGenericType ? _model.GetGenericArguments() : new Type[0]).ToArray())
-                    .GroupBy(an => an.Location)
-                    .Select(an => an.First())
-                    .ToArray();
-        }
-
-        private static IEnumerable<Assembly> GetNormalizedAssemblies(params Type[] types)
-        {
-            return from type in types where type != null select type.Assembly;
-        }
-
-    }
-
     internal class RazorTypeBuilder
     {
-        private static Dictionary<string, Func<string, RazorTypeBuilderContext, RazorTypeBuilderContext>>
+        private static Dictionary<string, Action<string, RazorTypeBuilderContext>>
             _directiveHandlers =
-                new Dictionary<string, Func<string, RazorTypeBuilderContext, RazorTypeBuilderContext>>()
+                new Dictionary<string, Action<string, RazorTypeBuilderContext>>()
                 {
                     {"@handler", ReadHandler},
                     {"@model", ReadModel}
                 };
-
-        private static RazorTypeBuilderContext ReadModel(string line, RazorTypeBuilderContext context)
-        {
-            var type = TypeHelper.FindTypeFromRazorLine(line, "@model");
-            context.SetModel(type);
-            return context;
-        }
-
-        private static RazorTypeBuilderContext ReadHandler(string line, RazorTypeBuilderContext context)
-        {
-            var type = TypeHelper.FindTypeFromRazorLine(line, "@handler");
-            context.SetHandler(type);
-            return context;
-        }
-
-        private static List<string> GetLines(StreamReader reader)
-        {
-            var lines = new List<string>();
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                lines.Add(line);
-            }
-            reader.BaseStream.Position = 0;
-            return lines;
-        }
-
-        private static RazorTypeBuilderContext CreateContext(StreamReader reader)
-        {
-            var context = new RazorTypeBuilderContext();
-            context.SetReader(reader);
-            var lines = GetLines(reader);
-            context.SetLines(lines);
-
-            PreProcess(lines, context);
-
-            return context;
-        }
-
-        private static void PreProcess(List<string> lines, RazorTypeBuilderContext context)
-        {
-            lines.ForEach(y =>
-            {
-                var splittedLine = y.Split(' ');
-                if (_directiveHandlers.Keys.Contains(splittedLine[0]))
-                {
-                    _directiveHandlers[splittedLine[0]](y, context);
-                }
-            });
-        }
 
         private static readonly IDictionary<String, String> CompilerProperties =
             new Dictionary<String, String> { { "CompilerVersion", "v4.0" } };
@@ -176,6 +42,49 @@ namespace Simple.Web.Razor
             var viewType = CompileView(razorResult, context.GetCompilerParameters());
 
             return viewType;
+        }
+        private static void ReadModel(string line, RazorTypeBuilderContext context)
+        {
+            var type = TypeHelper.FindTypeFromRazorLine(line, "@model");
+            context.SetModel(type);
+        }
+
+        private static void ReadHandler(string line, RazorTypeBuilderContext context)
+        {
+            var type = TypeHelper.FindTypeFromRazorLine(line, "@handler");
+            context.SetHandler(type);
+        }
+
+        private static List<string> GetLines(StreamReader reader)
+        {
+            var lines = new List<string>();
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+            reader.BaseStream.Position = 0;
+            return lines;
+        }
+
+        private static RazorTypeBuilderContext CreateContext(StreamReader reader)
+        {
+            var context = new RazorTypeBuilderContext();
+            var lines = GetLines(reader);
+            PreProcess(lines, context);
+            return context;
+        }
+
+        private static void PreProcess(List<string> lines, RazorTypeBuilderContext context)
+        {
+            lines.ForEach(y =>
+            {
+                var directive = y.Split(' ')[0];
+                if (_directiveHandlers.Keys.Contains(directive))
+                {
+                    _directiveHandlers[directive](y, context);
+                }
+            });
         }
 
         private static RazorTemplateEngine CreateRazorTemplateEngine()

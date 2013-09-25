@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Simple.Web.TestHelpers;
-
-namespace Simple.Web.Razor.Tests
+﻿namespace Simple.Web.Razor.Tests
 {
+    using System;
+    using TestHelpers;
+
     internal static class RazorTypeBuilderHelpers
     {
         internal static Type CreateTypeFromText(string text)

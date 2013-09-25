@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace Simple.Web.Razor.Tests
+﻿namespace Simple.Web.Razor.Tests
 {
     using System;
     using System.IO;

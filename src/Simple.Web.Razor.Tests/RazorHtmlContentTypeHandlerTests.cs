@@ -1,6 +1,5 @@
 namespace Simple.Web.Razor.Tests
 {
-    using System;
     using System.IO;
     using Xunit;
 

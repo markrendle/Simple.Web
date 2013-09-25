@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.TestHelpers
+﻿namespace Simple.Web.TestHelpers
 {
+    using System.IO;
+
     public static class StringExtensions
     {
         public static StreamReader ToStreamReader(this string input)
