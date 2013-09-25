@@ -13,8 +13,8 @@
 
     internal class RazorTypeBuilder
     {
-        private static Dictionary<string, Action<string, RazorTypeBuilderContext>>
-            _directiveHandlers =
+        private static readonly Dictionary<string, Action<string, RazorTypeBuilderContext>>
+            DirectiveHandlers =
                 new Dictionary<string, Action<string, RazorTypeBuilderContext>>()
                 {
                     {"@handler", ReadHandler},
@@ -76,9 +76,9 @@
             lines.ForEach(y =>
             {
                 var directive = y.Split(' ')[0];
-                if (_directiveHandlers.Keys.Contains(directive))
+                if (DirectiveHandlers.Keys.Contains(directive))
                 {
-                    _directiveHandlers[directive](y, context);
+                    DirectiveHandlers[directive](y, context);
                 }
             });
         }
