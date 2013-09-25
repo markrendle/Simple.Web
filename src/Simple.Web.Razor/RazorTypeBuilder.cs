@@ -1,6 +1,4 @@
-﻿using System.Web.Razor.Text;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
     using System;
     using System.CodeDom.Compiler;
@@ -10,9 +8,7 @@ namespace Simple.Web.Razor
     using System.Reflection;
     using System.Threading;
     using System.Web.Razor;
-
     using Microsoft.CSharp;
-
     using Simple.Web.Razor.Engine;
 
     internal class RazorTypeBuilder
@@ -127,32 +123,6 @@ namespace Simple.Web.Razor
     internal static class TypeHelper
     {
         private static readonly TypeResolver TypeResolver = new TypeResolver();
-
-        internal static Type ExtractType(ref TextReader reader, string directive)
-        {
-            Type type = null;
-
-            using (var writer = new StringWriter())
-            {
-                while (reader.Peek() > -1)
-                {
-                    var line = reader.ReadLine();
-                    if (type == null && line != null && line.Trim().StartsWith(directive))
-                    {
-                        type = FindTypeFromRazorLine(line, directive);
-                    }
-
-                    writer.WriteLine(line);
-                }
-
-
-                using (Interlocked.CompareExchange(ref reader, new StringReader(writer.ToString()), reader))
-                {
-                }
-            }
-
-            return type;
-        }
 
         public static Type FindTypeFromRazorLine(string line, string directive)
         {
