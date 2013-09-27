@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
+using Simple.Web.Helpers;
+using Xunit;
 
 namespace Simple.Web.Tests
 {
-    using System.Linq.Expressions;
-    using Helpers;
-    using Xunit;
-
     public class ExpressionHelperTests
     {
         [Fact]

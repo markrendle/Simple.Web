@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Simple.Web.Behaviors;
 using Simple.Web.CodeGeneration;
 using Simple.Web.Hosting;
 using Simple.Web.Http;
 using Simple.Web.Mocks;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Simple.Web.Tests
 {
-    using System.Linq;
-
     public class CookieTests
     {
         [Fact]

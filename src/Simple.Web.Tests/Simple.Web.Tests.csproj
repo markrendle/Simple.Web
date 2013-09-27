@@ -46,18 +46,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationTests\ContentTypeTests.cs" />
+    <Compile Include="MediaTypeHandling\ContentTypeHandlerTableTest.cs" />
     <Compile Include="CookieTests.cs" />
     <Compile Include="ExpressionHelperTests.cs" />
     <Compile Include="FormDeserializerTests.cs" />
     <Compile Include="HandlerBuilderFactoryTests.cs" />
     <Compile Include="HandlerInfoTests.cs" />
-    <Compile Include="GetHandlerTests.cs" />
     <Compile Include="LinkHelperTests.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="MediaTypeHandling\MediaTypeHandlerExTests.cs" />
     <Compile Include="PublicFolderTests.cs" />
+    <Compile Include="Routing\RoutingTableBuilderTests.cs" />
+    <Compile Include="Routing\RoutingTableTests.cs" />
     <Compile Include="UriFromTypeTests.cs" />
     <Compile Include="UriTemplateAttributeTests.cs" />
   </ItemGroup>
