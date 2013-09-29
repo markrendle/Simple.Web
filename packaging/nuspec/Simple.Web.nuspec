@@ -16,6 +16,7 @@
   <files>
     <file src="..\..\build\Simple.Web.dll" target="lib\net40" />
     <file src="..\..\build\Simple.Web.*db" target="lib\net40" />
+    <file src="..\..\build\Simple.Web.xml" target="lib\net40" />
     <file src="..\..\src\Simple.Web\**\*.cs" target="src" />
   </files>
 </package> 

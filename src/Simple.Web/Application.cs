@@ -54,6 +54,20 @@
                 .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
         }
 
+        public static Task Run(IDictionary<string, object> env, Func<Task> next)
+        {
+            var context = new OwinContext(env);
+            var task = Run(context);
+
+            if (task == null)
+            {
+                return next();
+            }
+            
+            return task
+                .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
+        }
+
         private static Func<Stream, Task> ErrorHandler(string message)
         {
             return stream =>
