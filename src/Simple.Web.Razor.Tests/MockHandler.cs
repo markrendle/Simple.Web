@@ -3,27 +3,30 @@ namespace Simple.Web.Razor.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Links;
-    using MediaTypeHandling;
+
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
 
     public class MockHandler : IContent
     {
-        public Uri Uri { get; private set; }
         public object Handler { get; set; }
-
-        public object Model { get; set; }
-
-        public IEnumerable<KeyValuePair<string, object>> Variables { get; set; }
-        public string Title { get; set; }
-
-        public string ViewPath
-        {
-            get { return null; }
-        }
 
         public IEnumerable<Link> Links
         {
             get { return Enumerable.Empty<Link>(); }
+        }
+
+        public object Model { get; set; }
+
+        public string Title { get; set; }
+
+        public Uri Uri { get; private set; }
+
+        public IEnumerable<KeyValuePair<string, object>> Variables { get; set; }
+
+        public string ViewPath
+        {
+            get { return null; }
         }
     }
 }

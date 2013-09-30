@@ -12,7 +12,8 @@
         /// Initializes a new instance of the <see cref="RequestBehaviorAttribute"/> class.
         /// </summary>
         /// <param name="implementingType">The type that implements the behavior for the interface.</param>
-        public RequestBehaviorAttribute(Type implementingType) : base(implementingType)
+        public RequestBehaviorAttribute(Type implementingType)
+            : base(implementingType)
         {
         }
 
@@ -23,7 +24,7 @@
         /// <returns>The <see cref="RequestBehaviorAttribute"/>, or <c>null</c> if it is not applied to the type.</returns>
         public static RequestBehaviorAttribute Get(Type type)
         {
-            return GetCustomAttribute(type, typeof (RequestBehaviorAttribute)) as RequestBehaviorAttribute;
+            return GetCustomAttribute(type, typeof(RequestBehaviorAttribute)) as RequestBehaviorAttribute;
         }
     }
 }

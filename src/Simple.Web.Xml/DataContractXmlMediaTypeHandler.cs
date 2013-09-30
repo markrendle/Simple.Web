@@ -1,14 +1,15 @@
-﻿using System;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using Simple.Web.Helpers;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.Xml
+﻿namespace Simple.Web.Xml
 {
+    using System;
+    using System.Runtime.Serialization;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml;
+    using System.Xml.Linq;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.MediaTypeHandling;
+
     [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class DataContractXmlMediaTypeHandler : XElementMediaTypeHandlerBase
     {
@@ -16,10 +17,10 @@ namespace Simple.Web.Xml
 
         protected override Task<T> FromWireFormat<T>(XElement wireFormat)
         {
-            var dataContractSerializer = new DataContractSerializer(typeof (T));
+            var dataContractSerializer = new DataContractSerializer(typeof(T));
             XmlReader xmlReader = wireFormat.CreateReader();
             object obj = dataContractSerializer.ReadObject(xmlReader);
-            return TaskHelper.Completed((T) obj);
+            return TaskHelper.Completed((T)obj);
         }
 
         protected override XElement ToWireFormat(object item)
@@ -29,7 +30,7 @@ namespace Simple.Web.Xml
 
         protected override XElement ToWireFormat<T>(T item)
         {
-            return ToWireFormat(typeof (T), item);
+            return ToWireFormat(typeof(T), item);
         }
 
         private XElement ToWireFormat(Type itemType, object item)

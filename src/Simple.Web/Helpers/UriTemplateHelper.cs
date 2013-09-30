@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Helpers
+﻿namespace Simple.Web.Helpers
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     internal static class UriTemplateHelper

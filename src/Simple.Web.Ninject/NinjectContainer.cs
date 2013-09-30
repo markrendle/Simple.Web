@@ -1,10 +1,11 @@
-﻿using System;
-using Ninject.Activation.Blocks;
-
-namespace Simple.Web.Ninject
+﻿namespace Simple.Web.Ninject
 {
-    using DependencyInjection;
+    using System;
+
     using global::Ninject;
+    using global::Ninject.Activation.Blocks;
+
+    using Simple.Web.DependencyInjection;
 
     public class NinjectContainer : ISimpleContainer
     {
@@ -21,13 +22,18 @@ namespace Simple.Web.Ninject
         }
     }
 
-    public class NinjectContainerScope: ISimpleContainerScope
+    public class NinjectContainerScope : ISimpleContainerScope
     {
         private readonly IActivationBlock _block;
 
         internal NinjectContainerScope(IActivationBlock block)
         {
             _block = block;
+        }
+
+        public void Dispose()
+        {
+            _block.Dispose();
         }
 
         public T Get<T>()
@@ -38,11 +44,6 @@ namespace Simple.Web.Ninject
         public object Get(Type objectType)
         {
             return _block.TryGet(objectType);
-        }
-
-        public void Dispose()
-        {
-            _block.Dispose();
         }
     }
 }

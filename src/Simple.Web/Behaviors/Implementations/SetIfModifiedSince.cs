@@ -2,7 +2,7 @@ namespace Simple.Web.Behaviors.Implementations
 {
     using System;
     using System.Linq;
-    using Simple.Web.Behaviors;
+
     using Simple.Web.Http;
 
     /// <summary>
@@ -18,7 +18,10 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns></returns>
         public static void Impl(IModified handler, IContext context)
         {
-            if (!context.Request.Headers.ContainsKey("If-Modified-Since")) return;
+            if (!context.Request.Headers.ContainsKey("If-Modified-Since"))
+            {
+                return;
+            }
             var header = context.Request.Headers["If-Modified-Since"].FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(header))
             {

@@ -2,16 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
-    using Links;
-    using Newtonsoft.Json;
     using System.Linq;
+    using System.Linq.Expressions;
+
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
-    class LinkConverter<T> : JsonConverter
+    using Simple.Web.Links;
+
+    internal class LinkConverter<T> : JsonConverter
     {
-        private readonly Action<JsonWriter, T, JsonSerializer> _writeProperties;
         private readonly Func<object, IEnumerable<object>> _linkEnumerator;
+        private readonly Action<JsonWriter, T, JsonSerializer> _writeProperties;
 
         private LinkConverter(Action<JsonWriter, T, JsonSerializer> writeProperties, Func<object, IEnumerable<object>> linkEnumerator)
         {
@@ -19,54 +21,14 @@
             _linkEnumerator = linkEnumerator;
         }
 
-        public static LinkConverter<T> New(Func<object, IEnumerable<object>> linkEnumerator, IContractResolver contractResolver)
+        public override bool CanConvert(Type objectType)
         {
-            var writer = Expression.Parameter(typeof(JsonWriter));
-            var value = Expression.Parameter(typeof(T));
-            var serializer = Expression.Parameter(typeof(JsonSerializer));
-
-            var setters = CreateWriteValueExpressions(writer, value, serializer, contractResolver);
-
-            var block = Expression.Block(setters);
-            var lambda = Expression.Lambda<Action<JsonWriter, T, JsonSerializer>>(block, writer, value, serializer);
-
-            return new LinkConverter<T>(lambda.Compile(), linkEnumerator);
+            return typeof(T).IsAssignableFrom(objectType);
         }
 
-        private static IEnumerable<Expression> CreateWriteValueExpressions(ParameterExpression writer, ParameterExpression value, ParameterExpression serializer, IContractResolver contractResolver)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var contract = contractResolver.ResolveContract(typeof (T)) as JsonObjectContract;
-            if (contract != null)
-            {
-                foreach (var property in contract.Properties)
-                {
-                    var getValueMethod = typeof (IValueProvider).GetMethod("GetValue");
-                    var valueProvider = Expression.Constant(property.ValueProvider);
-                    yield return
-                        Expression.Call(writer, LinkConverter.WritePropertyName,
-                                        Expression.Constant(property.PropertyName));
-                    var getValue = Expression.Call(valueProvider, getValueMethod, value);
-                    yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
-                }
-            }
-            else
-            {
-                foreach (var info in typeof (T).GetProperties())
-                {
-                    yield return
-                        Expression.Call(writer, LinkConverter.WritePropertyName,
-                                        Expression.Constant(ToCamelCase(info.Name)));
-                    var getValue = Expression.Convert(Expression.Property(value, info), typeof (object));
-                    yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
-                }
-            }
-        }
-
-        private static string ToCamelCase(string str)
-        {
-            if (string.IsNullOrWhiteSpace(str)) return str;
-            if (str.Length == 1) return str.ToLowerInvariant();
-            return char.ToLowerInvariant(str[0]) + str.Substring(1);
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -90,14 +52,59 @@
             writer.WriteEndObject();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public static LinkConverter<T> New(Func<object, IEnumerable<object>> linkEnumerator, IContractResolver contractResolver)
         {
-            throw new NotImplementedException();
+            var writer = Expression.Parameter(typeof(JsonWriter));
+            var value = Expression.Parameter(typeof(T));
+            var serializer = Expression.Parameter(typeof(JsonSerializer));
+
+            var setters = CreateWriteValueExpressions(writer, value, serializer, contractResolver);
+
+            var block = Expression.Block(setters);
+            var lambda = Expression.Lambda<Action<JsonWriter, T, JsonSerializer>>(block, writer, value, serializer);
+
+            return new LinkConverter<T>(lambda.Compile(), linkEnumerator);
         }
 
-        public override bool CanConvert(Type objectType)
+        private static IEnumerable<Expression> CreateWriteValueExpressions(ParameterExpression writer,
+                                                                           ParameterExpression value,
+                                                                           ParameterExpression serializer,
+                                                                           IContractResolver contractResolver)
         {
-            return typeof(T).IsAssignableFrom(objectType);
+            var contract = contractResolver.ResolveContract(typeof(T)) as JsonObjectContract;
+            if (contract != null)
+            {
+                foreach (var property in contract.Properties)
+                {
+                    var getValueMethod = typeof(IValueProvider).GetMethod("GetValue");
+                    var valueProvider = Expression.Constant(property.ValueProvider);
+                    yield return Expression.Call(writer, LinkConverter.WritePropertyName, Expression.Constant(property.PropertyName));
+                    var getValue = Expression.Call(valueProvider, getValueMethod, value);
+                    yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
+                }
+            }
+            else
+            {
+                foreach (var info in typeof(T).GetProperties())
+                {
+                    yield return Expression.Call(writer, LinkConverter.WritePropertyName, Expression.Constant(ToCamelCase(info.Name)));
+                    var getValue = Expression.Convert(Expression.Property(value, info), typeof(object));
+                    yield return Expression.Call(serializer, LinkConverter.Serialize, writer, getValue);
+                }
+            }
+        }
+
+        private static string ToCamelCase(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return str;
+            }
+            if (str.Length == 1)
+            {
+                return str.ToLowerInvariant();
+            }
+            return char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
     }
 }

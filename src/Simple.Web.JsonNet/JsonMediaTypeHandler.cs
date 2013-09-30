@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.JsonNet
+﻿namespace Simple.Web.JsonNet
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
+
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
+
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandler : JsonNetMediaTypeHandlerBase
     {

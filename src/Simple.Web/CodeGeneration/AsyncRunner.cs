@@ -2,15 +2,16 @@ namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Threading.Tasks;
-    using Http;
+
+    using Simple.Web.Http;
 
     /// <summary>
     /// Runs asynchronous handlers. Should only be used from hosting code.
     /// </summary>
     public class AsyncRunner
     {
-        private readonly Func<object, IContext, Task<Status>> _start;
         private readonly Action<object, IContext, Status> _end;
+        private readonly Func<object, IContext, Task<Status>> _start;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AsyncRunner"/> class.

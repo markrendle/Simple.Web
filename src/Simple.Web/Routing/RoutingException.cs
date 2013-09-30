@@ -10,6 +10,7 @@ namespace Simple.Web.Routing
     public class RoutingException : Exception
     {
         private readonly string _url;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RoutingException"/> class.
         /// </summary>
@@ -24,7 +25,8 @@ namespace Simple.Web.Routing
         /// </summary>
         /// <param name="url">The URL that triggered the exception.</param>
         /// <param name="message">The message.</param>
-        public RoutingException(string url, string message) : base(message)
+        public RoutingException(string url, string message)
+            : base(message)
         {
             _url = url;
         }
@@ -35,7 +37,8 @@ namespace Simple.Web.Routing
         /// <param name="url">The URL that triggered the exception.</param>
         /// <param name="message">The message.</param>
         /// <param name="inner">The inner.</param>
-        public RoutingException(string url, string message, Exception inner) : base(message, inner)
+        public RoutingException(string url, string message, Exception inner)
+            : base(message, inner)
         {
             _url = url;
         }
@@ -48,9 +51,8 @@ namespace Simple.Web.Routing
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
         ///   
         /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
-        protected RoutingException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
+        protected RoutingException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
             _url = info.GetString("Url");
         }

@@ -6,13 +6,12 @@
     {
         public static bool IsJsonPrimitive(this Type type)
         {
-            return type.IsPrimitive || type == typeof (string) || type == typeof (DateTime)
-                   || type.IsEnum || type.IsNullable();
+            return type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) || type.IsEnum || type.IsNullable();
         }
 
         public static bool IsNullable(this Type type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }

@@ -1,11 +1,10 @@
-using System;
-
 namespace Simple.Web.CodeGeneration
 {
+    using System;
     using System.Collections.Generic;
-    using Helpers;
-    using Http;
-    using MediaTypeHandling;
+
+    using Simple.Web.Http;
+    using Simple.Web.MediaTypeHandling;
 
     internal static class WriteView
     {
@@ -14,26 +13,7 @@ namespace Simple.Web.CodeGeneration
             WriteUsingMediaTypeHandler<T>(handler, context);
         }
 
-        private static void WriteUsingMediaTypeHandler<T>(object handler, IContext context)
-        {
-            if (context.Request.HttpMethod == null) throw new Exception("No HTTP Method given");
-            if (context.Request.HttpMethod.Equals("HEAD")) return;
-            IMediaTypeHandler mediaTypeHandler;
-            var acceptedTypes = context.Request.GetAccept();
-            if (TryGetMediaTypeHandler(context, acceptedTypes, out mediaTypeHandler))
-            {
-                context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
-
-                context.Response.WriteFunction = (stream) =>
-                    {
-                        var content = new Content(context.Request.Url, handler, null);
-                        return mediaTypeHandler.Write<T>(content, stream);
-                    };
-            }
-        }
-
-        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes,
-                                                   out IMediaTypeHandler mediaTypeHandler)
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
         {
             if (acceptedTypes == null || (acceptedTypes.Count == 1 && acceptedTypes[0].StartsWith("*/*")))
             {
@@ -52,6 +32,30 @@ namespace Simple.Web.CodeGeneration
                 return false;
             }
             return true;
+        }
+
+        private static void WriteUsingMediaTypeHandler<T>(object handler, IContext context)
+        {
+            if (context.Request.HttpMethod == null)
+            {
+                throw new Exception("No HTTP Method given");
+            }
+            if (context.Request.HttpMethod.Equals("HEAD"))
+            {
+                return;
+            }
+            IMediaTypeHandler mediaTypeHandler;
+            var acceptedTypes = context.Request.GetAccept();
+            if (TryGetMediaTypeHandler(context, acceptedTypes, out mediaTypeHandler))
+            {
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
+
+                context.Response.WriteFunction = stream =>
+                                                 {
+                                                     var content = new Content(context.Request.Url, handler, null);
+                                                     return mediaTypeHandler.Write<T>(content, stream);
+                                                 };
+            }
         }
     }
 }

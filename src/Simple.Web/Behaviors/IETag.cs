@@ -1,10 +1,12 @@
 namespace Simple.Web.Behaviors
 {
+    using Simple.Web.Behaviors.Implementations;
+
     /// <summary>
     /// Indicates that the resource for a handler has an ETag.
     /// </summary>
-    [RequestBehavior(typeof(Implementations.SetInputETag))]
-    [ResponseBehavior(typeof(Implementations.SetOutputETag))]
+    [RequestBehavior(typeof(SetInputETag))]
+    [ResponseBehavior(typeof(SetOutputETag))]
     public interface IETag
     {
         /// <summary>

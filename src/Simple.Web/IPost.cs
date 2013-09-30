@@ -1,7 +1,8 @@
 namespace Simple.Web
 {
     using System.Threading.Tasks;
-    using Http;
+
+    using Simple.Web.Http;
 
     /// <summary>
     /// Represents a synchronous handler for a POST operation.

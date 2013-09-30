@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Helpers
+﻿namespace Simple.Web.Helpers
 {
     using System.Linq.Expressions;
     using System.Reflection;
@@ -46,7 +41,9 @@ namespace Simple.Web.Helpers
                     value = null;
                     return false;
                 }
-                var members = memberValue.GetType().GetMember(memberExpression.Member.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                var members = memberValue.GetType()
+                                         .GetMember(memberExpression.Member.Name,
+                                                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                 if (members.Length != 1)
                 {
                     value = null;

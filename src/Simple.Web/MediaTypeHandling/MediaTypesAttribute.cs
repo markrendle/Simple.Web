@@ -36,7 +36,7 @@ namespace Simple.Web.MediaTypeHandling
         /// <returns>A list of <see cref="MediaTypesAttribute"/> attributes applied to the type.</returns>
         public static IEnumerable<MediaTypesAttribute> Get(Type type)
         {
-            return GetCustomAttributes(type, typeof (MediaTypesAttribute)).Cast<MediaTypesAttribute>();
+            return GetCustomAttributes(type, typeof(MediaTypesAttribute)).Cast<MediaTypesAttribute>();
         }
     }
 }

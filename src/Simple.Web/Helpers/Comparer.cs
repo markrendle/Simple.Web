@@ -3,12 +3,16 @@ namespace Simple.Web.Helpers
     using System;
     using System.Collections.Generic;
 
-    sealed class Comparer<T> : IComparer<T>
+    internal sealed class Comparer<T> : IComparer<T>
     {
-        private readonly Func<T, T, int> _compare; 
+        private readonly Func<T, T, int> _compare;
+
         public Comparer(Func<T, T, int> compare)
         {
-            if (compare == null) throw new ArgumentNullException("compare");
+            if (compare == null)
+            {
+                throw new ArgumentNullException("compare");
+            }
             _compare = compare;
         }
 

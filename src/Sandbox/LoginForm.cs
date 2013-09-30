@@ -6,11 +6,11 @@
     [UriTemplate("/login")]
     public class LoginForm : IGet, ILoginPage
     {
+        public string ReturnUrl { get; set; }
+
         public Status Get()
         {
             return Status.OK;
         }
-
-        public string ReturnUrl { get; set; }
     }
 }

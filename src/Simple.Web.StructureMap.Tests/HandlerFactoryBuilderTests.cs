@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using StructureMap;
-using StructureMap.Configuration.DSL;
-
-namespace Simple.Web.StructureMap.Tests
+﻿namespace Simple.Web.StructureMap.Tests
 {
-    using CodeGeneration;
+    using System;
+    using System.Collections.Generic;
+
+    using global::StructureMap;
+    using global::StructureMap.Configuration.DSL;
+
+    using Simple.Web.CodeGeneration;
+
     using Xunit;
 
     public class HandlerFactoryBuilderTests
@@ -35,7 +35,7 @@ namespace Simple.Web.StructureMap.Tests
             TestHandler handler;
             using (var scopedHandler = actualFunc(new Dictionary<string, string>()))
             {
-                handler = (TestHandler) scopedHandler.Handler;
+                handler = (TestHandler)scopedHandler.Handler;
                 Assert.Equal(false, handler.IsDisposed);
             }
             Assert.Equal(true, handler.IsDisposed);
@@ -47,10 +47,10 @@ namespace Simple.Web.StructureMap.Tests
         protected internal override void Configure(ConfigurationExpression cfg)
         {
             cfg.Scan(x =>
-                         {
-                             x.TheCallingAssembly();
-                             x.LookForRegistries();
-                         });
+                     {
+                         x.TheCallingAssembly();
+                         x.LookForRegistries();
+                     });
         }
     }
 
@@ -58,31 +58,31 @@ namespace Simple.Web.StructureMap.Tests
     {
         public TestRegistry()
         {
-            For<IResult>()
-                .Use<OkResult>();
+            For<IResult>().Use<OkResult>();
         }
     }
 
     public class TestHandler : IGet, IDisposable
     {
         private readonly IResult _result;
-        public bool IsDisposed { get; set; }
 
         public TestHandler(IResult result)
         {
             _result = result;
         }
 
-        public Status Get()
-        {
-            return _result.Result;
-        }
+        public bool IsDisposed { get; set; }
 
         public string TestProperty { get; set; }
-        
+
         public void Dispose()
         {
             IsDisposed = true;
+        }
+
+        public Status Get()
+        {
+            return _result.Result;
         }
     }
 
@@ -93,6 +93,9 @@ namespace Simple.Web.StructureMap.Tests
 
     public class OkResult : IResult
     {
-        public Status Result { get { return Status.OK; }}
+        public Status Result
+        {
+            get { return Status.OK; }
+        }
     }
 }

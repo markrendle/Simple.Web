@@ -1,10 +1,12 @@
-﻿using System;
-using Castle.MicroKernel.Lifestyle;
-using Castle.Windsor;
-using Simple.Web.DependencyInjection;
-
-namespace Simple.Web.Windsor
+﻿namespace Simple.Web.Windsor
 {
+    using System;
+
+    using Castle.MicroKernel.Lifestyle;
+    using Castle.Windsor;
+
+    using Simple.Web.DependencyInjection;
+
     public class WindsorSimpleContainerScope : ISimpleContainerScope
     {
         private readonly IWindsorContainer _container;
@@ -15,20 +17,6 @@ namespace Simple.Web.Windsor
         {
             _container = container;
             _scope = _container.BeginScope();
-        }
-
-        public T Get<T>()
-        {
-            EnsureNotDisposed();
-
-            return _container.Kernel.Resolve<T>();
-        }
-
-        public object Get(Type objectType)
-        {
-            EnsureNotDisposed();
-
-            return _container.Kernel.Resolve(objectType);
         }
 
         public void Dispose()
@@ -44,6 +32,19 @@ namespace Simple.Web.Windsor
             GC.SuppressFinalize(this);
         }
 
+        public T Get<T>()
+        {
+            EnsureNotDisposed();
+
+            return _container.Kernel.Resolve<T>();
+        }
+
+        public object Get(Type objectType)
+        {
+            EnsureNotDisposed();
+
+            return _container.Kernel.Resolve(objectType);
+        }
 
         private void EnsureNotDisposed()
         {

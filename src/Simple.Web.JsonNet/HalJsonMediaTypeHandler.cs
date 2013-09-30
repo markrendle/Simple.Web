@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.JsonNet
+﻿namespace Simple.Web.JsonNet
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
+
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
+
     [MediaTypes("application/hal+json")]
     public class HalJsonMediaTypeHandler : JsonNetMediaTypeHandlerBase
     {
@@ -61,7 +63,10 @@ namespace Simple.Web.JsonNet
         {
             public HalLink(string href, string title)
             {
-                if (href == null) throw new ArgumentNullException("href");
+                if (href == null)
+                {
+                    throw new ArgumentNullException("href");
+                }
                 Href = href;
                 Title = string.IsNullOrWhiteSpace(title) ? null : title;
             }

@@ -3,17 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading;
-    using Behaviors;
-    using Helpers;
-    using Http;
 
-    class RequestBehaviorInfo : BehaviorInfo
+    using Simple.Web.Behaviors;
+
+    internal class RequestBehaviorInfo : BehaviorInfo
     {
         private static List<RequestBehaviorInfo> _cache;
 
-        public RequestBehaviorInfo(Type behaviorType, Type implementingType, Priority priority) : base(behaviorType, implementingType, priority)
+        public RequestBehaviorInfo(Type behaviorType, Type implementingType, Priority priority)
+            : base(behaviorType, implementingType, priority)
         {
         }
 

@@ -1,7 +1,7 @@
-﻿using System.Xml.Linq;
-
-namespace Simple.Web.Xml
+﻿namespace Simple.Web.Xml
 {
+    using System.Xml.Linq;
+
     public interface IXmlConverter
     {
         XElement ToXml(object value);
@@ -9,12 +9,12 @@ namespace Simple.Web.Xml
 
     public abstract class XmlConverter<TModel> : IXmlConverter
     {
+        public abstract TModel FromXml(XElement xml);
+
         public XElement ToXml(object value)
         {
-            return ToXml((TModel) value);
+            return ToXml((TModel)value);
         }
-
-        public abstract TModel FromXml(XElement xml);
 
         public abstract XElement ToXml(TModel value);
     }

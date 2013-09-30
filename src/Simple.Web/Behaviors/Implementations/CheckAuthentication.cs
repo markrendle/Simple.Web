@@ -2,11 +2,10 @@ namespace Simple.Web.Behaviors.Implementations
 {
     using System;
     using System.Linq;
-    using Authentication;
-    using MediaTypeHandling;
-    using Simple.Web.Behaviors;
-    using Simple.Web.Helpers;
+
+    using Simple.Web.Authentication;
     using Simple.Web.Http;
+    using Simple.Web.MediaTypeHandling;
 
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.
@@ -40,12 +39,10 @@ namespace Simple.Web.Behaviors.Implementations
             {
                 if (SimpleWeb.Configuration.LoginPage != null)
                 {
-                    var uriTemplateAttribute =
-                        UriTemplateAttribute.Get(SimpleWeb.Configuration.LoginPage).FirstOrDefault();
+                    var uriTemplateAttribute = UriTemplateAttribute.Get(SimpleWeb.Configuration.LoginPage).FirstOrDefault();
                     if (uriTemplateAttribute != null)
                     {
-                        var redirect = uriTemplateAttribute.Template + "?returnUrl=" +
-                                       Uri.EscapeDataString(context.Request.Url.ToString());
+                        var redirect = uriTemplateAttribute.Template + "?returnUrl=" + Uri.EscapeDataString(context.Request.Url.ToString());
                         context.Response.SetHeader("Location", redirect);
                         context.Response.Status = Status.TemporaryRedirect(redirect);
                         return;

@@ -9,6 +9,6 @@
             configuration.Container = new AutofacContainer(BuildContainer());
         }
 
-        internal protected abstract IContainer BuildContainer();
+        protected internal abstract IContainer BuildContainer();
     }
 }

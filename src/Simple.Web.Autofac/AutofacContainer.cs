@@ -1,9 +1,10 @@
-﻿using System;
-
-namespace Simple.Web.Autofac
+﻿namespace Simple.Web.Autofac
 {
-    using DependencyInjection;
+    using System;
+
     using global::Autofac;
+
+    using Simple.Web.DependencyInjection;
 
     public class AutofacContainer : ISimpleContainer
     {
@@ -29,6 +30,11 @@ namespace Simple.Web.Autofac
             _scope = scope;
         }
 
+        public void Dispose()
+        {
+            _scope.Dispose();
+        }
+
         public T Get<T>()
         {
             T instance;
@@ -41,11 +47,6 @@ namespace Simple.Web.Autofac
             object instance;
             _scope.TryResolve(objectType, out instance);
             return instance;
-        }
-
-        public void Dispose()
-        {
-            _scope.Dispose();
         }
     }
 }

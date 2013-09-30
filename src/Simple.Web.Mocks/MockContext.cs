@@ -1,10 +1,9 @@
-using System.Collections.Generic;
-
 namespace Simple.Web.Mocks
 {
-    using System.IO;
-    using Authentication;
-    using Http;
+    using System.Collections.Generic;
+
+    using Simple.Web.Authentication;
+    using Simple.Web.Http;
 
     public class MockContext : IContext
     {
@@ -15,14 +14,16 @@ namespace Simple.Web.Mocks
             Request = new MockRequest();
             Response = new MockResponse();
         }
+
         public IRequest Request { get; set; }
 
         public IResponse Response { get; set; }
+
+        public IUser User { get; set; }
+
         public IDictionary<string, object> Variables
         {
             get { return _variables; }
         }
-
-        public IUser User { get; set; }
     }
 }

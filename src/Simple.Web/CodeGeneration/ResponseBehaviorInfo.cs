@@ -4,13 +4,15 @@ namespace Simple.Web.CodeGeneration
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using Behaviors;
 
-    class ResponseBehaviorInfo : BehaviorInfo
+    using Simple.Web.Behaviors;
+
+    internal class ResponseBehaviorInfo : BehaviorInfo
     {
         private static List<ResponseBehaviorInfo> _cache;
 
-        public ResponseBehaviorInfo(Type behaviorType, Type implementingType, Priority priority) : base(behaviorType, implementingType, priority)
+        public ResponseBehaviorInfo(Type behaviorType, Type implementingType, Priority priority)
+            : base(behaviorType, implementingType, priority)
         {
         }
 
@@ -27,9 +29,7 @@ namespace Simple.Web.CodeGeneration
 
         private static IEnumerable<ResponseBehaviorInfo> FindResponseBehaviorTypes()
         {
-            return
-                FindBehaviorTypes<ResponseBehaviorAttribute, ResponseBehaviorInfo>(
-                    (t, i, p) => new ResponseBehaviorInfo(t, i, p));
+            return FindBehaviorTypes<ResponseBehaviorAttribute, ResponseBehaviorInfo>((t, i, p) => new ResponseBehaviorInfo(t, i, p));
         }
     }
 }

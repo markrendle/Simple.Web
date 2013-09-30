@@ -1,7 +1,7 @@
-using StructureMap;
-
 namespace Simple.Web.StructureMap
 {
+    using global::StructureMap;
+
     public abstract class StructureMapStartupBase : IStartupTask
     {
         public void Run(IConfiguration configuration, IWebEnvironment environment)
@@ -10,6 +10,6 @@ namespace Simple.Web.StructureMap
             configuration.Container = new StructureMapContainer(ObjectFactory.Container);
         }
 
-        internal protected abstract void Configure(ConfigurationExpression cfg);
+        protected internal abstract void Configure(ConfigurationExpression cfg);
     }
 }

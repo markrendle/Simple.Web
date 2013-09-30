@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
-    class StaticMatcher : MatcherBase
+    using System;
+
+    internal class StaticMatcher : MatcherBase
     {
         public StaticMatcher(string pattern)
             : base(pattern, 0)

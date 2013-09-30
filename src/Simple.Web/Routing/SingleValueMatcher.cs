@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
-    class SingleValueMatcher : MatcherBase
+    internal class SingleValueMatcher : MatcherBase
     {
         private readonly string _trimmed;
+
         public SingleValueMatcher(string pattern)
             : base(pattern, 1)
         {

@@ -1,11 +1,8 @@
-using System.Collections;
-
 namespace Simple.Web.Http
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -13,6 +10,11 @@ namespace Simple.Web.Http
     /// </summary>
     public interface IResponse
     {
+        /// <summary>
+        /// The response headers.
+        /// </summary>
+        IDictionary<string, string[]> Headers { get; set; }
+
         /// <summary>
         /// Gets or sets the status code and description.
         /// </summary>
@@ -25,12 +27,6 @@ namespace Simple.Web.Http
         /// Gets the output stream.
         /// </summary>
         //Stream OutputStream { get; }
-
         Func<Stream, Task> WriteFunction { get; set; }
-
-        /// <summary>
-        /// The response headers.
-        /// </summary>
-        IDictionary<string, string[]> Headers { get; set; }
     }
 }

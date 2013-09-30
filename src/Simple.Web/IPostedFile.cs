@@ -8,12 +8,12 @@ namespace Simple.Web
     public interface IPostedFile
     {
         /// <summary>
-        /// Gets the fully qualified name of the file on the client.
+        /// Gets the size of an uploaded file, in bytes.
         /// </summary>
         /// <returns>
-        /// The name of the client's file, including the directory path.
+        /// The file length, in bytes.
         /// </returns>
-        string FileName { get; }
+        int ContentLength { get; }
 
         /// <summary>
         /// Gets the MIME content type of a file sent by a client.
@@ -24,12 +24,12 @@ namespace Simple.Web
         string ContentType { get; }
 
         /// <summary>
-        /// Gets the size of an uploaded file, in bytes.
+        /// Gets the fully qualified name of the file on the client.
         /// </summary>
         /// <returns>
-        /// The file length, in bytes.
+        /// The name of the client's file, including the directory path.
         /// </returns>
-        int ContentLength { get; }
+        string FileName { get; }
 
         /// <summary>
         /// Gets a <see cref="T:System.IO.Stream"/> object that points to an uploaded file to prepare for reading the contents of the file.

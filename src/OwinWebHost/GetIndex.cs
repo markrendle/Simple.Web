@@ -10,7 +10,7 @@
 
         public Status Get()
         {
-            this.Output = "OwinHost runnnig Simple.Web!";
+            Output = "OwinHost runnnig Simple.Web!";
 
             return 200;
         }

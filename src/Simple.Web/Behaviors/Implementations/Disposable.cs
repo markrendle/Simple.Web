@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Simple.Web.Http;
-
-namespace Simple.Web.Behaviors.Implementations
+﻿namespace Simple.Web.Behaviors.Implementations
 {
+    using System;
+
+    using Simple.Web.Http;
+
     public static class Disposable
     {
         public static void Impl(IDisposable disposable, IContext context)

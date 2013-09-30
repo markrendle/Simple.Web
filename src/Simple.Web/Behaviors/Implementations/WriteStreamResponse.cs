@@ -1,8 +1,8 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
     using System;
-    using Helpers;
-    using Simple.Web.Behaviors;
+
+    using Simple.Web.Helpers;
     using Simple.Web.Http;
 
     /// <summary>
@@ -23,18 +23,24 @@
             {
                 context.Response.SetHeader("Content-Disposition", handler.ContentDisposition);
             }
-            if (context.Request.HttpMethod.Equals("HEAD")) return;
+            if (context.Request.HttpMethod.Equals("HEAD"))
+            {
+                return;
+            }
 
-            if (!handler.Output.CanSeek) throw new InvalidOperationException("Output stream must support Seek operations.");
-            context.Response.WriteFunction = (stream) =>
-                {
-                    using (var outputStream = handler.Output)
-                    {
-                        outputStream.Position = 0;
-                        outputStream.CopyTo(stream);
-                    }
-                    return TaskHelper.Completed();
-                };
+            if (!handler.Output.CanSeek)
+            {
+                throw new InvalidOperationException("Output stream must support Seek operations.");
+            }
+            context.Response.WriteFunction = stream =>
+                                             {
+                                                 using (var outputStream = handler.Output)
+                                                 {
+                                                     outputStream.Position = 0;
+                                                     outputStream.CopyTo(stream);
+                                                 }
+                                                 return TaskHelper.Completed();
+                                             };
         }
     }
 }

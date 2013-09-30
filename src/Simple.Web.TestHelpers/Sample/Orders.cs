@@ -1,6 +1,6 @@
 ﻿namespace Simple.Web.TestHelpers.Sample
 {
-    using Links;
+    using Simple.Web.Links;
 
     public class Order
     {
@@ -14,8 +14,9 @@
             Id = id;
         }
 
-        public int Id { get; set; }
         public int CustomerId { get; set; }
+
+        public int Id { get; set; }
     }
 
     [Canonical(typeof(Order), "/order/{Id}", Type = "application/vnd.order")]

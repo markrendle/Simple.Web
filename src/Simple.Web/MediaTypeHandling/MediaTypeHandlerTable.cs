@@ -5,17 +5,22 @@ namespace Simple.Web.MediaTypeHandling
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     internal class MediaTypeHandlerTable
     {
-        private static bool _initialized;
         private static readonly object InitLock = new object();
-        private static readonly HashSet<string> UnsupportedMediaTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private static readonly List<Tuple<Regex, Func<IMediaTypeHandler>>> WildcardMediaTypeHandlerFunctions =
-            new List<Tuple<Regex, Func<IMediaTypeHandler>>>();
+
         private static readonly ConcurrentDictionary<string, Func<IMediaTypeHandler>> MediaTypeHandlerFunctions =
             new ConcurrentDictionary<string, Func<IMediaTypeHandler>>();
+
+        private static readonly HashSet<string> UnsupportedMediaTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly List<Tuple<Regex, Func<IMediaTypeHandler>>> WildcardMediaTypeHandlerFunctions =
+            new List<Tuple<Regex, Func<IMediaTypeHandler>>>();
+
+        private static bool _initialized;
 
         public IMediaTypeHandler GetMediaTypeHandler(string mediaType)
         {
@@ -23,14 +28,20 @@ namespace Simple.Web.MediaTypeHandling
 
             var handler = GetMediaTypeHandlerImpl(mediaType);
 
-            if (handler == null) throw new UnsupportedMediaTypeException(mediaType);
+            if (handler == null)
+            {
+                throw new UnsupportedMediaTypeException(mediaType);
+            }
 
             return handler;
         }
 
         public IMediaTypeHandler GetMediaTypeHandler(IList<string> mediaTypes, out string matchedType)
         {
-            if (mediaTypes == null) throw new ArgumentNullException("mediaTypes");
+            if (mediaTypes == null)
+            {
+                throw new ArgumentNullException("mediaTypes");
+            }
             EnsureTableIsPopulated();
 
             for (int i = 0; i < mediaTypes.Count; i++)
@@ -46,6 +57,43 @@ namespace Simple.Web.MediaTypeHandling
             throw new UnsupportedMediaTypeException(mediaTypes);
         }
 
+        private static void AddContentTypeHandler(Type exportedType)
+        {
+            var mediaTypes =
+                Attribute.GetCustomAttributes(exportedType, typeof(MediaTypesAttribute))
+                         .Cast<MediaTypesAttribute>()
+                         .SelectMany(mediaTypesAttribute => mediaTypesAttribute.ContentTypes);
+
+            Func<IMediaTypeHandler> creator = () => Activator.CreateInstance(exportedType) as IMediaTypeHandler;
+            foreach (var mediaType in mediaTypes)
+            {
+                if (mediaType.Contains("*"))
+                {
+                    var expression = Regex.Escape(mediaType).Replace(@"\*", ".*?");
+                    WildcardMediaTypeHandlerFunctions.Add(Tuple.Create(new Regex(expression, RegexOptions.IgnoreCase), creator));
+                }
+                else
+                {
+                    MediaTypeHandlerFunctions.TryAdd(mediaType, creator);
+                }
+            }
+        }
+
+        private static void EnsureTableIsPopulated()
+        {
+            if (!_initialized)
+            {
+                lock (InitLock)
+                {
+                    if (!_initialized)
+                    {
+                        PopulateContentTypeHandlerFunctions();
+                        _initialized = true;
+                    }
+                }
+            }
+        }
+
         private static IMediaTypeHandler GetMediaTypeHandlerImpl(string mediaType)
         {
             int semiColon = mediaType.IndexOf(';');
@@ -54,7 +102,10 @@ namespace Simple.Web.MediaTypeHandling
                 mediaType = mediaType.Substring(0, semiColon);
             }
 
-            if (UnsupportedMediaTypes.Contains(mediaType)) return null;
+            if (UnsupportedMediaTypes.Contains(mediaType))
+            {
+                return null;
+            }
 
             Func<IMediaTypeHandler> func;
             if (MediaTypeHandlerFunctions.TryGetValue(mediaType, out func))
@@ -79,21 +130,6 @@ namespace Simple.Web.MediaTypeHandling
             return null;
         }
 
-        private static void EnsureTableIsPopulated()
-        {
-            if (!_initialized)
-            {
-                lock (InitLock)
-                {
-                    if (!_initialized)
-                    {
-                        PopulateContentTypeHandlerFunctions();
-                        _initialized = true;
-                    }
-                }
-            }
-        }
-
         private static void PopulateContentTypeHandlerFunctions()
         {
             foreach (var exportedType in ExportedTypeHelper.FromCurrentAppDomain(TypeIsContentTypeHandler))
@@ -104,30 +140,9 @@ namespace Simple.Web.MediaTypeHandling
             AddContentTypeHandler(typeof(FormDeserializer));
         }
 
-        private static void AddContentTypeHandler(Type exportedType)
-        {
-            var mediaTypes = Attribute.GetCustomAttributes(exportedType, typeof (MediaTypesAttribute))
-                .Cast<MediaTypesAttribute>()
-                .SelectMany(mediaTypesAttribute => mediaTypesAttribute.ContentTypes);
-
-            Func<IMediaTypeHandler> creator = () => Activator.CreateInstance(exportedType) as IMediaTypeHandler;
-            foreach (var mediaType in mediaTypes)
-            {
-                if (mediaType.Contains("*"))
-                {
-                    var expression = Regex.Escape(mediaType).Replace(@"\*", ".*?");
-                    WildcardMediaTypeHandlerFunctions.Add(Tuple.Create(new Regex(expression, RegexOptions.IgnoreCase), creator));
-                }
-                else
-                {
-                    MediaTypeHandlerFunctions.TryAdd(mediaType, creator);
-                }
-            }
-        }
-
         private static bool TypeIsContentTypeHandler(Type type)
         {
-            return (!type.IsAbstract) && (!type.IsInterface) && typeof (IMediaTypeHandler).IsAssignableFrom(type);
+            return (!type.IsAbstract) && (!type.IsInterface) && typeof(IMediaTypeHandler).IsAssignableFrom(type);
         }
     }
 }

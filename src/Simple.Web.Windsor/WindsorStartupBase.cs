@@ -1,10 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-
 namespace Simple.Web.Windsor
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
+
     public abstract class WindsorStartupBase : IStartupTask
     {
         public void Run(IConfiguration configuration, IWebEnvironment environment)
@@ -14,7 +15,7 @@ namespace Simple.Web.Windsor
             {
                 return;
             }
-            
+
             var container = new WindsorContainer();
             container.Install(windsorInstallers);
 

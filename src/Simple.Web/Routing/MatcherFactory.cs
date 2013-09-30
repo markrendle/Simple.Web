@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
-    class MatcherFactory
+    using System;
+
+    internal class MatcherFactory
     {
         public static IMatcher Create(string pattern)
         {
@@ -12,10 +12,7 @@ namespace Simple.Web.Routing
                 {
                     return new SingleValueMatcher(pattern);
                 }
-                else
-                {
-                    throw new NotSupportedException("Complex patterns not supported yet.");
-                }
+                throw new NotSupportedException("Complex patterns not supported yet.");
             }
             return new StaticMatcher(pattern);
         }

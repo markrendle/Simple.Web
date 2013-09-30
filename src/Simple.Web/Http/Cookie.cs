@@ -15,21 +15,25 @@ namespace Simple.Web.Http
             _value = value;
         }
 
+        public string Domain { get; set; }
+
+        public bool HttpOnly { get; set; }
+
         public string Name
         {
             get { return _name; }
         }
 
+        public string Path { get; set; }
+
+        public bool Secure { get; set; }
+
+        public TimeSpan TimeOut { get; set; }
+
         public string Value
         {
             get { return _value; }
         }
-
-        public TimeSpan TimeOut { get; set; }
-        public bool HttpOnly { get; set; }
-        public bool Secure { get; set; }
-        public string Path { get; set; }
-        public string Domain { get; set; }
 
         public string ToHeaderString()
         {

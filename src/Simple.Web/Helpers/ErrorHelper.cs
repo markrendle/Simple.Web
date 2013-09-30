@@ -3,7 +3,8 @@
     using System;
     using System.Diagnostics;
     using System.Web;
-    using Http;
+
+    using Simple.Web.Http;
 
     /// <summary>
     /// Used for writing error messages to a response.

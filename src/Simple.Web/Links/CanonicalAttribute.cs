@@ -18,8 +18,15 @@ namespace Simple.Web.Links
         /// <remarks>The URI template works in reverse here. The {X} variables will be replaced with the
         /// relevant properties from an instance of the model to create an actual URI to be returned to
         /// the client.</remarks>
-        public CanonicalAttribute(Type modelType, string uriTemplate = null) : base(modelType, uriTemplate)
+        public CanonicalAttribute(Type modelType, string uriTemplate = null)
+            : base(modelType, uriTemplate)
         {
+        }
+
+        public string Rel
+        {
+            get { return _rel; }
+            set { _rel = value; }
         }
 
         /// <summary>
@@ -30,12 +37,6 @@ namespace Simple.Web.Links
         {
             return _rel;
         }
-
-        public string Rel
-        {
-            get { return _rel; }
-            set { _rel = value; }
-        }
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
@@ -43,19 +44,20 @@ namespace Simple.Web.Links
     {
         private string _rel = "self";
 
-        public RootAttribute(string uriTemplate = null) : base(null, uriTemplate)
+        public RootAttribute(string uriTemplate = null)
+            : base(null, uriTemplate)
         {
-        }
-
-        internal override string GetRel()
-        {
-            return _rel;
         }
 
         public string Rel
         {
             get { return _rel; }
             set { _rel = value; }
+        }
+
+        internal override string GetRel()
+        {
+            return _rel;
         }
     }
 }

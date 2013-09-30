@@ -9,24 +9,22 @@
 
     internal class RazorTypeBuilderContext
     {
-        private static readonly string[] ExcludedReferencesOnMono =
-            new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
+        private static readonly string[] ExcludedReferencesOnMono = { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
 
-        private static readonly Func<Assembly, bool> IsValidReference = an =>
-            ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
+        private static readonly Func<Assembly, bool> IsValidReference =
+            an => ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
 
-        private Type _model;
+        private readonly string _className;
+        private readonly CompilerParameters _compilerParameters;
+        private readonly List<Assembly> _declarationAssemblies;
         private Type _handler;
-        private CompilerParameters _compilerParameters;
-        private string _className;
-        private List<Assembly> _declarationAssemblies; 
+        private Type _model;
 
         public RazorTypeBuilderContext()
         {
             _className = string.Format("{0}_{1}", SimpleRazorConfiguration.ClassPrefix, Guid.NewGuid().ToString("N"));
 
-            _compilerParameters =
-                new CompilerParameters()
+            _compilerParameters = new CompilerParameters
                 {
                     GenerateExecutable = false,
                     GenerateInMemory = true,
@@ -38,18 +36,35 @@
             _declarationAssemblies = new List<Assembly>();
         }
 
-        public string ClassName {get { return _className; }}
-
-        public void SetModel(Type model)
+        public string ClassName
         {
-            _model = model;
-            AddAssemblyForType(_model);
+            get { return _className; }
+        }
+
+        public CompilerParameters GetCompilerParameters()
+        {
+            var assemblieLocations =
+                TypeResolver.DefaultAssemblies.Union(_declarationAssemblies)
+                            .Where(IsValidReference)
+                            .GroupBy(an => an.Location)
+                            .Select(an => an.First().Location)
+                            .ToArray();
+
+            _compilerParameters.ReferencedAssemblies.AddRange(assemblieLocations);
+
+            return _compilerParameters;
         }
 
         public void SetHandler(Type handler)
         {
             _handler = handler;
             AddAssemblyForType(_handler);
+        }
+
+        public void SetModel(Type model)
+        {
+            _model = model;
+            AddAssemblyForType(_model);
         }
 
         private void AddAssemblyForType(Type model)
@@ -59,20 +74,6 @@
             {
                 model.GetGenericArguments().ToList().ForEach(AddAssemblyForType);
             }
-        }
-
-        public CompilerParameters GetCompilerParameters()
-        {
-            var assemblieLocations = TypeResolver.DefaultAssemblies
-                .Union(_declarationAssemblies)
-                .Where(IsValidReference)
-                .GroupBy(an => an.Location)
-                .Select(an => an.First().Location)
-                .ToArray();
-
-            _compilerParameters.ReferencedAssemblies.AddRange(assemblieLocations);
-
-            return _compilerParameters;
         }
     }
 }

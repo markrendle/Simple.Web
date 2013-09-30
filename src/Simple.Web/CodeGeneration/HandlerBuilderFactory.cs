@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using Simple.Web.DependencyInjection;
-
 namespace Simple.Web.CodeGeneration
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
+
+    using Simple.Web.DependencyInjection;
 
     internal class HandlerBuilderFactory
     {
@@ -25,7 +25,10 @@ namespace Simple.Web.CodeGeneration
             var scope = Expression.Variable(typeof(ISimpleContainerScope));
 
             // Create handler block
-            var getMethod = Expression.Call(scope, typeof (ISimpleContainerScope).GetMethods().First(m => m.ContainsGenericParameters).MakeGenericMethod(type));
+            var getMethod = Expression.Call(scope,
+                                            typeof(ISimpleContainerScope).GetMethods()
+                                                                         .First(m => m.ContainsGenericParameters)
+                                                                         .MakeGenericMethod(type));
             var instance = Expression.Variable(type);
             var construct = Expression.Assign(instance, getMethod);
             var variables = Expression.Parameter(typeof(IDictionary<string, string>));
@@ -33,15 +36,18 @@ namespace Simple.Web.CodeGeneration
 
             // Wrap handler block in IScopedHandler so we can dispose it later
             var createdInstance = Expression.Variable(type);
-            var scopedHandler = Expression.Variable(typeof (IScopedHandler));
+            var scopedHandler = Expression.Variable(typeof(IScopedHandler));
             var lines = new List<Expression>
-                            {
-                                Expression.Assign(scope, containerScoped),
-                                Expression.Assign(createdInstance, handlerBlock),
-                                scopedHandler,
-                                Expression.Assign(scopedHandler, Expression.Call(typeof(ScopedHandler).GetMethod("Create", BindingFlags.Static | BindingFlags.Public), createdInstance, scope)),
-                                scopedHandler
-                            };
+                {
+                    Expression.Assign(scope, containerScoped),
+                    Expression.Assign(createdInstance, handlerBlock),
+                    scopedHandler,
+                    Expression.Assign(scopedHandler,
+                                      Expression.Call(typeof(ScopedHandler).GetMethod("Create", BindingFlags.Static | BindingFlags.Public),
+                                                      createdInstance,
+                                                      scope)),
+                    scopedHandler
+                };
             var scopeBlock = Expression.Block(typeof(IScopedHandler), new[] { createdInstance, scope, scopedHandler }, lines);
 
             return Expression.Lambda<Func<IDictionary<string, string>, IScopedHandler>>(scopeBlock, variables).Compile();

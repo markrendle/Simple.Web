@@ -13,7 +13,9 @@
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetPath());
 
             if (path == null)
+            {
                 throw new Exception("Unable to determine executing assembly path.");
+            }
 
             return Path.Combine(path, virtualPath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
         }

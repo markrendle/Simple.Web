@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Sandbox
+﻿namespace Sandbox
 {
+    using System;
+
     using Simple.Web;
     using Simple.Web.Http;
 

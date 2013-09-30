@@ -1,61 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using Simple.Web.Behaviors;
-using Simple.Web.CodeGeneration;
-using Simple.Web.Hosting;
-using Simple.Web.Http;
-using Simple.Web.Mocks;
-using Xunit;
-using Xunit.Sdk;
-
-namespace Simple.Web.Tests
+﻿namespace Simple.Web.Tests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
+
+    using Simple.Web.Behaviors;
+    using Simple.Web.CodeGeneration;
+    using Simple.Web.Hosting;
+    using Simple.Web.Http;
+    using Simple.Web.Mocks;
+
+    using Xunit;
 
     public class CookieTests
     {
         [Fact]
-        public void LoadsSingleStringCookieUsingPropertyName()
-        {
-            var request = new MockRequest {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=Pass"}}}};
-            var context = new MockContext {Request = request};
-
-            Run<SingleStringCookieHandler>(context);
-            Assert.Equal("Pass", SingleStringCookieHandler.TestValue);
-        }
-        
-        [Fact]
         public void LoadsSingleGuidCookieUsingPropertyName()
         {
             var expected = new Guid("{6B6CB3A7-CFD7-4479-90C8-440D9F1B9F33}");
-            var request = new MockRequest
-                {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
-            var context = new MockContext {Request = request};
+            var request = new MockRequest { Headers = new Dictionary<string, string[]> { { "Cookie", new[] { "Test=" + expected } } } };
+            var context = new MockContext { Request = request };
 
             Run<SingleGuidCookieHandler>(context);
             Assert.Equal(expected, SingleGuidCookieHandler.TestValue);
         }
-        
-        [Fact]
-        public void LoadsSingleNullableGuidCookieUsingPropertyName()
-        {
-            var expected = new Guid("{6B6CB3A7-CFD7-4479-90C8-440D9F1B9F33}");
-            var request = new MockRequest
-                {Headers = new Dictionary<string, string[]> {{"Cookie", new[] {"Test=" + expected.ToString()}}}};
-            var context = new MockContext {Request = request};
 
-            Run<SingleNullableGuidCookieHandler>(context);
-            Assert.Equal(expected, SingleNullableGuidCookieHandler.TestValue);
-        }
-        
         [Fact]
         public void LoadsSingleNullGuidCookieUsingPropertyName()
         {
             var request = new MockRequest();
-            var context = new MockContext {Request = request};
+            var context = new MockContext { Request = request };
 
             Run<SingleNullableGuidCookieHandler>(context);
             Assert.False(SingleNullableGuidCookieHandler.TestValue.HasValue);
+        }
+
+        [Fact]
+        public void LoadsSingleNullableGuidCookieUsingPropertyName()
+        {
+            var expected = new Guid("{6B6CB3A7-CFD7-4479-90C8-440D9F1B9F33}");
+            var request = new MockRequest { Headers = new Dictionary<string, string[]> { { "Cookie", new[] { "Test=" + expected } } } };
+            var context = new MockContext { Request = request };
+
+            Run<SingleNullableGuidCookieHandler>(context);
+            Assert.Equal(expected, SingleNullableGuidCookieHandler.TestValue);
+        }
+
+        [Fact]
+        public void LoadsSingleStringCookieUsingPropertyName()
+        {
+            var request = new MockRequest { Headers = new Dictionary<string, string[]> { { "Cookie", new[] { "Test=Pass" } } } };
+            var context = new MockContext { Request = request };
+
+            Run<SingleStringCookieHandler>(context);
+            Assert.Equal("Pass", SingleStringCookieHandler.TestValue);
         }
 
         //[Fact]
@@ -82,28 +80,28 @@ namespace Simple.Web.Tests
         //}
 
         [Fact]
-        public void SetsCookieFromSingleValueProperty()
-        {
-            var request = new MockRequest();
-            var response = new MockResponse();
-            var context = new MockContext {Request = request, Response = response};
-            Run<SingleStringCookieSetHandler>(context);
-            string[] cookies;
-            Assert.True(response.Headers.TryGetValue(HeaderKeys.SetCookie, out cookies));
-            Assert.True(cookies.Any(c => c.StartsWith("Test=Pass;")));
-        }
-
-        [Fact]
         public void ParsesCookieValue()
         {
             const string cookie = "foo=bar";
             var value = RequestExtensions.GetCookieValue(cookie);
             Assert.Equal("bar", value);
         }
-        
+
+        [Fact]
+        public void SetsCookieFromSingleValueProperty()
+        {
+            var request = new MockRequest();
+            var response = new MockResponse();
+            var context = new MockContext { Request = request, Response = response };
+            Run<SingleStringCookieSetHandler>(context);
+            string[] cookies;
+            Assert.True(response.Headers.TryGetValue(HeaderKeys.SetCookie, out cookies));
+            Assert.True(cookies.Any(c => c.StartsWith("Test=Pass;")));
+        }
+
         private static void Run<T>(IContext context)
         {
-            var runner = new PipelineFunctionFactory(typeof (T)).BuildAsyncRunMethod("GET");
+            var runner = new PipelineFunctionFactory(typeof(T)).BuildAsyncRunMethod("GET");
             var info = new HandlerInfo(typeof(T), "GET");
             try
             {
@@ -116,71 +114,78 @@ namespace Simple.Web.Tests
         }
     }
 
-    class SingleStringCookieHandler : IGet
+    internal class SingleStringCookieHandler : IGet
     {
         public static string TestValue;
-        public Status Get()
-        {
-            TestValue = Test;
-            return 200;
-        }
 
         [Cookie]
         public string Test { get; set; }
-    }
-    
-    class SingleStringCookieSetHandler : IGet
-    {
-        public Status Get()
-        {
-            return 200;
-        }
 
-        [Cookie]
-        public string Test { get { return "Pass"; } }
-    }
-    
-    class SingleGuidCookieHandler : IGet
-    {
-        public static Guid TestValue;
         public Status Get()
         {
             TestValue = Test;
             return 200;
         }
+    }
+
+    internal class SingleStringCookieSetHandler : IGet
+    {
+        [Cookie]
+        public string Test
+        {
+            get { return "Pass"; }
+        }
+
+        public Status Get()
+        {
+            return 200;
+        }
+    }
+
+    internal class SingleGuidCookieHandler : IGet
+    {
+        public static Guid TestValue;
 
         [Cookie]
         public Guid Test { get; set; }
-    }
-    
-    class SingleNullableGuidCookieHandler : IGet
-    {
-        public static Guid? TestValue;
+
         public Status Get()
         {
             TestValue = Test;
             return 200;
         }
+    }
+
+    internal class SingleNullableGuidCookieHandler : IGet
+    {
+        public static Guid? TestValue;
 
         [Cookie]
         public Guid? Test { get; set; }
+
+        public Status Get()
+        {
+            TestValue = Test;
+            return 200;
+        }
     }
 
-    class ComplexCookieHandler : IGet
+    internal class ComplexCookieHandler : IGet
     {
+        [Cookie]
+        public ComplexCookie Test { get; set; }
+
         public Status Get()
         {
             return 200;
         }
-
-        [Cookie]
-        public ComplexCookie Test { get; set; }
     }
 
-    class ComplexCookie
+    internal class ComplexCookie
     {
-        public string Name { get; set; }
         public int Age { get; set; }
+
+        public string Name { get; set; }
     }
 
     public class FileMappingDictionaryTest

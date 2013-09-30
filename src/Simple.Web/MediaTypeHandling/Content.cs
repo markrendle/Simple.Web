@@ -3,6 +3,7 @@ namespace Simple.Web.MediaTypeHandling
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using Simple.Web.Links;
 
     /// <summary>
@@ -10,9 +11,9 @@ namespace Simple.Web.MediaTypeHandling
     /// </summary>
     public class Content : IContent
     {
-        private readonly Uri _uri;
         private readonly object _handler;
         private readonly object _model;
+        private readonly Uri _uri;
 
         public Content(Uri uri, object handler, object model)
         {
@@ -30,11 +31,27 @@ namespace Simple.Web.MediaTypeHandling
         }
 
         /// <summary>
+        /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
+        /// </summary>
+        public IEnumerable<Link> Links
+        {
+            get { return LinkHelper.GetLinksForModel(_model); }
+        }
+
+        /// <summary>
         /// Gets the model.
         /// </summary>
         public object Model
         {
             get { return _model; }
+        }
+
+        /// <summary>
+        /// Gets the URI used to retrieve the resource.
+        /// </summary>
+        public Uri Uri
+        {
+            get { return _uri; }
         }
 
         /// <summary>
@@ -45,22 +62,11 @@ namespace Simple.Web.MediaTypeHandling
             get
             {
                 return
-                    _handler.GetType().GetProperties().Where(p => p.CanRead).Select(
-                        p => new KeyValuePair<string, object>(p.Name, p.GetValue(_handler, null)));
+                    _handler.GetType()
+                            .GetProperties()
+                            .Where(p => p.CanRead)
+                            .Select(p => new KeyValuePair<string, object>(p.Name, p.GetValue(_handler, null)));
             }
-        }
-
-        /// <summary>
-        /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
-        /// </summary>
-        public IEnumerable<Link> Links { get { return LinkHelper.GetLinksForModel(_model); } }
-
-        /// <summary>
-        /// Gets the URI used to retrieve the resource.
-        /// </summary>
-        public Uri Uri
-        {
-            get { return _uri; }
         }
     }
 }

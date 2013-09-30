@@ -1,12 +1,14 @@
 ﻿namespace Simple.Web.TestHelpers.Sample
 {
     using System.Collections.Generic;
-    using Links;
+
+    using Simple.Web.Links;
 
     public class Person
     {
-        public string Name { get; set; }
         public string Location { get; set; }
+
+        public string Name { get; set; }
     }
 
     [Canonical(typeof(Person))]

@@ -1,7 +1,8 @@
 namespace Simple.Web
 {
     using System.Collections.Generic;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     /// <summary>
     /// Provides information about the environment for the application.
@@ -14,14 +15,14 @@ namespace Simple.Web
         string AppRoot { get; }
 
         /// <summary>
-        /// Gets the path utility.
-        /// </summary>
-        IPathUtility PathUtility { get; }
-
-        /// <summary>
         /// Gets the file utility.
         /// </summary>
         IFileUtility FileUtility { get; }
+
+        /// <summary>
+        /// Gets the path utility.
+        /// </summary>
+        IPathUtility PathUtility { get; }
 
         /// <summary>
         /// Gets the content type from a file extension.

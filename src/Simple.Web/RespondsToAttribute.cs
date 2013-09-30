@@ -32,8 +32,7 @@ namespace Simple.Web
 
         internal static IEnumerable<RespondsToAttribute> Get(Type type)
         {
-            return GetCustomAttributes(type, typeof (RespondsToAttribute))
-                .Cast<RespondsToAttribute>();
+            return GetCustomAttributes(type, typeof(RespondsToAttribute)).Cast<RespondsToAttribute>();
         }
     }
 }

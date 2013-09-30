@@ -2,6 +2,9 @@
 {
     public class OkResult : IResult
     {
-        public Status Result { get { return Status.OK; }}
+        public Status Result
+        {
+            get { return Status.OK; }
+        }
     }
 }

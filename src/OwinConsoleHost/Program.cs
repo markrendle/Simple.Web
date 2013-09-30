@@ -6,20 +6,19 @@
 
     using Simple.Web.Hosting.Self;
     using Simple.Web.OwinSupport;
+    using Simple.Web.Razor;
 
     internal class Program
     {
-		private static Type razor = typeof(Simple.Web.Razor.AmbiguousViewException);
+        private static Type razor = typeof(AmbiguousViewException);
 
-        private static void Main(string[] args)
+        private static void AdvancedHost()
         {
-			SimpleHost();
-        }
-
-        private static void SimpleHost()
-        {
-            new OwinSelfHost()
-                .Run(hostname: "localhost", port: 3333, ssl: false);
+            new OwinSelfHost(builder =>
+                             {
+                                 builder.UseErrorPage();
+                                 builder.UseSimpleWeb();
+                             }).Run();
         }
 
         private static void DisposableHost()
@@ -38,15 +37,14 @@
             }
         }
 
-        private static void AdvancedHost()
+        private static void Main(string[] args)
         {
-            new OwinSelfHost(
-                builder =>
-                    {
-                        builder.UseErrorPage();
-                        builder.UseSimpleWeb();
-                    })
-                    .Run();
+            SimpleHost();
+        }
+
+        private static void SimpleHost()
+        {
+            new OwinSelfHost().Run(hostname: "localhost", port: 3333, ssl: false);
         }
     }
 }

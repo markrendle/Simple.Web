@@ -2,10 +2,12 @@
 {
     using System.Collections.Generic;
 
+    using Simple.Web.Behaviors.Implementations;
+
     /// <summary>
     /// Represents a handler which accepts uploaded files.
     /// </summary>
-    [RequestBehavior(typeof(Implementations.SetFiles))]
+    [RequestBehavior(typeof(SetFiles))]
     public interface IUploadFiles
     {
         /// <summary>

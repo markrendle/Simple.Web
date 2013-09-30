@@ -1,11 +1,12 @@
 namespace Simple.Web.Behaviors
 {
-    using Authentication;
+    using Simple.Web.Authentication;
+    using Simple.Web.Behaviors.Implementations;
 
     /// <summary>
     /// Represents the handler which processes the login for a Forms-based authentication application.
     /// </summary>
-    [ResponseBehavior(typeof(Implementations.SetUserCookie), Priority = Priority.Highest)]
+    [ResponseBehavior(typeof(SetUserCookie), Priority = Priority.Highest)]
     public interface ILogin
     {
         /// <summary>

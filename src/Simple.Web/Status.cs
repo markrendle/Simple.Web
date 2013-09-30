@@ -10,21 +10,6 @@ namespace Simple.Web
     public partial struct Status : IEquatable<Status>
     {
         /// <summary>
-        /// The basic "everything's OK" status.
-        /// </summary>
-        public static readonly Status OK = new Status(200, "OK");
-
-        /// <summary>
-        /// Indicates that a request was processed successfully and a new resource was created.
-        /// </summary>
-        public static readonly Status Created = new Status(201, "Created");
-
-        /// <summary>
-        /// Indicates that the requested resource could not be found.
-        /// </summary>
-        public static readonly Status NotFound = new Status(404, "Not Found");
-
-        /// <summary>
         /// Indicates that a PUT or POST request conflicted with an existing resource.
         /// </summary>
         public static readonly Status Conflict = new Status(409, "Conflict");
@@ -32,12 +17,12 @@ namespace Simple.Web
         /// <summary>
         /// Indicates that a request was processed successfully and a new resource was created.
         /// </summary>
-        /// <param name="location">The redirect location.</param>
-        /// <returns></returns>
-        public static Status CreatedRedirect(string location)
-        {
-            return new Status(201, "Created", location);
-        }
+        public static readonly Status Created = new Status(201, "Created");
+
+        /// <summary>
+        /// Indicates that everything is horrible, and you should hide in a cupboard until it's all over.
+        /// </summary>
+        public static readonly Status InternalServerError = new Status(500, "Internal Server Error");
 
         /// <summary>
         /// Nothing to see here.
@@ -45,72 +30,32 @@ namespace Simple.Web
         public static readonly Status NoContent = new Status(204, "No Content");
 
         /// <summary>
-        /// A redirect to another resource, telling the client to use the new URI for all future requests.
+        /// Indicates that the requested resource could not be found.
         /// </summary>
-        public static Status MovedPermanently(string location)
-        {
-            return new Status(301, "Moved Permanently", location);
-        }
+        public static readonly Status NotFound = new Status(404, "Not Found");
 
         /// <summary>
-        /// A redirect to another resource, but telling the client to continue to use this URI for future requests.
+        /// The basic "everything's OK" status.
         /// </summary>
-        public static Status Found(string location)
-        {
-            return new Status(302, "Found", location);
-        }
+        public static readonly Status OK = new Status(200, "OK");
 
-        /// <summary>
-        /// A redirect to another resource, commonly used after a POST operation to prevent refreshes.
-        /// </summary>
-        public static Status SeeOther(string location)
-        {
-            return new Status(303, "See Other", location);
-        }
-
-        /// <summary>
-        /// A Temporary redirect, e.g. for a login page.
-        /// </summary>
-        public static Status TemporaryRedirect(string location)
-        {
-            return new Status(307, "Temporary Redirect", location);
-        }
-
-        /// <summary>
-        /// Indicated requerst accepted for processing, but the processing has not been completed. The
-        /// location is the URL used to check it's status.
-        /// </summary>
-        public static Status Accepted(string location)
-        {
-            return new Status(202, "Accepted", location);
-        }
-
-        /// <summary>
-        /// Indicates that everything is horrible, and you should hide in a cupboard until it's all over.
-        /// </summary>
-        public static readonly Status InternalServerError = new Status(500, "Internal Server Error");
         private static readonly StatusLookupCollection StatusLookup;
-
-        static Status()
-        {
-            StatusLookup = new StatusLookupCollection
-                               {
-                                   OK,
-                                   Created,
-                                   NoContent,
-                                   InternalServerError,
-                               };
-        }
 
         private readonly int _httpStatusCode;
         private readonly string _httpStatusDescription;
         private readonly string _locationHeader;
 
+        static Status()
+        {
+            StatusLookup = new StatusLookupCollection { OK, Created, NoContent, InternalServerError, };
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Status"/> struct.
         /// </summary>
         /// <param name="httpStatusCode">The HTTP status code.</param>
-        public Status(int httpStatusCode) : this(httpStatusCode, null)
+        public Status(int httpStatusCode)
+            : this(httpStatusCode, null)
         {
         }
 
@@ -119,7 +64,8 @@ namespace Simple.Web
         /// </summary>
         /// <param name="httpStatusCode">The HTTP status code.</param>
         /// <param name="httpStatusDescription">The HTTP status description.</param>
-        public Status(int httpStatusCode, string httpStatusDescription) : this(httpStatusCode, httpStatusDescription, null)
+        public Status(int httpStatusCode, string httpStatusDescription)
+            : this(httpStatusCode, httpStatusDescription, null)
         {
         }
 
@@ -129,44 +75,12 @@ namespace Simple.Web
         /// <param name="httpStatusCode">The HTTP status code.</param>
         /// <param name="httpStatusDescription">The HTTP status description.</param>
         /// <param name="locationHeader">Redirection Url</param>
-        public Status(int httpStatusCode, string httpStatusDescription, string locationHeader) : this()
+        public Status(int httpStatusCode, string httpStatusDescription, string locationHeader)
+            : this()
         {
             _httpStatusCode = httpStatusCode;
             _httpStatusDescription = httpStatusDescription;
             _locationHeader = locationHeader;
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
-        /// </summary>
-        /// <param name="httpStatus">The HTTP status code.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator Status(int httpStatus)
-        {
-            return StatusLookup.Contains(httpStatus) ? StatusLookup[httpStatus] : new Status(httpStatus);
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="System.Int32" /> to <see cref="Simple.Web.Status" />.
-        /// </summary>
-        /// <param name="source">The string source.</param>
-        /// <returns>A <see cref="Status"/> object for the specified status.</returns>
-        /// <example>
-        /// Status status = 404 + "Not Found";
-        /// </example>
-        /// <exception cref="System.InvalidCastException"></exception>
-        public static implicit operator Status(string source)
-        {
-            try
-            {
-                return new Status(int.Parse(source.Substring(0, 3)), source.Substring(3).Trim());
-            }
-            catch (Exception)
-            {
-                throw new InvalidCastException("Status can only be implicitly cast from an integer, or a string of the format 'nnnSss...s', e.g. '404Not Found'.");
-            }
         }
 
         /// <summary>
@@ -222,9 +136,15 @@ namespace Simple.Web
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (obj.GetType() != typeof (Status)) return false;
-            return Equals((Status) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (obj.GetType() != typeof(Status))
+            {
+                return false;
+            }
+            return Equals((Status)obj);
         }
 
         /// <summary>
@@ -236,6 +156,68 @@ namespace Simple.Web
         public override int GetHashCode()
         {
             return _httpStatusCode;
+        }
+
+        /// <summary>
+        /// Returns an HTTP formatted representation of the <see cref="Status"/>.
+        /// </summary>
+        /// <returns>
+        /// E.g. <c>200 OK</c> or <c>404 Not Found</c>.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", Code, Description);
+        }
+
+        /// <summary>
+        /// Indicated requerst accepted for processing, but the processing has not been completed. The
+        /// location is the URL used to check it's status.
+        /// </summary>
+        public static Status Accepted(string location)
+        {
+            return new Status(202, "Accepted", location);
+        }
+
+        /// <summary>
+        /// Indicates that a request was processed successfully and a new resource was created.
+        /// </summary>
+        /// <param name="location">The redirect location.</param>
+        /// <returns></returns>
+        public static Status CreatedRedirect(string location)
+        {
+            return new Status(201, "Created", location);
+        }
+
+        /// <summary>
+        /// A redirect to another resource, but telling the client to continue to use this URI for future requests.
+        /// </summary>
+        public static Status Found(string location)
+        {
+            return new Status(302, "Found", location);
+        }
+
+        /// <summary>
+        /// A redirect to another resource, telling the client to use the new URI for all future requests.
+        /// </summary>
+        public static Status MovedPermanently(string location)
+        {
+            return new Status(301, "Moved Permanently", location);
+        }
+
+        /// <summary>
+        /// A redirect to another resource, commonly used after a POST operation to prevent refreshes.
+        /// </summary>
+        public static Status SeeOther(string location)
+        {
+            return new Status(303, "See Other", location);
+        }
+
+        /// <summary>
+        /// A Temporary redirect, e.g. for a login page.
+        /// </summary>
+        public static Status TemporaryRedirect(string location)
+        {
+            return new Status(307, "Temporary Redirect", location);
         }
 
         /// <summary>
@@ -264,23 +246,46 @@ namespace Simple.Web
             return !left.Equals(right);
         }
 
-        private class StatusLookupCollection : KeyedCollection<int,Status>
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.Int32"/> to <see cref="Simple.Web.Status"/>.
+        /// </summary>
+        /// <param name="httpStatus">The HTTP status code.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator Status(int httpStatus)
+        {
+            return StatusLookup.Contains(httpStatus) ? StatusLookup[httpStatus] : new Status(httpStatus);
+        }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.Int32" /> to <see cref="Simple.Web.Status" />.
+        /// </summary>
+        /// <param name="source">The string source.</param>
+        /// <returns>A <see cref="Status"/> object for the specified status.</returns>
+        /// <example>
+        /// Status status = 404 + "Not Found";
+        /// </example>
+        /// <exception cref="System.InvalidCastException"></exception>
+        public static implicit operator Status(string source)
+        {
+            try
+            {
+                return new Status(int.Parse(source.Substring(0, 3)), source.Substring(3).Trim());
+            }
+            catch (Exception)
+            {
+                throw new InvalidCastException(
+                    "Status can only be implicitly cast from an integer, or a string of the format 'nnnSss...s', e.g. '404Not Found'.");
+            }
+        }
+
+        private class StatusLookupCollection : KeyedCollection<int, Status>
         {
             protected override int GetKeyForItem(Status item)
             {
                 return item.Code;
             }
-        }
-
-        /// <summary>
-        /// Returns an HTTP formatted representation of the <see cref="Status"/>.
-        /// </summary>
-        /// <returns>
-        /// E.g. <c>200 OK</c> or <c>404 Not Found</c>.
-        /// </returns>
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", Code, Description);
         }
     }
 }

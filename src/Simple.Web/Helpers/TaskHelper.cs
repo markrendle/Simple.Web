@@ -20,7 +20,7 @@ namespace Simple.Web.Helpers
             tcs.SetResult(value);
             return tcs.Task;
         }
-        
+
         /// <summary>
         /// Creates a completed <see cref="Task"/> with the specified <c>Result</c> value.
         /// </summary>

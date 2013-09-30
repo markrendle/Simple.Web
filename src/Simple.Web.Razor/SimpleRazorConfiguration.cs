@@ -1,8 +1,11 @@
-﻿using System.Reflection;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+
+    using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 
     internal static class SimpleRazorConfiguration
     {
@@ -12,15 +15,15 @@ namespace Simple.Web.Razor
 
         internal static readonly string BaseClass = typeof(SimpleTemplateBase).FullName;
 
-        internal static readonly IDictionary<string, Assembly> NamespaceImports = new Dictionary<string, Assembly>()
-        {
-            { "System", null },
-            { "System.Text", typeof(System.Text.StringBuilder).Assembly },
-            { "System.Linq", typeof(System.Linq.Enumerable).Assembly },
-            { "System.Collections.Generic", typeof(System.Collections.Generic.IDictionary<,>).Assembly },
-            { "Simple.Web", typeof(Simple.Web.SimpleWeb).Assembly },
-            { "Simple.Web.Razor", typeof(Simple.Web.Razor.SimpleTemplateBase).Assembly },
-            { "Microsoft.CSharp.RuntimeBinder", typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly },
-        };
+        internal static readonly IDictionary<string, Assembly> NamespaceImports = new Dictionary<string, Assembly>
+            {
+                { "System", null },
+                { "System.Text", typeof(StringBuilder).Assembly },
+                { "System.Linq", typeof(Enumerable).Assembly },
+                { "System.Collections.Generic", typeof(IDictionary<,>).Assembly },
+                { "Simple.Web", typeof(SimpleWeb).Assembly },
+                { "Simple.Web.Razor", typeof(SimpleTemplateBase).Assembly },
+                { "Microsoft.CSharp.RuntimeBinder", typeof(Binder).Assembly },
+            };
     }
 }

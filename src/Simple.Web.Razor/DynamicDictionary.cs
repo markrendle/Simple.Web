@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Dynamic;
-
-namespace Simple.Web.Razor
+﻿namespace Simple.Web.Razor
 {
+    using System.Collections.Generic;
+    using System.Dynamic;
+
     public class DynamicDictionary<TValue> : DynamicObject
     {
         private readonly Dictionary<string, TValue> _dictionary;
@@ -21,7 +21,7 @@ namespace Simple.Web.Razor
                 throw new KeyNotFoundException(string.Format("Unable to find value for key '{0}'", binder.Name));
             }
 
-            result = (TValue)data;
+            result = data;
 
             return true;
         }

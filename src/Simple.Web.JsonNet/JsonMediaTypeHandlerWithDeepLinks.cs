@@ -6,24 +6,18 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
 
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandlerWithDeepLinks : IMediaTypeHandler
     {
         private static readonly Lazy<HashSet<Type>> KnownTypes = new Lazy<HashSet<Type>>(GetKnownTypes);
-
-        private static HashSet<Type> GetKnownTypes()
-        {
-            var q = ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists)
-                                      .SelectMany(LinkAttributeBase.Get)
-                                      .Select(l => l.ModelType);
-            return new HashSet<Type>(q);
-        }
 
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
             {
@@ -52,8 +46,10 @@
         {
             if (content.Model != null)
             {
-                var linkConverters = LinkConverter.CreateForGraph(typeof(T), KnownTypes.Value,
-                                                                  LinkHelper.GetLinksForModel, Settings.ContractResolver);
+                var linkConverters = LinkConverter.CreateForGraph(typeof(T),
+                                                                  KnownTypes.Value,
+                                                                  LinkHelper.GetLinksForModel,
+                                                                  Settings.ContractResolver);
                 var settings = new JsonSerializerSettings
                     {
                         Converters = linkConverters,
@@ -67,6 +63,13 @@
             }
 
             return TaskHelper.Completed();
+        }
+
+        private static HashSet<Type> GetKnownTypes()
+        {
+            var q =
+                ExportedTypeHelper.FromCurrentAppDomain(LinkAttributeBase.Exists).SelectMany(LinkAttributeBase.Get).Select(l => l.ModelType);
+            return new HashSet<Type>(q);
         }
     }
 }

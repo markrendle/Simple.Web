@@ -10,7 +10,7 @@
     /// </summary>
     public static class RequestExtensions
     {
-        private static readonly string[] MediaTypeWildcard = new[] {"*/*"};
+        private static readonly string[] MediaTypeWildcard = { "*/*" };
 
         /// <summary>
         /// Gets the Accept header entry.
@@ -74,8 +74,7 @@
             if (request.Headers != null && request.Headers.TryGetValue(HeaderKeys.Cookie, out cookies))
             {
                 cookies = cookies.SelectMany(c => c.Split(';').Select(s => s.Trim())).ToArray();
-                var cookie =
-                    cookies.FirstOrDefault(c => c.StartsWith(name + "=", StringComparison.InvariantCultureIgnoreCase));
+                var cookie = cookies.FirstOrDefault(c => c.StartsWith(name + "=", StringComparison.InvariantCultureIgnoreCase));
                 if (cookie != null)
                 {
                     value = GetCookieValue(cookie);

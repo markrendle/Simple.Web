@@ -1,8 +1,9 @@
 namespace Simple.Web
 {
     using System.Threading.Tasks;
-    using Behaviors;
-    using Http;
+
+    using Simple.Web.Behaviors;
+    using Simple.Web.Http;
 
     /// <summary>
     /// Represents a synchronous handler for a PATCH operation.

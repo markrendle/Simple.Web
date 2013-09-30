@@ -1,11 +1,10 @@
 ﻿namespace Simple.Web.Routing
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
-    using Hosting;
+
+    using Simple.Web.Hosting;
 
     /// <summary>
     /// Handles routing for hosts.
@@ -23,7 +22,7 @@
         public void Add(string template, HandlerTypeInfo type)
         {
             var matchers = _matchers;
-            var parts = template.Trim('/').Split(new[] {'/'});
+            var parts = template.Trim('/').Split(new[] { '/' });
             if (parts.Length == 0)
             {
                 return;
@@ -85,7 +84,10 @@
                 found = _matchers.Aggregate(false, (current, t) => t.Match(part, url, nextIndex, matchData) || current);
             }
 
-            if (!found) return null;
+            if (!found)
+            {
+                return null;
+            }
 
             variables = matchData.Variables;
             if (matchData.Single != null)

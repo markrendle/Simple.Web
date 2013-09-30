@@ -7,11 +7,13 @@ namespace Simple.Web.Razor
         private readonly Type _handlerType;
         private readonly Type _modelType;
 
-        public ViewNotFoundException() : base("No view found.")
+        public ViewNotFoundException()
+            : base("No view found.")
         {
         }
 
-        public ViewNotFoundException(Type handlerType, Type modelType) : base(MakeMessage(handlerType, modelType))
+        public ViewNotFoundException(Type handlerType, Type modelType)
+            : base(MakeMessage(handlerType, modelType))
         {
             _handlerType = handlerType;
             _modelType = modelType;
@@ -30,10 +32,20 @@ namespace Simple.Web.Razor
         private static string MakeMessage(Type handlerType, Type modelType)
         {
             if (handlerType == null)
-                return string.Format("No View present for Model type {0}; Maybe your Razor file didn't compile? Check the debug log.", modelType.Name);
+            {
+                return string.Format("No View present for Model type {0}; Maybe your Razor file didn't compile? Check the debug log.",
+                                     modelType.Name);
+            }
             if (modelType == null)
-                return string.Format("No View present for Handler type {0}; Maybe your Razor file didn't compile? Check the debug log.", handlerType.Name);
-            return string.Format("No View present for Handler type {0}, Model type {1}; Maybe your Razor file didn't compile? Check the debug log.", handlerType.Name, modelType.Name);
+            {
+                return string.Format("No View present for Handler type {0}; Maybe your Razor file didn't compile? Check the debug log.",
+                                     handlerType.Name);
+            }
+            return
+                string.Format(
+                    "No View present for Handler type {0}, Model type {1}; Maybe your Razor file didn't compile? Check the debug log.",
+                    handlerType.Name,
+                    modelType.Name);
         }
     }
 }

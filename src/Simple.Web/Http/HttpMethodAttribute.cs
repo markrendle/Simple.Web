@@ -17,7 +17,8 @@ namespace Simple.Web.Http
         /// Initializes a new instance of the <see cref="HttpMethodAttribute"/> class.
         /// </summary>
         /// <param name="httpMethod">The HTTP Method.</param>
-        public HttpMethodAttribute(string httpMethod) : this(httpMethod, null)
+        public HttpMethodAttribute(string httpMethod)
+            : this(httpMethod, null)
         {
         }
 
@@ -33,19 +34,19 @@ namespace Simple.Web.Http
         }
 
         /// <summary>
-        /// Gets the entry-point method name.
-        /// </summary>
-        public string Method
-        {
-            get { return _method; }
-        }
-
-        /// <summary>
         /// Gets the HTTP Method.
         /// </summary>
         public string HttpMethod
         {
             get { return _httpMethod; }
+        }
+
+        /// <summary>
+        /// Gets the entry-point method name.
+        /// </summary>
+        public string Method
+        {
+            get { return _method; }
         }
 
         /// <summary>
@@ -57,9 +58,10 @@ namespace Simple.Web.Http
         /// <returns><c>null</c> if the attribute does not exist.</returns>
         public static HttpMethodAttribute Get(Type type, string httpMethod, bool excludeInterfaces = false)
         {
-            var customAttribute = GetCustomAttributes(type, typeof (HttpMethodAttribute), true)
-                .Cast<HttpMethodAttribute>()
-                .FirstOrDefault(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
+            var customAttribute =
+                GetCustomAttributes(type, typeof(HttpMethodAttribute), true)
+                    .Cast<HttpMethodAttribute>()
+                    .FirstOrDefault(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
             return customAttribute ?? type.GetInterfaces().Select(i => Get(i, httpMethod)).FirstOrDefault(a => a != null);
         }
 
@@ -71,13 +73,6 @@ namespace Simple.Web.Http
             }
 
             return type.GetInterfaces().FirstOrDefault(i => TypeHasAttribute(i, httpMethod));
-        }
-
-        private static bool TypeHasAttribute(Type type, string httpMethod)
-        {
-            return GetCustomAttributes(type, typeof (HttpMethodAttribute))
-                .Cast<HttpMethodAttribute>()
-                .Any(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -101,16 +96,27 @@ namespace Simple.Web.Http
         /// </returns>
         public static bool IsAppliedTo(Type type)
         {
-            var isAppliedTo = Attribute.IsDefined(type, typeof (HttpMethodAttribute), true) ||
-                              type.GetInterfaces().Any(i => Attribute.IsDefined(i, typeof(HttpMethodAttribute), false));
+            var isAppliedTo = IsDefined(type, typeof(HttpMethodAttribute), true) ||
+                              type.GetInterfaces().Any(i => IsDefined(i, typeof(HttpMethodAttribute), false));
             return isAppliedTo;
         }
 
         public static bool Matches(Type type, string httpMethod)
         {
             var attribute = Get(type, httpMethod);
-            if (attribute == null) return false;
+            if (attribute == null)
+            {
+                return false;
+            }
             return attribute.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool TypeHasAttribute(Type type, string httpMethod)
+        {
+            return
+                GetCustomAttributes(type, typeof(HttpMethodAttribute))
+                    .Cast<HttpMethodAttribute>()
+                    .Any(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

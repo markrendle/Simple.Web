@@ -4,8 +4,9 @@ namespace Simple.Web.Hosting
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Http;
+
     using Simple.Web.Behaviors;
+    using Simple.Web.Http;
 
     /// <summary>
     /// Provides useful information about handlers.
@@ -34,27 +35,17 @@ namespace Simple.Web.Hosting
         /// <param name="httpMethod">The HTTP method.</param>
         public HandlerInfo(Type handlerType, IDictionary<string, string> variables, string httpMethod)
         {
-            if (handlerType == null) throw new ArgumentNullException("handlerType");
-            if (httpMethod == null) throw new ArgumentNullException("httpMethod");
+            if (handlerType == null)
+            {
+                throw new ArgumentNullException("handlerType");
+            }
+            if (httpMethod == null)
+            {
+                throw new ArgumentNullException("httpMethod");
+            }
             _handlerType = handlerType;
             _variables = variables ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             _httpMethod = httpMethod;
-        }
-
-        /// <summary>
-        /// Gets the HTTP method.
-        /// </summary>
-        public string HttpMethod
-        {
-            get { return _httpMethod; }
-        }
-
-        /// <summary>
-        /// Gets the variables.
-        /// </summary>
-        public IDictionary<string, string> Variables
-        {
-            get { return _variables; }
         }
 
         /// <summary>
@@ -69,14 +60,11 @@ namespace Simple.Web.Hosting
         }
 
         /// <summary>
-        /// Gets a value indicating whether the Handler requires authentication.
+        /// Gets the HTTP method.
         /// </summary>
-        /// <value>
-        /// 	<c>true</c> if the Handler requires authentication; otherwise, <c>false</c>.
-        /// </value>
-        public bool RequiresAuthentication
+        public string HttpMethod
         {
-            get { return typeof (IRequireAuthentication).IsAssignableFrom(_handlerType); }
+            get { return _httpMethod; }
         }
 
         /// <summary>
@@ -87,18 +75,7 @@ namespace Simple.Web.Hosting
         /// </value>
         public Type InputType
         {
-            get { return GetInterfaceGenericType(typeof (IInput<>)); }
-        }
-
-        /// <summary>
-        /// Gets the type of the output.
-        /// </summary>
-        /// <value>
-        /// The type of the output.
-        /// </value>
-        public Type OutputType
-        {
-            get { return GetInterfaceGenericType(typeof (IOutput<>)); }
+            get { return GetInterfaceGenericType(typeof(IInput<>)); }
         }
 
         /// <summary>
@@ -109,7 +86,37 @@ namespace Simple.Web.Hosting
         /// </value>
         public bool IsAsync
         {
-            get { return HttpMethodAttribute.GetMethod(_handlerType, _httpMethod).ReturnType == typeof (Task<Status>); }
+            get { return HttpMethodAttribute.GetMethod(_handlerType, _httpMethod).ReturnType == typeof(Task<Status>); }
+        }
+
+        /// <summary>
+        /// Gets the type of the output.
+        /// </summary>
+        /// <value>
+        /// The type of the output.
+        /// </value>
+        public Type OutputType
+        {
+            get { return GetInterfaceGenericType(typeof(IOutput<>)); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the Handler requires authentication.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if the Handler requires authentication; otherwise, <c>false</c>.
+        /// </value>
+        public bool RequiresAuthentication
+        {
+            get { return typeof(IRequireAuthentication).IsAssignableFrom(_handlerType); }
+        }
+
+        /// <summary>
+        /// Gets the variables.
+        /// </summary>
+        public IDictionary<string, string> Variables
+        {
+            get { return _variables; }
         }
 
         private Type GetInterfaceGenericType(Type genericType)

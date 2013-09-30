@@ -6,18 +6,9 @@ namespace Sandbox
     [UriTemplate("/hello/{Name}")]
     public class GetHello : IGet, IOutput<RawHtml>
     {
-        public string Name { get; set; }
         private string _tag = "h1";
-        public string Tag
-        {
-            get { return _tag; }
-            set { _tag = string.IsNullOrWhiteSpace(value) ? "h1" : value; }
-        }
 
-        public Status Get()
-        {
-            return Status.OK;
-        }
+        public string Name { get; set; }
 
         public RawHtml Output
         {
@@ -27,6 +18,17 @@ namespace Sandbox
         public string OutputETag
         {
             get { return null; }
+        }
+
+        public string Tag
+        {
+            get { return _tag; }
+            set { _tag = string.IsNullOrWhiteSpace(value) ? "h1" : value; }
+        }
+
+        public Status Get()
+        {
+            return Status.OK;
         }
     }
 }

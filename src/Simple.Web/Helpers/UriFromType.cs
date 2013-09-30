@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Helpers
+﻿namespace Simple.Web.Helpers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
 
     /// <summary>
@@ -19,7 +17,7 @@ namespace Simple.Web.Helpers
         /// <returns>The URI.</returns>
         public static Uri Get<THandler>()
         {
-            return Get(typeof (THandler));
+            return Get(typeof(THandler));
         }
 
         /// <summary>
@@ -37,7 +35,8 @@ namespace Simple.Web.Helpers
 
             if (template.Contains("{"))
             {
-                throw new InvalidOperationException("UriTemplateAttribute includes variables. Use the Get<THandler>(Expression<Func<T>>) override.");
+                throw new InvalidOperationException(
+                    "UriTemplateAttribute includes variables. Use the Get<THandler>(Expression<Func<T>>) override.");
             }
 
             return new Uri(template, UriKind.Relative);
@@ -51,9 +50,15 @@ namespace Simple.Web.Helpers
         /// <returns>A URI with the necessary values incorporated.</returns>
         public static Uri Get<THandler>(Expression<Func<THandler>> expression)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null)
+            {
+                throw new ArgumentNullException("expression");
+            }
             var memberInitExpression = expression.Body as MemberInitExpression;
-            if (memberInitExpression == null) throw new ArgumentException("Expression must be a member initializer.");
+            if (memberInitExpression == null)
+            {
+                throw new ArgumentException("Expression must be a member initializer.");
+            }
 
             var values = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
@@ -66,7 +71,8 @@ namespace Simple.Web.Helpers
                 }
                 else
                 {
-                    throw new ArgumentException("Cannot resolve values from member initializer. Make sure you are not calling a function within the expression.");
+                    throw new ArgumentException(
+                        "Cannot resolve values from member initializer. Make sure you are not calling a function within the expression.");
                 }
             }
 
@@ -98,7 +104,7 @@ namespace Simple.Web.Helpers
                 throw new InvalidOperationException("No UriTemplateAttribute found on type.");
             }
         }
-        
+
         private static void AssertSingle(IList<UriTemplateAttribute> attributes)
         {
             if (attributes.Count > 1)

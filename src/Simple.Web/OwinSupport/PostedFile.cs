@@ -10,35 +10,9 @@ namespace Simple.Web.OwinSupport
     {
         private readonly HttpPostedFile _file;
 
-        /// <summary>
-        /// Saves the contents of an uploaded file.
-        /// </summary>
-        /// <param name="filename">The name of the saved file. </param><exception cref="T:System.Web.HttpException">The <see cref="P:System.Web.Configuration.HttpRuntimeSection.RequireRootedSaveAsPath"/> property of the <see cref="T:System.Web.Configuration.HttpRuntimeSection"/> object is set to true, but <paramref name="filename"/> is not an absolute path.</exception>
-        public void SaveAs(string filename)
+        public PostedFile(HttpPostedFile file)
         {
-            this._file.SaveAs(filename);
-        }
-
-        /// <summary>
-        /// Gets the fully qualified name of the file on the client.
-        /// </summary>
-        /// <returns>
-        /// The name of the client's file, including the directory path.
-        /// </returns>
-        public string FileName
-        {
-            get { return this._file.FileName; }
-        }
-
-        /// <summary>
-        /// Gets the MIME content type of a file sent by a client.
-        /// </summary>
-        /// <returns>
-        /// The MIME content type of the uploaded file.
-        /// </returns>
-        public string ContentType
-        {
-            get { return this._file.ContentType; }
+            _file = file;
         }
 
         /// <summary>
@@ -49,7 +23,29 @@ namespace Simple.Web.OwinSupport
         /// </returns>
         public int ContentLength
         {
-            get { return this._file.ContentLength; }
+            get { return _file.ContentLength; }
+        }
+
+        /// <summary>
+        /// Gets the MIME content type of a file sent by a client.
+        /// </summary>
+        /// <returns>
+        /// The MIME content type of the uploaded file.
+        /// </returns>
+        public string ContentType
+        {
+            get { return _file.ContentType; }
+        }
+
+        /// <summary>
+        /// Gets the fully qualified name of the file on the client.
+        /// </summary>
+        /// <returns>
+        /// The name of the client's file, including the directory path.
+        /// </returns>
+        public string FileName
+        {
+            get { return _file.FileName; }
         }
 
         /// <summary>
@@ -60,12 +56,16 @@ namespace Simple.Web.OwinSupport
         /// </returns>
         public Stream InputStream
         {
-            get { return this._file.InputStream; }
+            get { return _file.InputStream; }
         }
 
-        public PostedFile(HttpPostedFile file)
+        /// <summary>
+        /// Saves the contents of an uploaded file.
+        /// </summary>
+        /// <param name="filename">The name of the saved file. </param><exception cref="T:System.Web.HttpException">The <see cref="P:System.Web.Configuration.HttpRuntimeSection.RequireRootedSaveAsPath"/> property of the <see cref="T:System.Web.Configuration.HttpRuntimeSection"/> object is set to true, but <paramref name="filename"/> is not an absolute path.</exception>
+        public void SaveAs(string filename)
         {
-            this._file = file;
+            _file.SaveAs(filename);
         }
     }
 }

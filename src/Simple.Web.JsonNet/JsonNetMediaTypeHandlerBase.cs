@@ -1,16 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Simple.Web.Helpers;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.JsonNet
+﻿namespace Simple.Web.JsonNet
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
+
     public abstract class JsonNetMediaTypeHandlerBase : MediaTypeHandlerBase<JToken>
     {
         private static JsonSerializerSettings _defaultSettings;
@@ -70,8 +72,7 @@ namespace Simple.Web.JsonNet
 
         protected override Task WriteOutput(JToken output, Stream outputStream)
         {
-            string outputText = output.ToString(Settings.Formatting,
-                                                Settings.Converters.ToArray());
+            string outputText = output.ToString(Settings.Formatting, Settings.Converters.ToArray());
             byte[] buffer = Encoding.UTF8.GetBytes(outputText);
             return outputStream.WriteAsync(buffer, 0, buffer.Length);
         }

@@ -2,11 +2,13 @@
 {
     using System;
 
+    using Simple.Web.Behaviors.Implementations;
+
     /// <summary>
     /// Indicates that a handler works with the If-Modified-Since and Last-Modified headers.
     /// </summary>
-    [RequestBehavior(typeof(Implementations.SetIfModifiedSince))]
-    [ResponseBehavior(typeof(Implementations.SetLastModified))]
+    [RequestBehavior(typeof(SetIfModifiedSince))]
+    [ResponseBehavior(typeof(SetLastModified))]
     public interface IModified
     {
         /// <summary>
@@ -16,6 +18,7 @@
         /// If modified since.
         /// </value>
         DateTime? IfModifiedSince { set; }
+
         /// <summary>
         /// The value for the Last-Modified header in the Response.
         /// </summary>

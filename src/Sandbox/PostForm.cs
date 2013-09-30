@@ -1,23 +1,18 @@
 namespace Sandbox
 {
-    using Models;
+    using Sandbox.Models;
+
     using Simple.Web;
     using Simple.Web.Behaviors;
 
     [UriTemplate("/submit")]
     public class PostForm : IPost, IInput<Form>, IOutput<Form>
     {
-        public Status Post()
-        {
-            Output = Input;
-            return Status.OK;
-        }
-
         public Form Input { get; set; }
 
         public string InputETag
         {
-            set {  }
+            set { }
         }
 
         public Form Output { get; set; }
@@ -25,6 +20,12 @@ namespace Sandbox
         public string OutputETag
         {
             get { return null; }
+        }
+
+        public Status Post()
+        {
+            Output = Input;
+            return Status.OK;
         }
     }
 }

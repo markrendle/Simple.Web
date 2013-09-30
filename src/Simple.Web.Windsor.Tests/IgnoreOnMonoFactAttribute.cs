@@ -10,9 +10,10 @@
         {
             if (IsRunningOnMono())
             {
-                this.Skip = "Ignored on Mono";
+                Skip = "Ignored on Mono";
             }
         }
+
         /// <summary>
         /// Determine if runtime is Mono.
         /// Taken from http://stackoverflow.com/questions/721161

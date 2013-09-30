@@ -1,9 +1,11 @@
-﻿using Autofac;
-using System.Reflection;
-using Xunit;
-
-namespace Simple.Web.Autofac.Tests
+﻿namespace Simple.Web.Autofac.Tests
 {
+    using System.Reflection;
+
+    using global::Autofac;
+
+    using Xunit;
+
     public class HandlersModuleTests
     {
         private readonly IContainer _container;
@@ -33,27 +35,8 @@ namespace Simple.Web.Autofac.Tests
         public class Customer
         {
             public string FirstName { get; set; }
+
             public string LastName { get; set; }
-        }
-
-        public class GenericCustomerHandler : IPost<Customer>, IPut<Customer>
-        {
-            private readonly Status _status;
-
-            public GenericCustomerHandler(Status status)
-            {
-                _status = status;
-            }
-
-            public Status Post(Customer input)
-            {
-                return _status;
-            }
-
-            public Status Put(Customer input)
-            {
-                return _status;
-            }
         }
 
         public class CustomerHandler : IPost, IPut
@@ -71,6 +54,26 @@ namespace Simple.Web.Autofac.Tests
             }
 
             public Status Put()
+            {
+                return _status;
+            }
+        }
+
+        public class GenericCustomerHandler : IPost<Customer>, IPut<Customer>
+        {
+            private readonly Status _status;
+
+            public GenericCustomerHandler(Status status)
+            {
+                _status = status;
+            }
+
+            public Status Post(Customer input)
+            {
+                return _status;
+            }
+
+            public Status Put(Customer input)
             {
                 return _status;
             }
