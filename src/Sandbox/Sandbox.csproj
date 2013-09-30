@@ -45,13 +45,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Fix, Version=0.4.0.51807, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.0.3.2.10\lib\net40\Fix.dll</HintPath>
+      <HintPath>..\packages\Fix.0.4.0.51807\lib\net40\Fix.dll</HintPath>
     </Reference>
-    <Reference Include="Fix.AspNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Fix.AspNet, Version=0.4.0.51807, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Fix.AspNet.0.3.2.10\lib\net40\Fix.AspNet.dll</HintPath>
+      <HintPath>..\packages\Fix.AspNet.0.4.0.51807\lib\net40\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -114,6 +114,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="OwinAppSetup.cs" />
     <Compile Include="StartupTasks\AppStart.cs" />
     <Compile Include="StartupTasks\SetPublicFolders.cs" />
     <Compile Include="PostForm.cs" />

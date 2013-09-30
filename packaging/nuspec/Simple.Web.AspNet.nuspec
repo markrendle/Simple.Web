@@ -14,7 +14,7 @@
     <tags>simple.web</tags>
     <dependencies>
       <dependency id="Simple.Web" version="0.0.0.0" />
-      <dependency id="Fix.AspNet" version="0.3" />
+      <dependency id="Fix.AspNet" version="0.4" />
     </dependencies>
   </metadata>
   <files>
@@ -22,5 +22,6 @@
     <file src="..\..\build\Simple.Web.AspNet.*db" target="lib\net40" />
     <file src="..\..\src\Simple.Web.AspNet\**\*.cs" target="src" />
     <file src="..\..\src\Simple.Web.AspNet\web.config.transform" target="content" />
+    <file src="..\..\src\Simple.Web.AspNet\OwinAppSetup.cs.pp" target="content" />
   </files>
 </package>

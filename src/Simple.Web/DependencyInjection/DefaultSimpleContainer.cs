@@ -1,7 +1,9 @@
 namespace Simple.Web.DependencyInjection
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Helpers;
 
     internal class DefaultSimpleContainer : ISimpleContainer
@@ -40,6 +42,10 @@ namespace Simple.Web.DependencyInjection
         private static bool TryCreateInstance<T>(out T instance)
         {
             var implementations = ExportedTypeHelper.FromCurrentAppDomain(IsImplementationOf<T>).ToList();
+            if (implementations.Count > 1)
+            {
+                implementations = ExcludeDefaultImplementations(implementations);
+            }
             if (implementations.Count == 1)
             {
                 if (implementations[0].GetConstructor(new Type[0]) != null)
@@ -52,6 +58,13 @@ namespace Simple.Web.DependencyInjection
             }
             instance = default(T);
             return false;
+        }
+
+        private static List<Type> ExcludeDefaultImplementations(List<Type> implementations)
+        {
+            var thisAssembly = Assembly.GetExecutingAssembly();
+            implementations = implementations.Where(t => t.Assembly != thisAssembly).ToList();
+            return implementations;
         }
 
         private static bool IsImplementationOf<T>(Type type)

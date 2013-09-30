@@ -78,8 +78,20 @@ namespace Simple.Web
         /// </value>
         public IAuthenticationProvider AuthenticationProvider
         {
-            get { return _authenticationProvider ?? _defaultAuthenticationProvider; }
+            get { return _authenticationProvider ?? CreateAuthenticationProvider() ?? _defaultAuthenticationProvider; }
             set { _authenticationProvider = value; }
+        }
+
+        private IAuthenticationProvider CreateAuthenticationProvider()
+        {
+            try
+            {
+                return _authenticationProvider = Container.BeginScope().Get<IAuthenticationProvider>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public IMediaTypeHandler DefaultMediaTypeHandler { get; set; }
