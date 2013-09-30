@@ -23,12 +23,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Sections Layout Page</title></head><body><h1>Section One</h1><p>I am in section one.</p><p><span>Test Text</span></p><h1>Section Two</h1><p>I am in section two.</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
-
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
 
@@ -48,11 +43,7 @@
 <span>@Model.Text</span>
 @section One {<p>I am in section one.</p>}";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
@@ -73,11 +64,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Sections Layout Page</title></head><body><h1>Section One</h1><p><span>Test Text</span></p><h1>Section Two</h1><p>I am in section two.</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
@@ -101,11 +88,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Sections Layout Page</title></head><body><h1>Section Two - Once</h1><p>I am in section two.</p><p><span>Test Text</span></p><h1>Section Two - Twice</h1><p>I am in section two.</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
@@ -129,11 +112,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Simple Layout Page</title></head><body><p>Test Text</p><p>I am in section two.</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
