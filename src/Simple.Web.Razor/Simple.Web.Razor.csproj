@@ -60,6 +60,7 @@
     <Compile Include="Engine\SimpleRazorEngineHost.cs" />
     <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="RazorCompilerException.cs" />
+    <Compile Include="RazorTypeBuilderContext.cs" />
     <Compile Include="SimpleRazorConfiguration.cs" />
     <Compile Include="RazorHtmlMediaTypeHandler.cs" />
     <Compile Include="RazorTypeBuilder.cs" />

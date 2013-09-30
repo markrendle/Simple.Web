@@ -1,6 +1,5 @@
 ﻿namespace Simple.Web.Razor.Tests
 {
-    using System;
     using System.IO;
 
     using Simple.Web.TestHelpers;
@@ -20,11 +19,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Simple Layout Page</title></head><body><p>Test Text</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
@@ -46,11 +41,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Custom Layout Title</title></head><body><p>Test Text</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = null };
             var writer = new StringWriter();
@@ -72,11 +63,7 @@
 
             const string Expected = @"<!DOCTYPE html><html><head><title>Foo</title></head><body><p>Test Text</p></body></html>";
 
-            Type type;
-            using (var reader = new StringReader(TemplateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(TemplateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = new HandlerStub { Title = "Foo" } };
             var writer = new StringWriter();

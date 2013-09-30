@@ -55,6 +55,7 @@
     <Compile Include="Sample\People.cs" />
     <Compile Include="Sample\Things.cs" />
     <Compile Include="StringBuilderStream.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Xml\XAttributeExtensions.cs" />
     <Compile Include="Xml\XElementExtensions.cs" />
     <Compile Include="Xml\XNameExtensions.cs" />
