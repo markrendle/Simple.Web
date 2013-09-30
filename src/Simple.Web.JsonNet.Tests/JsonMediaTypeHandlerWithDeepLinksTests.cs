@@ -33,9 +33,9 @@
         {
             const string idProperty = @"""id"":42";
             const string ordersLink =
-                @"{""title"":null,""href"":""/customer/42/orders"",""rel"":""customer.orders"",""type"":""application/vnd.list.order+json""}";
+                @"{""href"":""/customer/42/orders"",""rel"":""customer.orders"",""title"":null,""type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
+                @"{""href"":""/customer/42"",""rel"":""self"",""title"":null,""type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new Customer {Id = 42});
@@ -56,7 +56,7 @@
         public void PicksUpContactsLinkFromCustomer()
         {
             const string contactsLink =
-                @"{""title"":null,""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""type"":""application/vnd.contact+json""}";
+                @"{""href"":""/customer/42/contacts"",""rel"":""customer.contacts"",""title"":null,""type"":""application/vnd.contact+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new Customer {Id = 42});
@@ -76,9 +76,9 @@
         {
             const string idProperty = @"""id"":42";
             const string ordersLink =
-                @"{""title"":null,""href"":""/customer/42/orders"",""rel"":""customer.orders"",""type"":""application/vnd.list.order+json""}";
+                @"{""href"":""/customer/42/orders"",""rel"":""customer.orders"",""title"":null,""type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""title"":null,""href"":""/customer/42"",""rel"":""self"",""type"":""application/vnd.customer+json""}";
+                @"{""href"":""/customer/42"",""rel"":""self"",""title"":null,""type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
                                       new[] {new Customer {Id = 42}});
@@ -130,7 +130,7 @@
         public void PicksUpPathFromThing()
         {
             const string thingLink =
-                @"{""title"":null,""href"":""/things?path=%2Ffoo%2Fbar"",""rel"":""self"",""type"":""application/json""}";
+                @"{""href"":""/things?path=%2Ffoo%2Fbar"",""rel"":""self"",""title"":null,""type"":""application/json""}";
 
             var content = new Content(new Uri("http://test.com/foo/bar"), new ThingHandler(),
                                       new Thing {Path = "/foo/bar"});

@@ -80,7 +80,7 @@
         }
 
         [Fact]
-        public void RenderWithSectioDuplicated()
+        public void RenderWithSectionDuplicated()
         {
             const string TemplateText = @"@model Simple.Web.Razor.Tests.TestModel
 @{

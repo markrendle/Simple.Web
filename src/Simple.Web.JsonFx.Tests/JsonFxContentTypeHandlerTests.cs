@@ -38,9 +38,9 @@
         {
             const string idProperty = @"""Id"":42";
             const string ordersLink =
-                @"{""Title"":null,""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Type"":""application/vnd.list.order+json""}";
+                @"{""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Title"":null,""Type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
+                @"{""Href"":""/customer/42"",""Rel"":""self"",""Title"":null,""Type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
             var target = new JsonMediaTypeHandler();
@@ -61,9 +61,9 @@
         {
             const string idProperty = @"""Id"":42";
             const string ordersLink =
-                @"{""Title"":null,""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Type"":""application/vnd.list.order+json""}";
+                @"{""Href"":""/customer/42/orders"",""Rel"":""customer.orders"",""Title"":null,""Type"":""application/vnd.list.order+json""}";
             const string selfLink =
-                @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
+                @"{""Href"":""/customer/42"",""Rel"":""self"",""Title"":null,""Type"":""application/vnd.customer+json""}";
 
             var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new[] { new Customer { Id = 42 } });
             var target = new JsonMediaTypeHandler();

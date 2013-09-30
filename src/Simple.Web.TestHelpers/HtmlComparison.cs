@@ -4,7 +4,7 @@
     {
         public static string Cleanse(string result)
         {
-            return result.Trim().Replace("\n", "").Replace("\r", "");
+            return result.Trim().Replace("\n", "").Replace("\r", "").Replace("    ", "");
         }
     }
 }
