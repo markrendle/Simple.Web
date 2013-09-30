@@ -1,8 +1,10 @@
 ﻿namespace Simple.Web.Tests
 {
     using System;
-    using Behaviors;
-    using Hosting;
+
+    using Simple.Web.Behaviors;
+    using Simple.Web.Hosting;
+
     using Xunit;
 
     public class HandlerInfoTests
@@ -10,8 +12,15 @@
         [Fact]
         public void GetsCorrectInputTypeForGeneric()
         {
-            var target = new HandlerInfo(typeof (TestGenericInputHandler), "GET");
+            var target = new HandlerInfo(typeof(TestGenericInputHandler), "GET");
             Assert.Equal(typeof(HandlerInfoTests), target.InputType);
+        }
+
+        [Fact]
+        public void GetsCorrectOutputTypeForGeneric()
+        {
+            var target = new HandlerInfo(typeof(TestGenericOutputHandler), "GET");
+            Assert.Equal(typeof(HandlerInfoTests), target.OutputType);
         }
 
         [Fact]
@@ -22,26 +31,14 @@
         }
 
         [Fact]
-        public void GetsCorrectOutputTypeForGeneric()
-        {
-            var target = new HandlerInfo(typeof (TestGenericOutputHandler), "GET");
-            Assert.Equal(typeof(HandlerInfoTests), target.OutputType);
-        }
-
-        [Fact]
         public void GetsNullForNotOutputHandler()
         {
             var target = new HandlerInfo(typeof(TestHandler), "GET");
             Assert.Null(target.OutputType);
         }
 
-        class TestGenericInputHandler : IInput<HandlerInfoTests>
+        private class TestGenericInputHandler : IInput<HandlerInfoTests>
         {
-            public Status Run()
-            {
-                throw new NotImplementedException();
-            }
-
             public HandlerInfoTests Input
             {
                 set { throw new NotImplementedException(); }
@@ -51,15 +48,41 @@
             {
                 get { throw new NotImplementedException(); }
             }
-        }
 
-        class TestInputHandler : IPost
-        {
             public Status Run()
             {
                 throw new NotImplementedException();
             }
+        }
 
+        private class TestGenericOutputHandler : IOutput<HandlerInfoTests>
+        {
+            public HandlerInfoTests Output
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public Type OutputType
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public Status Run()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class TestHandler : IGet
+        {
+            public Status Get()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class TestInputHandler : IPost
+        {
             public object Input
             {
                 set { throw new NotImplementedException(); }
@@ -74,33 +97,15 @@
             {
                 throw new NotImplementedException();
             }
-        }
 
-        class TestGenericOutputHandler : IOutput<HandlerInfoTests>
-        {
             public Status Run()
             {
                 throw new NotImplementedException();
             }
-
-            public HandlerInfoTests Output
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-            public Type OutputType
-            {
-                get { throw new NotImplementedException(); }
-            }
         }
 
-        class TestOutputHandler : IGet
+        private class TestOutputHandler : IGet
         {
-            public Status Run()
-            {
-                throw new NotImplementedException();
-            }
-
             public object Output
             {
                 get { throw new NotImplementedException(); }
@@ -115,15 +120,11 @@
             {
                 throw new NotImplementedException();
             }
-        }
 
-        class TestHandler : IGet
-        {
-            public Status Get()
+            public Status Run()
             {
                 throw new NotImplementedException();
             }
         }
     }
-
 }

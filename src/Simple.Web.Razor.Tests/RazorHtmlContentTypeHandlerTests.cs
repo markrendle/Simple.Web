@@ -1,6 +1,7 @@
 namespace Simple.Web.Razor.Tests
 {
     using System.IO;
+
     using Xunit;
 
     public class RazorHtmlContentTypeHandlerTests
@@ -8,8 +9,7 @@ namespace Simple.Web.Razor.Tests
         [Fact]
         public void Renders()
         {
-            const string templateText =
-                @"@model Simple.Web.Razor.Tests.TestModel
+            const string templateText = @"@model Simple.Web.Razor.Tests.TestModel
 <!DOCTYPE html><html><head><title>@Handler.Title</title></head><body>@Model.Text</body></html>";
 
             const string expected = @"<!DOCTYPE html><html><head><title>Foo</title></head><body>Test Text</body></html>";

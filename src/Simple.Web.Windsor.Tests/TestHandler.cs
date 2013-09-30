@@ -1,27 +1,28 @@
-﻿using System;
-
-namespace Simple.Web.Windsor.Tests
+﻿namespace Simple.Web.Windsor.Tests
 {
+    using System;
+
     public class TestHandler : IGet, IDisposable
     {
-        readonly IResult _result;
-        public bool IsDisposed { get; set; }
+        private readonly IResult _result;
 
         public TestHandler(IResult result)
         {
             _result = result;
         }
 
-        public Status Get()
-        {
-            return _result.Result;
-        }
+        public bool IsDisposed { get; set; }
 
         public string TestProperty { get; set; }
-        
+
         public void Dispose()
         {
             IsDisposed = true;
+        }
+
+        public Status Get()
+        {
+            return _result.Result;
         }
     }
 }

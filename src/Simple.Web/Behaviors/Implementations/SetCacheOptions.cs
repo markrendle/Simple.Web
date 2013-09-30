@@ -1,6 +1,5 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
-    using Simple.Web.Behaviors;
     using Simple.Web.Http;
 
     /// <summary>
@@ -17,7 +16,10 @@
         public static void Impl(ICacheability handler, IContext context)
         {
             CacheOptions cacheOptions;
-            if ((cacheOptions = handler.CacheOptions) == null) return;
+            if ((cacheOptions = handler.CacheOptions) == null)
+            {
+                return;
+            }
 
             context.Response.SetCacheOptions(cacheOptions);
         }

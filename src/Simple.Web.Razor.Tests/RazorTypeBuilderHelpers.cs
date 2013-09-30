@@ -1,7 +1,8 @@
 ﻿namespace Simple.Web.Razor.Tests
 {
     using System;
-    using TestHelpers;
+
+    using Simple.Web.TestHelpers;
 
     internal static class RazorTypeBuilderHelpers
     {

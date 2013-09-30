@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Behaviors;
-    using Helpers;
-    using Http;
-    using MediaTypeHandling;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.Http;
+    using Simple.Web.MediaTypeHandling;
 
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.
@@ -21,37 +21,48 @@
         /// <param name="context">The context.</param>
         public static void Impl<T>(IOutput<T> handler, IContext context)
         {
-            if (typeof (T).IsClass)
+            if (typeof(T).IsClass)
             {
-                if (ReferenceEquals(handler.Output, null)) return;
+                if (ReferenceEquals(handler.Output, null))
+                {
+                    return;
+                }
             }
-            if (typeof (T) == typeof (RawHtml))
+            if (typeof(T) == typeof(RawHtml))
             {
-                WriteRawHtml((IOutput<RawHtml>) handler, context);
+                WriteRawHtml((IOutput<RawHtml>)handler, context);
                 return;
             }
             WriteUsingMediaTypeHandler(handler, context);
         }
 
-        private static void WriteUsingMediaTypeHandler<T>(IOutput<T> handler, IContext context)
+        internal static void WriteRawHtml(IOutput<RawHtml> handler, IContext context)
         {
-            IMediaTypeHandler mediaTypeHandler;
-            var acceptedTypes = context.Request.GetAccept();
-            if (TryGetMediaTypeHandler(context, acceptedTypes, out mediaTypeHandler))
+            context.Response.SetContentType(GetHtmlContentType(context));
+            if (context.Request.HttpMethod.Equals("HEAD"))
             {
-                context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
-                if (context.Request.HttpMethod.Equals("HEAD")) return;
-
-                context.Response.WriteFunction = (stream) =>
-                    {
-                        var content = new Content(context.Request.Url, handler, handler.Output);
-                        return mediaTypeHandler.Write<T>(content, stream);
-                    };
+                return;
+            }
+            if (handler.Output == null)
+            {
+                context.Response.WriteFunction = stream => TaskHelper.Completed();
+            }
+            else
+            {
+                context.Response.WriteFunction = stream =>
+                                                 {
+                                                     var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
+                                                     return stream.WriteAsync(bytes, 0, bytes.Length);
+                                                 };
             }
         }
 
-        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes,
-                                                   out IMediaTypeHandler mediaTypeHandler)
+        private static string GetHtmlContentType(IContext context)
+        {
+            return context.Request.GetAccept().FirstOrDefault(at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+        }
+
+        private static bool TryGetMediaTypeHandler(IContext context, IList<string> acceptedTypes, out IMediaTypeHandler mediaTypeHandler)
         {
             try
             {
@@ -67,28 +78,24 @@
             return true;
         }
 
-        internal static void WriteRawHtml(IOutput<RawHtml> handler, IContext context)
+        private static void WriteUsingMediaTypeHandler<T>(IOutput<T> handler, IContext context)
         {
-            context.Response.SetContentType(GetHtmlContentType(context));
-            if (context.Request.HttpMethod.Equals("HEAD")) return;
-            if (handler.Output == null)
+            IMediaTypeHandler mediaTypeHandler;
+            var acceptedTypes = context.Request.GetAccept();
+            if (TryGetMediaTypeHandler(context, acceptedTypes, out mediaTypeHandler))
             {
-                context.Response.WriteFunction = stream => TaskHelper.Completed();
-            }
-            else
-            {
-                context.Response.WriteFunction = (stream) =>
-                    {
-                        var bytes = Encoding.UTF8.GetBytes(handler.Output.ToString());
-                        return stream.WriteAsync(bytes, 0, bytes.Length);
-                    };
-            }
-        }
+                context.Response.SetContentType(mediaTypeHandler.GetContentType(acceptedTypes));
+                if (context.Request.HttpMethod.Equals("HEAD"))
+                {
+                    return;
+                }
 
-        private static string GetHtmlContentType(IContext context)
-        {
-            return context.Request.GetAccept()
-                          .FirstOrDefault(at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+                context.Response.WriteFunction = stream =>
+                                                 {
+                                                     var content = new Content(context.Request.Url, handler, handler.Output);
+                                                     return mediaTypeHandler.Write<T>(content, stream);
+                                                 };
+            }
         }
     }
 }

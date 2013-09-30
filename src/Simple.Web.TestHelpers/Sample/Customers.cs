@@ -1,7 +1,8 @@
 ﻿namespace Simple.Web.TestHelpers.Sample
 {
     using System.Collections.Generic;
-    using Links;
+
+    using Simple.Web.Links;
 
     [UriTemplate("/customer")]
     public abstract class CustomerRelated
@@ -21,6 +22,7 @@
         }
 
         public int Id { get; set; }
+
         public IList<Order> Orders { get; set; }
     }
 
@@ -34,7 +36,6 @@
     public class CustomerOrders
     {
     }
-
 
     [Canonical(typeof(Customer), "/customer/{Id}", Type = "application/vnd.customer")]
     public class CustomerHandler

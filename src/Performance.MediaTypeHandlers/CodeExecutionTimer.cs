@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace Performance.MediaTypeHandlers
+﻿namespace Performance.MediaTypeHandlers
 {
+    using System;
+    using System.Diagnostics;
+
     internal class CodeExecutionTimer
     {
         public static double Average(int iterations, Action timedAction)

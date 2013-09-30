@@ -1,6 +1,6 @@
 ﻿namespace Simple.Web.TestHelpers.Sample
 {
-    using Links;
+    using Simple.Web.Links;
 
     public class Thing
     {

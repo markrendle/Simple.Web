@@ -9,15 +9,15 @@
     [UriTemplate("/enumerable")]
     public class GetEnumerable : IGet, IOutput<EnumerableModel>
     {
-        public Status Get()
-        {
-            this.Output = new EnumerableModel { Messages = this.Message.ToArray() };
-            return 200;
-        }
-
         public IEnumerable<string> Message { get; set; }
 
         public EnumerableModel Output { get; set; }
+
+        public Status Get()
+        {
+            Output = new EnumerableModel { Messages = Message.ToArray() };
+            return 200;
+        }
     }
 
     public class EnumerableModel

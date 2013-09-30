@@ -1,12 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Simple.Web.DependencyInjection;
-using Simple.Web.Helpers;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.Xml
+﻿namespace Simple.Web.Xml
 {
+    using System;
+    using System.Threading.Tasks;
+    using System.Xml.Linq;
+
+    using Simple.Web.DependencyInjection;
+    using Simple.Web.Helpers;
+    using Simple.Web.MediaTypeHandling;
+
     [MediaTypes(MediaType.Xml, "application/*+xml")]
     public class ExplicitXmlMediaTypeHandler : XElementMediaTypeHandlerBase
     {
@@ -29,13 +30,13 @@ namespace Simple.Web.Xml
             {
                 using (ISimpleContainerScope container = SimpleWeb.Configuration.Container.BeginScope())
                 {
-                    Type type = typeof (XmlConverter<>).MakeGenericType(item.GetType());
-                    _outputConverter = converter = (IXmlConverter) container.Get(type);
+                    Type type = typeof(XmlConverter<>).MakeGenericType(item.GetType());
+                    _outputConverter = converter = (IXmlConverter)container.Get(type);
                 }
             }
             else
             {
-                converter = (IXmlConverter) _outputConverter;
+                converter = (IXmlConverter)_outputConverter;
             }
             return converter.ToXml(item);
         }
@@ -52,7 +53,7 @@ namespace Simple.Web.Xml
             }
             else
             {
-                converter = (XmlConverter<T>) _outputConverter;
+                converter = (XmlConverter<T>)_outputConverter;
             }
             return converter.ToXml(item);
         }

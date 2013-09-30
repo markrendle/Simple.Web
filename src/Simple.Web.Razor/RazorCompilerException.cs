@@ -12,22 +12,22 @@
 
         public RazorCompilerException(IEnumerable<CompilerError> errors)
         {
-            this._errors = errors.ToList();
+            _errors = errors.ToList();
         }
 
         public RazorCompilerException(string error)
         {
-            this._errors = new List<CompilerError>(1) { new CompilerError("uknown", 0, 0, "unknown", error) };
+            _errors = new List<CompilerError>(1) { new CompilerError("uknown", 0, 0, "unknown", error) };
         }
 
         public ReadOnlyCollection<CompilerError> Errors
         {
-            get { return this._errors.AsReadOnly(); }
+            get { return _errors.AsReadOnly(); }
         }
 
         public override string Message
         {
-            get { return string.Join(Environment.NewLine, this._errors); }
+            get { return string.Join(Environment.NewLine, _errors); }
         }
     }
 }

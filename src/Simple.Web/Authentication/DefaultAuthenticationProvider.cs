@@ -1,6 +1,7 @@
 namespace Simple.Web.Authentication
 {
     using System;
+
     using Simple.Web.Http;
 
     /// <summary>
@@ -23,8 +24,7 @@ namespace Simple.Web.Authentication
             if (context.Request.TryGetCookieValue(UserCookieName, out cookie))
             {
                 Guid userGuid;
-                if (cookie != null && (!string.IsNullOrWhiteSpace(cookie)) &&
-                    Guid.TryParse(cookie, out userGuid))
+                if (cookie != null && (!string.IsNullOrWhiteSpace(cookie)) && Guid.TryParse(cookie, out userGuid))
                 {
                     return new User(userGuid, string.Empty);
                 }

@@ -5,7 +5,8 @@
 
     public class SetModelTypeCodeGenerator : SetBaseTypeCodeGenerator
     {
-        public SetModelTypeCodeGenerator(string baseType) : base(baseType)
+        public SetModelTypeCodeGenerator(string baseType)
+            : base(baseType)
         {
         }
 
@@ -14,10 +15,11 @@
             return string.Format(CultureInfo.InvariantCulture, "Simple.Web.Razor.SimpleTemplateModelBase<{0}>", baseType);
         }
     }
-    
+
     public class SetHandlerTypeCodeGenerator : SetBaseTypeCodeGenerator
     {
-        public SetHandlerTypeCodeGenerator(string baseType) : base(baseType)
+        public SetHandlerTypeCodeGenerator(string baseType)
+            : base(baseType)
         {
         }
 

@@ -1,7 +1,7 @@
 namespace Simple.Web.Behaviors.Implementations
 {
     using System.Linq;
-    using Simple.Web.Behaviors;
+
     using Simple.Web.Http;
 
     /// <summary>
@@ -17,7 +17,10 @@ namespace Simple.Web.Behaviors.Implementations
         /// <returns></returns>
         public static void Impl(IETag handler, IContext context)
         {
-            if (!context.Request.Headers.ContainsKey("ETag")) return;
+            if (!context.Request.Headers.ContainsKey("ETag"))
+            {
+                return;
+            }
             var etag = context.Request.Headers["ETag"].FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(etag))
             {

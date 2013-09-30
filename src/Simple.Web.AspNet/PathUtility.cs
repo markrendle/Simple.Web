@@ -1,7 +1,8 @@
 namespace Simple.Web.AspNet
 {
     using System.Web.Hosting;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     public sealed class PathUtility : IPathUtility
     {

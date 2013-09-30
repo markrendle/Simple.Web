@@ -10,8 +10,8 @@
         private readonly Type _handlerType;
         private readonly string _href;
         private readonly string _rel;
-        private string _type;
         private readonly string _title;
+        private string _type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Link"/> class.
@@ -31,23 +31,6 @@
         }
 
         /// <summary>
-        /// Gets the title: a human-readable name for the link.
-        /// </summary>
-        public string Title
-        {
-            get { return _title; }
-        }
-
-        /// <summary>
-        /// Gets the type of the handler.
-        /// </summary>
-        /// <returns>The type of the handler.</returns>
-        public Type GetHandlerType()
-        {
-            return _handlerType;
-        }
-
-        /// <summary>
         /// Gets the href: the URI pointing to the resource/handler.
         /// </summary>
         public string Href
@@ -64,12 +47,29 @@
         }
 
         /// <summary>
+        /// Gets the title: a human-readable name for the link.
+        /// </summary>
+        public string Title
+        {
+            get { return _title; }
+        }
+
+        /// <summary>
         /// Gets the type: the Content-Type returned by the link.
         /// </summary>
         public string Type
         {
             get { return _type; }
             set { _type = value; }
+        }
+
+        /// <summary>
+        /// Gets the type of the handler.
+        /// </summary>
+        /// <returns>The type of the handler.</returns>
+        public Type GetHandlerType()
+        {
+            return _handlerType;
         }
     }
 }

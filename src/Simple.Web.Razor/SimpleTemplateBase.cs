@@ -3,7 +3,6 @@ namespace Simple.Web.Razor
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
     using System.IO;
     using System.Text;
 
@@ -11,43 +10,116 @@ namespace Simple.Web.Razor
     {
         private readonly StringBuilder _output = new StringBuilder();
 
-        private IDictionary<string, Action> _sections = new Dictionary<string, Action>();
-        private IDictionary<string, string> _sectionOutputs = new Dictionary<string, string>();
-
-        private string _renderedOutput;
         private string _childOutput;
+        private string _renderedOutput;
+        private IDictionary<string, string> _sectionOutputs = new Dictionary<string, string>();
+        private IDictionary<string, Action> _sections = new Dictionary<string, Action>();
 
         public SimpleTemplateBase()
         {
-            this._output = new StringBuilder();
-            this.ViewBag = new DynamicDictionary<string>();
+            _output = new StringBuilder();
+            ViewBag = new DynamicDictionary<string>();
         }
+
+        public string Layout { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Output
         {
-            get { return _renderedOutput ?? this._output.ToString(); }
+            get { return _renderedOutput ?? _output.ToString(); }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IDictionary<string, string> Sections
         {
-            get { return this._sectionOutputs; }
+            get { return _sectionOutputs; }
         }
 
+        public dynamic ViewBag { get; private set; }
+
         public TextWriter Writer { get; set; }
+
+        protected dynamic Handler { get; private set; }
+
+        protected dynamic Model { get; private set; }
+
+        public virtual void DefineSection(string name, Action action)
+        {
+            if (_sections == null)
+            {
+                _sections = new Dictionary<string, Action>(1);
+            }
+
+            _sections.Add(name, action);
+        }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public abstract void Execute();
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual void Write(object value)
+        public virtual bool IsSectionDefined(string name)
         {
-            _output.Append(value);
+            return _sections != null && _sections.ContainsKey(name);
+        }
+
+        public void Render()
+        {
+            Execute();
+
+            if (_sections != null)
+            {
+                _renderedOutput = _output.ToString();
+
+                _output.Clear();
+
+                foreach (var section in _sections)
+                {
+                    _output.Clear();
+                    section.Value.Invoke();
+                    _sectionOutputs.Add(section.Key, _output.ToString());
+                }
+            }
+        }
+
+        public virtual object RenderBody()
+        {
+            if (!string.IsNullOrWhiteSpace(_childOutput))
+            {
+                return _childOutput;
+            }
+
+            return null;
+        }
+
+        public virtual object RenderSection(string name)
+        {
+            return RenderSection(name, true);
+        }
+
+        public virtual object RenderSection(string name, bool required)
+        {
+            var sectionRendered = _sectionOutputs.ContainsKey(name);
+            var sectionDefined = IsSectionDefined(name);
+
+            if (required && !(sectionRendered || sectionDefined))
+            {
+                throw new ArgumentException(string.Format("Section '{0}' was not specified and is required.", name));
+            }
+
+            if (sectionRendered && _sectionOutputs[name] != null)
+            {
+                WriteLiteral(_sectionOutputs[name]);
+            }
+
+            if (sectionDefined && _sections[name] != null)
+            {
+                _sections[name].Invoke();
+            }
+
+            return String.Empty;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual void WriteLiteral(object value)
+        public virtual void Write(object value)
         {
             _output.Append(value);
         }
@@ -64,17 +136,9 @@ namespace Simple.Web.Razor
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        internal virtual void SetHandler(object handler)
+        public virtual void WriteLiteral(object value)
         {
-            Handler = handler;
-        }
-
-        protected dynamic Handler { get; private set; }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        internal virtual void SetModel(object model)
-        {
-            Model = model;
+            _output.Append(value);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -84,98 +148,31 @@ namespace Simple.Web.Razor
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
+        internal virtual void SetHandler(object handler)
+        {
+            Handler = handler;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        internal virtual void SetModel(object model)
+        {
+            Model = model;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         internal virtual void SetSections(IDictionary<string, string> sections)
         {
             if (sections != null)
             {
-                this._sectionOutputs = sections;
+                _sectionOutputs = sections;
             }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal virtual void SetViewBag(DynamicDictionary<string> viewBag)
         {
-            this.ViewBag = viewBag;
+            ViewBag = viewBag;
         }
-
-        public virtual object RenderBody()
-        {
-            if (!string.IsNullOrWhiteSpace(_childOutput))
-            {
-                return _childOutput;
-            }
-
-            return null;
-        }
-
-        public virtual void DefineSection(string name, Action action)
-        {
-            if (this._sections == null)
-            {
-                this._sections = new Dictionary<string, Action>(1);
-            }
-
-            this._sections.Add(name, action);
-        }
-
-        public virtual bool IsSectionDefined(string name)
-        {
-            return this._sections != null && this._sections.ContainsKey(name);
-        }
-
-        public virtual object RenderSection(string name)
-        {
-            return this.RenderSection(name, true);
-        }
-
-        public virtual object RenderSection(string name, bool required)
-        {
-            var sectionRendered = this._sectionOutputs.ContainsKey(name);
-            var sectionDefined = this.IsSectionDefined(name);
-
-            if (required && !(sectionRendered || sectionDefined))
-            {
-                throw new ArgumentException(
-                    string.Format("Section '{0}' was not specified and is required.", name));
-            }
-
-            if (sectionRendered && this._sectionOutputs[name] != null)
-            {
-                this.WriteLiteral(this._sectionOutputs[name]);
-            }
-
-            if (sectionDefined && this._sections[name] != null)
-            {
-                this._sections[name].Invoke();
-            }
-
-            return String.Empty;
-        }
-
-        public void Render()
-        {
-            this.Execute();
-
-            if (this._sections != null)
-            {
-                this._renderedOutput = this._output.ToString();
-
-                this._output.Clear();
-
-                foreach (var section in this._sections)
-                {
-                    this._output.Clear();
-                    section.Value.Invoke();
-                    this._sectionOutputs.Add(section.Key, this._output.ToString());
-                }
-            }
-        }
-
-        protected dynamic Model { get; private set; }
-
-        public string Layout { get; set; }
-
-        public dynamic ViewBag { get; private set; }
     }
 
     public abstract class SimpleTemplateModelBase<TModel> : SimpleTemplateBase

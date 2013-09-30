@@ -1,9 +1,10 @@
-﻿using System;
-using System.Xml.Linq;
-using Simple.Web.TestHelpers.Sample;
-
-namespace Simple.Web.Xml.Tests
+﻿namespace Simple.Web.Xml.Tests
 {
+    using System;
+    using System.Xml.Linq;
+
+    using Simple.Web.TestHelpers.Sample;
+
     internal class OrderConverter : XmlConverter<Order>
     {
         internal static readonly OrderConverter Instance = new OrderConverter();
@@ -15,9 +16,7 @@ namespace Simple.Web.Xml.Tests
 
         public override XElement ToXml(Order value)
         {
-            return new XElement("Order",
-                                new XAttribute("Id", value.Id),
-                                new XAttribute("CustomerId", value.CustomerId));
+            return new XElement("Order", new XAttribute("Id", value.Id), new XAttribute("CustomerId", value.CustomerId));
         }
     }
 
@@ -30,8 +29,7 @@ namespace Simple.Web.Xml.Tests
 
         public override XElement ToXml(Customer value)
         {
-            var xml = new XElement("Customer",
-                                   new XAttribute("Id", value.Id));
+            var xml = new XElement("Customer", new XAttribute("Id", value.Id));
             if (value.Orders != null && value.Orders.Count > 0)
             {
                 foreach (Order order in value.Orders)

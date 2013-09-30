@@ -1,10 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Simple.Web.Helpers;
-
 namespace Simple.Web
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
+
+    using Simple.Web.Helpers;
+
     /// <summary>
     /// Provides a list of Generic URI types from a regular expression.
     /// </summary>
@@ -18,7 +19,8 @@ namespace Simple.Web
         /// </summary>
         /// <param name="uriTemplateName">Name of the URI template part.</param>
         /// <param name="regex">A regular expression to check all exported types' full names.</param>
-        public RegexGenericResolverAttribute(string uriTemplateName, string regex) : base(uriTemplateName)
+        public RegexGenericResolverAttribute(string uriTemplateName, string regex)
+            : base(uriTemplateName)
         {
             _regex = new Regex(regex);
         }

@@ -1,14 +1,13 @@
-﻿using System.Reflection;
-using Simple.Web.CodeGeneration;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Behaviors;
-    using Helpers;
-    using Hosting;
+    using System.Reflection;
+
+    using Simple.Web.Behaviors;
+    using Simple.Web.Helpers;
+    using Simple.Web.Hosting;
 
     /// <summary>
     /// Factory class for building routing tables.
@@ -34,6 +33,13 @@ namespace Simple.Web.Routing
         {
             var routingTable = new RoutingTable();
             PopulateRoutingTableWithHandlers(routingTable);
+            return routingTable;
+        }
+
+        internal RoutingTable BuildRoutingTable(IEnumerable<Type> handlerTypes)
+        {
+            var routingTable = new RoutingTable();
+            PopulateRoutingTableWithHandlers(routingTable, handlerTypes);
             return routingTable;
         }
 
@@ -68,19 +74,30 @@ namespace Simple.Web.Routing
             }
         }
 
-        private static void BuildRoutesForGenericHandlerType(RoutingTable routingTable, Type exportedType, string uriTemplate,
-                                                      List<string> respondsToTypes, List<string> respondsWithTypes)
+        private bool TypeIsHandler(Type type)
+        {
+            if (type.IsAbstract || type.IsInterface)
+            {
+                return false;
+            }
+
+            return _handlerBaseTypes.Any(t => t.IsAssignableFrom(type));
+        }
+
+        private static void BuildRoutesForGenericHandlerType(RoutingTable routingTable,
+                                                             Type exportedType,
+                                                             string uriTemplate,
+                                                             List<string> respondsToTypes,
+                                                             List<string> respondsWithTypes)
         {
             var genericArgument = exportedType.GetGenericArguments().Single();
-            var genericParameterAttributes = genericArgument.GenericParameterAttributes &
-                                             GenericParameterAttributes.SpecialConstraintMask;
+            var genericParameterAttributes = genericArgument.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask;
             var constraints = genericArgument.GetGenericParameterConstraints();
             string templatePart = "{" + genericArgument.Name + "}";
             if (uriTemplate.Contains(templatePart))
             {
                 var genericResolver =
-                    Attribute.GetCustomAttribute(exportedType, typeof (GenericResolverAttribute)) as
-                    GenericResolverAttribute;
+                    Attribute.GetCustomAttribute(exportedType, typeof(GenericResolverAttribute)) as GenericResolverAttribute;
                 IEnumerable<Type> candidateTypes;
                 Func<Type, IEnumerable<string>> getNames;
                 if (genericResolver != null)
@@ -91,7 +108,7 @@ namespace Simple.Web.Routing
                 else
                 {
                     candidateTypes = ExportedTypeHelper.FromCurrentAppDomain(t => true);
-                    getNames = t => new[] {t.Name};
+                    getNames = t => new[] { t.Name };
                 }
                 foreach (var validType in candidateTypes)
                 {
@@ -103,8 +120,7 @@ namespace Simple.Web.Routing
                     {
                         var withTemplate = uriTemplate.Replace(templatePart, templateName);
                         routingTable.Add(withTemplate,
-                                         new HandlerTypeInfo(exportedType.MakeGenericType(validType), respondsToTypes,
-                                                             respondsWithTypes));
+                                         new HandlerTypeInfo(exportedType.MakeGenericType(validType), respondsToTypes, respondsWithTypes));
                     }
                 }
             }
@@ -125,31 +141,26 @@ namespace Simple.Web.Routing
             }
             if (attributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
             {
-                if (target.GetConstructor(new Type[0]) == null) return false;
+                if (target.GetConstructor(new Type[0]) == null)
+                {
+                    return false;
+                }
             }
             if (attributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
             {
-                if (!(target.IsClass || target.IsInterface)) return false;
+                if (!(target.IsClass || target.IsInterface))
+                {
+                    return false;
+                }
             }
             if (attributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
             {
-                if (!(target.IsValueType && !target.IsNullable())) return false;
+                if (!(target.IsValueType && !target.IsNullable()))
+                {
+                    return false;
+                }
             }
             return true;
-        }
-
-        private bool TypeIsHandler(Type type)
-        {
-            if (type.IsAbstract || type.IsInterface) return false;
-
-            return _handlerBaseTypes.Any(t => t.IsAssignableFrom(type));
-        }
-
-        internal RoutingTable BuildRoutingTable(IEnumerable<Type> handlerTypes)
-        {
-            var routingTable = new RoutingTable();
-            PopulateRoutingTableWithHandlers(routingTable, handlerTypes);
-            return routingTable;
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿[assembly: Microsoft.Owin.OwinStartup(typeof(OwinWebHost.Startup))]
+﻿using Microsoft.Owin;
+
+using OwinWebHost;
+
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace OwinWebHost
 {
@@ -14,12 +18,12 @@ namespace OwinWebHost
     {
         public StartupWithCustomMiddleware()
             : base(builder =>
-                {
-                    builder.UseErrorPage();
-                    builder.UseWelcomePage("/owin");
-                    builder.UseSimpleWeb();
-                })
-        {            
+                   {
+                       builder.UseErrorPage();
+                       builder.UseWelcomePage("/owin");
+                       builder.UseSimpleWeb();
+                   })
+        {
         }
     }
 }

@@ -2,7 +2,8 @@ namespace Simple.Web.DependencyInjection
 {
     using System;
     using System.Linq;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     internal class DefaultSimpleContainer : ISimpleContainer
     {
@@ -14,12 +15,19 @@ namespace Simple.Web.DependencyInjection
 
     internal class DefaultSimpleContainerScope : ISimpleContainerScope
     {
+        public void Dispose()
+        {
+        }
+
         public T Get<T>()
         {
             if (typeof(T).IsInterface || typeof(T).IsAbstract)
             {
                 T instance;
-                if (TryCreateInstance(out instance)) return instance;
+                if (TryCreateInstance(out instance))
+                {
+                    return instance;
+                }
                 throw new InvalidOperationException("No IoC Container found. Install a Simple.Web IoC container such as Simple.Web.Ninject.");
             }
             try
@@ -37,6 +45,11 @@ namespace Simple.Web.DependencyInjection
             throw new NotImplementedException();
         }
 
+        private static bool IsImplementationOf<T>(Type type)
+        {
+            return (!(type.IsInterface || type.IsAbstract)) && typeof(T).IsAssignableFrom(type);
+        }
+
         private static bool TryCreateInstance<T>(out T instance)
         {
             var implementations = ExportedTypeHelper.FromCurrentAppDomain(IsImplementationOf<T>).ToList();
@@ -52,15 +65,6 @@ namespace Simple.Web.DependencyInjection
             }
             instance = default(T);
             return false;
-        }
-
-        private static bool IsImplementationOf<T>(Type type)
-        {
-            return (!(type.IsInterface || type.IsAbstract)) && typeof(T).IsAssignableFrom(type);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

@@ -1,24 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Web.Handlers;
-using Simple.Web.Behaviors.Implementations;
-
-namespace Simple.Web.CodeGeneration
+﻿namespace Simple.Web.CodeGeneration
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Hosting;
-    using Http;
+
+    using Simple.Web.Behaviors.Implementations;
+    using Simple.Web.Hosting;
+    using Simple.Web.Http;
 
     internal class PipelineFunctionFactory
     {
-        private static readonly IDictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>> RunMethodCache = 
-                                    new Dictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>>();
+        private static readonly IDictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>> RunMethodCache =
+            new Dictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>>();
+
         private static readonly ICollection RunMethodCacheCollection;
+
+        private readonly ParameterExpression _context;
+        private readonly ParameterExpression _handler;
+        private readonly ParameterExpression _handlerInfoVariable;
+        private readonly Type _handlerType;
+        private readonly ParameterExpression _scopedHandler;
 
         static PipelineFunctionFactory()
         {
@@ -27,48 +32,11 @@ namespace Simple.Web.CodeGeneration
             RunMethodCacheCollection = cache;
         }
 
-        private readonly Type _handlerType;
-        private readonly ParameterExpression _context;
-        private readonly ParameterExpression _scopedHandler;
-        private readonly ParameterExpression _handler;
-        private readonly ParameterExpression _handlerInfoVariable;
-
-        public static Func<IContext, HandlerInfo, Task> Get(Type handlerType, string httpMethod)
-        {
-            IDictionary<string, Func<IContext, HandlerInfo, Task>> handlerCache;
-            if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
-            {
-                lock (RunMethodCacheCollection.SyncRoot)
-                {
-                    if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
-                    {
-                        var asyncRunMethod = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
-                        handlerCache = new Dictionary<string, Func<IContext, HandlerInfo, Task>>
-                            {
-                                {httpMethod, asyncRunMethod}
-                            };
-                        RunMethodCache.Add(handlerType, handlerCache);
-                        return asyncRunMethod;
-                    }
-                }
-            }
-
-            // It's not really worth all the locking palaver here,
-            // worst case scenario the AsyncRunMethod gets built more than once.
-            Func<IContext, HandlerInfo, Task> method;
-            if (!handlerCache.TryGetValue(httpMethod, out method))
-            {
-                method = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
-                handlerCache[httpMethod] = method;
-            }
-            return method;
-        }
-
         public PipelineFunctionFactory(Type handlerType)
         {
             _handlerType = handlerType;
-            _context = Expression.Parameter(typeof (IContext));
-            _scopedHandler = Expression.Variable(typeof (IScopedHandler));
+            _context = Expression.Parameter(typeof(IContext));
+            _scopedHandler = Expression.Variable(typeof(IScopedHandler));
             _handler = Expression.Variable(_handlerType);
             _handlerInfoVariable = Expression.Variable(typeof(HandlerInfo));
         }
@@ -83,12 +51,13 @@ namespace Simple.Web.CodeGeneration
 
             blocks.AddRange(CreateBlocks(GetSetupBehaviorInfos()));
 
-            var buildAction = GetType().GetMethod("BuildAction", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(_handlerType);
+            var buildAction =
+                GetType().GetMethod("BuildAction", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(_handlerType);
 
             var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context).ToList();
             if (setCookieProperties.Any())
             {
-                var setCookieDelegate = buildAction.Invoke(this, new object[] {setCookieProperties});
+                var setCookieDelegate = buildAction.Invoke(this, new object[] { setCookieProperties });
                 blocks.Add(setCookieDelegate);
             }
 
@@ -98,11 +67,11 @@ namespace Simple.Web.CodeGeneration
             var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context).ToList();
             if (setPropertyCookies.Any())
             {
-                var setPropertyDelegate = buildAction.Invoke(this, new object[] {setPropertyCookies});
+                var setPropertyDelegate = buildAction.Invoke(this, new object[] { setPropertyCookies });
                 blocks.Add(setPropertyDelegate);
             }
 
-            var redirectBehavior = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High) { Universal = true };
+            var redirectBehavior = new ResponseBehaviorInfo(typeof(object), typeof(Redirect2), Priority.High) { Universal = true };
 
             blocks.AddRange(CreateBlocks(GetResponseBehaviorInfos(redirectBehavior)));
 
@@ -132,36 +101,12 @@ namespace Simple.Web.CodeGeneration
             var lambdaBlock = Expression.Block(new[] { _handler }, new[] { createHandler, call });
 
             var lambda = Expression.Lambda(lambdaBlock, _context, _handlerInfoVariable);
-            return (Func<IContext, HandlerInfo, Task>) lambda.Compile();
+            return (Func<IContext, HandlerInfo, Task>)lambda.Compile();
         }
 
-        private Expression BuildCreateHandlerExpression()
+        private Action<THandler, IContext> BuildAction<THandler>(IEnumerable<Expression> blocks)
         {
-            var factory = Expression.Constant(HandlerFactory.Instance);
-            var createScopedHandler = Expression.Assign(_scopedHandler, Expression.Call(factory, HandlerFactory.GetHandlerMethod, _handlerInfoVariable));
-            var assignHandler = Expression.Assign(_handler, Expression.Convert(Expression.Property(_scopedHandler, "Handler"), _handlerType));
-            return Expression.Block(new[] {_scopedHandler},
-                                    new Expression[] {createScopedHandler, assignHandler});
-        }
-
-        private static IEnumerable<PipelineBlock> CreateBlocks(IEnumerable<BehaviorInfo> behaviorInfos)
-        {
-            var pipelineBlock = new PipelineBlock();
-            foreach (var behaviorInfo in behaviorInfos)
-            {
-                var method = behaviorInfo.GetMethod();
-                pipelineBlock.Add(method);
-                if (method.ReturnType != typeof(void))
-                {
-                    yield return pipelineBlock;
-                    pipelineBlock = new PipelineBlock();
-                }
-            }
-
-            if (pipelineBlock.Any)
-            {
-                yield return pipelineBlock;
-            }
+            return Expression.Lambda<Action<THandler, IContext>>(Expression.Block(blocks), _handler, _context).Compile();
         }
 
         private Expression BuildCallExpression(IEnumerable<object> blocks)
@@ -184,14 +129,19 @@ namespace Simple.Web.CodeGeneration
                 }
                 else if ((pipelineBlock = block as PipelineBlock) != null)
                 {
-                    call = Expression.Call(AsyncPipeline.ContinueWithAsyncBlockMethod(_handlerType), call,
+                    call = Expression.Call(AsyncPipeline.ContinueWithAsyncBlockMethod(_handlerType),
+                                           call,
                                            Expression.Constant((pipelineBlock).Generate(_handlerType)),
-                                           _context, _handler);
+                                           _context,
+                                           _handler);
                 }
                 else
                 {
-                    call = Expression.Call(AsyncPipeline.ContinueWithActionMethod(_handlerType), call,
-                        Expression.Constant(block), _context, _handler);
+                    call = Expression.Call(AsyncPipeline.ContinueWithActionMethod(_handlerType),
+                                           call,
+                                           Expression.Constant(block),
+                                           _context,
+                                           _handler);
                 }
             }
             return call;
@@ -199,34 +149,39 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildCallHandlerExpression(object block, Expression call)
         {
-            var handlerBlock = (HandlerBlock) block;
+            var handlerBlock = (HandlerBlock)block;
             if (handlerBlock.IsAsync)
             {
-                call = Expression.Call(AsyncPipeline.ContinueWithAsyncHandlerMethod(_handlerType), call,
+                call = Expression.Call(AsyncPipeline.ContinueWithAsyncHandlerMethod(_handlerType),
+                                       call,
                                        Expression.Constant(handlerBlock.GenerateAsync()),
-                                       _context, _handler);
+                                       _context,
+                                       _handler);
             }
             else
             {
                 var runMethod = handlerBlock.Generate();
-                call = Expression.Call(AsyncPipeline.ContinueWithHandlerMethod(_handlerType), call,
+                call = Expression.Call(AsyncPipeline.ContinueWithHandlerMethod(_handlerType),
+                                       call,
                                        Expression.Constant(runMethod),
-                                       _context, _handler);
+                                       _context,
+                                       _handler);
             }
             return call;
         }
 
-        private MethodInfo GetRunMethod(string httpMethod)
+        private Expression BuildCreateHandlerExpression()
         {
-            return _handlerType.GetInterfaces()
-                               .Where(HttpMethodAttribute.IsAppliedTo)
-                               .Select(t => HttpMethodAttribute.GetMethod(t, httpMethod))
-                               .Single(a => a != null);
+            var factory = Expression.Constant(HandlerFactory.Instance);
+            var createScopedHandler = Expression.Assign(_scopedHandler,
+                                                        Expression.Call(factory, HandlerFactory.GetHandlerMethod, _handlerInfoVariable));
+            var assignHandler = Expression.Assign(_handler, Expression.Convert(Expression.Property(_scopedHandler, "Handler"), _handlerType));
+            return Expression.Block(new[] { _scopedHandler }, new Expression[] { createScopedHandler, assignHandler });
         }
 
-        private IEnumerable<BehaviorInfo> GetSetupBehaviorInfos()
+        private IEnumerable<BehaviorInfo> GetOutputBehaviorInfos()
         {
-            return RequestBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
+            return OutputBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
         }
 
         private IEnumerable<BehaviorInfo> GetResponseBehaviorInfos(params ResponseBehaviorInfo[] defaults)
@@ -234,9 +189,18 @@ namespace Simple.Web.CodeGeneration
             return ResponseBehaviorInfo.GetInPriorityOrder(defaults).Where(b => b.Universal || HandlerHasBehavior(b));
         }
 
-        private IEnumerable<BehaviorInfo> GetOutputBehaviorInfos()
+        private MethodInfo GetRunMethod(string httpMethod)
         {
-            return OutputBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
+            return
+                _handlerType.GetInterfaces()
+                            .Where(HttpMethodAttribute.IsAppliedTo)
+                            .Select(t => HttpMethodAttribute.GetMethod(t, httpMethod))
+                            .Single(a => a != null);
+        }
+
+        private IEnumerable<BehaviorInfo> GetSetupBehaviorInfos()
+        {
+            return RequestBehaviorInfo.GetInPriorityOrder().Where(HandlerHasBehavior);
         }
 
         private bool HandlerHasBehavior(BehaviorInfo behaviorInfo)
@@ -251,9 +215,52 @@ namespace Simple.Web.CodeGeneration
             return behaviorInfo.BehaviorType.IsAssignableFrom(_handlerType);
         }
 
-        private Action<THandler, IContext> BuildAction<THandler>(IEnumerable<Expression> blocks)
+        public static Func<IContext, HandlerInfo, Task> Get(Type handlerType, string httpMethod)
         {
-            return Expression.Lambda<Action<THandler, IContext>>(Expression.Block(blocks), _handler, _context).Compile();
+            IDictionary<string, Func<IContext, HandlerInfo, Task>> handlerCache;
+            if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
+            {
+                lock (RunMethodCacheCollection.SyncRoot)
+                {
+                    if (!RunMethodCache.TryGetValue(handlerType, out handlerCache))
+                    {
+                        var asyncRunMethod = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
+                        handlerCache = new Dictionary<string, Func<IContext, HandlerInfo, Task>> { { httpMethod, asyncRunMethod } };
+                        RunMethodCache.Add(handlerType, handlerCache);
+                        return asyncRunMethod;
+                    }
+                }
+            }
+
+            // It's not really worth all the locking palaver here,
+            // worst case scenario the AsyncRunMethod gets built more than once.
+            Func<IContext, HandlerInfo, Task> method;
+            if (!handlerCache.TryGetValue(httpMethod, out method))
+            {
+                method = new PipelineFunctionFactory(handlerType).BuildAsyncRunMethod(httpMethod);
+                handlerCache[httpMethod] = method;
+            }
+            return method;
+        }
+
+        private static IEnumerable<PipelineBlock> CreateBlocks(IEnumerable<BehaviorInfo> behaviorInfos)
+        {
+            var pipelineBlock = new PipelineBlock();
+            foreach (var behaviorInfo in behaviorInfos)
+            {
+                var method = behaviorInfo.GetMethod();
+                pipelineBlock.Add(method);
+                if (method.ReturnType != typeof(void))
+                {
+                    yield return pipelineBlock;
+                    pipelineBlock = new PipelineBlock();
+                }
+            }
+
+            if (pipelineBlock.Any)
+            {
+                yield return pipelineBlock;
+            }
         }
     }
 }

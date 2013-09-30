@@ -1,9 +1,10 @@
-﻿using System;
-using Simple.Web.DependencyInjection;
-using Simple.Web.TestHelpers.Sample;
-
-namespace Simple.Web.Xml.Tests
+﻿namespace Simple.Web.Xml.Tests
 {
+    using System;
+
+    using Simple.Web.DependencyInjection;
+    using Simple.Web.TestHelpers.Sample;
+
     public class XmlTestContainer : ISimpleContainer
     {
         public ISimpleContainerScope BeginScope()
@@ -19,13 +20,13 @@ namespace Simple.Web.Xml.Tests
 
             public T Get<T>()
             {
-                Type requestedType = typeof (T);
-                return (T) Get(requestedType);
+                Type requestedType = typeof(T);
+                return (T)Get(requestedType);
             }
 
             public object Get(Type objectType)
             {
-                if (objectType == typeof (XmlConverter<Order>))
+                if (objectType == typeof(XmlConverter<Order>))
                 {
                     return new OrderConverter();
                 }

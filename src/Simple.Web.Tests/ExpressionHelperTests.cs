@@ -1,10 +1,12 @@
-﻿using System;
-using System.Linq.Expressions;
-using Simple.Web.Helpers;
-using Xunit;
-
-namespace Simple.Web.Tests
+﻿namespace Simple.Web.Tests
 {
+    using System;
+    using System.Linq.Expressions;
+
+    using Simple.Web.Helpers;
+
+    using Xunit;
+
     public class ExpressionHelperTests
     {
         [Fact]

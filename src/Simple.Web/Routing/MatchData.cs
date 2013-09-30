@@ -1,36 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Simple.Web.Hosting;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
-    class MatchData
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Simple.Web.Hosting;
+
+    internal class MatchData
     {
-        private bool _set;
-        private HandlerTypeInfo _single;
         private List<HandlerTypeInfo> _list;
         private HandlerTypeInfo[] _prioritised;
+        private bool _set;
+        private HandlerTypeInfo _single;
         private IDictionary<string, string> _variables;
-
-        public IDictionary<string, string> Variables
-        {
-            get { return _variables; }
-        }
 
         public List<HandlerTypeInfo> List
         {
             get { return _list; }
         }
 
-        private IEnumerable<HandlerTypeInfo> PrioritiseList()
-        {
-            return _prioritised ?? (_prioritised = _list.OrderBy(hti => hti.Priority).ToArray());
-        }
-
         public HandlerTypeInfo Single
         {
             get { return _single; }
+        }
+
+        public IDictionary<string, string> Variables
+        {
+            get { return _variables; }
         }
 
         public void Add(IList<HandlerTypeInfo> typeInfos)
@@ -62,6 +58,28 @@ namespace Simple.Web.Routing
             }
         }
 
+        public Type ResolveByMediaTypes(string contentType, IList<string> acceptTypes)
+        {
+            if (contentType == null)
+            {
+                if (acceptTypes == null)
+                {
+                    var match = PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWithAll);
+                    if (match != null)
+                    {
+                        return match.HandlerType;
+                    }
+                    return PrioritiseList().First().HandlerType;
+                }
+                return ResolveByAcceptTypes(acceptTypes);
+            }
+            if (acceptTypes == null)
+            {
+                return ResolveByContentType(contentType);
+            }
+            return ResolveByBoth(contentType, acceptTypes);
+        }
+
         public void SetVariable(string key, string value)
         {
             if (_variables == null)
@@ -79,48 +97,9 @@ namespace Simple.Web.Routing
             }
         }
 
-        public Type ResolveByMediaTypes(string contentType, IList<string> acceptTypes)
+        private IEnumerable<HandlerTypeInfo> PrioritiseList()
         {
-            if (contentType == null)
-            {
-                if (acceptTypes == null)
-                {
-                    var match = PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWithAll);
-                    if (match != null) return match.HandlerType;
-                    return PrioritiseList().First().HandlerType;
-                }
-                return ResolveByAcceptTypes(acceptTypes);
-            }
-            if (acceptTypes == null)
-            {
-                return ResolveByContentType(contentType);
-            }
-            return ResolveByBoth(contentType, acceptTypes);
-        }
-
-        private Type ResolveByBoth(string contentType, IList<string> acceptTypes)
-        {
-            HandlerTypeInfo match;
-            foreach (var acceptType in acceptTypes)
-            {
-                match = PrioritiseList().FirstOrDefault(hti => hti.RespondsTo(contentType) && hti.RespondsWith(acceptType));
-                if (match != null) return match.HandlerType;
-            }
-            foreach (var acceptType in acceptTypes)
-            {
-                match = PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWith(acceptType));
-                if (match != null) return match.HandlerType;
-            }
-            match = PrioritiseList().FirstOrDefault(hti => hti.RespondsWithAll && hti.RespondsTo(contentType))
-                    ?? PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWithAll);
-            return match == null ? null : match.HandlerType;
-        }
-
-        private Type ResolveByContentType(string contentType)
-        {
-            var match = PrioritiseList().FirstOrDefault(hti => hti.RespondsTo(contentType))
-                        ?? PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll);
-            return match == null ? null : match.HandlerType;
+            return _prioritised ?? (_prioritised = _list.OrderBy(hti => hti.Priority).ToArray());
         }
 
         private Type ResolveByAcceptTypes(IEnumerable<string> acceptTypes)
@@ -136,6 +115,37 @@ namespace Simple.Web.Routing
             }
 
             match = PrioritiseList().FirstOrDefault(hti => hti.RespondsWithAll);
+            return match == null ? null : match.HandlerType;
+        }
+
+        private Type ResolveByBoth(string contentType, IList<string> acceptTypes)
+        {
+            HandlerTypeInfo match;
+            foreach (var acceptType in acceptTypes)
+            {
+                match = PrioritiseList().FirstOrDefault(hti => hti.RespondsTo(contentType) && hti.RespondsWith(acceptType));
+                if (match != null)
+                {
+                    return match.HandlerType;
+                }
+            }
+            foreach (var acceptType in acceptTypes)
+            {
+                match = PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWith(acceptType));
+                if (match != null)
+                {
+                    return match.HandlerType;
+                }
+            }
+            match = PrioritiseList().FirstOrDefault(hti => hti.RespondsWithAll && hti.RespondsTo(contentType)) ??
+                    PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll && hti.RespondsWithAll);
+            return match == null ? null : match.HandlerType;
+        }
+
+        private Type ResolveByContentType(string contentType)
+        {
+            var match = PrioritiseList().FirstOrDefault(hti => hti.RespondsTo(contentType)) ??
+                        PrioritiseList().FirstOrDefault(hti => hti.RespondsToAll);
             return match == null ? null : match.HandlerType;
         }
     }

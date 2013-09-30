@@ -2,26 +2,32 @@ namespace Simple.Web
 {
     using System;
     using System.Collections.Generic;
-    using Cors;
-    using Http;
+
+    using Simple.Web.Cors;
+    using Simple.Web.Http;
 
     public class PublicFile
     {
-        private readonly string _path;
-        private readonly CacheOptions _cacheOptions;
         private readonly IList<IAccessControlEntry> _accessControl;
+        private readonly CacheOptions _cacheOptions;
+        private readonly string _path;
 
-        public PublicFile(string path) : this(path, (CacheOptions)null)
+        public PublicFile(string path)
+            : this(path, (CacheOptions)null)
         {
         }
 
-        public PublicFile(string path, params AccessControlEntry[] accessControl) : this(path, null, accessControl)
+        public PublicFile(string path, params AccessControlEntry[] accessControl)
+            : this(path, null, accessControl)
         {
         }
 
         public PublicFile(string path, CacheOptions cacheOptions, params AccessControlEntry[] accessControl)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
             _path = path;
             _cacheOptions = cacheOptions;
             if (accessControl != null)
@@ -30,9 +36,9 @@ namespace Simple.Web
             }
         }
 
-        public string Path
+        public IList<IAccessControlEntry> AccessControl
         {
-            get { return _path; }
+            get { return _accessControl; }
         }
 
         public CacheOptions CacheOptions
@@ -40,9 +46,9 @@ namespace Simple.Web
             get { return _cacheOptions; }
         }
 
-        public IList<IAccessControlEntry> AccessControl
+        public string Path
         {
-            get { return _accessControl; }
+            get { return _path; }
         }
 
         public static implicit operator PublicFile(string path)

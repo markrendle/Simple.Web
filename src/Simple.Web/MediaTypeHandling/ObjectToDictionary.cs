@@ -20,7 +20,10 @@
         /// <returns>A dictionary representation of the object's properties.</returns>
         public static IDictionary<string, object> ToDictionary(this object obj)
         {
-            if (obj == null) throw new ArgumentNullException("obj");
+            if (obj == null)
+            {
+                throw new ArgumentNullException("obj");
+            }
 
             var converter = Converters.GetOrAdd(obj.GetType(), CreateConverter);
 
@@ -39,14 +42,14 @@
             var properties = type.GetProperties().Where(p => p.CanRead && p.GetIndexParameters().Length == 0).ToList();
 
             return obj =>
+                   {
+                       var dictionary = new Dictionary<string, object>(properties.Count);
+                       foreach (var property in properties)
                        {
-                           var dictionary = new Dictionary<string, object>(properties.Count);
-                           foreach (var property in properties)
-                           {
-                               dictionary.Add(property.Name, property.GetValue(obj, null));
-                           }
-                           return dictionary;
-                       };
+                           dictionary.Add(property.Name, property.GetValue(obj, null));
+                       }
+                       return dictionary;
+                   };
         }
     }
 }

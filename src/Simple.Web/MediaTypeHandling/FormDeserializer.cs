@@ -5,12 +5,13 @@ namespace Simple.Web.MediaTypeHandling
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     [MediaTypes("application/x-www-form-urlencoded")]
     internal sealed class FormDeserializer : IMediaTypeHandler
     {
-        private static readonly char[] SplitTokens = new[] {'\n', '&'};
+        private static readonly char[] SplitTokens = { '\n', '&' };
 
         /// <summary>
         /// Reads content from the specified input stream, which is assumed to be in x-www-form-urlencoded format.
@@ -29,19 +30,15 @@ namespace Simple.Web.MediaTypeHandling
             var pairs = text.Split(SplitTokens, StringSplitOptions.RemoveEmptyEntries);
             var obj = Activator.CreateInstance<T>();
             // reflection is slow, get the property[] once.
-            var properties = typeof (T).GetProperties();
+            var properties = typeof(T).GetProperties();
             foreach (var pair in pairs)
             {
                 var nameValue = pair.Split('=');
-                var property =
-                    properties.FirstOrDefault(p => p.Name.Equals(nameValue[0], StringComparison.Ordinal)) ??
-                    properties.FirstOrDefault(
-                        p => p.Name.Equals(nameValue[0], StringComparison.OrdinalIgnoreCase));
+                var property = properties.FirstOrDefault(p => p.Name.Equals(nameValue[0], StringComparison.Ordinal)) ??
+                               properties.FirstOrDefault(p => p.Name.Equals(nameValue[0], StringComparison.OrdinalIgnoreCase));
                 if (property != null)
                 {
-                    property.SetValue(obj,
-                                      Convert.ChangeType(HttpUtility.UrlDecode(nameValue[1]),
-                                                         property.PropertyType), null);
+                    property.SetValue(obj, Convert.ChangeType(HttpUtility.UrlDecode(nameValue[1]), property.PropertyType), null);
                 }
             }
             return TaskHelper.Completed(obj);

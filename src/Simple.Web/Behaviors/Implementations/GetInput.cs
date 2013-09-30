@@ -1,7 +1,7 @@
 ﻿namespace Simple.Web.Behaviors.Implementations
 {
-    using Http;
-    using MediaTypeHandling;
+    using Simple.Web.Http;
+    using Simple.Web.MediaTypeHandling;
 
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.

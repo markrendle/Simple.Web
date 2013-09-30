@@ -8,7 +8,10 @@
 
         public static void Start()
         {
-            if (_startWasCalled) return;
+            if (_startWasCalled)
+            {
+                return;
+            }
             _startWasCalled = true;
             BuildProvider.RegisterBuildProvider(".cshtml", typeof(SimpleRazorBuildProvider));
         }

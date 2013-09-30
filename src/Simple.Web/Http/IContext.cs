@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-
 namespace Simple.Web.Http
 {
-    using Authentication;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Represents the context for a request/response cycle.

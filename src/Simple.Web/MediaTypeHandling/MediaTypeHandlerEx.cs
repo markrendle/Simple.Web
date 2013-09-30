@@ -1,11 +1,10 @@
-using System;
-
 namespace Simple.Web.MediaTypeHandling
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    static class MediaTypeHandlerEx
+    internal static class MediaTypeHandlerEx
     {
         private static readonly IDictionary<Type, HashSet<string>> Cache = new Dictionary<Type, HashSet<string>>();
         private static readonly object Sync = new object();
@@ -26,9 +25,8 @@ namespace Simple.Web.MediaTypeHandling
                     if (!Cache.TryGetValue(mediaTypeHandler.GetType(), out contentTypes))
                     {
                         contentTypes =
-                            new HashSet<string>(
-                                MediaTypesAttribute.Get(mediaTypeHandler.GetType()).SelectMany(cta => cta.ContentTypes),
-                                StringComparer.OrdinalIgnoreCase);
+                            new HashSet<string>(MediaTypesAttribute.Get(mediaTypeHandler.GetType()).SelectMany(cta => cta.ContentTypes),
+                                                StringComparer.OrdinalIgnoreCase);
                         Cache[mediaTypeHandler.GetType()] = contentTypes;
                     }
                 }

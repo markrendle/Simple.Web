@@ -1,9 +1,11 @@
 namespace Simple.Web.Behaviors
 {
+    using Simple.Web.Behaviors.Implementations;
+
     /// <summary>
     /// Represents an handler that may respond with a 301, 302, 303 or 307 Redirect status.
     /// </summary>
-    [ResponseBehavior(typeof(Implementations.Redirect), Priority = Priority.High)]
+    [ResponseBehavior(typeof(Redirect), Priority = Priority.High)]
     public interface IMayRedirect
     {
         /// <summary>

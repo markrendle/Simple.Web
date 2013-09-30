@@ -19,14 +19,6 @@ namespace Simple.Web.Links
         }
 
         /// <summary>
-        /// Gets the URI template.
-        /// </summary>
-        public string UriTemplate
-        {
-            get { return _uriTemplate; }
-        }
-
-        /// <summary>
         /// Gets the type of the model.
         /// </summary>
         /// <value>
@@ -38,10 +30,12 @@ namespace Simple.Web.Links
         }
 
         /// <summary>
-        /// Gets the rel: the relationship of the linked resource to the current one.
+        /// Gets or sets the title: a human-readable name for the link.
         /// </summary>
-        /// <returns>The <c>rel</c> type, e.g. <c>self</c> for canonical links.</returns>
-        internal abstract string GetRel();
+        /// <value>
+        /// The title.
+        /// </value>
+        public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the Content-Type of the resource.
@@ -52,12 +46,18 @@ namespace Simple.Web.Links
         public string Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the title: a human-readable name for the link.
+        /// Gets the URI template.
         /// </summary>
-        /// <value>
-        /// The title.
-        /// </value>
-        public string Title { get; set; }
+        public string UriTemplate
+        {
+            get { return _uriTemplate; }
+        }
+
+        /// <summary>
+        /// Gets the rel: the relationship of the linked resource to the current one.
+        /// </summary>
+        /// <returns>The <c>rel</c> type, e.g. <c>self</c> for canonical links.</returns>
+        internal abstract string GetRel();
 
         /// <summary>
         /// Checks to see if the attribute exists on a type.
@@ -66,7 +66,7 @@ namespace Simple.Web.Links
         /// <returns><c>true</c> if the attribute is applied to the type; otherwise, <c>false</c>.</returns>
         public static bool Exists(Type type)
         {
-            return Attribute.IsDefined(type, typeof (LinkAttributeBase));
+            return IsDefined(type, typeof(LinkAttributeBase));
             //return GetCustomAttributes(type, typeof(LinkAttributeBase)).Length > 0;
         }
 
@@ -78,15 +78,12 @@ namespace Simple.Web.Links
         /// <returns>A list of <see cref="CanonicalAttribute"/> or <see cref="LinksFromAttribute"/> objects.</returns>
         public static IList<LinkAttributeBase> Get(Type handlerType, Type modelType)
         {
-            return Get(handlerType)
-                .Where(a => a.ModelType != null && a.ModelType.IsAssignableFrom(modelType))
-                .ToList();
+            return Get(handlerType).Where(a => a.ModelType != null && a.ModelType.IsAssignableFrom(modelType)).ToList();
         }
 
         public static IEnumerable<LinkAttributeBase> Get(Type handlerType)
         {
-            return GetCustomAttributes(handlerType, typeof (LinkAttributeBase))
-                .Cast<LinkAttributeBase>();
+            return GetCustomAttributes(handlerType, typeof(LinkAttributeBase)).Cast<LinkAttributeBase>();
         }
     }
 }

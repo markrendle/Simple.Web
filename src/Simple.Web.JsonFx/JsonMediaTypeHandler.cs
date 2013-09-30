@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.JsonFx
+﻿namespace Simple.Web.JsonFx
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
-    using Helpers;
-    using Links;
-    using MediaTypeHandling;
-    using global::JsonFx.Model.Filters;
+
     using global::JsonFx.Json;
     using global::JsonFx.Json.Resolvers;
+    using global::JsonFx.Model.Filters;
     using global::JsonFx.Serialization;
     using global::JsonFx.Serialization.Resolvers;
     using global::JsonFx.Xml.Resolvers;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
 
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandler : IMediaTypeHandler
@@ -33,18 +34,6 @@ namespace Simple.Web.JsonFx
                 result = reader.Read<T>(streamReader);
             }
             return TaskHelper.Completed(result);
-        }
-
-        private static CombinedResolverStrategy CreateResolverStrategy()
-        {
-            return new CombinedResolverStrategy(
-                new JsonResolverStrategy(), // simple JSON attributes
-                new DataContractResolverStrategy(), // DataContract attributes
-                new XmlResolverStrategy(), // XmlSerializer attributes
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.PascalCase), // DotNetStyle
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.CamelCase), // jsonStyle
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Lowercase, "-"), // xml-style
-                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_")); // CONST_STYLE
         }
 
         public Task Write<T>(IContent content, Stream outputStream)
@@ -67,8 +56,7 @@ namespace Simple.Web.JsonFx
                     byte[] buffer;
                     using (var writer = new StringWriter())
                     {
-                        var dataWriterSettings = new DataWriterSettings(new MonoCompatResolverStrategy(),
-                                                                        new Iso8601DateFilter());
+                        var dataWriterSettings = new DataWriterSettings(new MonoCompatResolverStrategy(), new Iso8601DateFilter());
 
                         new JsonWriter(dataWriterSettings).Write(output, writer);
                         buffer = Encoding.UTF8.GetBytes(writer.ToString());
@@ -82,6 +70,37 @@ namespace Simple.Web.JsonFx
             }
 
             return TaskHelper.Completed();
+        }
+
+        private static CombinedResolverStrategy CreateResolverStrategy()
+        {
+            return new CombinedResolverStrategy(new JsonResolverStrategy(),
+                                                // simple JSON attributes
+                                                new DataContractResolverStrategy(),
+                                                // DataContract attributes
+                                                new XmlResolverStrategy(),
+                                                // XmlSerializer attributes
+                                                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.PascalCase),
+                                                // DotNetStyle
+                                                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.CamelCase),
+                                                // jsonStyle
+                                                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Lowercase, "-"),
+                                                // xml-style
+                                                new ConventionResolverStrategy(ConventionResolverStrategy.WordCasing.Uppercase, "_"));
+            // CONST_STYLE
+        }
+
+        private static Link EnsureJson(Link source)
+        {
+            if (!string.IsNullOrWhiteSpace(source.Type))
+            {
+                if (source.Type.EndsWith("json"))
+                {
+                    return source;
+                }
+                return new Link(source.GetHandlerType(), source.Href, source.Rel, source.Type + "+json", source.Title);
+            }
+            return new Link(source.GetHandlerType(), source.Href, source.Rel, MediaType.Json, source.Title);
         }
 
         private static object ProcessContent(IContent content)
@@ -119,19 +138,6 @@ namespace Simple.Web.JsonFx
 
                 yield return o;
             }
-        }
-
-        private static Link EnsureJson(Link source)
-        {
-            if (!string.IsNullOrWhiteSpace(source.Type))
-            {
-                if (source.Type.EndsWith("json"))
-                {
-                    return source;
-                }
-                return new Link(source.GetHandlerType(), source.Href, source.Rel, source.Type + "+json", source.Title);
-            }
-            return new Link(source.GetHandlerType(), source.Href, source.Rel, MediaType.Json, source.Title);
         }
     }
 }

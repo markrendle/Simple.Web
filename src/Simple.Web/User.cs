@@ -2,7 +2,8 @@ namespace Simple.Web
 {
     using System;
     using System.Security.Principal;
-    using Authentication;
+
+    using Simple.Web.Authentication;
 
     /// <summary>
     /// Convenience implementation of the <see cref="IUser"/> interface. Feel free to make your own.
@@ -10,8 +11,8 @@ namespace Simple.Web
     public class User : IUser
     {
         private readonly Guid _guid;
-        private readonly string _name;
         private readonly bool _isAuthenticated;
+        private readonly string _name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
@@ -36,6 +37,14 @@ namespace Simple.Web
         }
 
         /// <summary>
+        /// Gets the GUID that uniquely identifies the user in the system.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return _guid; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this user is authenticated.
         /// </summary>
         /// <value>
@@ -44,14 +53,6 @@ namespace Simple.Web
         public bool IsAuthenticated
         {
             get { return _isAuthenticated; }
-        }
-
-        /// <summary>
-        /// Gets the GUID that uniquely identifies the user in the system.
-        /// </summary>
-        public Guid Guid
-        {
-            get { return _guid; }
         }
 
         /// <summary>

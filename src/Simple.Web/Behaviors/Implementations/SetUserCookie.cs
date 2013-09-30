@@ -1,6 +1,5 @@
 namespace Simple.Web.Behaviors.Implementations
 {
-    using Simple.Web.Behaviors;
     using Simple.Web.Http;
 
     /// <summary>

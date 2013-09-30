@@ -1,10 +1,10 @@
 ﻿namespace Simple.Web.Hosting
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Reflection;
-    using System.Web;
+
     using Simple.Web.CodeGeneration;
 
     /// <summary>
@@ -12,22 +12,13 @@
     /// </summary>
     internal sealed class HandlerFactory
     {
-        public static readonly MethodInfo GetHandlerMethod = typeof (HandlerFactory).GetMethod("GetHandler");
+        public static readonly MethodInfo GetHandlerMethod = typeof(HandlerFactory).GetMethod("GetHandler");
         private static HandlerFactory _instance;
 
-        /// <summary>
-        /// Gets the singleton instance.
-        /// </summary>
-        public static HandlerFactory Instance
-        {
-            get { return _instance ?? (_instance = new HandlerFactory(SimpleWeb.Configuration)); }
-        }
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>>
+            _builders = new ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>>();
 
         private readonly HandlerBuilderFactory _handlerBuilderFactory;
-
-        private readonly
-            ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>> _builders =
-                new ConcurrentDictionary<string, ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerFactory"/> class.
@@ -40,6 +31,14 @@
         }
 
         /// <summary>
+        /// Gets the singleton instance.
+        /// </summary>
+        public static HandlerFactory Instance
+        {
+            get { return _instance ?? (_instance = new HandlerFactory(SimpleWeb.Configuration)); }
+        }
+
+        /// <summary>
         /// Gets the handler.
         /// </summary>
         /// <param name="handlerInfo">The handler info.</param>
@@ -48,8 +47,7 @@
         {
             var builderDictionary = _builders.GetOrAdd(handlerInfo.HttpMethod,
                                                        _ =>
-                                                       new ConcurrentDictionary
-                                                           <Type, Func<IDictionary<string, string>, IScopedHandler>>());
+                                                       new ConcurrentDictionary<Type, Func<IDictionary<string, string>, IScopedHandler>>());
 
             var builder = builderDictionary.GetOrAdd(handlerInfo.HandlerType, _handlerBuilderFactory.BuildHandlerBuilder);
             var handler = builder(handlerInfo.Variables);

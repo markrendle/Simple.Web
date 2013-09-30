@@ -5,12 +5,14 @@ namespace Simple.Web.Links
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
-    using Helpers;
+
+    using Simple.Web.Helpers;
 
     internal interface ILinkBuilder
     {
-        ICollection<Link> LinksForModel(object model);
         Link CanonicalForModel(object model);
+
+        ICollection<Link> LinksForModel(object model);
     }
 
     internal class LinkBuilder : ILinkBuilder
@@ -23,26 +25,28 @@ namespace Simple.Web.Links
             _templates = templates.ToArray();
         }
 
-        public ICollection<Link> LinksForModel(object model)
-        {
-            var actuals =
-                _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).Where(l => l.Href != null).ToList();
-            return new ReadOnlyCollection<Link>(actuals);
-        }
-        
         public Link CanonicalForModel(object model)
         {
             return
-                _templates.Where(t => t.Rel == "self").Select(
-                    l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).FirstOrDefault(l => l.Href != null);
+                _templates.Where(t => t.Rel == "self")
+                          .Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title))
+                          .FirstOrDefault(l => l.Href != null);
+        }
+
+        public ICollection<Link> LinksForModel(object model)
+        {
+            var actuals =
+                _templates.Select(l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title))
+                          .Where(l => l.Href != null)
+                          .ToList();
+            return new ReadOnlyCollection<Link>(actuals);
         }
 
         private static string BuildUri(object model, string uriTemplate)
         {
             int queryStart = uriTemplate.IndexOf("?", StringComparison.Ordinal);
             var uri = new StringBuilder(uriTemplate);
-            var variables = new HashSet<string>(UriTemplateHelper.ExtractVariableNames(uriTemplate),
-                                                StringComparer.OrdinalIgnoreCase);
+            var variables = new HashSet<string>(UriTemplateHelper.ExtractVariableNames(uriTemplate), StringComparer.OrdinalIgnoreCase);
             if (variables.Count > 0)
             {
                 foreach (var variable in variables)
@@ -75,14 +79,15 @@ namespace Simple.Web.Links
         private class EmptyLinkBuilder : ILinkBuilder
         {
             private static readonly Link[] EmptyArray = new Link[0];
-            public ICollection<Link> LinksForModel(object model)
-            {
-                return EmptyArray;
-            }
 
             public Link CanonicalForModel(object model)
             {
                 return null;
+            }
+
+            public ICollection<Link> LinksForModel(object model)
+            {
+                return EmptyArray;
             }
         }
     }

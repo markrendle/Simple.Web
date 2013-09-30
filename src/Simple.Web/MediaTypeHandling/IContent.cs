@@ -2,6 +2,7 @@ namespace Simple.Web.MediaTypeHandling
 {
     using System;
     using System.Collections.Generic;
+
     using Simple.Web.Links;
 
     /// <summary>
@@ -10,14 +11,14 @@ namespace Simple.Web.MediaTypeHandling
     public interface IContent
     {
         /// <summary>
-        /// Gets the URI used to request the resource.
-        /// </summary>
-        Uri Uri { get; }
-
-        /// <summary>
         /// Gets the handler which generated the model.
         /// </summary>
         object Handler { get; }
+
+        /// <summary>
+        /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
+        /// </summary>
+        IEnumerable<Link> Links { get; }
 
         /// <summary>
         /// Gets the model.
@@ -25,13 +26,13 @@ namespace Simple.Web.MediaTypeHandling
         object Model { get; }
 
         /// <summary>
+        /// Gets the URI used to request the resource.
+        /// </summary>
+        Uri Uri { get; }
+
+        /// <summary>
         /// Gets the variables from the handler.
         /// </summary>
         IEnumerable<KeyValuePair<string, object>> Variables { get; }
-
-        /// <summary>
-        /// Gets the links which are valid for the model type, based on the <see cref="LinksFromAttribute"/> on handlers.
-        /// </summary>
-        IEnumerable<Link> Links { get; } 
     }
 }

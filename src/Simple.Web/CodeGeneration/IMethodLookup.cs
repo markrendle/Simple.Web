@@ -11,6 +11,7 @@ namespace Simple.Web.CodeGeneration
         /// Gets a method to write the status code to the response.
         /// </summary>
         MethodInfo WriteStatusCode { get; }
+
         /// <summary>
         /// Gets a method to render a view to the response.
         /// </summary>

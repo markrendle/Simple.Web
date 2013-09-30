@@ -1,16 +1,38 @@
-﻿using System.Collections.Generic;
-
-namespace Simple.Web.JsonFx.Tests
+﻿namespace Simple.Web.JsonFx.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
-    using MediaTypeHandling;
-    using TestHelpers;
-    using TestHelpers.Sample;
+
+    using Simple.Web.MediaTypeHandling;
+    using Simple.Web.TestHelpers;
+    using Simple.Web.TestHelpers.Sample;
+
     using Xunit;
 
     public class JsonFxContentTypeHandlerTests
     {
+        [Fact]
+        public void ParsesJasnWithEnum()
+        {
+            var content = "{ \"AnEnum\": \"Ian\" }";
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(content);
+            writer.Flush();
+            stream.Position = 0;
+
+            var handler = new JsonMediaTypeHandler();
+
+            var obj = handler.Read<EnumCustomer>(stream).Result;
+
+            stream.Close();
+
+            Assert.IsType<EnumCustomer>(obj);
+            Assert.NotNull(obj);
+            Assert.Equal(MyEnum.Ian, obj.AnEnum);
+        }
+
         [Fact]
         public void PicksUpOrdersLinkFromCustomer()
         {
@@ -20,8 +42,7 @@ namespace Simple.Web.JsonFx.Tests
             const string selfLink =
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
-                                      new Customer {Id = 42});
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new Customer { Id = 42 });
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new StringBuilderStream())
@@ -44,8 +65,7 @@ namespace Simple.Web.JsonFx.Tests
             const string selfLink =
                 @"{""Title"":null,""Href"":""/customer/42"",""Rel"":""self"",""Type"":""application/vnd.customer+json""}";
 
-            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(),
-                                      new[] {new Customer {Id = 42}});
+            var content = new Content(new Uri("http://test.com/customer/42"), new CustomerHandler(), new[] { new Customer { Id = 42 } });
             var target = new JsonMediaTypeHandler();
             string actual;
             using (var stream = new StringBuilderStream())
@@ -62,8 +82,9 @@ namespace Simple.Web.JsonFx.Tests
         [Fact]
         public void WritesJsonWithEnum()
         {
-            var content = new Content(new Uri("http://test.com/EnumCustomer/42"), new EnumCustomerHandler(),
-                                      new[] {new EnumCustomer() {AnEnum = MyEnum.Ian}});
+            var content = new Content(new Uri("http://test.com/EnumCustomer/42"),
+                                      new EnumCustomerHandler(),
+                                      new[] { new EnumCustomer { AnEnum = MyEnum.Ian } });
             var target = new JsonMediaTypeHandler();
 
             string actual;
@@ -75,27 +96,6 @@ namespace Simple.Web.JsonFx.Tests
             }
 
             Assert.NotNull(actual);
-        }
-
-        [Fact]
-        public void ParsesJasnWithEnum()
-        {
-            var content = "{ \"AnEnum\": \"Ian\" }";
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(content);
-            writer.Flush();
-            stream.Position = 0;
-
-            var handler = new JsonMediaTypeHandler();
-
-            var obj = handler.Read<EnumCustomer>(stream).Result;
-
-            stream.Close();
-
-            Assert.IsType<EnumCustomer>(obj);
-            Assert.NotNull(obj);
-            Assert.Equal(MyEnum.Ian, (obj as EnumCustomer).AnEnum);
         }
     }
 }

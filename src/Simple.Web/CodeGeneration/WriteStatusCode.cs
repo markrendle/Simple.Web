@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.CodeGeneration
+﻿namespace Simple.Web.CodeGeneration
 {
-    using Http;
+    using Simple.Web.Http;
 
     internal static class WriteStatusCode
     {

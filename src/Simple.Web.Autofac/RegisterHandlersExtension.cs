@@ -1,7 +1,8 @@
 ﻿namespace Autofac
 {
-    using Simple.Web.Autofac;
     using System.Reflection;
+
+    using Simple.Web.Autofac;
 
     public static class RegisterHandlersExtension
     {

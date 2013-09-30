@@ -1,4 +1,8 @@
-﻿[assembly: Microsoft.Owin.OwinStartup(typeof(OwinLibraryHost.Startup))]
+﻿using Microsoft.Owin;
+
+using OwinLibraryHost;
+
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace OwinLibraryHost
 {
@@ -14,11 +18,11 @@ namespace OwinLibraryHost
     {
         public StartupWithCustomMiddleware()
             : base(builder =>
-            {
-                builder.UseErrorPage();
-                builder.UseWelcomePage("/owin");
-                builder.UseSimpleWeb();
-            })
+                   {
+                       builder.UseErrorPage();
+                       builder.UseWelcomePage("/owin");
+                       builder.UseSimpleWeb();
+                   })
         {
         }
     }

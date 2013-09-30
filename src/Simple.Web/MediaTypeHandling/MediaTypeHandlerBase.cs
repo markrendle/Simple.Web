@@ -1,20 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Simple.Web.Helpers;
-using Simple.Web.Links;
-
-namespace Simple.Web.MediaTypeHandling
+﻿namespace Simple.Web.MediaTypeHandling
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.Links;
+
     public abstract class MediaTypeHandlerBase<TWireFormat> : IMediaTypeHandler
         where TWireFormat : class
     {
         public Task<T> Read<T>(Stream inputStream)
         {
-            return ReadInput(inputStream)
-                .ContinueWith(t => FromWireFormat<T>(t.Result))
-                .Unwrap();
+            return ReadInput(inputStream).ContinueWith(t => FromWireFormat<T>(t.Result)).Unwrap();
         }
 
         public Task Write<T>(IContent content, Stream outputStream)
@@ -25,7 +24,7 @@ namespace Simple.Web.MediaTypeHandling
 
                 // handle enumerable
                 var enumerable = content.Model as IEnumerable;
-                if (enumerable != null && typeof (T) != typeof (string))
+                if (enumerable != null && typeof(T) != typeof(string))
                 {
                     bool skipLinksLookup = false;
                     var formatted = new List<TWireFormat>();
@@ -55,7 +54,7 @@ namespace Simple.Web.MediaTypeHandling
                 }
                 else
                 {
-                    output = ToWireFormat((T) content.Model);
+                    output = ToWireFormat((T)content.Model);
                     if (output != null)
                     {
                         AddWireFormattedLinks(output, content.Links);

@@ -6,7 +6,7 @@
 
     internal static class QueryStringParser
     {
-        public static IDictionary<string,string[]> Parse(string queryString)
+        public static IDictionary<string, string[]> Parse(string queryString)
         {
             var workingDictionary = new Dictionary<string, List<string>>();
             var chunks = queryString.Split('&');

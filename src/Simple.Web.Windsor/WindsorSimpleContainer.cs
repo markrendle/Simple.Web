@@ -1,11 +1,12 @@
-﻿using Castle.Windsor;
-using Simple.Web.DependencyInjection;
-
-namespace Simple.Web.Windsor
+﻿namespace Simple.Web.Windsor
 {
+    using Castle.Windsor;
+
+    using Simple.Web.DependencyInjection;
+
     public class WindsorSimpleContainer : ISimpleContainer
     {
-        readonly IWindsorContainer _container;
+        private readonly IWindsorContainer _container;
 
         internal WindsorSimpleContainer(IWindsorContainer container)
         {

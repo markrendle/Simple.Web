@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Simple.Web.CodeGeneration
+﻿namespace Simple.Web.CodeGeneration
 {
     using System;
     using System.Collections.Generic;
@@ -9,16 +7,12 @@ namespace Simple.Web.CodeGeneration
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Simple.Web.Http;
 
     internal class PipelineBlock
     {
         private readonly List<MethodInfo> _methods = new List<MethodInfo>();
- 
-        public void Add(MethodInfo method)
-        {
-            _methods.Add(method);
-        }
 
         public bool Any
         {
@@ -27,12 +21,17 @@ namespace Simple.Web.CodeGeneration
 
         public bool IsBoolean
         {
-            get { return _methods.Count > 0 && _methods.Last().ReturnType == typeof (bool); }
+            get { return _methods.Count > 0 && _methods.Last().ReturnType == typeof(bool); }
+        }
+
+        public void Add(MethodInfo method)
+        {
+            _methods.Add(method);
         }
 
         public Delegate Generate(Type handlerType)
         {
-            var context = Expression.Parameter(typeof (IContext));
+            var context = Expression.Parameter(typeof(IContext));
             var handler = Expression.Parameter(handlerType);
 
             var calls = new List<Expression>();
@@ -56,13 +55,45 @@ namespace Simple.Web.CodeGeneration
             }
             else
             {
-                throw new InvalidOperationException(
-                    "Behavior implementation methods may only return void, bool, Task, or Task<bool>.");
+                throw new InvalidOperationException("Behavior implementation methods may only return void, bool, Task, or Task<bool>.");
             }
 
             var block = Expression.Block(calls);
 
             return Expression.Lambda(block, handler, context).Compile();
+        }
+
+        private static Task<bool> CancelBooleanAsync(Task<bool> task)
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            return task.ContinueWith(t =>
+                                     {
+                                         if (!t.Result)
+                                         {
+                                             cancellationTokenSource.Cancel();
+                                         }
+                                         return t.Result;
+                                     },
+                                     cancellationTokenSource.Token);
+        }
+
+        private static Task<bool> CompleteBooleanTask(bool @continue)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(@continue);
+            return tcs.Task;
+        }
+
+        private static Task<bool> CompleteTask(Task task)
+        {
+            return task.ContinueWith(t => true, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        private static Task<bool> CompletedTask()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            tcs.SetResult(true);
+            return tcs.Task;
         }
 
         private static Expression CreateCall(MethodInfo method, ParameterExpression handler, ParameterExpression context, Type handlerType)
@@ -73,10 +104,10 @@ namespace Simple.Web.CodeGeneration
                 if (handlerParameterType.IsGenericType)
                 {
                     var @interface =
-                        handlerType.GetInterfaces().FirstOrDefault(
-                            i =>
-                            i.IsGenericType &&
-                            i.GetGenericTypeDefinition() == handlerParameterType.GetGenericTypeDefinition());
+                        handlerType.GetInterfaces()
+                                   .FirstOrDefault(
+                                       i =>
+                                       i.IsGenericType && i.GetGenericTypeDefinition() == handlerParameterType.GetGenericTypeDefinition());
                     if (@interface != null)
                     {
                         method = method.MakeGenericMethod(@interface.GetGenericArguments().Single());
@@ -97,38 +128,6 @@ namespace Simple.Web.CodeGeneration
             var lastCall = calls.Last();
             calls.Remove(lastCall);
             calls.Add(Expression.Call(typeof(PipelineBlock).GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic), lastCall));
-        }
-
-        private static Task<bool> CompletedTask()
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.SetResult(true);
-            return tcs.Task;
-        }
-
-        private static Task<bool> CompleteBooleanTask(bool @continue)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.SetResult(@continue);
-            return tcs.Task;
-        }
-
-        private static Task<bool> CompleteTask(Task task)
-        {
-            return task.ContinueWith(t => true, TaskContinuationOptions.OnlyOnRanToCompletion);
-        }
-
-        private static Task<bool> CancelBooleanAsync(Task<bool> task)
-        {
-            var cancellationTokenSource = new CancellationTokenSource();
-            return task.ContinueWith(t =>
-                {
-                    if (!t.Result)
-                    {
-                        cancellationTokenSource.Cancel();
-                    }
-                    return t.Result;
-                }, cancellationTokenSource.Token);
         }
     }
 }

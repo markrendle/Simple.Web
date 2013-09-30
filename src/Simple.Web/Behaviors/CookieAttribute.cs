@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Simple.Web.Behaviors
+﻿namespace Simple.Web.Behaviors
 {
+    using System;
+
     /// <summary>
     /// Apply this attribute to a property on a handler class to have it persisted as a cookie.
     /// Primitive properties (including strings and guids) will be persisted as single-value cookies.
@@ -11,6 +11,14 @@ namespace Simple.Web.Behaviors
     public sealed class CookieAttribute : Attribute
     {
         /// <summary>
+        /// Gets or sets a value indicating whether the cookie is HTTP only, that is, cannot be read by client-side script.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if HTTP only, <c>false</c> if not. Default is <c>false</c>.
+        /// </value>
+        public bool HttpOnly { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the HTTP cookie.
         /// </summary>
         /// <value>
@@ -19,18 +27,9 @@ namespace Simple.Web.Behaviors
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the time in seconds the cookie is valid for.
+        /// Gets or sets a value specifying the path below which the cooki
         /// </summary>
-        /// <value>The time out. Set to 0 (the default) for a session-only cookie.</value>
-        public int TimeOut { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the cookie is HTTP only, that is, cannot be read by client-side script.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if HTTP only, <c>false</c> if not. Default is <c>false</c>.
-        /// </value>
-        public bool HttpOnly { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the cookie is sent over HTTPS.
@@ -41,8 +40,9 @@ namespace Simple.Web.Behaviors
         public bool Secure { get; set; }
 
         /// <summary>
-        /// Gets or sets a value specifying the path below which the cooki
+        /// Gets or sets the time in seconds the cookie is valid for.
         /// </summary>
-        public string Path { get; set; }
+        /// <value>The time out. Set to 0 (the default) for a session-only cookie.</value>
+        public int TimeOut { get; set; }
     }
 }

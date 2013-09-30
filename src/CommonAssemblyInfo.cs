@@ -1,16 +1,15 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
 [assembly: AssemblyCompany("Mark Rendle")]
 [assembly: AssemblyProduct("Simple.Web")]
 [assembly: AssemblyCopyright("Copyright (C) Mark Rendle 2012")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
-
 [assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyInformationalVersion("0.0.0.0")]
-
 [assembly: InternalsVisibleTo("Simple.Web.Autofac.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.CodeGeneration.Tests")]
 [assembly: InternalsVisibleTo("Simple.Web.ContentTypeHandling.Tests")]

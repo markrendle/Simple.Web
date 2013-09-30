@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Simple.Web.Ninject.Tests
+﻿namespace Simple.Web.Ninject.Tests
 {
-    using CodeGeneration;
-    using Xunit;
+    using System;
+    using System.Collections.Generic;
+
     using global::Ninject.Modules;
+
+    using Simple.Web.CodeGeneration;
+
+    using Xunit;
 
     public class HandlerFactoryBuilderTests
     {
@@ -60,23 +60,24 @@ namespace Simple.Web.Ninject.Tests
     public class TestHandler : IGet, IDisposable
     {
         private readonly IResult _result;
-        public bool IsDisposed { get; set; }
 
         public TestHandler(IResult result)
         {
             _result = result;
         }
 
-        public Status Get()
-        {
-            return _result.Result;
-        }
+        public bool IsDisposed { get; set; }
 
         public string TestProperty { get; set; }
 
         public void Dispose()
         {
             IsDisposed = true;
+        }
+
+        public Status Get()
+        {
+            return _result.Result;
         }
     }
 
@@ -87,6 +88,9 @@ namespace Simple.Web.Ninject.Tests
 
     public class OkResult : IResult
     {
-        public Status Result { get { return Status.OK; }}
+        public Status Result
+        {
+            get { return Status.OK; }
+        }
     }
 }

@@ -11,19 +11,6 @@ namespace Simple.Web.Razor.Engine
             MapDirectives(HandlerDirective, "handler");
         }
 
-        private void ModelDirective()
-        {
-            AssertDirective("model");
-            AcceptAndMoveNext();
-
-            BaseTypeDirective("Model keyword must be followed by type name", CreateBaseTypeCodeGeneratorFromModel);
-        }
-
-        private static SpanCodeGenerator CreateBaseTypeCodeGeneratorFromModel(string modelTypeName)
-        {
-            return new SetModelTypeCodeGenerator(modelTypeName);
-        }
-
         private void HandlerDirective()
         {
             AssertDirective("handler");
@@ -32,9 +19,22 @@ namespace Simple.Web.Razor.Engine
             BaseTypeDirective("Handler keyword must be followed by type name", CreateBaseTypeCodeGeneratorFromHandler);
         }
 
+        private void ModelDirective()
+        {
+            AssertDirective("model");
+            AcceptAndMoveNext();
+
+            BaseTypeDirective("Model keyword must be followed by type name", CreateBaseTypeCodeGeneratorFromModel);
+        }
+
         private static SpanCodeGenerator CreateBaseTypeCodeGeneratorFromHandler(string handlerTypeName)
         {
             return new SetHandlerTypeCodeGenerator(handlerTypeName);
+        }
+
+        private static SpanCodeGenerator CreateBaseTypeCodeGeneratorFromModel(string modelTypeName)
+        {
+            return new SetModelTypeCodeGenerator(modelTypeName);
         }
     }
 }

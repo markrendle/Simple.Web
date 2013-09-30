@@ -18,10 +18,10 @@
 
         public OwinSelfHost()
             : base(builder =>
-                {
-                    builder.UseErrorPage();
-                    builder.UseSimpleWeb();                    
-                })
+                   {
+                       builder.UseErrorPage();
+                       builder.UseSimpleWeb();
+                   })
         {
         }
 
@@ -32,7 +32,7 @@
 
         public void Run(string hostname = DefaultHostname, int port = DefaultPort, bool ssl = false)
         {
-            using (this.Start(hostname, port, ssl))
+            using (Start(hostname, port, ssl))
             {
                 Console.WriteLine("Listening at http{0}://{1}:{2}. Press CTRL-C to stop.", ssl ? "s" : string.Empty, hostname, port);
 
@@ -50,7 +50,7 @@
         {
             var startOptions = new StartOptions(string.Format("http{2}://{0}:{1}", hostname, port, ssl ? "s" : string.Empty));
 
-            return WebApp.Start(startOptions, this.Builder);
+            return WebApp.Start(startOptions, Builder);
         }
     }
 }

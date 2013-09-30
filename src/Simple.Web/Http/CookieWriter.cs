@@ -6,7 +6,8 @@
 
     internal static class CookieWriter
     {
-        private static readonly string DeleteExpiryDate = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc).ToString("R");
+        private static readonly string DeleteExpiryDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString("R");
+
         public static string Write(string name, string value, int timeOut, bool httpOnly, bool secure, string path)
         {
             path = path ?? "/";

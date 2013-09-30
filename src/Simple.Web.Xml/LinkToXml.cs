@@ -1,10 +1,11 @@
-﻿using System;
-using System.Xml.Linq;
-using Simple.Web.Links;
-using Simple.Web.MediaTypeHandling;
-
-namespace Simple.Web.Xml
+﻿namespace Simple.Web.Xml
 {
+    using System;
+    using System.Xml.Linq;
+
+    using Simple.Web.Links;
+    using Simple.Web.MediaTypeHandling;
+
     public class LinkToXml : XmlConverter<Link>
     {
         public static readonly LinkToXml Instance = new LinkToXml();
@@ -27,8 +28,14 @@ namespace Simple.Web.Xml
 
         private static string EnsureTypeIsXml(string type)
         {
-            if (string.IsNullOrWhiteSpace(type)) return MediaType.Xml;
-            if (type.EndsWith("xml")) return type;
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                return MediaType.Xml;
+            }
+            if (type.EndsWith("xml"))
+            {
+                return type;
+            }
             return type + "+xml";
         }
     }

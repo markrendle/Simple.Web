@@ -1,36 +1,17 @@
-﻿using Autofac;
-using System;
-using System.Collections.Generic;
-
-namespace Simple.Web.Autofac.Tests
+﻿namespace Simple.Web.Autofac.Tests
 {
-    using CodeGeneration;
+    using System;
+    using System.Collections.Generic;
     using System.Reflection;
+
+    using global::Autofac;
+
+    using Simple.Web.CodeGeneration;
+
     using Xunit;
 
     public class HandlerFactoryBuilderTests
     {
-        [Fact]
-        public void CreatesInstanceOfType()
-        {
-            var startup = new TestStartup();
-
-            startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
-
-            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
-
-            var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
-
-            var actual = (TestHandler)actualFunc(
-                new Dictionary<string, string>
-                    {
-                        { "TestProperty", "Foo" }
-                    }).Handler;
-
-            Assert.Equal(Status.OK, actual.Get());
-            Assert.Equal("Foo", actual.TestProperty);
-        }
-
         [Fact]
         public void CreatesInstanceOfGenericType()
         {
@@ -42,18 +23,30 @@ namespace Simple.Web.Autofac.Tests
 
             var actualFunc = target.BuildHandlerBuilder(typeof(GenericTestHandler));
 
-            var actual = (GenericTestHandler)actualFunc(
-                new Dictionary<string, string>
-                    {
-                        { "TestProperty", null }
-                    }).Handler;
+            var actual = (GenericTestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", null } }).Handler;
 
-            var status = actual.Patch(new GenericArgument() {Name = "Foo"});
+            var status = actual.Patch(new GenericArgument { Name = "Foo" });
 
             Assert.Equal(Status.Created, status);
             Assert.Equal("Foo", actual.TestProperty.Name);
         }
 
+        [Fact]
+        public void CreatesInstanceOfType()
+        {
+            var startup = new TestStartup();
+
+            startup.Run(SimpleWeb.Configuration, SimpleWeb.Environment);
+
+            var target = new HandlerBuilderFactory(SimpleWeb.Configuration);
+
+            var actualFunc = target.BuildHandlerBuilder(typeof(TestHandler));
+
+            var actual = (TestHandler)actualFunc(new Dictionary<string, string> { { "TestProperty", "Foo" } }).Handler;
+
+            Assert.Equal(Status.OK, actual.Get());
+            Assert.Equal("Foo", actual.TestProperty);
+        }
 
         [Fact]
         public void DisposesInstances()
@@ -81,16 +74,12 @@ namespace Simple.Web.Autofac.Tests
         protected internal override IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
-                        
+
             builder.RegisterHandlersInAssembly(Assembly.GetExecutingAssembly());
 
+            builder.Register(c => Status.Created).AsSelf();
 
-            builder.Register(c => Status.Created)
-                .AsSelf();
-            
-            builder.RegisterType<OkResult>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<OkResult>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             return builder.Build();
         }
@@ -99,17 +88,13 @@ namespace Simple.Web.Autofac.Tests
     public class TestHandler : IGet, IDisposable
     {
         private readonly IResult _result;
-        public bool IsDisposed { get; set; }
 
         public TestHandler(IResult result)
         {
             _result = result;
         }
 
-        public Status Get()
-        {
-            return _result.Result;
-        }
+        public bool IsDisposed { get; set; }
 
         public string TestProperty { get; set; }
 
@@ -117,17 +102,23 @@ namespace Simple.Web.Autofac.Tests
         {
             IsDisposed = true;
         }
+
+        public Status Get()
+        {
+            return _result.Result;
+        }
     }
 
     public class GenericTestHandler : IPatch<GenericArgument>
     {
         private readonly Status _status;
-        public GenericArgument TestProperty { get; set; }
 
         public GenericTestHandler(Status status)
         {
             _status = status;
         }
+
+        public GenericArgument TestProperty { get; set; }
 
         public Status Patch(GenericArgument input)
         {
@@ -136,7 +127,6 @@ namespace Simple.Web.Autofac.Tests
         }
     }
 
-
     public interface IResult
     {
         Status Result { get; }
@@ -144,12 +134,14 @@ namespace Simple.Web.Autofac.Tests
 
     public class OkResult : IResult
     {
-        public Status Result { get { return Status.OK; }}
+        public Status Result
+        {
+            get { return Status.OK; }
+        }
     }
 
     public class GenericArgument
     {
-        public string Name { set;  get; }
-        
+        public string Name { set; get; }
     }
 }

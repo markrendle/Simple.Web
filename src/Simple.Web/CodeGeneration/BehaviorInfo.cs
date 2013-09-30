@@ -3,16 +3,17 @@ namespace Simple.Web.CodeGeneration
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Behaviors;
-    using Helpers;
-    using Http;
 
-    abstract class BehaviorInfo
+    using Simple.Web.Behaviors;
+    using Simple.Web.Helpers;
+    using Simple.Web.Http;
+
+    internal abstract class BehaviorInfo
     {
         private readonly Type _behaviorType;
         private readonly Type _implementingType;
         private readonly Priority _priority;
-        
+
         protected BehaviorInfo(Type behaviorType, Type implementingType, Priority priority)
         {
             _behaviorType = behaviorType;
@@ -20,9 +21,9 @@ namespace Simple.Web.CodeGeneration
             _priority = priority;
         }
 
-        public Priority Priority
+        public Type BehaviorType
         {
-            get { return _priority; }
+            get { return _behaviorType; }
         }
 
         public Type ImplementingType
@@ -30,9 +31,9 @@ namespace Simple.Web.CodeGeneration
             get { return _implementingType; }
         }
 
-        public Type BehaviorType
+        public Priority Priority
         {
-            get { return _behaviorType; }
+            get { return _priority; }
         }
 
         public bool Universal { get; set; }
@@ -67,11 +68,20 @@ namespace Simple.Web.CodeGeneration
             foreach (var methodInfo in ImplementingType.GetMethods(BindingFlags.Public | BindingFlags.Static))
             {
                 var parameters = methodInfo.GetParameters();
-                if (parameters.Length != 2) continue;
-                if (parameters[1].ParameterType != typeof(IContext)) continue;
+                if (parameters.Length != 2)
+                {
+                    continue;
+                }
+                if (parameters[1].ParameterType != typeof(IContext))
+                {
+                    continue;
+                }
 
                 var genericArguments = methodInfo.GetGenericArguments();
-                if (genericArguments.Length != genericTypes.Length) continue;
+                if (genericArguments.Length != genericTypes.Length)
+                {
+                    continue;
+                }
 
                 return methodInfo.MakeGenericMethod(genericTypes);
             }
@@ -79,12 +89,12 @@ namespace Simple.Web.CodeGeneration
             throw new MissingMethodException(ImplementingType.Name, "Implementation");
         }
 
-        protected static IEnumerable<TInfo> FindBehaviorTypes<TAttribute,TInfo>(Func<Type,Type,Priority,TInfo> construct)
+        protected static IEnumerable<TInfo> FindBehaviorTypes<TAttribute, TInfo>(Func<Type, Type, Priority, TInfo> construct)
             where TAttribute : BehaviorAttribute
         {
-			foreach (var behaviorType in ExportedTypeHelper.FromCurrentAppDomain(type => IsBehaviorType<TAttribute>(type)))
+            foreach (var behaviorType in ExportedTypeHelper.FromCurrentAppDomain(type => IsBehaviorType<TAttribute>(type)))
             {
-                var attribute = (TAttribute) Attribute.GetCustomAttribute(behaviorType, typeof(TAttribute));
+                var attribute = (TAttribute)Attribute.GetCustomAttribute(behaviorType, typeof(TAttribute));
                 if (attribute != null)
                 {
                     yield return construct(behaviorType, attribute.ImplementingType, attribute.Priority);
@@ -92,8 +102,7 @@ namespace Simple.Web.CodeGeneration
             }
         }
 
-        private static bool IsBehaviorType<T>(Type type)
-            where T : BehaviorAttribute
+        private static bool IsBehaviorType<T>(Type type) where T : BehaviorAttribute
         {
             return Attribute.GetCustomAttribute(type, typeof(T)) != null;
         }

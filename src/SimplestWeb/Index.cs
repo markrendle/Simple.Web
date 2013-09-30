@@ -1,6 +1,6 @@
 ﻿namespace SimplestWeb
 {
-	using Simple.Web;
+    using Simple.Web;
 
     [UriTemplate("/")]
     public class Index : IGet

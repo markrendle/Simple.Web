@@ -1,22 +1,13 @@
-﻿
-namespace Simple.Web.CodeGeneration
+﻿namespace Simple.Web.CodeGeneration
 {
-    using DependencyInjection;
+    using Simple.Web.DependencyInjection;
 
     /// <summary>
     /// Default implementation of <see cref="IScopedHandler"/>.
     /// </summary>
-    public sealed class ScopedHandler: IScopedHandler
+    public sealed class ScopedHandler : IScopedHandler
     {
         private readonly ISimpleContainerScope _scope;
-
-        /// <summary>
-        /// Gets the handler.
-        /// </summary>
-        /// <value>
-        /// The handler.
-        /// </value>
-        public object Handler { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScopedHandler" /> class.
@@ -30,6 +21,22 @@ namespace Simple.Web.CodeGeneration
         }
 
         /// <summary>
+        /// Gets the handler.
+        /// </summary>
+        /// <value>
+        /// The handler.
+        /// </value>
+        public object Handler { get; private set; }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _scope.Dispose();
+        }
+
+        /// <summary>
         /// Creates the specified handler.
         /// </summary>
         /// <param name="handler">The handler.</param>
@@ -38,14 +45,6 @@ namespace Simple.Web.CodeGeneration
         public static IScopedHandler Create(object handler, ISimpleContainerScope scope)
         {
             return new ScopedHandler(handler, scope);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            _scope.Dispose();
         }
     }
 }

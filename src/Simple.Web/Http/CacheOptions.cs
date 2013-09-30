@@ -17,10 +17,6 @@ namespace Simple.Web.Http
         private readonly DateTime? _absoluteExpiry;
         private readonly TimeSpan? _slidingExpiry;
 
-        private CacheOptions()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheOptions"/> class.
         /// </summary>
@@ -41,12 +37,8 @@ namespace Simple.Web.Http
             _slidingExpiry = slidingExpiry;
         }
 
-        /// <summary>
-        /// Gets the sliding expiry time.
-        /// </summary>
-        public TimeSpan? SlidingExpiry
+        private CacheOptions()
         {
-            get { return _slidingExpiry; }
         }
 
         /// <summary>
@@ -73,6 +65,14 @@ namespace Simple.Web.Http
         /// </summary>
         /// <value>A <see cref="CacheLevel"/> value.</value>
         public CacheLevel Level { get; set; }
+
+        /// <summary>
+        /// Gets the sliding expiry time.
+        /// </summary>
+        public TimeSpan? SlidingExpiry
+        {
+            get { return _slidingExpiry; }
+        }
 
         /// <summary>
         /// Gets or sets names of headers which should be considered by the caching systems.

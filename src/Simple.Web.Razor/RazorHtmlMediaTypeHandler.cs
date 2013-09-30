@@ -5,8 +5,9 @@
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
-    using Helpers;
-    using MediaTypeHandling;
+
+    using Simple.Web.Helpers;
+    using Simple.Web.MediaTypeHandling;
 
     [MediaTypes(MediaType.Html, MediaType.XHtml)]
     public class RazorHtmlMediaTypeHandler : IMediaTypeHandler
@@ -67,11 +68,13 @@
             textWriter.Write(output);
         }
 
-        private static SimpleTemplateBase InflateType(Type viewType, object handler, object model,
+        private static SimpleTemplateBase InflateType(Type viewType,
+                                                      object handler,
+                                                      object model,
                                                       string childOutput = null,
                                                       IDictionary<string, string> sections = null)
         {
-            var instance = (SimpleTemplateBase) Activator.CreateInstance(viewType);
+            var instance = (SimpleTemplateBase)Activator.CreateInstance(viewType);
 
             instance.SetChildOutput(childOutput);
             instance.SetSections(sections);

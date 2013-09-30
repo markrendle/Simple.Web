@@ -13,53 +13,53 @@ namespace Simple.Web.OwinSupport
 
         public OwinRequest(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders, Stream inputStream)
         {
-            this.HttpMethod = env[OwinKeys.Method].ToString();
-            this.Headers = requestHeaders;
-            this.InputStream = inputStream;
-            this.Url = new Uri(MakeUriString(env, requestHeaders));
+            HttpMethod = env[OwinKeys.Method].ToString();
+            Headers = requestHeaders;
+            InputStream = inputStream;
+            Url = new Uri(MakeUriString(env, requestHeaders));
             if (env.ContainsKey(OwinKeys.QueryString))
             {
-                this.QueryString = QueryStringParser.Parse((string) env[OwinKeys.QueryString]);
+                QueryString = QueryStringParser.Parse((string)env[OwinKeys.QueryString]);
             }
             else
             {
-                this.QueryString = new Dictionary<string, string[]>();
+                QueryString = new Dictionary<string, string[]>();
             }
             object aspNetContext;
             if (env.TryGetValue("aspnet.Context", out aspNetContext))
             {
-                this._context = (HttpContext) aspNetContext;
+                _context = (HttpContext)aspNetContext;
             }
         }
-
-        public Uri Url { get; private set; }
-
-        public IDictionary<string, string[]> QueryString { get; private set; }
-
-        public Stream InputStream { get; private set; }
-
-        public string HttpMethod { get; private set; }
-
-        public IDictionary<string, string[]> Headers { get; private set; }
 
         public IEnumerable<IPostedFile> Files
         {
             get
             {
-                if (this._context != null)
+                if (_context != null)
                 {
-                    for (int i = 0; i < this._context.Request.Files.Count; i++)
+                    for (int i = 0; i < _context.Request.Files.Count; i++)
                     {
-                        yield return new PostedFile(this._context.Request.Files.Get(i));
+                        yield return new PostedFile(_context.Request.Files.Get(i));
                     }
                 }
             }
         }
 
+        public IDictionary<string, string[]> Headers { get; private set; }
+
         public string Host
         {
-            get { return this.Headers[HeaderKeys.Host][0]; }
+            get { return Headers[HeaderKeys.Host][0]; }
         }
+
+        public string HttpMethod { get; private set; }
+
+        public Stream InputStream { get; private set; }
+
+        public IDictionary<string, string[]> QueryString { get; private set; }
+
+        public Uri Url { get; private set; }
 
         private static string MakeUriString(IDictionary<string, object> env, IDictionary<string, string[]> requestHeaders)
         {
@@ -69,7 +69,10 @@ namespace Simple.Web.OwinSupport
             {
                 host = hostHeaders[0];
             }
-            if (string.IsNullOrWhiteSpace(host)) host = "localhost";
+            if (string.IsNullOrWhiteSpace(host))
+            {
+                host = "localhost";
+            }
             var scheme = env.GetValueOrDefault(OwinKeys.Scheme, "http");
             var pathBase = env.GetValueOrDefault(OwinKeys.PathBase, string.Empty);
             var path = env.GetValueOrDefault(OwinKeys.Path, "/");

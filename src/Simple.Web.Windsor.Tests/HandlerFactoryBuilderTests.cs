@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using Simple.Web.CodeGeneration;
-using Xunit;
-
-namespace Simple.Web.Windsor.Tests
+﻿namespace Simple.Web.Windsor.Tests
 {
+    using System.Collections.Generic;
+
+    using Simple.Web.CodeGeneration;
+
+    using Xunit;
+
     public class HandlerFactoryBuilderTests
     {
         [IgnoreOnMonoFact]

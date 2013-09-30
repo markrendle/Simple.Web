@@ -1,15 +1,21 @@
-﻿using System.Collections.Generic;
-using Simple.Web.Hosting;
-
-namespace Simple.Web.Routing
+﻿namespace Simple.Web.Routing
 {
+    using System.Collections.Generic;
+
+    using Simple.Web.Hosting;
+
     internal interface IMatcher
     {
-        void AddTypeInfo(HandlerTypeInfo info);
         IList<HandlerTypeInfo> Items { get; }
-        string Pattern { get; }
+
         MatcherCollection Matchers { get; }
-        bool Match(string part, string template, int index, MatchData matchData);
+
+        string Pattern { get; }
+
         IMatcher Add(string[] parts, int index, int priority);
+
+        void AddTypeInfo(HandlerTypeInfo info);
+
+        bool Match(string part, string template, int index, MatchData matchData);
     }
 }

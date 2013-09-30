@@ -1,9 +1,11 @@
-﻿using System;
-using Simple.Web.DependencyInjection;
-using StructureMap;
-
-namespace Simple.Web.StructureMap
+﻿namespace Simple.Web.StructureMap
 {
+    using System;
+
+    using global::StructureMap;
+
+    using Simple.Web.DependencyInjection;
+
     public class StructureMapContainer : ISimpleContainer
     {
         private readonly IContainer _container;
@@ -19,7 +21,7 @@ namespace Simple.Web.StructureMap
         }
     }
 
-    public class StructureMapContainerScope: ISimpleContainerScope
+    public class StructureMapContainerScope : ISimpleContainerScope
     {
         private readonly IContainer _container;
 
@@ -28,9 +30,14 @@ namespace Simple.Web.StructureMap
             _container = container;
         }
 
+        public void Dispose()
+        {
+            _container.Dispose();
+        }
+
         public T Get<T>()
         {
-        	return IsConcrete(typeof(T)) ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
+            return IsConcrete(typeof(T)) ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
         }
 
         public object Get(Type objectType)
@@ -39,13 +46,8 @@ namespace Simple.Web.StructureMap
         }
 
         private static bool IsConcrete(Type type)
-    	{
-            return !(type.IsAbstract || type.IsInterface);
-    	}
-
-    	public void Dispose()
         {
-            _container.Dispose();
+            return !(type.IsAbstract || type.IsInterface);
         }
     }
 }

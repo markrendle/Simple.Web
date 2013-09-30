@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Reflection;
+
     using Simple.Web.Helpers;
 
     /// <summary>
@@ -10,7 +11,7 @@
     /// </summary>
     public sealed class StartupTaskRunner
     {
-        private static readonly Type StartupTaskType = typeof (IStartupTask);
+        private static readonly Type StartupTaskType = typeof(IStartupTask);
 
         /// <summary>
         /// Runs the startup tasks.
