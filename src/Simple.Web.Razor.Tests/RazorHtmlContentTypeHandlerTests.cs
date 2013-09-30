@@ -1,6 +1,5 @@
 namespace Simple.Web.Razor.Tests
 {
-    using System;
     using System.IO;
     using Xunit;
 
@@ -15,11 +14,7 @@ namespace Simple.Web.Razor.Tests
 
             const string expected = @"<!DOCTYPE html><html><head><title>Foo</title></head><body>Test Text</body></html>";
 
-            Type type;
-            using (var reader = new StringReader(templateText))
-            {
-                type = new RazorTypeBuilder().CreateType(reader);
-            }
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(templateText);
 
             var output = new MockHandler { Model = new TestModel { Text = "Test Text" }, Handler = new HandlerStub { Title = "Foo" } };
 
