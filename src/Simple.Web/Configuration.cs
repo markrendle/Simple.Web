@@ -22,6 +22,7 @@ namespace Simple.Web
         private readonly HashSet<PublicFolder> _publicFolders = new HashSet<PublicFolder>();
         private ISimpleContainer _container = new DefaultSimpleContainer();
         private IAuthenticationProvider _authenticationProvider;
+        private IExceptionHandler _exceptionHandler;
 
         /// <summary>
         ///     Gets a dictionary representing URLs which should be mapped directly to files.
@@ -96,6 +97,22 @@ namespace Simple.Web
 
         public IMediaTypeHandler DefaultMediaTypeHandler { get; set; }
 
-        public IExceptionHandler ExceptionHandler { get; set; }
+        public IExceptionHandler ExceptionHandler
+        {
+            get { return _exceptionHandler ?? CreateExceptionHandler(); }
+            set { _exceptionHandler = value; }
+        }
+
+        private IExceptionHandler CreateExceptionHandler()
+        {
+            try
+            {
+                return _exceptionHandler = Container.BeginScope().Get<IExceptionHandler>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
