@@ -12,14 +12,9 @@
         private static readonly string[] ExcludedReferencesOnMono =
             new[] { "System", "System.Core", "Microsoft.CSharp", "mscorlib" };
 
-        private static readonly Func<Assembly, bool> IsValidReference = an =>
-            ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(an.Location.Contains));
-
-        private Type _model;
-        private Type _handler;
-        private CompilerParameters _compilerParameters;
-        private string _className;
-        private List<Assembly> _declarationAssemblies; 
+        private readonly CompilerParameters _compilerParameters;
+        private readonly string _className;
+        private List<Assembly> _defaultAssemblies;
 
         public RazorTypeBuilderContext()
         {
@@ -34,45 +29,50 @@
                     OutputAssembly = Path.Combine(Path.GetTempPath(), string.Format("{0}.dll", _className)),
                     MainClass = _className
                 };
-
-            _declarationAssemblies = new List<Assembly>();
         }
 
-        public string ClassName {get { return _className; }}
-
-        public void SetModel(Type model)
+        private IEnumerable<Assembly> DefaultAssemblies
         {
-            _model = model;
-            AddAssemblyForType(_model);
-        }
-
-        public void SetHandler(Type handler)
-        {
-            _handler = handler;
-            AddAssemblyForType(_handler);
-        }
-
-        private void AddAssemblyForType(Type model)
-        {
-            _declarationAssemblies.Add(model.Assembly);
-            if (model.IsGenericType)
+            get
             {
-                model.GetGenericArguments().ToList().ForEach(AddAssemblyForType);
+                if (_defaultAssemblies == null)
+                {
+                    var folderAssemblies = ScanFolderForAssemblies();
+                    _defaultAssemblies = SimpleRazorConfiguration.NamespaceImports.Where(ni => ni.Value != null)
+                        .Select(ni => ni.Value)
+                        .Concat(folderAssemblies)
+                        .Where(IsValidReference)
+                        .Where(an => !an.IsDynamic)
+                        .GroupBy(an => an.FullName)
+                        .Select(an => an.First())
+                        .ToList();
+                }
+                return _defaultAssemblies;
             }
         }
 
+        private static IEnumerable<Assembly> ScanFolderForAssemblies()
+        {
+            var uri = new Uri(Assembly.GetCallingAssembly().EscapedCodeBase);
+            var file = new FileInfo(uri.LocalPath);
+            var currentDirectory = file.Directory;
+            var assemblyFiles = currentDirectory.GetFiles("*.dll");
+            var assemblies = assemblyFiles.Select(y => Assembly.LoadFile(y.FullName));
+            return assemblies;
+        }
+
+        public string ClassName { get { return _className; } }
+
         public CompilerParameters GetCompilerParameters()
         {
-            var assemblieLocations = TypeResolver.DefaultAssemblies
-                .Union(_declarationAssemblies)
-                .Where(IsValidReference)
-                .GroupBy(an => an.Location)
-                .Select(an => an.First().Location)
-                .ToArray();
-
+            var assemblieLocations = DefaultAssemblies.Select(y => y.Location).ToArray();
             _compilerParameters.ReferencedAssemblies.AddRange(assemblieLocations);
-
             return _compilerParameters;
+        }
+
+        private static bool IsValidReference(Assembly assembly)
+        {
+            return ((Type.GetType("Mono.Runtime") == null) || !ExcludedReferencesOnMono.Any(assembly.Location.Contains));
         }
     }
 }
