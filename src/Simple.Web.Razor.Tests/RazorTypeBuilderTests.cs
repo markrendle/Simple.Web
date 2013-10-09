@@ -50,6 +50,43 @@ namespace Simple.Web.Razor.Tests
             Assert.Equal(1, genericArguments.Length);
             Assert.Equal(typeof(IEnumerable<TestModel>), genericArguments[0]);
         }
+
+
+        [Fact]
+        public void GetTypeFromViewWithExternalUsing()
+        {
+            const string templateText = @"
+@using Simple.Web.Razor.Tests.ExternalDummyAssembly
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+	</head>
+	<body>
+	    <p>@DummyHelper.DummyString</p>
+	</body>
+</html>
+";
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(templateText);
+            Assert.NotNull(type);
+        }
+
+        [Fact]
+        public void GetTypeFromViewWithExternalFullyQualifiedReference()
+        {
+            const string templateText = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <p>@Simple.Web.Razor.Tests.ExternalDummyAssembly.DummyHelper.DummyString</p>
+</body>
+</html>";
+            var type = RazorTypeBuilderHelpers.CreateTypeFromText(templateText);
+            Assert.NotNull(type);
+        }
     }
 
     public class TestHandler
