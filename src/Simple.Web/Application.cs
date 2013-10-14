@@ -54,14 +54,14 @@
                 .ContinueWith(t => WriteResponse(t, context, env)).Unwrap();
         }
 
-        public static Task Run(IDictionary<string, object> env, Func<Task> next)
+        public static Task Run(IDictionary<string, object> env, Func<IDictionary<string, object>, Task> next)
         {
             var context = new OwinContext(env);
             var task = Run(context);
 
             if (task == null)
             {
-                return next();
+                return next(env);
             }
             
             return task

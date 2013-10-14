@@ -1,13 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Simple.Web;
+
 namespace $rootnamespace$
 {
-    using Fix;
-    using Simple.Web;
+	using UseAction = Action<Func<IDictionary<string, object>, Func<IDictionary<string, object>, Task>, Task>>;
 
     public class OwinAppSetup
     {
-        public static void Setup(Fixer fixer)
+        public static void Setup(UseAction use)
         {
-            fixer.Use(Application.Run);
+            use(Application.Run);
         }
     }
 }
