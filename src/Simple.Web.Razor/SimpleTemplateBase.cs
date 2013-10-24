@@ -17,6 +17,18 @@ namespace Simple.Web.Razor
         private string _renderedOutput;
         private string _childOutput;
 
+        private HtmlHelper _html;
+        public HtmlHelper Html
+        {
+            get
+            {
+                if (_html == null)
+                    _html = new HtmlHelper(this);
+
+                return _html;
+            }
+        }
+
         public SimpleTemplateBase()
         {
             this._output = new StringBuilder();
@@ -69,7 +81,7 @@ namespace Simple.Web.Razor
             Handler = handler;
         }
 
-        protected dynamic Handler { get; private set; }
+        public dynamic Handler { get; private set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal virtual void SetModel(object model)
@@ -171,7 +183,7 @@ namespace Simple.Web.Razor
             }
         }
 
-        protected dynamic Model { get; private set; }
+        public dynamic Model { get; private set; }
 
         public string Layout { get; set; }
 
