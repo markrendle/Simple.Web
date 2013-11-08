@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.20827.3
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{71E6E108-5645-45D1-B128-E6225253924D}"
 EndProject
@@ -63,6 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{85A043
 	ProjectSection(SolutionItems) = preProject
 		..\packaging\nuspec\Simple.Web.AspNet.nuspec = ..\packaging\nuspec\Simple.Web.AspNet.nuspec
 		..\packaging\nuspec\Simple.Web.Autofac.nuspec = ..\packaging\nuspec\Simple.Web.Autofac.nuspec
+		..\packaging\nuspec\Simple.Web.Hosting.Self.nuspec = ..\packaging\nuspec\Simple.Web.Hosting.Self.nuspec
 		..\packaging\nuspec\Simple.Web.JsonFx.nuspec = ..\packaging\nuspec\Simple.Web.JsonFx.nuspec
 		..\packaging\nuspec\Simple.Web.JsonNet.nuspec = ..\packaging\nuspec\Simple.Web.JsonNet.nuspec
 		..\packaging\nuspec\Simple.Web.Ninject.nuspec = ..\packaging\nuspec\Simple.Web.Ninject.nuspec
@@ -130,13 +131,6 @@ Global
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC652FC8-4F9B-4E6F-86CE-1196D8D37B09}.Release|Any CPU.Build.0 = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{428EAAAC-67EB-4385-A134-20E7D41CC3BE}.Release|x86.ActiveCfg = Release|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D50161E6-44C7-4527-825F-9EC3755ED2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
