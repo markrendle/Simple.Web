@@ -60,6 +60,10 @@
     <Compile Include="TypeNameTranslatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simple.Web.Razor.Tests.ExternalDummyAssembly\Simple.Web.Razor.Tests.ExternalDummyAssembly.csproj">
+      <Project>{93a1f038-af12-4bea-8efb-13007a01ef50}</Project>
+      <Name>Simple.Web.Razor.Tests.ExternalDummyAssembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Web.Razor\Simple.Web.Razor.csproj">
       <Project>{A226D857-22FD-4C10-8596-EB7821C59255}</Project>
       <Name>Simple.Web.Razor</Name>

@@ -68,7 +68,6 @@
     <Compile Include="SimpleRazorBuildProvider.cs" />
     <Compile Include="SimpleTemplateBase.cs" />
     <Compile Include="TypeNameTranslator.cs" />
-    <Compile Include="TypeResolver.cs" />
     <Compile Include="DynamicDictionary.cs" />
     <Compile Include="ViewNotFoundException.cs" />
   </ItemGroup>
