@@ -28,7 +28,7 @@ namespace Simple.Web.JsonNet
             get { return _serializer ?? (_serializer = JsonSerializer.Create(Settings)); }
         }
 
-        protected void EnsureLinkTypeIsJson(Link link)
+        protected bool EnsureLinkTypeIsJson(Link link)
         {
             if (String.IsNullOrWhiteSpace(link.Type))
             {
@@ -38,6 +38,7 @@ namespace Simple.Web.JsonNet
             {
                 link.Type += "+json";
             }
+            return true;
         }
 
         protected override Task<T> FromWireFormat<T>(JToken wireFormat)

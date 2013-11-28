@@ -1,16 +1,15 @@
 ﻿namespace Simple.Web.OwinSupport
 {
     using System;
-
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Owin;
-
-    using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
     public static class OwinHelpers
     {
         public static void UseSimpleWeb(this IAppBuilder app)
         {
-            app.Use(new Func<AppFunc, AppFunc>(ignoreNextApp => (AppFunc)Application.Run));
+            app.Use(new Func<IDictionary<string,object>, Func<IDictionary<string,object>, Task>, Task>(Application.Run));
         }
     }
 }

@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultJsonLinksFormatter.cs" />
+    <Compile Include="IJsonLinksFormatter.cs" />
     <Compile Include="JsonMediaTypeHandlerWithDeepLinks.cs" />
     <Compile Include="JsonNetMediaTypeHandlerBase.cs" />
     <Compile Include="LinkConverter.cs" />
@@ -54,6 +56,7 @@
     </Compile>
     <Compile Include="HalJsonMediaTypeHandler.cs" />
     <Compile Include="JsonMediaTypeHandler.cs" />
+    <Compile Include="SimpleJsonLinksFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Simple.Web\Simple.Web.csproj">

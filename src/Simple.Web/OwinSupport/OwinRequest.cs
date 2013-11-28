@@ -71,9 +71,8 @@ namespace Simple.Web.OwinSupport
             }
             if (string.IsNullOrWhiteSpace(host)) host = "localhost";
             var scheme = env.GetValueOrDefault(OwinKeys.Scheme, "http");
-            var pathBase = env.GetValueOrDefault(OwinKeys.PathBase, string.Empty);
             var path = env.GetValueOrDefault(OwinKeys.Path, "/");
-            var uri = string.Format("{0}://{1}{2}{3}", scheme, host, pathBase, path);
+            var uri = string.Format("{0}://{1}{2}", scheme, host, path);
             object queryString;
             if (env.TryGetValue(OwinKeys.QueryString, out queryString))
             {

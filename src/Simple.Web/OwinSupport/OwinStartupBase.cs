@@ -1,7 +1,8 @@
 ﻿namespace Simple.Web.OwinSupport
 {
     using System;
-
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Owin;
 
     using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
@@ -20,7 +21,7 @@
 
         protected OwinStartupBase()
         {
-            this._builder = builder => builder.Use(new Func<AppFunc, AppFunc>(ignoreNextApp => (AppFunc)Application.Run));
+            this._builder = builder => builder.Use(new Func<IDictionary<string,object>, Func<IDictionary<string,object>, Task>, Task>(Application.Run));
         }
 
         protected OwinStartupBase(Action<IAppBuilder> builder)

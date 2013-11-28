@@ -11,6 +11,22 @@ namespace Simple.Web.JsonNet
     [MediaTypes(MediaType.Json, "application/*+json")]
     public class JsonMediaTypeHandler : JsonNetMediaTypeHandlerBase
     {
+        private static IJsonLinksFormatter _defaultJsonLinksFormatter = new DefaultJsonLinksFormatter();
+
+        public static IJsonLinksFormatter DefaultJsonLinksFormatter
+        {
+            get { return _defaultJsonLinksFormatter; }
+            set { _defaultJsonLinksFormatter = value; }
+        }
+
+        private IJsonLinksFormatter _jsonLinksFormatter = _defaultJsonLinksFormatter;
+
+        public IJsonLinksFormatter JsonLinksFormatter
+        {
+            get { return _jsonLinksFormatter; }
+            set { _jsonLinksFormatter = value; }
+        }
+
         static JsonMediaTypeHandler()
         {
             SetDefaultSettings(new JsonSerializerSettings
@@ -23,18 +39,12 @@ namespace Simple.Web.JsonNet
 
         protected override void AddWireFormattedLinks(JToken wireFormattedItem, IEnumerable<Link> itemLinks)
         {
-            IList<Link> links = itemLinks as IList<Link> ?? itemLinks.ToList();
+            var links = itemLinks as IList<Link> ?? itemLinks.ToList();
             if (links.Count == 0)
             {
                 return;
             }
-            var jLinks = new JArray();
-            foreach (Link link in links)
-            {
-                EnsureLinkTypeIsJson(link);
-                jLinks.Add(JObject.FromObject(link, Serializer));
-            }
-            wireFormattedItem["links"] = jLinks;
+            _jsonLinksFormatter.FormatLinks((JContainer)wireFormattedItem, links.Where(EnsureLinkTypeIsJson), Serializer);
         }
 
         protected override JToken WrapCollection(IList<JToken> collection, IEnumerable<Link> collectionLinks)
