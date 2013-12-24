@@ -21,7 +21,7 @@
 
         protected OwinStartupBase()
         {
-            this._builder = builder => builder.Use(new Func<IDictionary<string,object>, Func<IDictionary<string,object>, Task>, Task>(Application.Run));
+            this._builder = builder => builder.UseSimpleWeb();
         }
 
         protected OwinStartupBase(Action<IAppBuilder> builder)
