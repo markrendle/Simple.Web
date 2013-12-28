@@ -47,7 +47,7 @@ namespace Simple.Web.Links
             {
                 foreach (var variable in variables)
                 {
-                    var prop = model.GetType().GetProperty(variable);
+                    var prop = model.GetType().GetProperties().FirstOrDefault(p => p.Name.Equals(variable, StringComparison.OrdinalIgnoreCase));
                     if (prop == null)
                     {
                         return null;

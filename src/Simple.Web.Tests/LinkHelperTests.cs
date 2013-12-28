@@ -60,6 +60,17 @@
             Assert.Equal("locations", link.Rel);
             Assert.Equal("application/vnd.list.location", link.Type);
         }
+
+        [Fact]
+        public void BuildsLinkUsingCustomUriTemplateWhenVariablesDoNotMatchPropertyCase()
+        {
+            var customer = new Customer { Id = 42 };
+            var link = LinkHelper.GetLinksForModel(customer).Single(l => l.GetHandlerType() == typeof(CustomerOrdersHandlerLowerCaseId));
+            Assert.NotNull(link);
+            Assert.Equal("/customers/42/orders", link.Href);
+            Assert.Equal("customer.orders", link.Rel);
+            Assert.Equal("application/vnd.list.order", link.Type);
+        }
     }
 
     public class Customer
@@ -103,5 +114,11 @@
     public class LocationsHandler
     {
         
+    }
+
+    [LinksFrom(typeof(Customer), "/customers/{id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
+    public class CustomerOrdersHandlerLowerCaseId
+    {
+
     }
 }
