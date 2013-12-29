@@ -4,6 +4,7 @@ namespace Simple.Web.Links
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
     using Helpers;
 
@@ -37,6 +38,11 @@ namespace Simple.Web.Links
                     l => new Link(l.GetHandlerType(), BuildUri(model, l.Href), l.Rel, l.Type, l.Title)).FirstOrDefault(l => l.Href != null);
         }
 
+        private static PropertyInfo GetModelProperty(Type modelType, string property)
+        {
+            return modelType.GetProperty(property) ?? modelType.GetProperties().FirstOrDefault(p => p.Name.Equals(property, StringComparison.OrdinalIgnoreCase));
+        }
+
         private static string BuildUri(object model, string uriTemplate)
         {
             int queryStart = uriTemplate.IndexOf("?", StringComparison.Ordinal);
@@ -47,7 +53,7 @@ namespace Simple.Web.Links
             {
                 foreach (var variable in variables)
                 {
-                    var prop = model.GetType().GetProperties().FirstOrDefault(p => p.Name.Equals(variable, StringComparison.OrdinalIgnoreCase));
+                    var prop = GetModelProperty(model.GetType(), variable);
                     if (prop == null)
                     {
                         return null;
