@@ -1,6 +1,10 @@
 ﻿namespace Simple.Web.Tests
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Helpers;
     using Links;
     using Xunit;
@@ -72,6 +76,11 @@
         public int Id { get; set; }
     }
 
+    public class CustomerList
+    {
+        public IList<Customer> Items { get; set; }
+    }
+
     [LinksFrom(typeof(Customer), "/customers/{Id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
     public class CustomerOrdersHandler
     {
@@ -103,5 +112,36 @@
     public class LocationsHandler
     {
         
+    }
+
+    public class QueueMessageDto
+    {
+        public string Id { get; set; }
+        public string Text { get; set; }
+        public int DequeueCount { get; set; }
+        public DateTimeOffset? ExpirationTime { get; set; }
+        public DateTimeOffset? InsertionTime { get; set; }
+        public DateTimeOffset? NextVisibleTime { get; set; }
+        public string PopReceipt { get; set; }
+        public long? SecondsToLive { get; set; }
+        public long? SecondsVisiblityDelay { get; set; }
+        public string QueueName { get; set; }
+        public string AccountName { get; set; }
+    }
+
+    public class DequeueDto
+    {
+        public int RemainingCount { get; set; }
+        public IList<QueueMessageDto> Messages { get; set; }
+    }
+
+    [UriTemplate("/{Name}/{Id}")]
+    [LinksFrom(typeof (QueueMessageDto), "/api/{AccountName}/queues/{Name}/{Id}?pop={PopReceipt}", Rel = "delete")]
+    public class DeleteMessage : IDeleteAsync
+    {
+        public async Task<Status> Delete()
+        {
+            return 200;
+        }
     }
 }
