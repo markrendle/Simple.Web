@@ -64,6 +64,17 @@
             Assert.Equal("locations", link.Rel);
             Assert.Equal("application/vnd.list.location", link.Type);
         }
+
+        [Fact]
+        public void BuildsLinkUsingCustomUriTemplateWhenVariablesDoNotMatchPropertyCase()
+        {
+            var customer = new Customer { Id = 42 };
+            var link = LinkHelper.GetLinksForModel(customer).Single(l => l.GetHandlerType() == typeof(CustomerOrdersHandlerLowerCaseId));
+            Assert.NotNull(link);
+            Assert.Equal("/customers/42/orders", link.Href);
+            Assert.Equal("customer.orders", link.Rel);
+            Assert.Equal("application/vnd.list.order", link.Type);
+        }
     }
 
     public class Customer
@@ -114,34 +125,9 @@
         
     }
 
-    public class QueueMessageDto
+    [LinksFrom(typeof(Customer), "/customers/{id}/orders", Rel = "customer.orders", Type = "application/vnd.list.order")]
+    public class CustomerOrdersHandlerLowerCaseId
     {
-        public string Id { get; set; }
-        public string Text { get; set; }
-        public int DequeueCount { get; set; }
-        public DateTimeOffset? ExpirationTime { get; set; }
-        public DateTimeOffset? InsertionTime { get; set; }
-        public DateTimeOffset? NextVisibleTime { get; set; }
-        public string PopReceipt { get; set; }
-        public long? SecondsToLive { get; set; }
-        public long? SecondsVisiblityDelay { get; set; }
-        public string QueueName { get; set; }
-        public string AccountName { get; set; }
-    }
 
-    public class DequeueDto
-    {
-        public int RemainingCount { get; set; }
-        public IList<QueueMessageDto> Messages { get; set; }
-    }
-
-    [UriTemplate("/{Name}/{Id}")]
-    [LinksFrom(typeof (QueueMessageDto), "/api/{AccountName}/queues/{Name}/{Id}?pop={PopReceipt}", Rel = "delete")]
-    public class DeleteMessage : IDeleteAsync
-    {
-        public async Task<Status> Delete()
-        {
-            return 200;
-        }
     }
 }
