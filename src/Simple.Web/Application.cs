@@ -280,7 +280,7 @@
                 .Where(i => HttpMethodAttribute.Matches(i, httpMethod))
                 .ToArray();
 
-            return new RoutingTableBuilder(handlerTypes).BuildRoutingTable();
+            return new RoutingTableBuilder(SimpleWeb.Configuration.HostPath, handlerTypes).BuildRoutingTable();
         }
 
         private static bool IsHttpMethodHandler(Type type)

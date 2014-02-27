@@ -69,5 +69,10 @@ namespace Simple.Web
         /// An <see cref="IMediaTypeHandler"/> instance
         /// </value>
         IMediaTypeHandler DefaultMediaTypeHandler { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HostPath which the host is bound to and UriTemplate suffix.
+        /// </summary>
+        string HostPath { get; set; }
     }
 }

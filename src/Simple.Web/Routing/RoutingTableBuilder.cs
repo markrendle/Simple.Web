@@ -15,14 +15,17 @@ namespace Simple.Web.Routing
     /// </summary>
     internal sealed class RoutingTableBuilder
     {
+        private readonly string _hostPath;
         private readonly IList<Type> _handlerBaseTypes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RoutingTableBuilder"/> class.
         /// </summary>
         /// <param name="handlerBaseTypes">The handler base types.</param>
-        public RoutingTableBuilder(params Type[] handlerBaseTypes)
+        /// <param name="hostPath">The hosting path to prefix routes.</param>
+        public RoutingTableBuilder(string hostPath, params Type[] handlerBaseTypes)
         {
+            _hostPath = (hostPath ?? string.Empty).Trim('/');
             _handlerBaseTypes = handlerBaseTypes;
         }
 
@@ -48,7 +51,7 @@ namespace Simple.Web.Routing
             {
                 var respondsWithTypes = RespondsWithAttribute.Get(exportedType).SelectMany(rta => rta.ContentTypes).ToList();
                 var respondsToTypes = RespondsToAttribute.Get(exportedType).SelectMany(rta => rta.ContentTypes).ToList();
-                foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType))
+                foreach (var uriTemplate in UriTemplateAttribute.GetAllTemplates(exportedType).Where(u => !string.IsNullOrWhiteSpace(u)).Select(u => string.Format("/{0}/{1}", _hostPath, u.TrimStart('/'))))
                 {
                     if (exportedType.IsGenericTypeDefinition)
                     {
@@ -79,7 +82,7 @@ namespace Simple.Web.Routing
             if (uriTemplate.Contains(templatePart))
             {
                 var genericResolver =
-                    Attribute.GetCustomAttribute(exportedType, typeof (GenericResolverAttribute)) as
+                    Attribute.GetCustomAttribute(exportedType, typeof(GenericResolverAttribute)) as
                     GenericResolverAttribute;
                 IEnumerable<Type> candidateTypes;
                 Func<Type, IEnumerable<string>> getNames;
@@ -91,7 +94,7 @@ namespace Simple.Web.Routing
                 else
                 {
                     candidateTypes = ExportedTypeHelper.FromCurrentAppDomain(t => true);
-                    getNames = t => new[] {t.Name};
+                    getNames = t => new[] { t.Name };
                 }
                 foreach (var validType in candidateTypes)
                 {

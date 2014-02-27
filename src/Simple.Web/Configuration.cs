@@ -40,6 +40,8 @@ namespace Simple.Web
         }
         private readonly ISet<IAccessControlEntry> _accessControl = new HashSet<IAccessControlEntry>(AccessControlEntry.OriginComparer);
 
+        private string hostPath;
+
         /// <summary>
         ///     Gets a dictionary representing URLs which map to files but are only for authenticated users.
         /// </summary>
@@ -83,6 +85,18 @@ namespace Simple.Web
         }
 
         public IMediaTypeHandler DefaultMediaTypeHandler { get; set; }
+
+        public string HostPath
+        {
+            get
+            {
+                return this.hostPath ?? string.Empty;
+            }
+            set
+            {
+                this.hostPath = value;
+            }
+        }
 
         public IExceptionHandler ExceptionHandler { get; set; }
     }

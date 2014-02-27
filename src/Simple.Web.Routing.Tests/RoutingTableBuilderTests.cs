@@ -13,7 +13,7 @@
         [Fact]
         public void FindsIGetType()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             Assert.Contains(typeof(GetFoo), table.GetAllTypes());
         }
@@ -21,7 +21,7 @@
         [Fact]
         public void FindsIGetTypeWhereIGetIsOnBaseClass()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             Assert.Contains(typeof(Bar), table.GetAllTypes());
         }
@@ -29,7 +29,7 @@
         [Fact]
         public void FindsGenericHandlerUsingRegexResolver()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             var actualTypes = table.GetAllTypes().ToArray();
             Assert.Contains(typeof(GetThingRegex<Entity>), actualTypes);
@@ -39,7 +39,7 @@
         [Fact]
         public void FindsGenericHandlerUsingExplicitResolver()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             Assert.Contains(typeof(GetThingExplicit<Entity>), table.GetAllTypes());
             Assert.Contains(typeof(GetThingExplicit<Exorcist>), table.GetAllTypes());
@@ -48,7 +48,7 @@
         [Fact]
         public void FindsGenericHandlerUsingConstraints()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             var allTypes = table.GetAllTypes();
             Assert.Contains(typeof(GetThingConstraint<Entity>), allTypes);
@@ -58,7 +58,7 @@
         [Fact]
         public void FiltersHandlerByContentType()
         {
-            var builder = new RoutingTableBuilder(typeof (IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             IDictionary<string, string> variables;
             var actual = table.Get("/spaceship", out variables, "", new[] {"image/png"});
@@ -68,7 +68,7 @@
         [Fact]
         public void FiltersHandlerByWildcardContentType()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             IDictionary<string, string> variables;
             var actual = table.Get("/spaceship", out variables, "", new[] { "*/*" });
@@ -76,9 +76,19 @@
         }
 
         [Fact]
+        public void PrefixesHostPathAsInTable()
+        {
+            var builder = new RoutingTableBuilder("something/else", typeof(IGet));
+            var table = builder.BuildRoutingTable();
+            IDictionary<string, string> variables;
+            var actual = table.Get("/something/else/spaceship", out variables);
+            Assert.Equal(typeof(GetSpaceship), actual);
+        }
+
+        [Fact]
         public void FiltersHandlerByNoContentType()
         {
-            var builder = new RoutingTableBuilder(typeof(IGet));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGet));
             var table = builder.BuildRoutingTable();
             IDictionary<string, string> variables;
             var actual = table.Get("/spaceship", out variables);
@@ -88,7 +98,7 @@
         [Fact]
         public void FindsGetWithUltimateBaseClassNoInterface()
         {
-            var builder = new RoutingTableBuilder(typeof (IGetAsync));
+            var builder = new RoutingTableBuilder(string.Empty, typeof(IGetAsync));
             var table = builder.BuildRoutingTable();
             IDictionary<string, string> variables;
             var actual = table.Get("/top/bottom", out variables, "", new string[0]);
