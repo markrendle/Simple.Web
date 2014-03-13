@@ -56,7 +56,8 @@
             var uri = new Uri(Assembly.GetCallingAssembly().EscapedCodeBase);
             var file = new FileInfo(uri.LocalPath);
             var currentDirectory = file.Directory;
-            var assemblyFiles = currentDirectory.GetFiles("*.dll");
+            var assemblyFiles = currentDirectory.GetFiles("*.dll")
+                .Concat(currentDirectory.GetFiles("*.exe"));
             var assemblies = assemblyFiles.Select(y => Assembly.LoadFile(y.FullName));
             return assemblies;
         }
