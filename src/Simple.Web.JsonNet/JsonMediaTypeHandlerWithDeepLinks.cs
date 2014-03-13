@@ -52,7 +52,7 @@
         {
             if (content.Model != null)
             {
-                var linkConverters = LinkConverter.CreateForGraph(content.Model.GetType(), KnownTypes.Value,
+                var linkConverters = LinkConverter.CreateForGraph(typeof(T), KnownTypes.Value,
                                                                   LinkHelper.GetLinksForModel, Settings.ContractResolver);
                 var settings = new JsonSerializerSettings
                     {
