@@ -18,7 +18,8 @@ namespace Simple.Web.Http
         /// Initializes a new instance of the <see cref="HttpMethodAttribute"/> class.
         /// </summary>
         /// <param name="httpMethod">The HTTP Method.</param>
-        public HttpMethodAttribute(string httpMethod) : this(httpMethod, null)
+        public HttpMethodAttribute(string httpMethod)
+            : this(httpMethod, null)
         {
         }
 
@@ -58,7 +59,7 @@ namespace Simple.Web.Http
         /// <returns><c>null</c> if the attribute does not exist.</returns>
         public static HttpMethodAttribute Get(Type type, string httpMethod, bool excludeInterfaces = false)
         {
-            var customAttribute = GetCustomAttributes(type, typeof (HttpMethodAttribute), true)
+            var customAttribute = GetCustomAttributes(type, typeof(HttpMethodAttribute), true)
                 .Cast<HttpMethodAttribute>()
                 .FirstOrDefault(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
             return customAttribute ?? type.GetInterfaces().Select(i => Get(i, httpMethod)).FirstOrDefault(a => a != null);
@@ -76,7 +77,7 @@ namespace Simple.Web.Http
 
         private static bool TypeHasAttribute(Type type, string httpMethod)
         {
-            return GetCustomAttributes(type, typeof (HttpMethodAttribute))
+            return GetCustomAttributes(type, typeof(HttpMethodAttribute))
                 .Cast<HttpMethodAttribute>()
                 .Any(a => a.HttpMethod.Equals(httpMethod, StringComparison.OrdinalIgnoreCase));
         }
@@ -108,7 +109,7 @@ namespace Simple.Web.Http
                                   type.GetInterfaces().Any(i => Attribute.IsDefined(i, typeof(HttpMethodAttribute), false));
                 return isAppliedTo;
             }
-            catch (FileLoadException)
+            catch
             {
                 return false;
             }
