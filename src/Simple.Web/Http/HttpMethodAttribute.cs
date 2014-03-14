@@ -1,6 +1,7 @@
 namespace Simple.Web.Http
 {
     using System;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
 
@@ -101,9 +102,16 @@ namespace Simple.Web.Http
         /// </returns>
         public static bool IsAppliedTo(Type type)
         {
-            var isAppliedTo = Attribute.IsDefined(type, typeof (HttpMethodAttribute), true) ||
-                              type.GetInterfaces().Any(i => Attribute.IsDefined(i, typeof(HttpMethodAttribute), false));
-            return isAppliedTo;
+            try
+            {
+                var isAppliedTo = Attribute.IsDefined(type, typeof(HttpMethodAttribute), true) ||
+                                  type.GetInterfaces().Any(i => Attribute.IsDefined(i, typeof(HttpMethodAttribute), false));
+                return isAppliedTo;
+            }
+            catch (FileLoadException)
+            {
+                return false;
+            }
         }
 
         public static bool Matches(Type type, string httpMethod)
