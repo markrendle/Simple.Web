@@ -5,7 +5,6 @@ namespace Simple.Web.Helpers
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Reflection.Emit;
 
     /// <summary>
     /// For working with type reflection at runtime.
@@ -34,6 +33,10 @@ namespace Simple.Web.Helpers
                             types = e.Types;
                         }
                         catch (FileNotFoundException)
+                        {
+                            types = new Type[0];
+                        }
+                        catch (FileLoadException)
                         {
                             types = new Type[0];
                         }
