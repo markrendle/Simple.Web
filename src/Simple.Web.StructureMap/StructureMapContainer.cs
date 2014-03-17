@@ -32,6 +32,11 @@ namespace Simple.Web.StructureMap
             return IsConcrete<T>() ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
         }
 
+        public void Update<T>(T instance)
+        {
+            _container.Inject(typeof(T), instance);
+        }
+
         static bool IsConcrete<T>()
         {
             return !(typeof(T).IsAbstract || typeof(T).IsInterface);

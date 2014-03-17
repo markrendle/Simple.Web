@@ -34,6 +34,11 @@
             return _scope.TryResolve<T>(out instance) ? instance : default(T);            
         }
 
+        public void Update<T>(T instance)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Dispose()
         {
             _scope.Dispose();

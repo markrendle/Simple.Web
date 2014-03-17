@@ -18,7 +18,7 @@ namespace Simple.Web.DependencyInjection
     /// <summary>
     /// Interface to implement for scoped objects created by IoC containers.
     /// </summary>
-    public interface ISimpleContainerScope: IDisposable
+    public interface ISimpleContainerScope : IDisposable
     {
         /// <summary>
         /// Gets an instance of <c>T</c>.
@@ -26,5 +26,12 @@ namespace Simple.Web.DependencyInjection
         /// <typeparam name="T">The type of thing to construct.</typeparam>
         /// <returns>A new instance of T.</returns>
         T Get<T>();
+
+        /// <summary>
+        /// Updates the instance of T
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <typeparam name="T">The type of thing to update.</typeparam>
+        void Update<T>(T instance);
     }
 }

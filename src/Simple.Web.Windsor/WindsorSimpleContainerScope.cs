@@ -24,6 +24,11 @@ namespace Simple.Web.Windsor
             return _container.Kernel.Resolve<T>();
         }
 
+        public void Update<T>(T instance)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
             if (_disposed)

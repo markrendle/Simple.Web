@@ -35,6 +35,11 @@ namespace Simple.Web.Ninject
             return _block.TryGet<T>();
         }
 
+        public void Update<T>(T instance)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
             _block.Dispose();
