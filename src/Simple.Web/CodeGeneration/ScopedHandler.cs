@@ -18,6 +18,8 @@ namespace Simple.Web.CodeGeneration
         /// </value>
         public object Handler { get; private set; }
 
+        public ISimpleContainerScope Container { get { return _scope; } }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ScopedHandler" /> class.
         /// </summary>

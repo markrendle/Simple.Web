@@ -3,6 +3,7 @@
     using System;
     using Helpers;
     using Simple.Web.Behaviors;
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Http;
 
     /// <summary>
@@ -15,8 +16,9 @@
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns></returns>
-        public static void Impl(IOutputStream handler, IContext context)
+        public static void Impl(IOutputStream handler, IContext context, ISimpleContainerScope container)
         {
             context.Response.SetContentType(handler.ContentType);
             if (!string.IsNullOrWhiteSpace(handler.ContentDisposition))

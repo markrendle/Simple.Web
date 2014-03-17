@@ -7,9 +7,11 @@ namespace Simple.Web.CodeGeneration
     using Http;
     using MediaTypeHandling;
 
+    using Simple.Web.DependencyInjection;
+
     static class WriteView
     {
-        public static void Impl(object handler, IContext context)
+        public static void Impl(object handler, IContext context, ISimpleContainerScope container)
         {
             WriteUsingMediaTypeHandler(handler, context);
         }

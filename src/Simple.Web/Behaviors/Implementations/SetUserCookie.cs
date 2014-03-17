@@ -1,6 +1,7 @@
 namespace Simple.Web.Behaviors.Implementations
 {
     using Simple.Web.Behaviors;
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Http;
 
     /// <summary>
@@ -13,8 +14,9 @@ namespace Simple.Web.Behaviors.Implementations
         /// </summary>
         /// <param name="handler">The handler which processed the login.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns></returns>
-        public static void Impl(ILogin handler, IContext context)
+        public static void Impl(ILogin handler, IContext context, ISimpleContainerScope container)
         {
             if (handler.LoggedInUser != null)
             {

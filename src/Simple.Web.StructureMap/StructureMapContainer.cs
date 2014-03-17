@@ -18,7 +18,7 @@ namespace Simple.Web.StructureMap
         }
     }
 
-    public class StructureMapContainerScope: ISimpleContainerScope
+    public class StructureMapContainerScope : ISimpleContainerScope
     {
         private readonly IContainer _container;
 
@@ -29,15 +29,15 @@ namespace Simple.Web.StructureMap
 
         public T Get<T>()
         {
-        	return IsConcrete<T>() ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
+            return IsConcrete<T>() ? _container.GetInstance<T>() : _container.TryGetInstance<T>();
         }
 
-    	static bool IsConcrete<T>()
-    	{
-    		return !(typeof(T).IsAbstract || typeof(T).IsInterface);
-    	}
+        static bool IsConcrete<T>()
+        {
+            return !(typeof(T).IsAbstract || typeof(T).IsInterface);
+        }
 
-    	public void Dispose()
+        public void Dispose()
         {
             _container.Dispose();
         }

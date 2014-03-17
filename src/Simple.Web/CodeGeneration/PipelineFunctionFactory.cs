@@ -14,9 +14,11 @@ namespace Simple.Web.CodeGeneration
     using Hosting;
     using Http;
 
+    using Simple.Web.DependencyInjection;
+
     internal class PipelineFunctionFactory
     {
-        private static readonly IDictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>> RunMethodCache = 
+        private static readonly IDictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>> RunMethodCache =
                                     new Dictionary<Type, IDictionary<string, Func<IContext, HandlerInfo, Task>>>();
         private static readonly ICollection RunMethodCacheCollection;
 
@@ -32,6 +34,7 @@ namespace Simple.Web.CodeGeneration
         private readonly ParameterExpression _scopedHandler;
         private readonly ParameterExpression _handler;
         private readonly ParameterExpression _handlerInfoVariable;
+        private readonly ParameterExpression _container;
 
         public static Func<IContext, HandlerInfo, Task> Get(Type handlerType, string httpMethod)
         {
@@ -67,10 +70,11 @@ namespace Simple.Web.CodeGeneration
         public PipelineFunctionFactory(Type handlerType)
         {
             _handlerType = handlerType;
-            _context = Expression.Parameter(typeof (IContext));
-            _scopedHandler = Expression.Variable(typeof (IScopedHandler));
+            _context = Expression.Parameter(typeof(IContext));
+            _scopedHandler = Expression.Variable(typeof(IScopedHandler));
             _handler = Expression.Variable(_handlerType);
             _handlerInfoVariable = Expression.Variable(typeof(HandlerInfo));
+            _container = Expression.Variable(typeof(ISimpleContainerScope));
         }
 
         /// <summary>
@@ -88,7 +92,7 @@ namespace Simple.Web.CodeGeneration
             var setCookieProperties = CookiePropertySetter.GetCookiePropertySetters(_handlerType, _handler, _context).ToList();
             if (setCookieProperties.Any())
             {
-                var setCookieDelegate = buildAction.Invoke(this, new object[] {setCookieProperties});
+                var setCookieDelegate = buildAction.Invoke(this, new object[] { setCookieProperties });
                 blocks.Add(setCookieDelegate);
             }
 
@@ -98,11 +102,11 @@ namespace Simple.Web.CodeGeneration
             var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context).ToList();
             if (setPropertyCookies.Any())
             {
-                var setPropertyDelegate = buildAction.Invoke(this, new object[] {setPropertyCookies});
+                var setPropertyDelegate = buildAction.Invoke(this, new object[] { setPropertyCookies });
                 blocks.Add(setPropertyDelegate);
             }
 
-            var redirectBehavior = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High) { Universal = true };
+            var redirectBehavior = new ResponseBehaviorInfo(typeof(object), typeof(Redirect2), Priority.High) { Universal = true };
 
             blocks.AddRange(CreateBlocks(GetResponseBehaviorInfos(redirectBehavior)));
 
@@ -129,10 +133,10 @@ namespace Simple.Web.CodeGeneration
 
             var createHandler = BuildCreateHandlerExpression();
 
-            var lambdaBlock = Expression.Block(new[] { _handler }, new[] { createHandler, call });
+            var lambdaBlock = Expression.Block(new[] { _handler, _container }, new[] { createHandler, call });
 
             var lambda = Expression.Lambda(lambdaBlock, _context, _handlerInfoVariable);
-            return (Func<IContext, HandlerInfo, Task>) lambda.Compile();
+            return (Func<IContext, HandlerInfo, Task>)lambda.Compile();
         }
 
         private Expression BuildCreateHandlerExpression()
@@ -140,8 +144,9 @@ namespace Simple.Web.CodeGeneration
             var factory = Expression.Constant(HandlerFactory.Instance);
             var createScopedHandler = Expression.Assign(_scopedHandler, Expression.Call(factory, HandlerFactory.GetHandlerMethod, _handlerInfoVariable));
             var assignHandler = Expression.Assign(_handler, Expression.Convert(Expression.Property(_scopedHandler, "Handler"), _handlerType));
-            return Expression.Block(new[] {_scopedHandler},
-                                    new Expression[] {createScopedHandler, assignHandler});
+            var assignContainer = Expression.Assign(_container, Expression.Convert(Expression.Property(_scopedHandler, "Container"), typeof(ISimpleContainerScope)));
+            return Expression.Block(new[] { _scopedHandler },
+                                    new Expression[] { createScopedHandler, assignHandler, assignContainer });
         }
 
         private static IEnumerable<PipelineBlock> CreateBlocks(IEnumerable<BehaviorInfo> behaviorInfos)
@@ -186,12 +191,12 @@ namespace Simple.Web.CodeGeneration
                 {
                     call = Expression.Call(AsyncPipeline.ContinueWithAsyncBlockMethod(_handlerType), call,
                                            Expression.Constant((pipelineBlock).Generate(_handlerType)),
-                                           _context, _handler);
+                                           _context, _handler, _container);
                 }
                 else
                 {
                     call = Expression.Call(AsyncPipeline.ContinueWithActionMethod(_handlerType), call,
-                        Expression.Constant(block), _context, _handler);
+                        Expression.Constant(block), _context, _handler, _container);
                 }
             }
             return call;
@@ -199,19 +204,19 @@ namespace Simple.Web.CodeGeneration
 
         private Expression BuildCallHandlerExpression(object block, Expression call)
         {
-            var handlerBlock = (HandlerBlock) block;
+            var handlerBlock = (HandlerBlock)block;
             if (handlerBlock.IsAsync)
             {
                 call = Expression.Call(AsyncPipeline.ContinueWithAsyncHandlerMethod(_handlerType), call,
                                        Expression.Constant(handlerBlock.GenerateAsync()),
-                                       _context, _handler);
+                                       _context, _handler, _container);
             }
             else
             {
                 var runMethod = handlerBlock.Generate();
                 call = Expression.Call(AsyncPipeline.ContinueWithHandlerMethod(_handlerType), call,
                                        Expression.Constant(runMethod),
-                                       _context, _handler);
+                                       _context, _handler, _container);
             }
             return call;
         }
@@ -251,9 +256,9 @@ namespace Simple.Web.CodeGeneration
             return behaviorInfo.BehaviorType.IsAssignableFrom(_handlerType);
         }
 
-        private Action<THandler, IContext> BuildAction<THandler>(IEnumerable<Expression> blocks)
+        private Action<THandler, IContext, ISimpleContainerScope> BuildAction<THandler>(IEnumerable<Expression> blocks)
         {
-            return Expression.Lambda<Action<THandler, IContext>>(Expression.Block(blocks), _handler, _context).Compile();
+            return Expression.Lambda<Action<THandler, IContext, ISimpleContainerScope>>(Expression.Block(blocks), _handler, _context, _container).Compile();
         }
     }
 }

@@ -7,6 +7,8 @@
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Http;
 
     internal class PipelineBlock
@@ -32,9 +34,10 @@
         {
             var context = Expression.Parameter(typeof (IContext));
             var handler = Expression.Parameter(handlerType);
+            var container = Expression.Parameter(typeof(ISimpleContainerScope));
 
             var calls = new List<Expression>();
-            calls.AddRange(_methods.Select(m => CreateCall(m, handler, context, handlerType)));
+            calls.AddRange(_methods.Select(m => CreateCall(m, handler, context, handlerType, container)));
 
             if (_methods.Last().ReturnType == typeof(void))
             {
@@ -60,10 +63,10 @@
 
             var block = Expression.Block(calls);
 
-            return Expression.Lambda(block, handler, context).Compile();
+            return Expression.Lambda(block, handler, context, container).Compile();
         }
 
-        private static Expression CreateCall(MethodInfo method, ParameterExpression handler, ParameterExpression context, Type handlerType)
+        private static Expression CreateCall(MethodInfo method, ParameterExpression handler, ParameterExpression context, Type handlerType, ParameterExpression container)
         {
             if (method.IsGenericMethod)
             {
@@ -81,7 +84,7 @@
                     }
                 }
             }
-            return Expression.Call(method, handler, context);
+            return Expression.Call(method, handler, context, container);
         }
 
         private static void FixLastCall(List<Expression> calls, string methodName)

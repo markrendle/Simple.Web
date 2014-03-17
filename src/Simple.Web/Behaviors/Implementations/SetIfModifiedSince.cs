@@ -3,6 +3,7 @@ namespace Simple.Web.Behaviors.Implementations
     using System;
     using System.Linq;
     using Simple.Web.Behaviors;
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Http;
 
     /// <summary>
@@ -15,8 +16,9 @@ namespace Simple.Web.Behaviors.Implementations
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns></returns>
-        public static void Impl(IModified handler, IContext context)
+        public static void Impl(IModified handler, IContext context, ISimpleContainerScope container)
         {
             if (!context.Request.Headers.ContainsKey("If-Modified-Since")) return;
             var header = context.Request.Headers["If-Modified-Since"].FirstOrDefault();

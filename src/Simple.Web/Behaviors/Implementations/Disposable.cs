@@ -6,9 +6,11 @@ using Simple.Web.Http;
 
 namespace Simple.Web.Behaviors.Implementations
 {
+    using Simple.Web.DependencyInjection;
+
     public static class Disposable
     {
-        public static void Impl(IDisposable disposable, IContext context)
+        public static void Impl(IDisposable disposable, IContext context, ISimpleContainerScope container)
         {
             try
             {

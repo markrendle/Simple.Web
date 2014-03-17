@@ -7,9 +7,11 @@ namespace Simple.Web.CodeGeneration
     using Http;
     using MediaTypeHandling;
 
+    using Simple.Web.DependencyInjection;
+
     static class WriteRawHtml
     {
-        internal static void Impl(IOutput<RawHtml> handler, IContext context)
+        internal static void Impl(IOutput<RawHtml> handler, IContext context, ISimpleContainerScope container)
         {
             context.Response.SetContentType(
                 context.Request.GetAccept().FirstOrDefault(

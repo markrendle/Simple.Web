@@ -7,6 +7,8 @@ namespace Simple.Web.CodeGeneration
     using Helpers;
     using Http;
 
+    using Simple.Web.DependencyInjection;
+
     abstract class BehaviorInfo
     {
         private readonly Type _behaviorType;
@@ -42,7 +44,7 @@ namespace Simple.Web.CodeGeneration
             foreach (var methodInfo in ImplementingType.GetMethods(BindingFlags.Public | BindingFlags.Static))
             {
                 var parameters = methodInfo.GetParameters();
-                if (parameters.Length == 2 && parameters[1].ParameterType == typeof(IContext))
+                if (parameters.Length == 3 && parameters[1].ParameterType == typeof(IContext) && parameters[2].ParameterType == typeof(ISimpleContainerScope))
                 {
                     if (parameters[0].ParameterType == BehaviorType)
                     {

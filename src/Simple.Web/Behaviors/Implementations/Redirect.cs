@@ -4,6 +4,8 @@
     using Behaviors;
     using Http;
 
+    using Simple.Web.DependencyInjection;
+
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.
     /// </summary>
@@ -14,8 +16,9 @@
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns><c>false</c> (to prevent response output) if the status is a redirect code; otherwise, <c>true</c>.</returns>
-        public static bool Impl(IMayRedirect handler, IContext context)
+        public static bool Impl(IMayRedirect handler, IContext context, ISimpleContainerScope container)
         {
             int code = context.Response.Status.Code;
             if ((code >= 301 && code <= 303) || code == 307)
@@ -39,8 +42,9 @@
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns><c>false</c> (to prevent response output) if the status is a redirect code; otherwise, <c>true</c>.</returns>
-        public static bool Impl(object handler, IContext context)
+        public static bool Impl(object handler, IContext context, ISimpleContainerScope container)
         {
             if (!(string.IsNullOrWhiteSpace(context.Response.Status.LocationHeader)))
             {

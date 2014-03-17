@@ -5,6 +5,7 @@ namespace Simple.Web.Behaviors.Implementations
     using Authentication;
     using MediaTypeHandling;
     using Simple.Web.Behaviors;
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Helpers;
     using Simple.Web.Http;
 
@@ -18,8 +19,9 @@ namespace Simple.Web.Behaviors.Implementations
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
+        /// <param name="container">The scoped container.</param>
         /// <returns><c>true</c> if the user is authenticated; otherwise, <c>false</c>.</returns>
-        public static bool Impl(IRequireAuthentication handler, IContext context)
+        public static bool Impl(IRequireAuthentication handler, IContext context, ISimpleContainerScope container)
         {
             var authenticationProvider = SimpleWeb.Configuration.AuthenticationProvider ?? new DefaultAuthenticationProvider();
             var user = authenticationProvider.GetLoggedInUser(context);

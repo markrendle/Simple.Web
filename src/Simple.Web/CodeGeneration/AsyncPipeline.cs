@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Helpers;
     using Simple.Web;
+    using Simple.Web.DependencyInjection;
     using Simple.Web.Http;
 
     internal class AsyncPipeline
@@ -55,52 +56,51 @@
             return func(handler, context);
         }
 
-        private static Task<bool> ContinueWithAsyncBlock<THandler>(Task<bool> task, Func<THandler, IContext, Task<bool>> continuation, IContext context, THandler handler)
+        private static Task<bool> ContinueWithAsyncBlock<THandler>(Task<bool> task, Func<THandler, IContext, ISimpleContainerScope, Task<bool>> continuation, IContext context, THandler handler, ISimpleContainerScope container)
         {
             return task.ContinueWith(t =>
                 {
                     if (t.Result)
                     {
-                        return continuation(handler, context);
+                        return continuation(handler, context, container);
                     }
                     return TaskHelper.Completed(false);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion).Unwrap();
         }
 
-        private static Task<bool> ContinueWithHandler<THandler>(Task<bool> task, Func<THandler, IContext, Status> continuation, IContext context, THandler handler)
+        private static Task<bool> ContinueWithHandler<THandler>(Task<bool> task, Func<THandler, IContext, ISimpleContainerScope, Status> continuation, IContext context, THandler handler, ISimpleContainerScope container)
         {
             return task.ContinueWith(t =>
                 {
                     if (t.Result)
                     {
-                        context.Response.Status = continuation(handler, context);
+                        context.Response.Status = continuation(handler, context, container);
                         return true;
                     }
                     return false;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        private static Task<bool> ContinueWithAction<THandler>(Task<bool> task, Action<THandler, IContext> continuation, IContext context,
-            THandler handler)
+        private static Task<bool> ContinueWithAction<THandler>(Task<bool> task, Action<THandler, IContext, ISimpleContainerScope> continuation, IContext context, THandler handler, ISimpleContainerScope container)
         {
             return task.ContinueWith(t =>
                 {
                     if (t.Result)
                     {
-                        continuation(handler, context);
+                        continuation(handler, context, container);
                         return true;
                     }
                     return false;
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        private static Task<bool> ContinueWithAsyncHandler<THandler>(Task<bool> task, Func<THandler, IContext, Task<Status>> continuation, IContext context, THandler handler)
+        private static Task<bool> ContinueWithAsyncHandler<THandler>(Task<bool> task, Func<THandler, IContext, ISimpleContainerScope, Task<Status>> continuation, IContext context, THandler handler, ISimpleContainerScope container)
         {
             return task.ContinueWith(t =>
                 {
                     if (t.Result)
                     {
-                        return continuation(handler, context)
+                        return continuation(handler, context, container)
                             .ContinueWith(ht =>
                                               {
                                                   context.Response.Status = ht.Result;

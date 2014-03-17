@@ -3,6 +3,8 @@ namespace Simple.Web.Behaviors.Implementations
     using Behaviors;
     using Http;
 
+    using Simple.Web.DependencyInjection;
+
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.
     /// </summary>
@@ -12,9 +14,10 @@ namespace Simple.Web.Behaviors.Implementations
         /// This method supports the framework directly and should not be used from your code
         /// </summary>
         /// <param name="handler">The handler.</param>
+        /// <param name="container">The scoped container.</param>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public static void Impl(IModified handler, IContext context)
+        public static void Impl(IModified handler, IContext context, ISimpleContainerScope container)
         {
             if (handler.LastModified.HasValue)
             {

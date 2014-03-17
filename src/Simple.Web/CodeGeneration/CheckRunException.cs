@@ -8,6 +8,8 @@ namespace Simple.Web.CodeGeneration
     using System.Threading.Tasks;
     using Http;
 
+    using Simple.Web.DependencyInjection;
+
     internal static class CheckRunException
     {
         public static Task<Status> ImplAsync(Task<Status> task, IContext context)
@@ -39,7 +41,7 @@ namespace Simple.Web.CodeGeneration
             return tcs.Task;
         }
 
-        public static Status Impl(Exception exception, IContext context)
+        public static Status Impl(Exception exception, IContext context, ISimpleContainerScope container)
         {
             if (SimpleWeb.Configuration.ExceptionHandler != null)
             {

@@ -9,6 +9,8 @@
     using Http;
     using MediaTypeHandling;
 
+    using Simple.Web.DependencyInjection;
+
     /// <summary>
     /// This type supports the framework directly and should not be used from your code.
     /// </summary>
@@ -20,9 +22,10 @@
         /// <typeparam name="T">The output model type.</typeparam>
         /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        public static void Impl<T>(IOutput<T> handler, IContext context)
+        /// <param name="container">The scoped container.</param>
+        public static void Impl<T>(IOutput<T> handler, IContext context, ISimpleContainerScope container)
         {
-            if (typeof (T).IsClass)
+            if (typeof(T).IsClass)
             {
                 if (ReferenceEquals(handler.Output, null)) return;
             }
@@ -88,7 +91,7 @@
         private static string GetHtmlContentType(IContext context)
         {
             return context.Request.GetAccept()
-                   .FirstOrDefault( at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
+                   .FirstOrDefault(at => at == MediaType.Html || at == MediaType.XHtml) ?? "text/html";
         }
     }
 }
