@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="MediaTypeHandling\MediaTypeHandlerExTests.cs" />
     <Compile Include="PublicFolderTests.cs" />
+    <Compile Include="ResponseHeaderTests.cs" />
     <Compile Include="UriFromTypeTests.cs" />
     <Compile Include="UriTemplateAttributeTests.cs" />
   </ItemGroup>

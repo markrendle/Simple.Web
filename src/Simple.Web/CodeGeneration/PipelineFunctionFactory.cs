@@ -98,8 +98,15 @@ namespace Simple.Web.CodeGeneration
             var setPropertyCookies = PropertyCookieSetter.GetPropertyCookieSetters(_handlerType, _handler, _context).ToList();
             if (setPropertyCookies.Any())
             {
-                var setPropertyDelegate = buildAction.Invoke(this, new object[] {setPropertyCookies});
-                blocks.Add(setPropertyDelegate);
+                var setPropertyCookiesDelegate = buildAction.Invoke(this, new object[] {setPropertyCookies});
+                blocks.Add(setPropertyCookiesDelegate);
+            }
+
+            var setPropertyHeaders = PropertyHeaderSetter.GetPropertyHeaderSetters(_handlerType, _handler, _context).ToList();
+            if (setPropertyHeaders.Any())
+            {
+                var setPropertyHeadersDelegate = buildAction.Invoke(this, new object[] {setPropertyHeaders});
+                blocks.Add(setPropertyHeadersDelegate);
             }
 
             var redirectBehavior = new ResponseBehaviorInfo(typeof (object), typeof (Redirect2), Priority.High) { Universal = true };

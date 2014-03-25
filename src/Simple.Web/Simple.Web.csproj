@@ -74,6 +74,7 @@
     <Compile Include="Behaviors\OutputBehaviorAttribute.cs" />
     <Compile Include="Behaviors\RequestBehaviorAttribute.cs" />
     <Compile Include="Behaviors\ResponseBehaviorAttribute.cs" />
+    <Compile Include="Behaviors\ResponseHeaderAttribute.cs" />
     <Compile Include="CodeGeneration\AsyncPipeline.cs" />
     <Compile Include="CodeGeneration\AsyncRunner.cs" />
     <Compile Include="CodeGeneration\BehaviorInfo.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="CodeGeneration\PipelineBlock.cs" />
     <Compile Include="CodeGeneration\PipelineFunctionFactory.cs" />
     <Compile Include="CodeGeneration\PropertyCookieSetter.cs" />
+    <Compile Include="CodeGeneration\PropertyHeaderSetter.cs" />
     <Compile Include="CodeGeneration\RequestBehaviorInfo.cs" />
     <Compile Include="CodeGeneration\ResponseBehaviorInfo.cs" />
     <Compile Include="Authentication\DefaultAuthenticationProvider.cs" />
