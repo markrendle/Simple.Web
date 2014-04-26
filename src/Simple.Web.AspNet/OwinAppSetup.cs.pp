@@ -5,13 +5,18 @@ using Simple.Web;
 
 namespace $rootnamespace$
 {
-	using UseAction = Action<Func<IDictionary<string, object>, Func<IDictionary<string, object>, Task>, Task>>;
+    using UseAction = Action<
+        Func<
+            Func<IDictionary<string, object>, Task>, 
+            Func<IDictionary<string, object>, Task>
+        >
+    >;
 
     public class OwinAppSetup
     {
         public static void Setup(UseAction use)
         {
-            use(Application.Run);
+            use(Application.App);
         }
     }
 }

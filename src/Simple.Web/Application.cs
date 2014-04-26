@@ -1,14 +1,14 @@
-﻿namespace Simple.Web
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+namespace Simple.Web
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using Behaviors.Implementations;
     using CodeGeneration;
     using Cors;
@@ -22,6 +22,7 @@
 #pragma warning disable 811
     using Result = System.Tuple<System.Collections.Generic.IDictionary<string, object>, int, System.Collections.Generic.IDictionary<string, string[]>, System.Func<System.IO.Stream, System.Threading.Tasks.Task>>;
 #pragma warning restore 811
+    using AppFunc = Func<IDictionary<string,object>, Task>;
 
     /// <summary>
     /// The running application.
@@ -33,13 +34,18 @@
 
         public static bool LegacyStaticContentSupport { get; set; }
 
+        public static AppFunc App(AppFunc next)
+        {
+            return env => Run(env, next);
+        }
+
         /// <summary>
         /// The OWIN standard application method.
         /// </summary>
         /// <param name="env"> Request life-time general variable storage.</param>
         /// <param name="next">The next app/component in the OWIN pipeline.</param>
         /// <returns>A <see cref="Task"/> which will complete the request.</returns>
-        public static Task Run(IDictionary<string, object> env, Func<IDictionary<string, object>, Task> next)
+        internal static Task Run(IDictionary<string, object> env, Func<IDictionary<string, object>, Task> next)
         {
             var context = new OwinContext(env);
             var task = Run(context);

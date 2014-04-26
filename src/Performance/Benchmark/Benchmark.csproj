@@ -40,13 +40,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fix, Version=0.5.0.50033, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Fix, Version=0.8.0.51724, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Fix.0.5.0.50033\lib\net40\Fix.dll</HintPath>
+      <HintPath>..\..\packages\Fix.0.8.0-pre\lib\net45\Fix.dll</HintPath>
     </Reference>
     <Reference Include="Fix.AspNet, Version=0.5.0.50033, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Fix.AspNet.0.5.0.50033\lib\net40\Fix.AspNet.dll</HintPath>
+      <HintPath>..\..\packages\Fix.AspNet.0.8.0-pre\lib\net45\Fix.AspNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
@@ -123,8 +123,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Condition="$(MSBuildProgramFiles32) == ''" Project="$(SolutionDir).nuget\nuget.targets" />
-  <Import Condition="$(MSBuildProgramFiles32) != ''" Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

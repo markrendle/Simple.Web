@@ -132,7 +132,7 @@ desc "Build + Tests + Specs + Package"
 task :package => [:full, :packageonly] 
 
 task :packageonly do
-	PackageNugets BUILD_NUMBER
+	PackageNugets NUGET_PACKAGE_VERSION
 end
 
 desc "Build + Tests + Specs + Publish (remote)"
@@ -147,7 +147,7 @@ task :publish => [:full] do
 		raise "Publish aborted." unless response.downcase.eql?("y")
 	end
 
-	PublishNugets BUILD_NUMBER, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE, SYMBOL_APIURL_REMOTE
+	PublishNugets NUGET_PACKAGE_VERSION, NUGET_APIURL_REMOTE, NUGET_APIKEY_REMOTE, SYMBOL_APIURL_REMOTE
 
     Rake::Task[:tag].invoke()
 end

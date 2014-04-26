@@ -44,3 +44,5 @@ src/packages/*
 !src/packages/repositories.config
 artifacts
 *.ncrunchsolution
+src/Simple.Web.sln.ide/
+

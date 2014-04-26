@@ -1,13 +1,17 @@
-﻿namespace Sandbox
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Sandbox
 {
-    using Fix;
     using Simple.Web;
+    using UseAction = Action< Func< Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task> > >;
 
     public class OwinAppSetup
     {
-        public static void Setup(Fixer fixer)
+        public static void Setup(UseAction use)
         {
-            fixer.Use(Application.Run);
+            use(Application.App);
         }
     }
 }
