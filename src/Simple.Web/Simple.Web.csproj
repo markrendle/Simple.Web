@@ -121,6 +121,7 @@
     <Compile Include="IExceptionHandler.cs" />
     <Compile Include="MediaTypeHandling\IContent.cs" />
     <Compile Include="MediaTypeHandling\MediaTypeHandlerBase.cs" />
+    <Compile Include="MediaTypeHandling\MediaTypeHandlers.cs" />
     <Compile Include="MediaTypeHandling\ObjectToDictionary.cs" />
     <Compile Include="Hosting\HandlerFactory.cs">
       <SubType>Code</SubType>

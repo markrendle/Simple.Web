@@ -35,6 +35,13 @@
     {
     }
 
+    [UriTemplate("/orders/{Id}/cancel")]
+    [LinksFrom(typeof (Order), Rel = "order.cancel")]
+    public class CancelOrder
+    {
+        
+    }
+
 
     [Canonical(typeof(Customer), "/customer/{Id}", Type = "application/vnd.customer")]
     public class CustomerHandler

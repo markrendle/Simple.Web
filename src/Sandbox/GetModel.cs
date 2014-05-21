@@ -5,6 +5,8 @@ using Simple.Web.MediaTypeHandling;
 
 namespace Sandbox
 {
+    using Simple.Web.Links;
+
     [UriTemplate("/model")]
     public class GetModel : IGet, IOutput<Model>
     {
@@ -30,12 +32,40 @@ namespace Sandbox
         }
     }
 
+    [UriTemplate("/submodels/{Id}")]
+    [Canonical(typeof(SubModel), "/submodels/{Id}")]
+    public class GetSubModel : IGet, IOutput<SubModel>
+    {
+        public Status Get()
+        {
+            Output = new SubModel(Id);
+            return 200;
+        }
+
+        public string Id { get; set; }
+
+        public SubModel Output { get; private set; }
+    }
+
     public class Model
     {
         public Model(string property = null) {
             Property = property;
+            Subs = new List<SubModel> {new SubModel(property)};
         }
 
         public string Property { get; set; }
+
+        public List<SubModel> Subs { get; set; }  
+    }
+
+    public class SubModel
+    {
+        public string Id { get; set; }
+
+        public SubModel(string id)
+        {
+            Id = id;
+        }
     }
 }

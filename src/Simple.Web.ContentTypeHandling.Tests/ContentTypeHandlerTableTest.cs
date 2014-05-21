@@ -73,6 +73,32 @@ namespace Simple.Web.ContentTypeHandling.Tests
             Assert.IsType<HalMediaTypeHandler>(actual);
             Assert.Equal(customType, matchedType);
         }
+
+        [Fact]
+        public void FindsExplicitHandler()
+        {
+            MediaTypeHandlers.For("image/png").Use<ExplicitMediaTypeHandler>();
+            var table = new MediaTypeHandlerTable();
+            string matchedType;
+            const string customType = "image/png";
+            var actual = table.GetMediaTypeHandler(new[] {customType}, out matchedType);
+            Assert.NotNull(actual);
+            Assert.IsType<ExplicitMediaTypeHandler>(actual);
+            Assert.Equal(customType, matchedType);
+        }
+    }
+
+    public class ExplicitMediaTypeHandler : IMediaTypeHandler
+    {
+        public Task<T> Read<T>(Stream inputStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Write<T>(IContent content, Stream outputStream)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [MediaTypes(MediaType.Json, "application/*+json")]

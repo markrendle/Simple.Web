@@ -8,7 +8,19 @@
     </head>
     <body>
         <div>
-              This has a model.
+            This has a model.
         </div>
+        <div id="json"></div>
+        <script>
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/models");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    document.getElementById('json').innerText = xhr.responseText;
+                }
+            };
+            xhr.send();
+        </script>
     </body>
 </html>

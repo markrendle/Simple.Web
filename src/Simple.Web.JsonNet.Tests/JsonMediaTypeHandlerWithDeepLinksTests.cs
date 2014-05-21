@@ -124,6 +124,8 @@
             Assert.NotNull(self);
             Assert.Equal("/order/54", self["href"].Value<string>());
             Assert.Equal("application/vnd.order+json", self["type"].Value<string>());
+            var cancel = links.FirstOrDefault(jt => jt["rel"].Value<string>() == "order.cancel");
+            Assert.NotNull(cancel);
         }
 
         [Fact]

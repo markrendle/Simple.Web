@@ -96,6 +96,13 @@ namespace Simple.Web.MediaTypeHandling
 
         private static void PopulateContentTypeHandlerFunctions()
         {
+            foreach (var kvp in MediaTypeHandlers.PreferredTypes)
+            {
+                var type = kvp.Value;
+                Func<IMediaTypeHandler> creator = () => Activator.CreateInstance(type) as IMediaTypeHandler;
+                AddMediaTypeHandlerRelation(kvp.Key, creator);
+            }
+
             foreach (var exportedType in ExportedTypeHelper.FromCurrentAppDomain(TypeIsContentTypeHandler))
             {
                 AddContentTypeHandler(exportedType);
@@ -113,15 +120,20 @@ namespace Simple.Web.MediaTypeHandling
             Func<IMediaTypeHandler> creator = () => Activator.CreateInstance(exportedType) as IMediaTypeHandler;
             foreach (var mediaType in mediaTypes)
             {
-                if (mediaType.Contains("*"))
-                {
-                    var expression = Regex.Escape(mediaType).Replace(@"\*", ".*?");
-                    WildcardMediaTypeHandlerFunctions.Add(Tuple.Create(new Regex(expression, RegexOptions.IgnoreCase), creator));
-                }
-                else
-                {
-                    MediaTypeHandlerFunctions.TryAdd(mediaType, creator);
-                }
+                AddMediaTypeHandlerRelation(mediaType, creator);
+            }
+        }
+
+        private static void AddMediaTypeHandlerRelation(string mediaType, Func<IMediaTypeHandler> creator)
+        {
+            if (mediaType.Contains("*"))
+            {
+                var expression = Regex.Escape(mediaType).Replace(@"\*", ".*?");
+                WildcardMediaTypeHandlerFunctions.Add(Tuple.Create(new Regex(expression, RegexOptions.IgnoreCase), creator));
+            }
+            else
+            {
+                MediaTypeHandlerFunctions.TryAdd(mediaType, creator);
             }
         }
 

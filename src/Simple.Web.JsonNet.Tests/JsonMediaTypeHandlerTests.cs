@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using MediaTypeHandling;
+    using Newtonsoft.Json.Linq;
     using TestHelpers;
     using TestHelpers.Sample;
     using Xunit;
