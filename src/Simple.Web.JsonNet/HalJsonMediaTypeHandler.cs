@@ -70,8 +70,12 @@
                 foreach (var o in list)
                 {
                     var jitem = JObject.FromObject(o, serializer);
-                    jitem.Add("_links", CreateHalLinks(LinkHelper.GetLinksForModel(o), serializer));
-                    array.Add(jitem);
+                    var halLinks = CreateHalLinks(LinkHelper.GetLinksForModel(o), serializer);
+
+                    if (halLinks.HasValues)
+                    {
+                        jitem.Add("_links", halLinks);
+                    }                    array.Add(jitem);
                 }
             }
             else
