@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using StructureMap;
 using StructureMap.Configuration.DSL;
-using StructureMap.Graph;
 
 namespace Simple.Web.StructureMap.Tests
 {
