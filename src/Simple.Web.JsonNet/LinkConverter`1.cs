@@ -73,20 +73,26 @@
         {
             writer.WriteStartObject();
             _writeProperties(writer, (T)value, serializer);
-            writer.WritePropertyName("links");
-            var links = _linkEnumerator(value);
-            foreach (var link in links.OfType<Link>())
+
+            if (value.GetType().GetProperty("Links") == null)
             {
-                if (string.IsNullOrWhiteSpace(link.Type))
+                writer.WritePropertyName("links");
+                var links = _linkEnumerator(value);
+                foreach (var link in links.OfType<Link>())
                 {
-                    link.Type = "application/json";
+                    if (string.IsNullOrWhiteSpace(link.Type))
+                    {
+                        link.Type = "application/json";
+                    }
+                    else if (!link.Type.EndsWith("+json"))
+                    {
+                        link.Type = link.Type + "+json";
+                    }
                 }
-                else if (!link.Type.EndsWith("+json"))
-                {
-                    link.Type = link.Type + "+json";
-                }
+
+                serializer.Serialize(writer, links);
             }
-            serializer.Serialize(writer, links);
+
             writer.WriteEndObject();
         }
 
